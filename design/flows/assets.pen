@@ -1,5 +1,5 @@
 {
-  "version": "2.17",
+  "version": "2.20",
   "children": [
     {
       "type": "frame",
@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 1.0.0 · updated: 2026-09-17\n\n1. PURPOSE\nThe Activos tab: the three tiers of interest in a symbol (D9, named per D48) — Holdings (open positions), Watchlist (watchlist_items) and Tracked (the catalogue the instance syncs) — plus the two ways data gets in: the trade sheet and the CSV importer. Historial holds the three lists with no other home (D43, D60).\n\n2. ENTRY POINTS\n- Holdings / Watchlist — BottomNav tab (/assets, assets#index; ?tab=watchlist)\n- Registrar movimiento — the primary button above the tabs opens /trades/new inside a <dialog> (D11, components/_sheet_dialog); the asset detail opens it pre-filled\n- Historial, Importar movimientos, Tracked — the three foot-of-list rows under either tab (/positions, /trades/import, /tracked). All three carry HeaderBar back to /assets\n- Rows link to the asset detail in cockpit.pen\n- Buscar — designed ahead of the code (D125): the search icon in TopBar · Buscar on mobile, the field in TopBarDesktop · Buscar on desktop, from every authenticated screen. Activo desconocido is /market/:symbol for a symbol the catalogue lacks\n\n3. SCREENS (left → right)\n- Holdings · Default — summary, the sheet button, holdings by market value (D68)\n- Watchlist · Default — rows ordered by distance to their own alert threshold, then by day move (D68)\n- Holdings · Vacío — nothing open: no summary (D120), the empty state's door is the importer\n- Watchlist · Vacía\n- Holdings · Sin consolidar — no FX rate: the notice replaces the summary\n- Registrar movimiento · Sheet — a USD buy into a held position: projection and FX card showing\n- Registrar movimiento · Con teclado — D11's acceptance: the footer survives the keyboard (the note beside it)\n- Registrar movimiento · CETES — a fixed-income buy asks for Vencimiento; MXN hides the FX card\n- Historial · Default — Movimientos, Dividendos cobrados, Posiciones cerradas\n- Historial · Vacío\n- Tracked · Default — catalogue rows, the budget last on mobile\n- Tracked · Agregar activo — the typeahead and the six fields it fills (D64)\n- Tracked · Sin fuente — an asset the provider cannot name, with its fix in place (D46)\n- Tracked · Sin coincidencias — a filter that matches nothing\n- Importar CSV · Default, Revisión, Símbolos desconocidos (#401, D62, D63, D65)\n- Search band (D125, not built): Buscar · En tu catálogo, Fuera de tu catálogo, Sin resultados, Yahoo no responde; Activo desconocido · Default; Buscar · Desktop · En tu catálogo (the results as a dropdown under the field)\n- Desktop band: Holdings, Registrar movimiento (the same dialog, centred) and Tracked (list beside the budget). The rest reflow (D4)\n\n4. BUSINESS RULES\n- The summary renders only while something is open (D120); without an FX rate it becomes the Sin consolidar notice and rows keep their own currency, alphabetical (trading/use_cases/load_assets.rb)\n- Money per D10: the summary declares the currency, rows in it drop the symbol, anything else keeps its ISO prefix. Historial's trade and dividend rows keep theirs because they mix\n- A holding row leads with its value and follows with the day's move, a dash when there is no previous close (D69, ADR-021). No state chip, no confluence dots (D85)\n- A watchlist row reads \"falta X%\" when an alert threshold exists, \"sigues ±X%\" from entry_price otherwise\n- The sheet asks for Vencimiento only on a fixed-income buy; the FX card hides when the currency is blank or MXN; the average-cost projection shows only on a buy into the held symbol in its own currency (trades/new.html.erb, trade_sheet_controller.js)\n- Tracked counts the whole catalogue; the filter narrows the list only. Seguir shows on the Tracked tier alone; a paused row dims, a sourceless one does not (D46)\n- The budget bar is in spend order — Holdings, Watchlist, the rest — over active stocks and ETFs only (D82)\n- An import is all-or-nothing unless the owner chooses to leave the unknown symbols out\n- Buscar (D125, proposed): the catalogue answers first, by symbol or name, with no provider call; a hit opens the asset. Yahoo is asked only when the catalogue has no match, and its failure never hides catalogue results. Rastrear tracks the symbol at once and lands on its page. Option contracts are not offered\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — assets.index, assets.tracked, trades.new, positions.index, trade_imports.*, comun.sin_tc_*. Row figures: AssetsHelper. Buscar reuses assets.tracked.buscar, buscar_vacio, sin_resultados, no_encontrado and comun.tipo_activo; not yet in the locale, proposed with D125: \"EN TU CATÁLOGO\", \"EN YAHOO FINANCE\", \"Buscar «%{query}» en Yahoo Finance\", \"Rastrear\", \"Ni tu catálogo ni Yahoo Finance tienen «%{query}».\", \"La búsqueda en Yahoo Finance no responde. Intenta de nuevo en un momento.\", \"%{symbol} no está en tu catálogo. Yahoo Finance sí lo tiene:\". FX note date: FxRatesController (date_label).\n\n6. STATES NOT DRAWN\n- \"Guardado. Registra el siguiente.\" above the sheet after Guardar y registrar otro\n- The importer's error line, and the other refusals (invalid_rows, missing_fx_history, repeated_external_ids, unsupported_asset_type): the same card with the detail listed below it\n- Tracked with an empty catalogue — the empty state reads \"Tu instancia aún no rastrea ningún activo.\"\n- The budget exhausted or unlimited — \"Agotado hasta mañana\" / \"Sin límite\"\n- Inline edit and delete of a movement in Historial — MovementItem has no action slot in the kit\n- The typeahead results are an overlay in code; the artboard draws them in flow\n- A Watchlist tab with nothing held — the summary is absent\n- Empty states and the drop zone have a dashed border — the .pen format has none\n- Buscar with an empty query: the field and nothing else. While Yahoo answers: \"Buscando…\"\n- Buscar when Yahoo is rate limited: the same notice as Yahoo no responde\n- After Rastrear: the asset page with \"%{symbol} se agregó a Tracked.\"\n- Activo desconocido when Yahoo does not know the symbol either: the empty state alone, no row\n\n7. OPEN FINDINGS\nD125 — search is drawn ahead of the code; the two TopBar variants are flow-local kit candidates until it ships.\n\n8. HISTORY\n→ Log frame, below this brief. Reasoning before 2026-09-16: git show 120600bb:design/V2_REMAINING.md (ACT-*).",
+          "content": "kit-version-source: 1.2.0 · updated: 2026-10-14\n\n1. PURPOSE\nThe Activos tab: the three tiers of interest in a symbol (D9, named per D48) — Holdings (open positions), Watchlist (watchlist_items) and Tracked (the catalogue the instance syncs) — plus the two ways data gets in: the trade sheet and the CSV importer. Historial holds the three lists with no other home (D43, D60).\n\n2. ENTRY POINTS\n- Holdings / Watchlist — BottomNav tab (/assets, assets#index; ?tab=watchlist)\n- Registrar movimiento — the primary button above the tabs opens /trades/new inside a <dialog> (D11, components/_sheet_dialog); the asset detail opens it pre-filled\n- Historial, Importar movimientos, Tracked — the three foot-of-list rows under either tab (/positions, /trades/import, /tracked). All three carry HeaderBar back to /assets\n- Rows link to the asset detail in cockpit.pen\n- Buscar — designed ahead of the code (D125): the search icon in TopBar · Buscar on mobile, the field in TopBarDesktop · Buscar on desktop, from every authenticated screen. Activo desconocido is /market/:symbol for a symbol the catalogue lacks\n\n3. SCREENS (left → right)\n- Holdings · Default — summary, the sheet button, holdings by market value (D68)\n- Watchlist · Default — rows ordered by distance to their own alert threshold, then by day move (D68)\n- Holdings · Vacío — nothing open: no summary (D120), the empty state's door is the importer\n- Watchlist · Vacía\n- Holdings · Sin consolidar — no FX rate: the notice replaces the summary\n- Holdings · Sin cotización — a held asset has no quote: \"Valuación no disponible\" replaces the summary and that row shows a dash\n- Registrar movimiento · Sheet — a USD buy into a held position: projection and FX card showing\n- Registrar movimiento · Con teclado — D11's acceptance: the footer survives the keyboard (the note beside it)\n- Registrar movimiento · CETES — a fixed-income buy asks for Vencimiento; MXN hides the FX card\n- Historial · Default — Movimientos, Dividendos cobrados, Posiciones cerradas\n- Historial · Vacío\n- Tracked · Default — catalogue rows, the budget last on mobile\n- Tracked · Agregar activo — the typeahead and the six fields it fills (D64)\n- Tracked · Sin fuente — an asset the provider cannot name, with its fix in place (D46)\n- Tracked · Sin coincidencias — a filter that matches nothing\n- Importar CSV · Default, Revisión, Símbolos desconocidos (#401, D62, D63, D65)\n- Search band (D125, not built): Buscar · En tu catálogo, Fuera de tu catálogo, Sin resultados, Yahoo no responde; Activo desconocido · Default; Buscar · Desktop · En tu catálogo (the results as a dropdown under the field)\n- Desktop band: Holdings, Registrar movimiento (the same dialog, centred) and Tracked (list beside the budget). The rest reflow (D4)\n\n4. BUSINESS RULES\n- The summary renders only while something is open (D120); without an FX rate it becomes the Sin consolidar notice and rows keep their own currency, alphabetical (trading/use_cases/load_assets.rb)\n- Money per D10: the summary declares the currency, rows in it drop the symbol, anything else keeps its ISO prefix. Historial's trade and dividend rows keep theirs because they mix\n- The summary is followed by a caption that dates the oldest held quote in CDMX and says where to find sources; a missing date, stale quotes and a failed sync each get their own line (shared/_valuation_caption). A missing quote removes the composite instead of valuing it at zero (shared/_valuation_notice)\n- A holding row leads with its value and follows with the day's move, a dash when there is no previous close (D69, ADR-021). No state chip, no confluence dots (D85)\n- A watchlist row reads \"falta X%\" when an alert threshold exists, \"sigues ±X%\" from entry_price otherwise\n- The sheet asks for Vencimiento only on a fixed-income buy; the FX card hides when the currency is blank or MXN; the average-cost projection shows only on a buy into the held symbol in its own currency (trades/new.html.erb, trade_sheet_controller.js)\n- Tracked counts the whole catalogue; the filter narrows the list only. Seguir shows on the Tracked tier alone; a paused row dims, a sourceless one does not (D46)\n- The budget bar is in spend order — Holdings, Watchlist, the rest — over active stocks and ETFs only (D82)\n- An import is all-or-nothing unless the owner chooses to leave the unknown symbols out\n- Buscar (D125, proposed): the catalogue answers first, by symbol or name, with no provider call; a hit opens the asset. Yahoo is asked only when the catalogue has no match, and its failure never hides catalogue results. Rastrear tracks the symbol at once and lands on its page. Option contracts are not offered\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — assets.index, assets.tracked, trades.new, positions.index, trade_imports.*, comun.sin_tc_*. Row figures: AssetsHelper. Buscar reuses assets.tracked.buscar, buscar_vacio, sin_resultados, no_encontrado and comun.tipo_activo; not yet in the locale, proposed with D125: \"EN TU CATÁLOGO\", \"EN YAHOO FINANCE\", \"Buscar «%{query}» en Yahoo Finance\", \"Rastrear\", \"Ni tu catálogo ni Yahoo Finance tienen «%{query}».\", \"La búsqueda en Yahoo Finance no responde. Intenta de nuevo en un momento.\", \"%{symbol} no está en tu catálogo. Yahoo Finance sí lo tiene:\". FX note date: FxRatesController (date_label).\n\n6. STATES NOT DRAWN\n- \"Guardado. Registra el siguiente.\" above the sheet after Guardar y registrar otro\n- The importer's error line, and the other refusals (invalid_rows, missing_fx_history, repeated_external_ids, unsupported_asset_type): the same card with the detail listed below it\n- Tracked with an empty catalogue — the empty state reads \"Tu instancia aún no rastrea ningún activo.\"\n- The budget exhausted or unlimited — \"Agotado hasta mañana\" / \"Sin límite\"\n- Inline edit and delete of a movement in Historial — MovementItem has no action slot in the kit\n- The typeahead results are an overlay in code; the artboard draws them in flow\n- A Watchlist tab with nothing held — the summary is absent\n- Empty states and the drop zone have a dashed border — the .pen format has none\n- Buscar with an empty query: the field and nothing else. While Yahoo answers: \"Buscando…\"\n- Buscar when Yahoo is rate limited: the same notice as Yahoo no responde\n- After Rastrear: the asset page with \"%{symbol} se agregó a Tracked.\"\n- Activo desconocido when Yahoo does not know the symbol either: the empty state alone, no row\n\n7. OPEN FINDINGS\nD125 — search is drawn ahead of the code; the two TopBar variants are flow-local kit candidates until it ships.\n\n8. HISTORY\n→ Log frame, below this brief. Reasoning before 2026-09-16: git show 120600bb:design/V2_REMAINING.md (ACT-*).",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -59,59 +59,52 @@
           "type": "frame",
           "id": "weZTk",
           "name": "Brand",
-          "gap": 4,
           "alignItems": "center",
           "children": [
             {
               "type": "frame",
-              "id": "Z5w6lj",
-              "name": "Glyph",
-              "width": 24,
-              "height": 24,
+              "id": "odG5o",
+              "name": "Logo",
+              "width": 121.8,
+              "height": 28,
               "layout": "none",
               "children": [
                 {
                   "type": "path",
-                  "id": "ytIJb",
+                  "id": "YpVuF",
                   "x": 0,
                   "y": 0,
                   "name": "Mark",
-                  "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
-                  "fillRule": "evenodd",
+                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
                   "viewBox": [
                     0,
                     0,
                     64,
                     64
                   ],
-                  "fill": "$primary",
-                  "width": 24,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "P492B",
-              "name": "WMWrap",
-              "layout": "vertical",
-              "padding": [
-                0,
-                0,
-                3.9,
-                0
-              ],
-              "children": [
+                  "width": 28,
+                  "height": 28,
+                  "stroke": "$primary",
+                  "strokeWidth": 2.1875,
+                  "strokeLinejoin": "round",
+                  "strokeLinecap": "round"
+                },
                 {
-                  "type": "text",
-                  "id": "vTGn2",
-                  "name": "WM",
+                  "type": "path",
+                  "id": "M7hpm",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Lettering",
+                  "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                  "viewBox": [
+                    0,
+                    0,
+                    174,
+                    40
+                  ],
                   "fill": "$fg-default",
-                  "content": "stockerly",
-                  "fontFamily": "$font-display",
-                  "fontSize": 17,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.4
+                  "width": 121.8,
+                  "height": 28
                 }
               ]
             }
@@ -169,13 +162,13 @@
         12,
         8
       ],
-      "justifyContent": "space_around",
       "alignItems": "center",
       "children": [
         {
           "type": "frame",
           "id": "DOffC",
           "name": "Panorama",
+          "width": "fill_container",
           "layout": "vertical",
           "gap": 3,
           "alignItems": "center",
@@ -206,6 +199,7 @@
           "type": "frame",
           "id": "c19eO",
           "name": "Activos",
+          "width": "fill_container",
           "layout": "vertical",
           "gap": 3,
           "alignItems": "center",
@@ -236,6 +230,7 @@
           "type": "frame",
           "id": "Xzlpi",
           "name": "Reglas",
+          "width": "fill_container",
           "layout": "vertical",
           "gap": 3,
           "alignItems": "center",
@@ -266,6 +261,7 @@
           "type": "frame",
           "id": "y3S1D",
           "name": "Descubrir",
+          "width": "fill_container",
           "layout": "vertical",
           "gap": 3,
           "alignItems": "center",
@@ -296,6 +292,7 @@
           "type": "frame",
           "id": "POs3n",
           "name": "Ajustes",
+          "width": "fill_container",
           "layout": "vertical",
           "gap": 3,
           "alignItems": "center",
@@ -620,11 +617,24 @@
               ]
             },
             {
+              "type": "text",
+              "id": "BAkLV",
+              "name": "Caption",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Cotización más antigua: 12 OCT 2026 · 16:00 · CDMX · Fuentes y fechas por activo en su detalle",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
               "type": "frame",
               "id": "W9Nrct",
               "name": "Registrar",
               "width": "fill_container",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "cornerRadius": "$radius-sm",
               "gap": "$space-2",
               "padding": [
@@ -1121,11 +1131,24 @@
               ]
             },
             {
+              "type": "text",
+              "id": "E6KrR7",
+              "name": "Caption",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Cotización más antigua: 12 OCT 2026 · 16:00 · CDMX · Fuentes y fechas por activo en su detalle",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
               "type": "frame",
               "id": "bWiZS",
               "name": "Registrar",
               "width": "fill_container",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "cornerRadius": "$radius-sm",
               "gap": "$space-2",
               "padding": [
@@ -1495,7 +1518,7 @@
               "id": "c1Mux",
               "name": "Registrar",
               "width": "fill_container",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "cornerRadius": "$radius-sm",
               "gap": "$space-2",
               "padding": [
@@ -1782,7 +1805,7 @@
     {
       "type": "frame",
       "id": "OJdDY",
-      "x": 3030,
+      "x": 3540,
       "y": 0,
       "name": "[Activos] / Registrar movimiento / Sheet",
       "clip": true,
@@ -2330,7 +2353,7 @@
                   "id": "m0ING",
                   "name": "Guardar",
                   "width": "fill_container",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-md",
                   "padding": [
                     14,
@@ -2388,7 +2411,7 @@
     {
       "type": "frame",
       "id": "w5Lco",
-      "x": 6000,
+      "x": 6510,
       "y": 0,
       "name": "[Activos] / Tracked / Default",
       "clip": true,
@@ -3700,7 +3723,7 @@
     {
       "type": "frame",
       "id": "P3XXf",
-      "x": 3540,
+      "x": 4050,
       "y": 0,
       "name": "[Activos] / Registrar movimiento / Con teclado",
       "clip": true,
@@ -4537,7 +4560,7 @@
                   "id": "Y9V3nw",
                   "name": "Guardar",
                   "width": "fill_container",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-md",
                   "padding": [
                     14,
@@ -4621,10 +4644,11 @@
           "id": "NYFvJ",
           "name": "S1",
           "width": "fill_container",
+          "height": 44,
           "fill": "$bg-surface",
           "cornerRadius": "$radius-sm",
           "padding": [
-            13,
+            0,
             12
           ],
           "justifyContent": "center",
@@ -4647,10 +4671,11 @@
           "id": "PWw9r",
           "name": "S2",
           "width": "fill_container",
+          "height": 44,
           "fill": "#00000000",
           "cornerRadius": "$radius-sm",
           "padding": [
-            13,
+            0,
             12
           ],
           "justifyContent": "center",
@@ -4660,7 +4685,7 @@
               "type": "text",
               "id": "sBvk9",
               "name": "t",
-              "fill": "$fg-subtle",
+              "fill": "$fg-default",
               "content": "Dos",
               "fontFamily": "$font-sans",
               "fontSize": 13,
@@ -4695,59 +4720,52 @@
           "type": "frame",
           "id": "Ixi5J",
           "name": "Brand",
-          "gap": 4,
           "alignItems": "center",
           "children": [
             {
               "type": "frame",
-              "id": "cVuEi",
-              "name": "Glyph",
-              "width": 24,
-              "height": 24,
+              "id": "ASgWN",
+              "name": "Logo",
+              "width": 121.8,
+              "height": 28,
               "layout": "none",
               "children": [
                 {
                   "type": "path",
-                  "id": "dO5d7",
+                  "id": "POxJE",
                   "x": 0,
                   "y": 0,
                   "name": "Mark",
-                  "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
-                  "fillRule": "evenodd",
+                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
                   "viewBox": [
                     0,
                     0,
                     64,
                     64
                   ],
-                  "fill": "$primary",
-                  "width": 24,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "k9F2l",
-              "name": "WMWrap",
-              "layout": "vertical",
-              "padding": [
-                0,
-                0,
-                3.9,
-                0
-              ],
-              "children": [
+                  "width": 28,
+                  "height": 28,
+                  "stroke": "$primary",
+                  "strokeWidth": 2.1875,
+                  "strokeLinejoin": "round",
+                  "strokeLinecap": "round"
+                },
                 {
-                  "type": "text",
-                  "id": "fsjP5",
-                  "name": "WM",
+                  "type": "path",
+                  "id": "vTe32",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Lettering",
+                  "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                  "viewBox": [
+                    0,
+                    0,
+                    174,
+                    40
+                  ],
                   "fill": "$fg-default",
-                  "content": "stockerly",
-                  "fontFamily": "$font-display",
-                  "fontSize": 17,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.4
+                  "width": 121.8,
+                  "height": 28
                 }
               ]
             }
@@ -5174,11 +5192,24 @@
                   ]
                 },
                 {
+                  "type": "text",
+                  "id": "D46luJ",
+                  "name": "Caption",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Cotización más antigua: 12 OCT 2026 · 16:00 · CDMX · Fuentes y fechas por activo en su detalle",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
                   "type": "frame",
                   "id": "HDb7W",
                   "name": "Registrar",
                   "width": "fill_container",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-sm",
                   "gap": "$space-2",
                   "padding": [
@@ -5592,11 +5623,24 @@
                   ]
                 },
                 {
+                  "type": "text",
+                  "id": "TeHWE",
+                  "name": "Caption",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Cotización más antigua: 12 OCT 2026 · 16:00 · CDMX · Fuentes y fechas por activo en su detalle",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
                   "type": "frame",
                   "id": "f1FbH",
                   "name": "Registrar",
                   "width": "fill_container",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-sm",
                   "gap": "$space-2",
                   "padding": [
@@ -6267,7 +6311,7 @@
                   "id": "gv0Oa",
                   "name": "Guardar",
                   "width": "fill_container",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-md",
                   "padding": [
                     14,
@@ -7696,7 +7740,7 @@
     {
       "type": "frame",
       "id": "Y6vkn",
-      "x": 4980,
+      "x": 5490,
       "y": 0,
       "name": "[Activos] / Historial / Default",
       "clip": true,
@@ -8131,7 +8175,7 @@
     {
       "type": "frame",
       "id": "NWdKM",
-      "x": 7020,
+      "x": 7530,
       "y": 0,
       "name": "[Activos] / Tracked / Sin fuente",
       "clip": true,
@@ -9642,7 +9686,7 @@
     {
       "type": "frame",
       "id": "j10hHq",
-      "x": 8040,
+      "x": 8550,
       "y": 0,
       "name": "[Activos] / Importar CSV / Default",
       "clip": true,
@@ -9898,7 +9942,7 @@
                   "id": "Te3re",
                   "name": "Revisar",
                   "width": "fill_container",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-md",
                   "padding": [
                     14,
@@ -9963,7 +10007,7 @@
     {
       "type": "frame",
       "id": "C3l3m",
-      "x": 8550,
+      "x": 9060,
       "y": 0,
       "name": "[Activos] / Importar CSV / Revisión",
       "clip": true,
@@ -10899,7 +10943,7 @@
                   "id": "plp5s",
                   "name": "Importar",
                   "width": "fill_container",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-sm",
                   "padding": [
                     12,
@@ -10961,7 +11005,7 @@
     {
       "type": "frame",
       "id": "YXPNk",
-      "x": 9060,
+      "x": 9570,
       "y": 0,
       "name": "[Activos] / Importar CSV / Símbolos desconocidos",
       "clip": true,
@@ -11813,7 +11857,7 @@
               "id": "Ih5bY",
               "name": "Alta",
               "width": "fill_container",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "cornerRadius": "$radius-md",
               "gap": "$space-2",
               "padding": [
@@ -11955,7 +11999,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-09-17 · D125 · Buscar drawn ahead of the code: five mobile artboards, one desktop, and flow-local TopBar · Buscar and TopBarDesktop · Buscar\n2026-09-17 · D123: the Tracked budget panel on all five Tracked artboards names Yahoo Finance, reads 4000 calls, and gains the whole-quota line\n2026-09-16 · fidelity pass against the rendered app at 390 and 1280: holdings reordered by market value (D68), share counts in the code's significant digits, watchlist prices at two decimals; the paused Tracked-tier row now wraps its symbol line, as the code does since it stopped overflowing the phone\n2026-09-16 · kit 1.0.0 · BottomNav, SidebarNav and TopBarDesktop masters back to the kit, each screen lights its own tab; HeaderBar vendored and replaces seven hand-built headers\n2026-09-16 · D78 · every artboard mirrored to the code: summary and sheet button above the tabs, no counts on the tabs, the three foot rows, day move in the row, the sheet's title and sticky footer, Tracked rows with tier chip and Seguir / Pausar / borrar, the two-segment budget, Historial without icons, the importer's real copy\n2026-09-16 · removed Tracked · Buscar — the filter is an input on Tracked, not a screen; search is its own feature\n2026-09-16 · new artboards: Watchlist · Vacía, Tracked · Sin coincidencias, Holdings · Sin consolidar, Registrar movimiento · CETES, Historial · Vacío\n2026-09-16 · code fixed alongside: CETES could not be recorded, the projection showed on a sale, the dividends header named a currency its rows did not use, Tracked's count followed the filter\n2026-09-16 · canvas · grid gutter 70 → 120, bands reflowed\n2026-09-11 · Tracked · Agregar activo drawn, closing D64: the search field with the placeholder the locale carries, three typeahead results in the row shape Tracked·Buscar already uses, the six fields the gateway fills with the code's own placeholders, and the two actions. Copied from Tracked / Default so the shell stays one thing, and the band was reflowed so the screen reads where it belongs. Two drifts recorded in the brief rather than fixed here: the entry point is a button, not the header icon, and the budget renders last on mobile · D64\n\n2026-09-11 · Both drifts now FIXED in the code's favour — Adrian's call. The header + icon is gone from Tracked/Default, Tracked/Sin fuente and Tracked · Agregar activo; each opens instead with a justify-between row carrying the count and a primary Agregar activo button, which is tracked.html.erb:5-12. The budget moved to the end of the mobile scroll in all three, which is the aside's real DOM order; desktop keeps it beside the column because lg:flex-row does. Two smaller divergences were measured and left recorded, not swept: the intro belongs to the aside in code, and the list's count caption exists only here · D64\n2026-09-05 · D85 fallout · Watchlist's Resumen block deleted — a 'con señal hoy' count needs the chip that is not being built, and the code never had the block\n2026-09-05 · #586 · AssetRow drops Estado and Dots here too — three files carried them, the code backed none\n2026-09-05 · C-3 · Holdings/Vacío drops the demo door; the CSV one it also drew has shipped, so the state now draws what exists\n2026-09-05 · D78 · the trade sheet gains the Moneda select, the average-cost projection (#428) and the code's field pairing — Sheet, Con teclado and Desktop\n2026-09-05 · Sheet grows 844 → 940 and Desktop dialog 800 → 920; both anchored by math rather than by eye\n2026-09-05 · brief records D64 as open — the typeahead has no artboard and Tracked · Buscar is a different control\n2026-08-29 · Watchlist: the row's third slot moved from 'sigues +X%' (entry_price, history) to 'falta X%' — distance to the active alert threshold — and the six rows are ordered by it, so the artboard shows the queue D68 describes. Subtitle rewritten to name the new column · D67, D68, D69\n2026-08-29 · Símbolos desconocidos gains two escapes per row — rename (alias) and delisted (frozen). D63 answered: the source column is now a state, not nine copies of one string · D65\n2026-08-29 · Símbolos desconocidos becomes a checkbox list with a bulk action; the CTA was a link carrying no symbols · D63\n2026-08-29 · finding: the Agregar activo typeahead has no artboard in this flow, and the code changed under it · D64\n2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
+          "content": "2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the three top bars at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots; Segmented options 44 px\n2026-10-14 · #821 · Holdings and Watchlist (mobile and desktop) carry the quote caption under the summary; new artboard Holdings · Sin cotización\n2026-09-17 · D125 · Buscar drawn ahead of the code: five mobile artboards, one desktop, and flow-local TopBar · Buscar and TopBarDesktop · Buscar\n2026-09-17 · D123: the Tracked budget panel on all five Tracked artboards names Yahoo Finance, reads 4000 calls, and gains the whole-quota line\n2026-09-16 · fidelity pass against the rendered app at 390 and 1280: holdings reordered by market value (D68), share counts in the code's significant digits, watchlist prices at two decimals; the paused Tracked-tier row now wraps its symbol line, as the code does since it stopped overflowing the phone\n2026-09-16 · kit 1.0.0 · BottomNav, SidebarNav and TopBarDesktop masters back to the kit, each screen lights its own tab; HeaderBar vendored and replaces seven hand-built headers\n2026-09-16 · D78 · every artboard mirrored to the code: summary and sheet button above the tabs, no counts on the tabs, the three foot rows, day move in the row, the sheet's title and sticky footer, Tracked rows with tier chip and Seguir / Pausar / borrar, the two-segment budget, Historial without icons, the importer's real copy\n2026-09-16 · removed Tracked · Buscar — the filter is an input on Tracked, not a screen; search is its own feature\n2026-09-16 · new artboards: Watchlist · Vacía, Tracked · Sin coincidencias, Holdings · Sin consolidar, Registrar movimiento · CETES, Historial · Vacío\n2026-09-16 · code fixed alongside: CETES could not be recorded, the projection showed on a sale, the dividends header named a currency its rows did not use, Tracked's count followed the filter\n2026-09-16 · canvas · grid gutter 70 → 120, bands reflowed\n2026-09-11 · Tracked · Agregar activo drawn, closing D64: the search field with the placeholder the locale carries, three typeahead results in the row shape Tracked·Buscar already uses, the six fields the gateway fills with the code's own placeholders, and the two actions. Copied from Tracked / Default so the shell stays one thing, and the band was reflowed so the screen reads where it belongs. Two drifts recorded in the brief rather than fixed here: the entry point is a button, not the header icon, and the budget renders last on mobile · D64\n\n2026-09-11 · Both drifts now FIXED in the code's favour — Adrian's call. The header + icon is gone from Tracked/Default, Tracked/Sin fuente and Tracked · Agregar activo; each opens instead with a justify-between row carrying the count and a primary Agregar activo button, which is tracked.html.erb:5-12. The budget moved to the end of the mobile scroll in all three, which is the aside's real DOM order; desktop keeps it beside the column because lg:flex-row does. Two smaller divergences were measured and left recorded, not swept: the intro belongs to the aside in code, and the list's count caption exists only here · D64\n2026-09-05 · D85 fallout · Watchlist's Resumen block deleted — a 'con señal hoy' count needs the chip that is not being built, and the code never had the block\n2026-09-05 · #586 · AssetRow drops Estado and Dots here too — three files carried them, the code backed none\n2026-09-05 · C-3 · Holdings/Vacío drops the demo door; the CSV one it also drew has shipped, so the state now draws what exists\n2026-09-05 · D78 · the trade sheet gains the Moneda select, the average-cost projection (#428) and the code's field pairing — Sheet, Con teclado and Desktop\n2026-09-05 · Sheet grows 844 → 940 and Desktop dialog 800 → 920; both anchored by math rather than by eye\n2026-09-05 · brief records D64 as open — the typeahead has no artboard and Tracked · Buscar is a different control\n2026-08-29 · Watchlist: the row's third slot moved from 'sigues +X%' (entry_price, history) to 'falta X%' — distance to the active alert threshold — and the six rows are ordered by it, so the artboard shows the queue D68 describes. Subtitle rewritten to name the new column · D67, D68, D69\n2026-08-29 · Símbolos desconocidos gains two escapes per row — rename (alias) and delisted (frozen). D63 answered: the source column is now a state, not nine copies of one string · D65\n2026-08-29 · Símbolos desconocidos becomes a checkbox list with a bulk action; the CTA was a link carrying no symbols · D63\n2026-08-29 · finding: the Agregar activo typeahead has no artboard in this flow, and the code changed under it · D64\n2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
           "lineHeight": 1.6,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -11966,7 +12010,7 @@
     {
       "type": "frame",
       "id": "qzqqA",
-      "x": 6510,
+      "x": 7020,
       "y": 0,
       "name": "[Activos] / Tracked · Agregar activo / Default",
       "clip": true,
@@ -14159,11 +14203,24 @@
               ]
             },
             {
+              "type": "text",
+              "id": "iKbnZ",
+              "name": "Caption",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Cotización más antigua: 12 OCT 2026 · 16:00 · CDMX · Fuentes y fechas por activo en su detalle",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
               "type": "frame",
               "id": "SrfYP",
               "name": "Registrar",
               "width": "fill_container",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "cornerRadius": "$radius-sm",
               "gap": "$space-2",
               "padding": [
@@ -14413,7 +14470,7 @@
     {
       "type": "frame",
       "id": "JLJKS",
-      "x": 7530,
+      "x": 8040,
       "y": 0,
       "name": "[Activos] / Tracked / Sin coincidencias",
       "clip": true,
@@ -15014,7 +15071,7 @@
               "id": "zr0sE",
               "name": "Registrar",
               "width": "fill_container",
-              "fill": "$primary",
+              "fill": "$primary-fg",
               "cornerRadius": "$radius-sm",
               "gap": "$space-2",
               "padding": [
@@ -15295,7 +15352,7 @@
     {
       "type": "frame",
       "id": "WoqFg",
-      "x": 4470,
+      "x": 4980,
       "y": 0,
       "name": "[Activos] / Registrar movimiento / CETES",
       "clip": true,
@@ -15868,7 +15925,7 @@
                   "id": "eCvsu",
                   "name": "Guardar",
                   "width": "fill_container",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-md",
                   "padding": [
                     14,
@@ -15926,7 +15983,7 @@
     {
       "type": "frame",
       "id": "bJ35S",
-      "x": 5490,
+      "x": 6000,
       "y": 0,
       "name": "[Activos] / Historial / Vacío",
       "clip": true,
@@ -16435,59 +16492,52 @@
           "id": "z7R23",
           "name": "Brand",
           "width": "fill_container",
-          "gap": 4,
           "alignItems": "center",
           "children": [
             {
               "type": "frame",
-              "id": "oqcjz",
-              "name": "Glyph",
-              "width": 24,
-              "height": 24,
+              "id": "WAgWv",
+              "name": "Logo",
+              "width": 121.8,
+              "height": 28,
               "layout": "none",
               "children": [
                 {
                   "type": "path",
-                  "id": "T5gIsH",
+                  "id": "olHl8",
                   "x": 0,
                   "y": 0,
                   "name": "Mark",
-                  "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
-                  "fillRule": "evenodd",
+                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
                   "viewBox": [
                     0,
                     0,
                     64,
                     64
                   ],
-                  "fill": "$primary",
-                  "width": 24,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "j2MsQI",
-              "name": "WMWrap",
-              "layout": "vertical",
-              "padding": [
-                0,
-                0,
-                3.9,
-                0
-              ],
-              "children": [
+                  "width": 28,
+                  "height": 28,
+                  "stroke": "$primary",
+                  "strokeWidth": 2.1875,
+                  "strokeLinejoin": "round",
+                  "strokeLinecap": "round"
+                },
                 {
-                  "type": "text",
-                  "id": "MyNDz",
-                  "name": "WM",
+                  "type": "path",
+                  "id": "lgZ8n",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Lettering",
+                  "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                  "viewBox": [
+                    0,
+                    0,
+                    174,
+                    40
+                  ],
                   "fill": "$fg-default",
-                  "content": "stockerly",
-                  "fontFamily": "$font-display",
-                  "fontSize": 17,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.4
+                  "width": 121.8,
+                  "height": 28
                 }
               ]
             }
@@ -19731,6 +19781,362 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "rKwNH",
+      "x": 3030,
+      "y": 0,
+      "name": "[Activos] / Holdings / Sin cotización",
+      "clip": true,
+      "width": 390,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "Fucs2",
+          "type": "ref",
+          "ref": "NBrwg",
+          "name": "TopBar",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "Ao866",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "h3mOyb",
+              "name": "ValuationNotice",
+              "width": "fill_container",
+              "fill": "$warning-bg",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$warning",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TzncM",
+                  "name": "Titulo",
+                  "fill": "$warning-fg",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Valuación no disponible",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "zoCho",
+                  "name": "Cuerpo",
+                  "fill": "$warning-fg",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Falta el precio de una o más posiciones. El patrimonio y el resultado se mostrarán cuando haya cotizaciones; tus títulos y costos siguen registrados.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Gfch2",
+              "name": "Registrar",
+              "width": "fill_container",
+              "fill": "$primary-fg",
+              "cornerRadius": "$radius-sm",
+              "gap": "$space-2",
+              "padding": [
+                12,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "tggG9",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "plus",
+                  "library": "lucide",
+                  "fill": "$fg-inverse"
+                },
+                {
+                  "type": "text",
+                  "id": "vlgqt",
+                  "name": "t",
+                  "fill": "$fg-inverse",
+                  "content": "Registrar movimiento",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "id": "SLEku",
+              "type": "ref",
+              "ref": "wuIvL",
+              "name": "Segmented",
+              "width": "fill_container",
+              "descendants": {
+                "WBLya": {
+                  "content": "Holdings"
+                },
+                "sBvk9": {
+                  "content": "Watchlist"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "M31oKu",
+              "name": "Lista",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "id": "hZzKA",
+                  "type": "ref",
+                  "ref": "qtod3",
+                  "name": "BTC",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mKYEi": {
+                      "content": "BTC"
+                    },
+                    "wkJF7": {
+                      "content": "Bitcoin · 0.04500 títulos"
+                    },
+                    "eRpGw": {
+                      "content": "—",
+                      "fill": "$fg-subtle"
+                    },
+                    "V8e4y": {
+                      "content": "—",
+                      "fill": "$fg-subtle"
+                    },
+                    "ryGTQ": {
+                      "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
+                      "stroke": "$chart-neutral"
+                    }
+                  }
+                },
+                {
+                  "id": "Vq6tt",
+                  "type": "ref",
+                  "ref": "qtod3",
+                  "name": "AAPL",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mKYEi": {
+                      "content": "AAPL"
+                    },
+                    "wkJF7": {
+                      "content": "Apple · 12 títulos"
+                    },
+                    "eRpGw": {
+                      "content": "52,400"
+                    },
+                    "V8e4y": {
+                      "content": "+0.8%",
+                      "fill": "$positive-fg"
+                    },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    }
+                  }
+                },
+                {
+                  "id": "ikny5",
+                  "type": "ref",
+                  "ref": "qtod3",
+                  "name": "VOO",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mKYEi": {
+                      "content": "VOO"
+                    },
+                    "wkJF7": {
+                      "content": "Vanguard S&P 500 · 4 títulos"
+                    },
+                    "eRpGw": {
+                      "content": "41,800"
+                    },
+                    "V8e4y": {
+                      "content": "+0.3%",
+                      "fill": "$positive-fg"
+                    },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    }
+                  }
+                },
+                {
+                  "id": "G2YhX",
+                  "type": "ref",
+                  "ref": "qtod3",
+                  "name": "NVDA",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mKYEi": {
+                      "content": "NVDA"
+                    },
+                    "wkJF7": {
+                      "content": "NVIDIA · 6 títulos"
+                    },
+                    "eRpGw": {
+                      "content": "38,900"
+                    },
+                    "V8e4y": {
+                      "content": "+2.1%",
+                      "fill": "$positive-fg"
+                    },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    }
+                  }
+                },
+                {
+                  "id": "kdyHZ",
+                  "type": "ref",
+                  "ref": "qtod3",
+                  "name": "CETES 28d",
+                  "width": "fill_container",
+                  "descendants": {
+                    "mKYEi": {
+                      "content": "CETES 28d"
+                    },
+                    "wkJF7": {
+                      "content": "CETES a 28 días · 3,000 títulos"
+                    },
+                    "eRpGw": {
+                      "content": "30,000"
+                    },
+                    "V8e4y": {
+                      "content": "—",
+                      "fill": "$fg-subtle"
+                    },
+                    "ryGTQ": {
+                      "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
+                      "stroke": "$border-strong",
+                      "enabled": true
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "ePX6N",
+              "type": "ref",
+              "ref": "mAarI",
+              "name": "Historial",
+              "width": "fill_container",
+              "descendants": {
+                "oYFom": {
+                  "icon": "receipt"
+                },
+                "JlIU1": {
+                  "content": "Historial"
+                },
+                "R3qJ4": {
+                  "content": "Movimientos, dividendos cobrados y posiciones cerradas"
+                },
+                "bYSwp": {
+                  "enabled": false
+                }
+              }
+            },
+            {
+              "id": "TxjhI",
+              "type": "ref",
+              "ref": "mAarI",
+              "name": "Importar movimientos",
+              "width": "fill_container",
+              "descendants": {
+                "oYFom": {
+                  "icon": "file-up"
+                },
+                "JlIU1": {
+                  "content": "Importar movimientos"
+                },
+                "R3qJ4": {
+                  "content": "Carga movimientos en el formato de Stockerly, de archivo o pegados."
+                },
+                "bYSwp": {
+                  "enabled": false
+                }
+              }
+            },
+            {
+              "id": "VjMTX",
+              "type": "ref",
+              "ref": "mAarI",
+              "name": "Tracked",
+              "width": "fill_container",
+              "descendants": {
+                "oYFom": {
+                  "icon": "radar"
+                },
+                "JlIU1": {
+                  "content": "Tracked"
+                },
+                "R3qJ4": {
+                  "content": "Lo que tu instancia sincroniza y cuánto presupuesto queda"
+                },
+                "bYSwp": {
+                  "enabled": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "XvfXA",
+          "type": "ref",
+          "ref": "A887Ra",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "rVxMx": {
+              "fill": "$fg-subtle"
+            },
+            "OhmuG": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "ehfXk": {
+              "fill": "$primary"
+            },
+            "l4LYK": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
     }
   ],
   "themes": {
@@ -19742,7 +20148,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.1.0"
+      "value": "1.2.0"
     },
     "font-display": {
       "type": "string",
@@ -19919,7 +20325,7 @@
       "type": "color",
       "value": [
         {
-          "value": "#64748B",
+          "value": "#5E6E84",
           "theme": {
             "mode": "light"
           }

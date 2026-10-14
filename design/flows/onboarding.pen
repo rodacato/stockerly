@@ -1,5 +1,5 @@
 {
-  "version": "2.17",
+  "version": "2.20",
   "children": [
     {
       "type": "frame",
@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "PURPOSE\nFirst boot of a self-hosted, single-user instance: create the one account, connect data sources, pick assets, offer a second factor, launch the first sync, and hand over to the app.\n\nENTRY POINTS\nAny request while no user exists → /setup (layout auth). The account lands on /onboarding/integrations, and the wizard (layout onboarding, no navigation) runs integraciones → activos → seguridad → listo → /welcome. Every other route sends a not-yet-onboarded reader back to step 1, which is why /welcome also uses the onboarding layout (D121).\n\nSCREENS (LEFT → RIGHT)\nMobile: Setup · Default, Setup · Error, Integrations, Assets, Seguridad, Seguridad · Alta, Seguridad · Códigos, Complete, Welcome.\nDesktop: Setup (the auth split card: brand panel + form) and Welcome (the guide's three cards side by side). The wizard steps have no lg: layout — a centred max-w-2xl column — so they draw no desktop artboard (D4).\n\nBUSINESS RULES\n• Setup carries no Stepper: it creates the account; the four numbered steps start after it (OnboardingController::STEPS = 4).\n• Integrations lists every provider, keyed ones first in alphabetical order, each with what is lost without its key (ProviderDirectory#without). Keyless sources sit in their own box.\n• Assets preselects DEFAULT_SELECTED; the highlight follows the checkbox. Omitir goes to Seguridad, never past it.\n• Seguridad OFFERS enrolment and lets the reader skip (D52). Enrolment opened from here stays in the wizard's frame under the same step header, and both its skip and its codes lead on to Complete (D122). The same screens from Ajustes live in auth.pen.\n• Complete counts keys against the providers that take one.\n• Welcome is the only writer of onboarded_at (D30). Each guide card finishes onboarding and lands on its destination; the CTA lands on Panorama (D121).\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — setup.new, onboarding.*, welcome.show, shared.welcome_body. Provider text: MarketData::Domain::ProviderDirectory and ProviderDefaults (provider_type). Asset rows: Administration::Domain::AssetCatalog. Setup errors: CreateFirstAdmin's contract, humanized field + message. Enrolment: totp_enrollments.*.\n\nSTATES NOT DRAWN\n• Integrations after setup: toast \"Cuenta creada. Ahora configura tu instancia.\"\n• Assets after saving keys: toast \"Llaves guardadas. Banxico respondió con %{count} tipo(s) de cambio.\" or \"Guardamos tus llaves, pero Banxico no respondió el tipo de cambio. Revisa el token en Integraciones.\"\n• Assets: the ACCIONES · MÉXICO group the catalog renders between ETFS and RENTA FIJA — held back while [ONB-5] is blocked.\n• Seguridad · Alta with a wrong code: the alert above the form reads \"Ese código no es válido. Revisa tu app de autenticación.\"\n• The QR is drawn as an icon; the page renders a real one on a white plate.\n• Complete · Desktop, Seguridad · Desktop, the enrolment screens on desktop, Integrations · Desktop, Assets · Desktop: the same column, wider.\n• /help (D92): Welcome with title \"Ayuda y soporte\", its own subtitle, plain links, no CTA.\n\nOPEN FINDINGS\nNone with a D number. Board drafts: provider_type in English; CoinGecko recorded as keyless; contract errors in English; icon size classes; wordmark font.\n\nHISTORY\n→ Log · Onboarding",
+          "content": "PURPOSE\nFirst boot of a self-hosted, single-user instance: create the one account, connect data sources, pick assets, offer a second factor, launch the first sync, and hand over to the app.\n\nENTRY POINTS\nAny request while no user exists → /setup (layout auth, one centred card at every width; it opens with the notice that without outgoing mail the password cannot be recovered). The account lands on /onboarding/integrations, and the wizard (layout onboarding, no navigation) runs integraciones → activos → seguridad → listo → /welcome. Every other route sends a not-yet-onboarded reader back to step 1, which is why /welcome also uses the onboarding layout (D121).\n\nSCREENS (LEFT → RIGHT)\nMobile: Setup · Default, Setup · Error, Integrations, Assets, Seguridad, Seguridad · Alta, Seguridad · Códigos, Complete, Welcome.\nDesktop: Setup (the one-column auth card at max-w-md, D152) and Welcome (the guide's three cards side by side). The wizard steps have no lg: layout — a centred max-w-2xl column — so they draw no desktop artboard (D4).\n\nBUSINESS RULES\n• Setup carries no Stepper: it creates the account; the four numbered steps start after it (OnboardingController::STEPS = 4).\n• Integrations lists every provider, keyed ones first in alphabetical order, each with what is lost without its key (ProviderDirectory#without). Keyless sources sit in their own box.\n• Assets preselects DEFAULT_SELECTED; the highlight follows the checkbox. Omitir goes to Seguridad, never past it.\n• Seguridad OFFERS enrolment and lets the reader skip (D52). Enrolment opened from here stays in the wizard's frame under the same step header, and both its skip and its codes lead on to Complete (D122). The same screens from Ajustes live in auth.pen.\n• Complete counts keys against the providers that take one.\n• Welcome is the only writer of onboarded_at (D30). Each guide card finishes onboarding and lands on its destination; the CTA lands on Panorama (D121).\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — setup.new, onboarding.*, welcome.show, shared.welcome_body. Provider text: MarketData::Domain::ProviderDirectory and ProviderDefaults (provider_type). Asset rows: Administration::Domain::AssetCatalog. Setup errors: CreateFirstAdmin's contract, humanized field + message. Enrolment: totp_enrollments.*.\n\nSTATES NOT DRAWN\n• Integrations after setup: toast \"Cuenta creada. Ahora configura tu instancia.\"\n• Assets after saving keys: toast \"Llaves guardadas. Banxico respondió con %{count} tipo(s) de cambio.\" or \"Guardamos tus llaves, pero Banxico no respondió el tipo de cambio. Revisa el token en Integraciones.\"\n• Assets: the ACCIONES · MÉXICO group the catalog renders between ETFS and RENTA FIJA — held back while [ONB-5] is blocked.\n• Seguridad · Alta with a wrong code: the alert above the form reads \"Ese código no es válido. Revisa tu app de autenticación.\"\n• The QR is drawn as an icon; the page renders a real one on a white plate.\n• Complete · Desktop, Seguridad · Desktop, the enrolment screens on desktop, Integrations · Desktop, Assets · Desktop: the same column, wider.\n• /help (D92): Welcome with title \"Ayuda y soporte\", its own subtitle, plain links, no CTA.\n\nOPEN FINDINGS\nNone with a D number. Board drafts: provider_type in English; CoinGecko recorded as keyless; contract errors in English; icon size classes; wordmark font.\n\nHISTORY\n→ Log · Onboarding",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -157,59 +157,52 @@
                   "type": "frame",
                   "id": "q1YpZ",
                   "name": "Brand",
-                  "gap": 5,
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "spfoV",
-                      "name": "Glyph",
-                      "width": 30,
-                      "height": 30,
+                      "id": "lj39a",
+                      "name": "Logo",
+                      "width": 139.2,
+                      "height": 32,
                       "layout": "none",
                       "children": [
                         {
                           "type": "path",
-                          "id": "r8lKDH",
+                          "id": "jKAgu",
                           "x": 0,
                           "y": 0,
                           "name": "Mark",
-                          "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
-                          "fillRule": "evenodd",
+                          "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
                           "viewBox": [
                             0,
                             0,
                             64,
                             64
                           ],
-                          "fill": "$primary",
-                          "width": 30,
-                          "height": 30
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "noRii",
-                      "name": "WMWrap",
-                      "layout": "vertical",
-                      "padding": [
-                        0,
-                        0,
-                        4.6,
-                        0
-                      ],
-                      "children": [
+                          "width": 32,
+                          "height": 32,
+                          "stroke": "$primary",
+                          "strokeWidth": 2.5,
+                          "strokeLinejoin": "round",
+                          "strokeLinecap": "round"
+                        },
                         {
-                          "type": "text",
-                          "id": "qsr4a",
-                          "name": "WM",
+                          "type": "path",
+                          "id": "pNggM",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Lettering",
+                          "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                          "viewBox": [
+                            0,
+                            0,
+                            174,
+                            40
+                          ],
                           "fill": "$fg-default",
-                          "content": "stockerly",
-                          "fontFamily": "$font-display",
-                          "fontSize": 20,
-                          "fontWeight": "700",
-                          "letterSpacing": -0.4
+                          "width": 139.2,
+                          "height": 32
                         }
                       ]
                     }
@@ -247,6 +240,33 @@
                       "fontWeight": "normal"
                     }
                   ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "H848lX",
+              "name": "Notice",
+              "width": "fill_container",
+              "fill": "$bg-muted",
+              "cornerRadius": "$radius-sm",
+              "padding": [
+                12,
+                16
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "WRR35",
+                  "name": "Text",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Sin correo saliente funcionando, la contraseña de esta cuenta no se puede recuperar, y los códigos de recuperación solo sustituyen al segundo factor.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -331,19 +351,6 @@
                   "content": "Crear cuenta y continuar"
                 }
               }
-            },
-            {
-              "type": "text",
-              "id": "Sh8T0",
-              "name": "Foot",
-              "fill": "$fg-subtle",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "100% libre y open source",
-              "textAlign": "center",
-              "fontFamily": "$font-mono",
-              "fontSize": 12,
-              "fontWeight": "normal"
             }
           ]
         }
@@ -365,93 +372,75 @@
       "children": [
         {
           "type": "frame",
-          "id": "hHm3w",
+          "id": "up6fA",
           "name": "Card",
-          "clip": true,
-          "width": 896,
+          "width": 448,
           "fill": "$bg-surface",
           "cornerRadius": "$radius-lg",
           "stroke": "$border-default",
           "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": "$space-5",
+          "padding": 40,
           "children": [
             {
               "type": "frame",
-              "id": "mh164",
-              "name": "Brand Panel",
-              "width": 448,
-              "height": "fill_container",
-              "fill": "$primary",
+              "id": "qAzp4",
+              "name": "Header",
+              "width": "fill_container",
               "layout": "vertical",
-              "padding": 32,
-              "justifyContent": "space_between",
+              "gap": "$space-4",
               "children": [
                 {
                   "type": "frame",
-                  "id": "Y2ysm4",
-                  "name": "Top",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": "$space-5",
+                  "id": "WEhcW",
+                  "name": "Brand",
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "qcyEB",
-                      "name": "Brand",
-                      "gap": 5,
-                      "alignItems": "center",
+                      "id": "pWwmo",
+                      "name": "Logo",
+                      "width": 139.2,
+                      "height": 32,
+                      "layout": "none",
                       "children": [
                         {
-                          "type": "frame",
-                          "id": "trKG3",
-                          "name": "Glyph",
-                          "width": 30,
-                          "height": 30,
-                          "layout": "none",
-                          "children": [
-                            {
-                              "type": "path",
-                              "id": "HkmI2",
-                              "x": 0,
-                              "y": 0,
-                              "name": "Mark",
-                              "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
-                              "fillRule": "evenodd",
-                              "viewBox": [
-                                0,
-                                0,
-                                64,
-                                64
-                              ],
-                              "fill": "$fg-inverse",
-                              "width": 30,
-                              "height": 30
-                            }
-                          ]
+                          "type": "path",
+                          "id": "a8pmF",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Mark",
+                          "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                          "viewBox": [
+                            0,
+                            0,
+                            64,
+                            64
+                          ],
+                          "width": 32,
+                          "height": 32,
+                          "stroke": "$primary",
+                          "strokeWidth": 2.5,
+                          "strokeLinejoin": "round",
+                          "strokeLinecap": "round"
                         },
                         {
-                          "type": "frame",
-                          "id": "Caclc",
-                          "name": "WMWrap",
-                          "layout": "vertical",
-                          "padding": [
+                          "type": "path",
+                          "id": "s4LuTq",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Lettering",
+                          "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                          "viewBox": [
                             0,
                             0,
-                            4.6,
-                            0
+                            174,
+                            40
                           ],
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "vNgZY",
-                              "name": "WM",
-                              "fill": "$fg-inverse",
-                              "content": "stockerly",
-                              "fontFamily": "$font-display",
-                              "fontSize": 20,
-                              "fontWeight": "700",
-                              "letterSpacing": -0.4
-                            }
-                          ]
+                          "fill": "$fg-default",
+                          "width": 139.2,
+                          "height": 32
                         }
                       ]
                     }
@@ -459,49 +448,7 @@
                 },
                 {
                   "type": "frame",
-                  "id": "Y84MO",
-                  "name": "Item",
-                  "gap": "$space-2",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "E6ZHcF",
-                      "name": "Check",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "minus",
-                      "library": "lucide",
-                      "fill": "$fg-inverse"
-                    },
-                    {
-                      "type": "text",
-                      "id": "eZa2L",
-                      "name": "Txt",
-                      "opacity": 0.85,
-                      "fill": "$fg-inverse",
-                      "content": "100% libre y open source",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "JvIRk",
-              "name": "Form Panel",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": "$space-5",
-              "padding": 40,
-              "justifyContent": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "h3lnO",
+                  "id": "W7lMWv",
                   "name": "Head",
                   "width": "fill_container",
                   "layout": "vertical",
@@ -509,8 +456,8 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "Mv2qq",
-                      "name": "FormTitle",
+                      "id": "Cfxec",
+                      "name": "Title",
                       "fill": "$fg-default",
                       "content": "Crea tu cuenta",
                       "fontFamily": "$font-display",
@@ -519,114 +466,129 @@
                     },
                     {
                       "type": "text",
-                      "id": "JCV7L",
-                      "name": "FormSub",
+                      "id": "mK5nz",
+                      "name": "Sub",
                       "fill": "$fg-subtle",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Es la única cuenta de tu instancia. Con ella entras a tu tracker.",
+                      "lineHeight": 1.5,
                       "fontFamily": "$font-sans",
                       "fontSize": 16,
                       "fontWeight": "normal"
                     }
                   ]
-                },
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "iMC5r",
+              "name": "Notice",
+              "width": "fill_container",
+              "fill": "$bg-muted",
+              "cornerRadius": "$radius-sm",
+              "padding": [
+                12,
+                16
+              ],
+              "children": [
                 {
-                  "type": "frame",
-                  "id": "wOxUA",
-                  "name": "Form",
+                  "type": "text",
+                  "id": "BqjMl",
+                  "name": "Text",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": "$space-4",
-                  "children": [
-                    {
-                      "id": "wwSqS",
-                      "type": "ref",
-                      "ref": "FBmBv",
-                      "name": "Nombre",
-                      "width": "fill_container",
-                      "descendants": {
-                        "EAmR6": {
-                          "content": "Nombre"
-                        },
-                        "oVSsu": {
-                          "content": "Ej. Adrian"
-                        }
-                      }
-                    },
-                    {
-                      "id": "wUFzc",
-                      "type": "ref",
-                      "ref": "FBmBv",
-                      "name": "Correo",
-                      "width": "fill_container",
-                      "descendants": {
-                        "EAmR6": {
-                          "content": "Correo electrónico"
-                        },
-                        "oVSsu": {
-                          "content": "tu@correo.com"
-                        }
-                      }
-                    },
-                    {
-                      "id": "Frr6y",
-                      "type": "ref",
-                      "ref": "FBmBv",
-                      "name": "Contraseña",
-                      "width": "fill_container",
-                      "descendants": {
-                        "EAmR6": {
-                          "content": "Contraseña"
-                        },
-                        "oVSsu": {
-                          "content": "Mínimo 8 caracteres"
-                        }
-                      }
-                    },
-                    {
-                      "id": "rrARg",
-                      "type": "ref",
-                      "ref": "FBmBv",
-                      "name": "Confirmar contraseña",
-                      "width": "fill_container",
-                      "descendants": {
-                        "EAmR6": {
-                          "content": "Confirmar contraseña"
-                        },
-                        "oVSsu": {
-                          "content": "Repite tu contraseña"
-                        }
-                      }
-                    }
-                  ]
-                },
+                  "content": "Sin correo saliente funcionando, la contraseña de esta cuenta no se puede recuperar, y los códigos de recuperación solo sustituyen al segundo factor.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "xnWdj",
+              "name": "Form",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-4",
+              "children": [
                 {
-                  "id": "UjNHw",
+                  "id": "e2flA",
                   "type": "ref",
-                  "ref": "pnV6S",
-                  "name": "Submit",
+                  "ref": "FBmBv",
+                  "name": "Nombre",
                   "width": "fill_container",
                   "descendants": {
-                    "iuDWa": {
-                      "content": "Crear cuenta y continuar"
+                    "EAmR6": {
+                      "content": "Nombre"
+                    },
+                    "oVSsu": {
+                      "content": "Ej. Adrian"
                     }
                   }
                 },
                 {
-                  "type": "text",
-                  "id": "QTb09",
-                  "name": "Foot",
-                  "fill": "$fg-subtle",
-                  "textGrowth": "fixed-width",
+                  "id": "tGgrq",
+                  "type": "ref",
+                  "ref": "FBmBv",
+                  "name": "Correo",
                   "width": "fill_container",
-                  "content": "100% libre y open source",
-                  "textAlign": "center",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
+                  "descendants": {
+                    "EAmR6": {
+                      "content": "Correo electrónico"
+                    },
+                    "oVSsu": {
+                      "content": "tu@correo.com"
+                    }
+                  }
+                },
+                {
+                  "id": "L7ZgvW",
+                  "type": "ref",
+                  "ref": "FBmBv",
+                  "name": "Contraseña",
+                  "width": "fill_container",
+                  "descendants": {
+                    "EAmR6": {
+                      "content": "Contraseña"
+                    },
+                    "oVSsu": {
+                      "content": "Mínimo 8 caracteres"
+                    }
+                  }
+                },
+                {
+                  "id": "G0k8Ir",
+                  "type": "ref",
+                  "ref": "FBmBv",
+                  "name": "Confirmar contraseña",
+                  "width": "fill_container",
+                  "descendants": {
+                    "EAmR6": {
+                      "content": "Confirmar contraseña"
+                    },
+                    "oVSsu": {
+                      "content": "Repite tu contraseña"
+                    }
+                  }
                 }
               ]
+            },
+            {
+              "id": "UoF5o",
+              "type": "ref",
+              "ref": "pnV6S",
+              "name": "Submit",
+              "width": "fill_container",
+              "descendants": {
+                "iuDWa": {
+                  "content": "Crear cuenta y continuar"
+                }
+              }
             }
           ]
         }
@@ -4879,20 +4841,23 @@
                     {
                       "type": "path",
                       "id": "qDfzw",
-                      "x": 0,
-                      "y": 0,
+                      "x": 2,
+                      "y": 2,
                       "name": "Mark",
-                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
-                      "fillRule": "evenodd",
+                      "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
                       "viewBox": [
                         0,
                         0,
                         64,
                         64
                       ],
-                      "fill": "$primary",
-                      "width": 32,
-                      "height": 32
+                      "fill": "#00000000",
+                      "width": 28,
+                      "height": 28,
+                      "stroke": "$primary",
+                      "strokeWidth": 2.1875,
+                      "strokeLinejoin": "round",
+                      "strokeLinecap": "round"
                     }
                   ]
                 },
@@ -5424,20 +5389,23 @@
                     {
                       "type": "path",
                       "id": "ECZ2o",
-                      "x": 0,
-                      "y": 0,
+                      "x": 2,
+                      "y": 2,
                       "name": "Mark",
-                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
-                      "fillRule": "evenodd",
+                      "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
                       "viewBox": [
                         0,
                         0,
                         64,
                         64
                       ],
-                      "fill": "$primary",
-                      "width": 32,
-                      "height": 32
+                      "fill": "#00000000",
+                      "width": 28,
+                      "height": 28,
+                      "stroke": "$primary",
+                      "strokeWidth": 2.1875,
+                      "strokeLinejoin": "round",
+                      "strokeLinecap": "round"
                     }
                   ]
                 },
@@ -6253,7 +6221,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-09-17 · D123: Integrations loses the Alpha Vantage and FMP cards; artboard 3362 → 2646\n2026-09-16 · D122 · Seguridad · Alta and Seguridad · Códigos drawn: enrolment opened from the wizard stays in its frame instead of the app shell\n2026-09-16 · re-vendored to kit 1.0.0; ButtonPrimary, Field and Stepper back to the masters\n2026-09-16 · mirrored to the code (D78): Setup in the auth card, Integrations with all eight keyed providers, Assets with the full catalog, Seguridad as one card, Complete and Welcome resized; the brand-panel checklist retired with the artboard it lived on\n2026-09-16 · Setup · Error drawn; Integrations and Assets desktops retired (D4)\n2026-09-16 · D121 · Welcome leaves the app shell and its doors finish onboarding; with it, Complete reads step 4, Omitir stops skipping Seguridad, the key count drops keyless sources, and a failed setup keeps name and email\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections\n2026-09-05 · D92 · /help stays undrawn on purpose — it is Welcome minus the CTA, so it earns a brief note rather than a 95% copy\n2026-09-05 · D91 · the Welcome body's bug link now opens the issue tracker; /report-bug was retired as hosted-beta residue\n2026-09-05 · this file adopted the Log frame, and the brief lost its three dated lines to it\n2026-08-27 · D52 · the wizard gained a fourth step, Seguridad; the Stepper went 3 → 4 across all five instances\n2026-08-27 · VOO and CETES split into their own cards — the code had already made the call, the brief was carrying it as an open question\n2026-08-27 · 🐞 fixed — the Welcome ContextCard's Mark was 56×56 inside a 28×28 Glyph, twice its frame and spilling out. The file's one reported layout problem",
+          "content": "2026-10-14 · kit 1.2.0 · Soft Candle wordmark at the code's h-8 size and the Welcome mark; fg-subtle light is #5E6E84\n2026-10-14 · D152 · Setup · Desktop drops the split brand panel the code deleted on 2026-09-22; Setup (all three) carries the mail notice and loses the open-source foot, mirroring setup/new.html.erb\n2026-09-17 · D123: Integrations loses the Alpha Vantage and FMP cards; artboard 3362 → 2646\n2026-09-16 · D122 · Seguridad · Alta and Seguridad · Códigos drawn: enrolment opened from the wizard stays in its frame instead of the app shell\n2026-09-16 · re-vendored to kit 1.0.0; ButtonPrimary, Field and Stepper back to the masters\n2026-09-16 · mirrored to the code (D78): Setup in the auth card, Integrations with all eight keyed providers, Assets with the full catalog, Seguridad as one card, Complete and Welcome resized; the brand-panel checklist retired with the artboard it lived on\n2026-09-16 · Setup · Error drawn; Integrations and Assets desktops retired (D4)\n2026-09-16 · D121 · Welcome leaves the app shell and its doors finish onboarding; with it, Complete reads step 4, Omitir stops skipping Seguridad, the key count drops keyless sources, and a failed setup keeps name and email\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections\n2026-09-05 · D92 · /help stays undrawn on purpose — it is Welcome minus the CTA, so it earns a brief note rather than a 95% copy\n2026-09-05 · D91 · the Welcome body's bug link now opens the issue tracker; /report-bug was retired as hosted-beta residue\n2026-09-05 · this file adopted the Log frame, and the brief lost its three dated lines to it\n2026-08-27 · D52 · the wizard gained a fourth step, Seguridad; the Stepper went 3 → 4 across all five instances\n2026-08-27 · VOO and CETES split into their own cards — the code had already made the call, the brief was carrying it as an open question\n2026-08-27 · 🐞 fixed — the Welcome ContextCard's Mark was 56×56 inside a 28×28 Glyph, twice its frame and spilling out. The file's one reported layout problem",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -6269,7 +6237,7 @@
       "name": "[Onboarding] / Setup / Error",
       "clip": true,
       "width": 390,
-      "height": 844,
+      "height": 940,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "padding": 16,
@@ -6300,59 +6268,52 @@
                   "type": "frame",
                   "id": "A0CQow",
                   "name": "Brand",
-                  "gap": 5,
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "tP4Hw",
-                      "name": "Glyph",
-                      "width": 30,
-                      "height": 30,
+                      "id": "vzCpA",
+                      "name": "Logo",
+                      "width": 139.2,
+                      "height": 32,
                       "layout": "none",
                       "children": [
                         {
                           "type": "path",
-                          "id": "e0n50",
+                          "id": "qDUFB",
                           "x": 0,
                           "y": 0,
                           "name": "Mark",
-                          "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
-                          "fillRule": "evenodd",
+                          "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
                           "viewBox": [
                             0,
                             0,
                             64,
                             64
                           ],
-                          "fill": "$primary",
-                          "width": 30,
-                          "height": 30
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "N0Knp",
-                      "name": "WMWrap",
-                      "layout": "vertical",
-                      "padding": [
-                        0,
-                        0,
-                        4.6,
-                        0
-                      ],
-                      "children": [
+                          "width": 32,
+                          "height": 32,
+                          "stroke": "$primary",
+                          "strokeWidth": 2.5,
+                          "strokeLinejoin": "round",
+                          "strokeLinecap": "round"
+                        },
                         {
-                          "type": "text",
-                          "id": "WoPKo",
-                          "name": "WM",
+                          "type": "path",
+                          "id": "V8X75s",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Lettering",
+                          "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                          "viewBox": [
+                            0,
+                            0,
+                            174,
+                            40
+                          ],
                           "fill": "$fg-default",
-                          "content": "stockerly",
-                          "fontFamily": "$font-display",
-                          "fontSize": 20,
-                          "fontWeight": "700",
-                          "letterSpacing": -0.4
+                          "width": 139.2,
+                          "height": 32
                         }
                       ]
                     }
@@ -6390,6 +6351,33 @@
                       "fontWeight": "normal"
                     }
                   ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YSn72",
+              "name": "Notice",
+              "width": "fill_container",
+              "fill": "$bg-muted",
+              "cornerRadius": "$radius-sm",
+              "padding": [
+                12,
+                16
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "RvEZZ",
+                  "name": "Text",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Sin correo saliente funcionando, la contraseña de esta cuenta no se puede recuperar, y los códigos de recuperación solo sustituyen al segundo factor.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -6632,19 +6620,6 @@
                   "content": "Crear cuenta y continuar"
                 }
               }
-            },
-            {
-              "type": "text",
-              "id": "SgrTB",
-              "name": "Foot",
-              "fill": "$fg-subtle",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "100% libre y open source",
-              "textAlign": "center",
-              "fontFamily": "$font-mono",
-              "fontSize": 12,
-              "fontWeight": "normal"
             }
           ]
         }
@@ -7343,7 +7318,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.1.0"
+      "value": "1.2.0"
     },
     "font-display": {
       "type": "string",
@@ -7520,7 +7495,7 @@
       "type": "color",
       "value": [
         {
-          "value": "#64748B",
+          "value": "#5E6E84",
           "theme": {
             "mode": "light"
           }

@@ -1,5 +1,5 @@
 {
-  "version": "2.17",
+  "version": "2.20",
   "children": [
     {
       "type": "frame",
@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 1.0.0 · updated: 2026-09-16\n\n1. PURPOSE\nThe Reglas tab and the inbox behind the bell: the rules the owner defines, and everything the app decides to tell him. One file, because rules are one of four notification producers and the bandeja is where all four land.\n\n2. ENTRY POINTS\n- Reglas — BottomNav tab (/alerts, alerts#index)\n- Nueva regla — \"Nueva\" opens /alerts/new inside a <dialog> (D11, components/_sheet_dialog); a suggestion's \"Crear\" pre-fills it\n- Bandeja — the TopBar bell and \"Ver bandeja\" (/notifications)\n\n3. SCREENS (left → right)\n- Reglas · Vacío — no rules yet: KPIs at zero, suggestions from what is held, an empty feed\n- Nueva regla · Sheet — a price cross, the default chip\n- Nueva regla · Calendario — a marketwide date rule: no asset, no threshold, \"Días antes\"\n- Reglas · Default — rules, últimos disparos, cómo te aviso\n- Bandeja · Default — one group per day (D119)\n- Bandeja · Vacía\n\n4. BUSINESS RULES\n- A field shows only where the contract reads it: date rules take window_days, never a threshold; bmv_holiday and cete_auction have no asset (alerts/contracts/create_contract.rb)\n- Thresholds are inclusive — the evaluator compares with >= and <= (alerts/domain/alert_evaluator.rb) — so the copy says \"o más\" and \"o menos\"\n- Volume is compared against AlertEvaluator::VOLUME_AVERAGE_DAYS, five days\n- A day-change notice carries the measured move with its sign (D119)\n- Up to three suggestions, derived from holdings, never one already created (alerts/domain/rule_suggestions.rb)\n- The bandeja is not a channel you toggle. Cómo te aviso switches the daily digest, urgent email and push; push renders only when VAPID keys exist\n- Nothing on these screens tells the owner what to do (ADR-001)\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — alerts.*, notifications.*, notificaciones.*, settings.show (the switches). Notices: Alerts::Domain::TriggerNotice, Trading::UseCases::NotifyApproachingEarnings and NotifyApproachingMaturities, ResolveTrackedSymbolsJob, CheckSyncHealthJob. Rule summaries: AlertsHelper.\n\n6. STATES NOT DRAWN\n- Bandeja with a filter that matches nothing — the empty card reads \"Nada en este filtro. Prueba otro.\"\n- Reglas · Vacío with no holdings — the suggestions block and \"Crear una desde cero\" are absent\n- Nueva regla on the other conditions — the threshold label reads \"Cambio en el día · %\", \"Nivel RSI\" or \"Múltiplo del promedio\"\n- Nueva regla on a phone — the sheet caps at 85% of the viewport and scrolls; the artboards draw it whole\n- The empty-state card's dashed border — the .pen format has no dashed stroke\n- Desktop — D4: the list and the sheet reflow\n\n7. OPEN FINDINGS\nNone.\n\n8. HISTORY\n→ Log frame, below this brief. Reasoning before 2026-09-16: git show 120600bb:design/V2_REMAINING.md (ALR-*).",
+          "content": "kit-version-source: 1.2.0 · updated: 2026-10-14\n\n1. PURPOSE\nThe Reglas tab and the inbox behind the bell: the rules the owner defines, and everything the app decides to tell him. One file, because rules are one of four notification producers and the bandeja is where all four land.\n\n2. ENTRY POINTS\n- Reglas — BottomNav tab (/alerts, alerts#index)\n- Nueva regla — \"Nueva\" opens /alerts/new inside a <dialog> (D11, components/_sheet_dialog); a suggestion's \"Crear\" pre-fills it\n- Bandeja — the TopBar bell and \"Ver bandeja\" (/notifications)\n\n3. SCREENS (left → right)\n- Reglas · Vacío — no rules yet: KPIs at zero, suggestions from what is held, an empty feed\n- Nueva regla · Sheet — a price cross, the default chip\n- Nueva regla · Calendario — a marketwide date rule: no asset, no threshold, \"Días antes\"\n- Reglas · Default — rules, últimos disparos, cómo te aviso\n- Bandeja · Default — one group per day (D119)\n- Bandeja · Vacía\n\n4. BUSINESS RULES\n- A field shows only where the contract reads it: date rules take window_days, never a threshold; bmv_holiday and cete_auction have no asset (alerts/contracts/create_contract.rb)\n- Thresholds are inclusive — the evaluator compares with >= and <= (alerts/domain/alert_evaluator.rb) — so the copy says \"o más\" and \"o menos\"\n- Volume is compared against AlertEvaluator::VOLUME_AVERAGE_DAYS, five days\n- A day-change notice carries the measured move with its sign (D119)\n- Up to three suggestions, derived from holdings, never one already created (alerts/domain/rule_suggestions.rb)\n- The bandeja is not a channel you toggle. Cómo te aviso switches the daily digest, urgent email and push; push renders only when VAPID keys exist\n- Nothing on these screens tells the owner what to do (ADR-001)\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — alerts.*, notifications.*, notificaciones.*, settings.show (the switches). Notices: Alerts::Domain::TriggerNotice, Trading::UseCases::NotifyApproachingEarnings and NotifyApproachingMaturities, ResolveTrackedSymbolsJob, CheckSyncHealthJob. Rule summaries: AlertsHelper.\n\n6. STATES NOT DRAWN\n- Bandeja with a filter that matches nothing — the empty card reads \"Nada en este filtro. Prueba otro.\"\n- Reglas · Vacío with no holdings — the suggestions block and \"Crear una desde cero\" are absent\n- Nueva regla on the other conditions — the threshold label reads \"Cambio en el día · %\", \"Nivel RSI\" or \"Múltiplo del promedio\"\n- Nueva regla on a phone — the sheet caps at 85% of the viewport and scrolls; the artboards draw it whole\n- The empty-state card's dashed border — the .pen format has no dashed stroke\n- Desktop — D4: the list and the sheet reflow\n\n7. OPEN FINDINGS\nNone.\n\n8. HISTORY\n→ Log frame, below this brief. Reasoning before 2026-09-16: git show 120600bb:design/V2_REMAINING.md (ALR-*).",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -59,59 +59,52 @@
           "type": "frame",
           "id": "r7JVGz",
           "name": "Brand",
-          "gap": 4,
           "alignItems": "center",
           "children": [
             {
               "type": "frame",
-              "id": "csKtz",
-              "name": "Glyph",
-              "width": 24,
-              "height": 24,
+              "id": "tk1ZL",
+              "name": "Logo",
+              "width": 121.8,
+              "height": 28,
               "layout": "none",
               "children": [
                 {
                   "type": "path",
-                  "id": "gdfEJ",
+                  "id": "SUGe8",
                   "x": 0,
                   "y": 0,
                   "name": "Mark",
-                  "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
-                  "fillRule": "evenodd",
+                  "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
                   "viewBox": [
                     0,
                     0,
                     64,
                     64
                   ],
-                  "fill": "$primary",
-                  "width": 24,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "E9h5gv",
-              "name": "WMWrap",
-              "layout": "vertical",
-              "padding": [
-                0,
-                0,
-                3.9,
-                0
-              ],
-              "children": [
+                  "width": 28,
+                  "height": 28,
+                  "stroke": "$primary",
+                  "strokeWidth": 2.1875,
+                  "strokeLinejoin": "round",
+                  "strokeLinecap": "round"
+                },
                 {
-                  "type": "text",
-                  "id": "QKGKp",
-                  "name": "WM",
+                  "type": "path",
+                  "id": "fSstn",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Lettering",
+                  "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                  "viewBox": [
+                    0,
+                    0,
+                    174,
+                    40
+                  ],
                   "fill": "$fg-default",
-                  "content": "stockerly",
-                  "fontFamily": "$font-display",
-                  "fontSize": 17,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.4
+                  "width": 121.8,
+                  "height": 28
                 }
               ]
             }
@@ -169,13 +162,13 @@
         12,
         8
       ],
-      "justifyContent": "space_around",
       "alignItems": "center",
       "children": [
         {
           "type": "frame",
           "id": "ZhTRR",
           "name": "Panorama",
+          "width": "fill_container",
           "layout": "vertical",
           "gap": 3,
           "alignItems": "center",
@@ -206,6 +199,7 @@
           "type": "frame",
           "id": "XurIc",
           "name": "Activos",
+          "width": "fill_container",
           "layout": "vertical",
           "gap": 3,
           "alignItems": "center",
@@ -236,6 +230,7 @@
           "type": "frame",
           "id": "IepUQ",
           "name": "Reglas",
+          "width": "fill_container",
           "layout": "vertical",
           "gap": 3,
           "alignItems": "center",
@@ -266,6 +261,7 @@
           "type": "frame",
           "id": "rzZme",
           "name": "Descubrir",
+          "width": "fill_container",
           "layout": "vertical",
           "gap": 3,
           "alignItems": "center",
@@ -296,6 +292,7 @@
           "type": "frame",
           "id": "qhYj7",
           "name": "Ajustes",
+          "width": "fill_container",
           "layout": "vertical",
           "gap": 3,
           "alignItems": "center",
@@ -342,10 +339,11 @@
           "id": "YOvJK",
           "name": "S1",
           "width": "fill_container",
+          "height": 44,
           "fill": "$bg-surface",
           "cornerRadius": "$radius-sm",
           "padding": [
-            13,
+            0,
             12
           ],
           "justifyContent": "center",
@@ -368,10 +366,11 @@
           "id": "rJqiE",
           "name": "S2",
           "width": "fill_container",
+          "height": 44,
           "fill": "#00000000",
           "cornerRadius": "$radius-sm",
           "padding": [
-            13,
+            0,
             12
           ],
           "justifyContent": "center",
@@ -381,7 +380,7 @@
               "type": "text",
               "id": "y8p4ew",
               "name": "t",
-              "fill": "$fg-subtle",
+              "fill": "$fg-default",
               "content": "Dos",
               "fontFamily": "$font-sans",
               "fontSize": 13,
@@ -853,7 +852,7 @@
                   "type": "frame",
                   "id": "jofiA",
                   "name": "Nueva",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-sm",
                   "gap": 8,
                   "padding": [
@@ -2750,7 +2749,7 @@
                   "id": "ctQFA",
                   "name": "Crear",
                   "width": "fill_container",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-md",
                   "padding": [
                     14,
@@ -2956,7 +2955,7 @@
                   "type": "frame",
                   "id": "cVzwm",
                   "name": "Nueva",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-sm",
                   "gap": 8,
                   "padding": [
@@ -3809,7 +3808,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-09-16 · canvas · shared rows above one journey band; brief rewritten into its fixed sections, history moved here\n2026-09-16 · kit 1.0.0 · bell badge → the code's dot (count-badge gap declined), BottomNav lights its tab per screen, HeaderBar hides the placeholder action\n2026-09-16 · D78 · rule cards, feed, cómo te aviso (+ push switch), sheet sizes and labels, bandeja copy, icons and times mirrored to the code; Vacío rebuilt as the index with no rules\n2026-09-16 · removed 'Sincronización de precios reanudada' — the code never sends a recovery notice\n2026-09-16 · D119 · notices carry the reader's facts; the bandeja groups by day\n2026-09-16 · new artboards: Nueva regla · Calendario, Bandeja · Vacía\n2026-09-05 · #586 · the brief's 'the build is a board item' line corrected — D84 retires the engine, it is not pending\n2026-09-05 · D80 · the Confluencia artboard is deleted — the semáforo is a block in the asset detail, not a screen of its own\n2026-09-05 · D80 · brief keeps the reasoning the artboard carried: what nothing computes, and that D3 moved the gate from no-definition to no-engine\n2026-08-29 · Bandeja gains the bulk-alta notification; Todas 12 → 13. Its body names the next step, which the shipped copy does not — CODE_CHANGES\n2026-08-29 · 🐞 fixed: the price-sync row credited Alpha Vantage, which is registered for fundamentals only and has never served a price. Now DataBursatil\n2026-08-29 · this frame created; the brief was not audited for dated lines in this pass\n2026-08-27 · kit 0.8.1 · third channel toggle dropped against the schema's two booleans; SwitchRow and a local HeaderBar vendored; bell badge unclipped",
+          "content": "2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the TopBar at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots; Segmented options 44 px\n2026-09-16 · canvas · shared rows above one journey band; brief rewritten into its fixed sections, history moved here\n2026-09-16 · kit 1.0.0 · bell badge → the code's dot (count-badge gap declined), BottomNav lights its tab per screen, HeaderBar hides the placeholder action\n2026-09-16 · D78 · rule cards, feed, cómo te aviso (+ push switch), sheet sizes and labels, bandeja copy, icons and times mirrored to the code; Vacío rebuilt as the index with no rules\n2026-09-16 · removed 'Sincronización de precios reanudada' — the code never sends a recovery notice\n2026-09-16 · D119 · notices carry the reader's facts; the bandeja groups by day\n2026-09-16 · new artboards: Nueva regla · Calendario, Bandeja · Vacía\n2026-09-05 · #586 · the brief's 'the build is a board item' line corrected — D84 retires the engine, it is not pending\n2026-09-05 · D80 · the Confluencia artboard is deleted — the semáforo is a block in the asset detail, not a screen of its own\n2026-09-05 · D80 · brief keeps the reasoning the artboard carried: what nothing computes, and that D3 moved the gate from no-definition to no-engine\n2026-08-29 · Bandeja gains the bulk-alta notification; Todas 12 → 13. Its body names the next step, which the shipped copy does not — CODE_CHANGES\n2026-08-29 · 🐞 fixed: the price-sync row credited Alpha Vantage, which is registered for fundamentals only and has never served a price. Now DataBursatil\n2026-08-29 · this frame created; the brief was not audited for dated lines in this pass\n2026-08-27 · kit 0.8.1 · third channel toggle dropped against the schema's two booleans; SwitchRow and a local HeaderBar vendored; bell badge unclipped",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -4714,7 +4713,7 @@
                   "id": "sEzzl",
                   "name": "Crear",
                   "width": "fill_container",
-                  "fill": "$primary",
+                  "fill": "$primary-fg",
                   "cornerRadius": "$radius-md",
                   "padding": [
                     14,
@@ -4760,7 +4759,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.1.0"
+      "value": "1.2.0"
     },
     "font-display": {
       "type": "string",
@@ -4937,7 +4936,7 @@
       "type": "color",
       "value": [
         {
-          "value": "#64748B",
+          "value": "#5E6E84",
           "theme": {
             "mode": "light"
           }
