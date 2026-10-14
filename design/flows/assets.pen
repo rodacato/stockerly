@@ -333,108 +333,92 @@
       "cornerRadius": "$radius-lg",
       "stroke": "$border-default",
       "strokeWidth": 1,
-      "layout": "vertical",
-      "gap": "$space-3",
+      "gap": 16,
       "padding": [
         14,
         16
       ],
+      "alignItems": "center",
       "children": [
         {
           "type": "frame",
-          "id": "ra9KP",
-          "name": "R1",
+          "id": "DnqCr",
+          "name": "L",
           "width": "fill_container",
-          "justifyContent": "space_between",
-          "alignItems": "center",
+          "layout": "vertical",
+          "gap": 1,
           "children": [
             {
-              "type": "frame",
-              "id": "DnqCr",
-              "name": "L",
-              "layout": "vertical",
-              "gap": 1,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "mKYEi",
-                  "name": "Ticker",
-                  "fill": "$fg-default",
-                  "content": "AAPL",
-                  "fontFamily": "$font-display",
-                  "fontSize": 15,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "wkJF7",
-                  "name": "Name",
-                  "fill": "$fg-subtle",
-                  "content": "Apple",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
+              "type": "text",
+              "id": "mKYEi",
+              "name": "Ticker",
+              "fill": "$fg-default",
+              "content": "AAPL",
+              "fontFamily": "$font-mono",
+              "fontSize": 14,
+              "fontWeight": "700"
             },
             {
-              "type": "frame",
-              "id": "cT42I",
-              "name": "Vals",
-              "layout": "vertical",
-              "gap": 1,
-              "alignItems": "end",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "eRpGw",
-                  "name": "Val",
-                  "fill": "$fg-default",
-                  "content": "$38,000",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 15,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "text",
-                  "id": "V8e4y",
-                  "name": "Pnl",
-                  "fill": "$positive-fg",
-                  "content": "+4.0%",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
+              "type": "text",
+              "id": "wkJF7",
+              "name": "Name",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Apple",
+              "lineHeight": 1.3,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         },
         {
+          "type": "path",
+          "id": "ryGTQ",
+          "name": "Spark",
+          "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+          "viewBox": [
+            0,
+            0,
+            56,
+            22
+          ],
+          "fill": "#00000000",
+          "width": 64,
+          "height": 32,
+          "stroke": "$positive",
+          "strokeWidth": 2,
+          "strokeLinejoin": "round",
+          "strokeLinecap": "round"
+        },
+        {
           "type": "frame",
-          "id": "EUMCu",
-          "name": "R2",
-          "width": "fill_container",
-          "justifyContent": "space_between",
-          "alignItems": "center",
+          "id": "cT42I",
+          "name": "Vals",
+          "layout": "vertical",
+          "gap": 1,
+          "alignItems": "end",
           "children": [
             {
-              "type": "path",
-              "id": "ryGTQ",
-              "name": "Spark",
-              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-              "viewBox": [
-                0,
-                0,
-                56,
-                22
-              ],
-              "fill": "#00000000",
-              "width": 56,
-              "height": 22,
-              "stroke": "$positive",
-              "strokeWidth": 2,
-              "strokeLinejoin": "round",
-              "strokeLinecap": "round"
+              "type": "text",
+              "id": "eRpGw",
+              "name": "Val",
+              "fill": "$fg-default",
+              "content": "$38,000",
+              "fontFamily": "$font-mono",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "V8e4y",
+              "name": "Pnl",
+              "fill": "$positive-fg",
+              "content": "+4.0%",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         }
@@ -702,16 +686,16 @@
                     "wkJF7": {
                       "content": "Bitcoin · 0.04500 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
+                      "stroke": "$negative"
+                    },
                     "eRpGw": {
                       "content": "61,200"
                     },
                     "V8e4y": {
                       "content": "−3.4%",
                       "fill": "$negative-fg"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
-                      "stroke": "$negative"
                     }
                   }
                 },
@@ -728,16 +712,16 @@
                     "wkJF7": {
                       "content": "Apple · 12 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    },
                     "eRpGw": {
                       "content": "52,400"
                     },
                     "V8e4y": {
                       "content": "+0.8%",
                       "fill": "$positive-fg"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -754,16 +738,16 @@
                     "wkJF7": {
                       "content": "Vanguard S&P 500 · 4 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    },
                     "eRpGw": {
                       "content": "41,800"
                     },
                     "V8e4y": {
                       "content": "+0.3%",
                       "fill": "$positive-fg"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -780,16 +764,16 @@
                     "wkJF7": {
                       "content": "NVIDIA · 6 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    },
                     "eRpGw": {
                       "content": "38,900"
                     },
                     "V8e4y": {
                       "content": "+2.1%",
                       "fill": "$positive-fg"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -806,17 +790,17 @@
                     "wkJF7": {
                       "content": "CETES a 28 días · 3,000 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
+                      "stroke": "$border-strong",
+                      "enabled": true
+                    },
                     "eRpGw": {
                       "content": "30,000"
                     },
                     "V8e4y": {
                       "content": "—",
                       "fill": "$fg-subtle"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
-                      "stroke": "$border-strong",
-                      "enabled": true
                     }
                   }
                 }
@@ -924,107 +908,91 @@
       "cornerRadius": "$radius-lg",
       "stroke": "$border-default",
       "strokeWidth": 1,
-      "layout": "vertical",
-      "gap": "$space-3",
+      "gap": 16,
       "padding": [
         14,
         16
       ],
+      "alignItems": "center",
       "children": [
         {
           "type": "frame",
-          "id": "tztZK",
-          "name": "R1",
+          "id": "J6YXYd",
+          "name": "L",
           "width": "fill_container",
-          "justifyContent": "space_between",
-          "alignItems": "center",
+          "layout": "vertical",
+          "gap": 1,
           "children": [
             {
-              "type": "frame",
-              "id": "J6YXYd",
-              "name": "L",
-              "layout": "vertical",
-              "gap": 1,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "odDm7",
-                  "name": "Ticker",
-                  "fill": "$fg-default",
-                  "content": "TSLA",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 14,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "rdzp2",
-                  "name": "Name",
-                  "fill": "$fg-subtle",
-                  "content": "Tesla",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
+              "type": "text",
+              "id": "odDm7",
+              "name": "Ticker",
+              "fill": "$fg-default",
+              "content": "TSLA",
+              "fontFamily": "$font-mono",
+              "fontSize": 14,
+              "fontWeight": "700"
             },
             {
-              "type": "frame",
-              "id": "W3X5oO",
-              "name": "Vals",
-              "layout": "vertical",
-              "gap": 1,
-              "alignItems": "end",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "U8hSK",
-                  "name": "Px",
-                  "fill": "$fg-default",
-                  "content": "USD 248.50",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 14,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "iAEbW",
-                  "name": "Day",
-                  "fill": "$positive-fg",
-                  "content": "+1.2%",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
+              "type": "text",
+              "id": "rdzp2",
+              "name": "Name",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tesla",
+              "lineHeight": 1.3,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         },
         {
+          "type": "path",
+          "id": "UZyJ3",
+          "name": "Spark",
+          "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+          "viewBox": [
+            0,
+            0,
+            56,
+            22
+          ],
+          "width": 64,
+          "height": 32,
+          "stroke": "$positive",
+          "strokeWidth": 2,
+          "strokeLinejoin": "round",
+          "strokeLinecap": "round"
+        },
+        {
           "type": "frame",
-          "id": "iTef9",
-          "name": "R2",
-          "width": "fill_container",
-          "justifyContent": "space_between",
-          "alignItems": "center",
+          "id": "W3X5oO",
+          "name": "Vals",
+          "layout": "vertical",
+          "gap": 1,
+          "alignItems": "end",
           "children": [
             {
-              "type": "path",
-              "id": "UZyJ3",
-              "name": "Spark",
-              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-              "viewBox": [
-                0,
-                0,
-                56,
-                22
-              ],
-              "width": 56,
-              "height": 22,
-              "stroke": "$positive",
-              "strokeWidth": 2,
-              "strokeLinejoin": "round",
-              "strokeLinecap": "round"
+              "type": "text",
+              "id": "U8hSK",
+              "name": "Px",
+              "fill": "$fg-default",
+              "content": "USD 248.50",
+              "fontFamily": "$font-mono",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "iAEbW",
+              "name": "Day",
+              "fill": "$positive-fg",
+              "content": "+1.2%",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -1226,16 +1194,16 @@
                     "rdzp2": {
                       "content": "Microsoft"
                     },
+                    "UZyJ3": {
+                      "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
+                      "stroke": "$border-strong"
+                    },
                     "U8hSK": {
                       "content": "USD 418.20"
                     },
                     "iAEbW": {
                       "content": "−0.4%",
                       "fill": "$negative-fg"
-                    },
-                    "UZyJ3": {
-                      "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
-                      "stroke": "$border-strong"
                     },
                     "apjig": {
                       "content": "falta 4.4%"
@@ -1255,16 +1223,16 @@
                     "rdzp2": {
                       "content": "Walmart de México"
                     },
+                    "UZyJ3": {
+                      "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
+                      "stroke": "$border-strong"
+                    },
                     "U8hSK": {
                       "content": "MXN 62.80"
                     },
                     "iAEbW": {
                       "content": "+0.9%",
                       "fill": "$positive-fg"
-                    },
-                    "UZyJ3": {
-                      "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
-                      "stroke": "$border-strong"
                     },
                     "apjig": {
                       "content": "falta 4.5%"
@@ -1284,16 +1252,16 @@
                     "rdzp2": {
                       "content": "Alphabet"
                     },
+                    "UZyJ3": {
+                      "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
+                      "stroke": "$negative"
+                    },
                     "U8hSK": {
                       "content": "USD 163.40"
                     },
                     "iAEbW": {
                       "content": "−1.1%",
                       "fill": "$negative-fg"
-                    },
-                    "UZyJ3": {
-                      "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
-                      "stroke": "$negative"
                     },
                     "apjig": {
                       "content": "falta 5.1%"
@@ -1313,16 +1281,16 @@
                     "rdzp2": {
                       "content": "Solana"
                     },
+                    "UZyJ3": {
+                      "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
+                      "stroke": "$negative"
+                    },
                     "U8hSK": {
                       "content": "USD 138.60"
                     },
                     "iAEbW": {
                       "content": "−4.2%",
                       "fill": "$negative-fg"
-                    },
-                    "UZyJ3": {
-                      "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
-                      "stroke": "$negative"
                     },
                     "apjig": {
                       "content": "falta 6.2%"
@@ -1342,16 +1310,16 @@
                     "rdzp2": {
                       "content": "Ethereum"
                     },
+                    "UZyJ3": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    },
                     "U8hSK": {
                       "content": "USD 2,940.00"
                     },
                     "iAEbW": {
                       "content": "+3.8%",
                       "fill": "$positive-fg"
-                    },
-                    "UZyJ3": {
-                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                      "stroke": "$positive"
                     },
                     "apjig": {
                       "content": "sigues −6.1%",
@@ -1372,16 +1340,16 @@
                     "rdzp2": {
                       "content": "Tesla"
                     },
+                    "UZyJ3": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    },
                     "U8hSK": {
                       "content": "USD 248.50"
                     },
                     "iAEbW": {
                       "content": "+1.2%",
                       "fill": "$positive-fg"
-                    },
-                    "UZyJ3": {
-                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                      "stroke": "$positive"
                     },
                     "apjig": {
                       "content": "sigues +18.4%",
@@ -5284,16 +5252,16 @@
                             "wkJF7": {
                               "content": "Bitcoin · 0.04500 títulos"
                             },
+                            "ryGTQ": {
+                              "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
+                              "stroke": "$negative"
+                            },
                             "eRpGw": {
                               "content": "61,200"
                             },
                             "V8e4y": {
                               "content": "−3.4%",
                               "fill": "$negative-fg"
-                            },
-                            "ryGTQ": {
-                              "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
-                              "stroke": "$negative"
                             }
                           }
                         },
@@ -5310,16 +5278,16 @@
                             "wkJF7": {
                               "content": "Apple · 12 títulos"
                             },
+                            "ryGTQ": {
+                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                              "stroke": "$positive"
+                            },
                             "eRpGw": {
                               "content": "52,400"
                             },
                             "V8e4y": {
                               "content": "+0.8%",
                               "fill": "$positive-fg"
-                            },
-                            "ryGTQ": {
-                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                              "stroke": "$positive"
                             }
                           }
                         },
@@ -5336,16 +5304,16 @@
                             "wkJF7": {
                               "content": "Vanguard S&P 500 · 4 títulos"
                             },
+                            "ryGTQ": {
+                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                              "stroke": "$positive"
+                            },
                             "eRpGw": {
                               "content": "41,800"
                             },
                             "V8e4y": {
                               "content": "+0.3%",
                               "fill": "$positive-fg"
-                            },
-                            "ryGTQ": {
-                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                              "stroke": "$positive"
                             }
                           }
                         }
@@ -5371,16 +5339,16 @@
                             "wkJF7": {
                               "content": "NVIDIA · 6 títulos"
                             },
+                            "ryGTQ": {
+                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                              "stroke": "$positive"
+                            },
                             "eRpGw": {
                               "content": "38,900"
                             },
                             "V8e4y": {
                               "content": "+2.1%",
                               "fill": "$positive-fg"
-                            },
-                            "ryGTQ": {
-                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                              "stroke": "$positive"
                             }
                           }
                         },
@@ -5397,17 +5365,17 @@
                             "wkJF7": {
                               "content": "CETES a 28 días · 3,000 títulos"
                             },
+                            "ryGTQ": {
+                              "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
+                              "stroke": "$border-strong",
+                              "enabled": true
+                            },
                             "eRpGw": {
                               "content": "30,000"
                             },
                             "V8e4y": {
                               "content": "—",
                               "fill": "$fg-subtle"
-                            },
-                            "ryGTQ": {
-                              "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
-                              "stroke": "$border-strong",
-                              "enabled": true
                             }
                           }
                         }
@@ -5715,16 +5683,16 @@
                             "wkJF7": {
                               "content": "Apple · 12 títulos"
                             },
+                            "ryGTQ": {
+                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                              "stroke": "$positive"
+                            },
                             "eRpGw": {
                               "content": "52,400"
                             },
                             "V8e4y": {
                               "content": "+0.8%",
                               "fill": "$positive-fg"
-                            },
-                            "ryGTQ": {
-                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                              "stroke": "$positive"
                             }
                           }
                         },
@@ -5741,16 +5709,16 @@
                             "wkJF7": {
                               "content": "NVIDIA · 6 títulos"
                             },
+                            "ryGTQ": {
+                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                              "stroke": "$positive"
+                            },
                             "eRpGw": {
                               "content": "38,900"
                             },
                             "V8e4y": {
                               "content": "+2.1%",
                               "fill": "$positive-fg"
-                            },
-                            "ryGTQ": {
-                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                              "stroke": "$positive"
                             }
                           }
                         },
@@ -5767,16 +5735,16 @@
                             "wkJF7": {
                               "content": "Bitcoin · 0.045 BTC"
                             },
+                            "ryGTQ": {
+                              "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
+                              "stroke": "$negative"
+                            },
                             "eRpGw": {
                               "content": "61,200"
                             },
                             "V8e4y": {
                               "content": "−3.4%",
                               "fill": "$negative-fg"
-                            },
-                            "ryGTQ": {
-                              "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
-                              "stroke": "$negative"
                             }
                           }
                         }
@@ -5802,16 +5770,16 @@
                             "wkJF7": {
                               "content": "Vanguard S&P 500 · 4 títulos"
                             },
+                            "ryGTQ": {
+                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                              "stroke": "$positive"
+                            },
                             "eRpGw": {
                               "content": "41,800"
                             },
                             "V8e4y": {
                               "content": "+0.3%",
                               "fill": "$positive-fg"
-                            },
-                            "ryGTQ": {
-                              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                              "stroke": "$positive"
                             }
                           }
                         },
@@ -5828,17 +5796,17 @@
                             "wkJF7": {
                               "content": "CETES a 28 días · 3,000 títulos"
                             },
+                            "ryGTQ": {
+                              "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
+                              "stroke": "$border-strong",
+                              "enabled": true
+                            },
                             "eRpGw": {
                               "content": "30,000"
                             },
                             "V8e4y": {
                               "content": "—",
                               "fill": "$fg-subtle"
-                            },
-                            "ryGTQ": {
-                              "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
-                              "stroke": "$border-strong",
-                              "enabled": true
                             }
                           }
                         }
@@ -11999,7 +11967,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the three top bars at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots; Segmented options 44 px\n2026-10-14 · #821 · Holdings and Watchlist (mobile and desktop) carry the quote caption under the summary; new artboard Holdings · Sin cotización\n2026-09-17 · D125 · Buscar drawn ahead of the code: five mobile artboards, one desktop, and flow-local TopBar · Buscar and TopBarDesktop · Buscar\n2026-09-17 · D123: the Tracked budget panel on all five Tracked artboards names Yahoo Finance, reads 4000 calls, and gains the whole-quota line\n2026-09-16 · fidelity pass against the rendered app at 390 and 1280: holdings reordered by market value (D68), share counts in the code's significant digits, watchlist prices at two decimals; the paused Tracked-tier row now wraps its symbol line, as the code does since it stopped overflowing the phone\n2026-09-16 · kit 1.0.0 · BottomNav, SidebarNav and TopBarDesktop masters back to the kit, each screen lights its own tab; HeaderBar vendored and replaces seven hand-built headers\n2026-09-16 · D78 · every artboard mirrored to the code: summary and sheet button above the tabs, no counts on the tabs, the three foot rows, day move in the row, the sheet's title and sticky footer, Tracked rows with tier chip and Seguir / Pausar / borrar, the two-segment budget, Historial without icons, the importer's real copy\n2026-09-16 · removed Tracked · Buscar — the filter is an input on Tracked, not a screen; search is its own feature\n2026-09-16 · new artboards: Watchlist · Vacía, Tracked · Sin coincidencias, Holdings · Sin consolidar, Registrar movimiento · CETES, Historial · Vacío\n2026-09-16 · code fixed alongside: CETES could not be recorded, the projection showed on a sale, the dividends header named a currency its rows did not use, Tracked's count followed the filter\n2026-09-16 · canvas · grid gutter 70 → 120, bands reflowed\n2026-09-11 · Tracked · Agregar activo drawn, closing D64: the search field with the placeholder the locale carries, three typeahead results in the row shape Tracked·Buscar already uses, the six fields the gateway fills with the code's own placeholders, and the two actions. Copied from Tracked / Default so the shell stays one thing, and the band was reflowed so the screen reads where it belongs. Two drifts recorded in the brief rather than fixed here: the entry point is a button, not the header icon, and the budget renders last on mobile · D64\n\n2026-09-11 · Both drifts now FIXED in the code's favour — Adrian's call. The header + icon is gone from Tracked/Default, Tracked/Sin fuente and Tracked · Agregar activo; each opens instead with a justify-between row carrying the count and a primary Agregar activo button, which is tracked.html.erb:5-12. The budget moved to the end of the mobile scroll in all three, which is the aside's real DOM order; desktop keeps it beside the column because lg:flex-row does. Two smaller divergences were measured and left recorded, not swept: the intro belongs to the aside in code, and the list's count caption exists only here · D64\n2026-09-05 · D85 fallout · Watchlist's Resumen block deleted — a 'con señal hoy' count needs the chip that is not being built, and the code never had the block\n2026-09-05 · #586 · AssetRow drops Estado and Dots here too — three files carried them, the code backed none\n2026-09-05 · C-3 · Holdings/Vacío drops the demo door; the CSV one it also drew has shipped, so the state now draws what exists\n2026-09-05 · D78 · the trade sheet gains the Moneda select, the average-cost projection (#428) and the code's field pairing — Sheet, Con teclado and Desktop\n2026-09-05 · Sheet grows 844 → 940 and Desktop dialog 800 → 920; both anchored by math rather than by eye\n2026-09-05 · brief records D64 as open — the typeahead has no artboard and Tracked · Buscar is a different control\n2026-08-29 · Watchlist: the row's third slot moved from 'sigues +X%' (entry_price, history) to 'falta X%' — distance to the active alert threshold — and the six rows are ordered by it, so the artboard shows the queue D68 describes. Subtitle rewritten to name the new column · D67, D68, D69\n2026-08-29 · Símbolos desconocidos gains two escapes per row — rename (alias) and delisted (frozen). D63 answered: the source column is now a state, not nine copies of one string · D65\n2026-08-29 · Símbolos desconocidos becomes a checkbox list with a bulk action; the CTA was a link carrying no symbols · D63\n2026-08-29 · finding: the Agregar activo typeahead has no artboard in this flow, and the code changed under it · D64\n2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
+          "content": "2026-10-14 · AssetRow and WatchRow vendored as the code renders them: one horizontal row — symbol and subtitle, the 64 px sparkline, the two emphasis slots (a watchlist row keeps its threshold line under them) — with the subtitle wrapping\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the three top bars at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots; Segmented options 44 px\n2026-10-14 · #821 · Holdings and Watchlist (mobile and desktop) carry the quote caption under the summary; new artboard Holdings · Sin cotización\n2026-09-17 · D125 · Buscar drawn ahead of the code: five mobile artboards, one desktop, and flow-local TopBar · Buscar and TopBarDesktop · Buscar\n2026-09-17 · D123: the Tracked budget panel on all five Tracked artboards names Yahoo Finance, reads 4000 calls, and gains the whole-quota line\n2026-09-16 · fidelity pass against the rendered app at 390 and 1280: holdings reordered by market value (D68), share counts in the code's significant digits, watchlist prices at two decimals; the paused Tracked-tier row now wraps its symbol line, as the code does since it stopped overflowing the phone\n2026-09-16 · kit 1.0.0 · BottomNav, SidebarNav and TopBarDesktop masters back to the kit, each screen lights its own tab; HeaderBar vendored and replaces seven hand-built headers\n2026-09-16 · D78 · every artboard mirrored to the code: summary and sheet button above the tabs, no counts on the tabs, the three foot rows, day move in the row, the sheet's title and sticky footer, Tracked rows with tier chip and Seguir / Pausar / borrar, the two-segment budget, Historial without icons, the importer's real copy\n2026-09-16 · removed Tracked · Buscar — the filter is an input on Tracked, not a screen; search is its own feature\n2026-09-16 · new artboards: Watchlist · Vacía, Tracked · Sin coincidencias, Holdings · Sin consolidar, Registrar movimiento · CETES, Historial · Vacío\n2026-09-16 · code fixed alongside: CETES could not be recorded, the projection showed on a sale, the dividends header named a currency its rows did not use, Tracked's count followed the filter\n2026-09-16 · canvas · grid gutter 70 → 120, bands reflowed\n2026-09-11 · Tracked · Agregar activo drawn, closing D64: the search field with the placeholder the locale carries, three typeahead results in the row shape Tracked·Buscar already uses, the six fields the gateway fills with the code's own placeholders, and the two actions. Copied from Tracked / Default so the shell stays one thing, and the band was reflowed so the screen reads where it belongs. Two drifts recorded in the brief rather than fixed here: the entry point is a button, not the header icon, and the budget renders last on mobile · D64\n\n2026-09-11 · Both drifts now FIXED in the code's favour — Adrian's call. The header + icon is gone from Tracked/Default, Tracked/Sin fuente and Tracked · Agregar activo; each opens instead with a justify-between row carrying the count and a primary Agregar activo button, which is tracked.html.erb:5-12. The budget moved to the end of the mobile scroll in all three, which is the aside's real DOM order; desktop keeps it beside the column because lg:flex-row does. Two smaller divergences were measured and left recorded, not swept: the intro belongs to the aside in code, and the list's count caption exists only here · D64\n2026-09-05 · D85 fallout · Watchlist's Resumen block deleted — a 'con señal hoy' count needs the chip that is not being built, and the code never had the block\n2026-09-05 · #586 · AssetRow drops Estado and Dots here too — three files carried them, the code backed none\n2026-09-05 · C-3 · Holdings/Vacío drops the demo door; the CSV one it also drew has shipped, so the state now draws what exists\n2026-09-05 · D78 · the trade sheet gains the Moneda select, the average-cost projection (#428) and the code's field pairing — Sheet, Con teclado and Desktop\n2026-09-05 · Sheet grows 844 → 940 and Desktop dialog 800 → 920; both anchored by math rather than by eye\n2026-09-05 · brief records D64 as open — the typeahead has no artboard and Tracked · Buscar is a different control\n2026-08-29 · Watchlist: the row's third slot moved from 'sigues +X%' (entry_price, history) to 'falta X%' — distance to the active alert threshold — and the six rows are ordered by it, so the artboard shows the queue D68 describes. Subtitle rewritten to name the new column · D67, D68, D69\n2026-08-29 · Símbolos desconocidos gains two escapes per row — rename (alias) and delisted (frozen). D63 answered: the source column is now a state, not nine copies of one string · D65\n2026-08-29 · Símbolos desconocidos becomes a checkbox list with a bulk action; the CTA was a link carrying no symbols · D63\n2026-08-29 · finding: the Agregar activo typeahead has no artboard in this flow, and the code changed under it · D64\n2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
           "lineHeight": 1.6,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -15139,16 +15107,16 @@
                     "wkJF7": {
                       "content": "Apple · 12 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    },
                     "eRpGw": {
                       "content": "USD 2,851"
                     },
                     "V8e4y": {
                       "content": "+0.8%",
                       "fill": "$positive-fg"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -15165,16 +15133,16 @@
                     "wkJF7": {
                       "content": "Bitcoin · 0.04500 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
+                      "stroke": "$negative"
+                    },
                     "eRpGw": {
                       "content": "USD 3,322"
                     },
                     "V8e4y": {
                       "content": "−3.4%",
                       "fill": "$negative-fg"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
-                      "stroke": "$negative"
                     }
                   }
                 },
@@ -15191,17 +15159,17 @@
                     "wkJF7": {
                       "content": "CETES a 28 días · 3,000 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
+                      "stroke": "$border-strong",
+                      "enabled": true
+                    },
                     "eRpGw": {
                       "content": "30,000"
                     },
                     "V8e4y": {
                       "content": "—",
                       "fill": "$fg-subtle"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
-                      "stroke": "$border-strong",
-                      "enabled": true
                     }
                   }
                 },
@@ -15218,16 +15186,16 @@
                     "wkJF7": {
                       "content": "NVIDIA · 6 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    },
                     "eRpGw": {
                       "content": "USD 2,110"
                     },
                     "V8e4y": {
                       "content": "+2.1%",
                       "fill": "$positive-fg"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -15244,16 +15212,16 @@
                     "wkJF7": {
                       "content": "Vanguard S&P 500 · 4 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    },
                     "eRpGw": {
                       "content": "USD 2,270"
                     },
                     "V8e4y": {
                       "content": "+0.3%",
                       "fill": "$positive-fg"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                      "stroke": "$positive"
                     }
                   }
                 }
@@ -19927,6 +19895,10 @@
                     "wkJF7": {
                       "content": "Bitcoin · 0.04500 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
+                      "stroke": "$chart-neutral"
+                    },
                     "eRpGw": {
                       "content": "—",
                       "fill": "$fg-subtle"
@@ -19934,10 +19906,6 @@
                     "V8e4y": {
                       "content": "—",
                       "fill": "$fg-subtle"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 4l9 3 9-2 9 6 9-1 9 5 7 3",
-                      "stroke": "$chart-neutral"
                     }
                   }
                 },
@@ -19954,16 +19922,16 @@
                     "wkJF7": {
                       "content": "Apple · 12 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    },
                     "eRpGw": {
                       "content": "52,400"
                     },
                     "V8e4y": {
                       "content": "+0.8%",
                       "fill": "$positive-fg"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -19980,16 +19948,16 @@
                     "wkJF7": {
                       "content": "Vanguard S&P 500 · 4 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    },
                     "eRpGw": {
                       "content": "41,800"
                     },
                     "V8e4y": {
                       "content": "+0.3%",
                       "fill": "$positive-fg"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -20006,16 +19974,16 @@
                     "wkJF7": {
                       "content": "NVIDIA · 6 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+                      "stroke": "$positive"
+                    },
                     "eRpGw": {
                       "content": "38,900"
                     },
                     "V8e4y": {
                       "content": "+2.1%",
                       "fill": "$positive-fg"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -20032,17 +20000,17 @@
                     "wkJF7": {
                       "content": "CETES a 28 días · 3,000 títulos"
                     },
+                    "ryGTQ": {
+                      "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
+                      "stroke": "$border-strong",
+                      "enabled": true
+                    },
                     "eRpGw": {
                       "content": "30,000"
                     },
                     "V8e4y": {
                       "content": "—",
                       "fill": "$fg-subtle"
-                    },
-                    "ryGTQ": {
-                      "geometry": "M2 12l9-1 9 2 9-2 9 1 9-1 7 1",
-                      "stroke": "$border-strong",
-                      "enabled": true
                     }
                   }
                 }
