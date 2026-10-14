@@ -470,7 +470,11 @@
                       "content": "CETES"
                     },
                     "uvrOY": {
-                      "content": "Cetes 28d · 9,000 títulos ·\nMXN 90,000"
+                      "content": "Cetes 28d · 9,000 títulos · MXN 90,000"
+                    },
+                    "Zzbi9": {
+                      "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
+                      "stroke": "$border-strong"
                     },
                     "w2FQh": {
                       "content": "vence en 3 días",
@@ -479,10 +483,6 @@
                     "QrM6I": {
                       "content": "MXN 10.00",
                       "fill": "$fg-subtle"
-                    },
-                    "Zzbi9": {
-                      "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
-                      "stroke": "$border-strong"
                     }
                   }
                 },
@@ -497,7 +497,11 @@
                       "content": "BTC"
                     },
                     "uvrOY": {
-                      "content": "Bitcoin · 0.012 títulos ·\nUSD 768"
+                      "content": "Bitcoin · 0.012 títulos · USD 768"
+                    },
+                    "Zzbi9": {
+                      "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
+                      "stroke": "$positive"
                     },
                     "w2FQh": {
                       "content": "+8.0%",
@@ -506,10 +510,6 @@
                     "QrM6I": {
                       "content": "USD 64,000.00",
                       "fill": "$fg-subtle"
-                    },
-                    "Zzbi9": {
-                      "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -526,6 +526,10 @@
                     "uvrOY": {
                       "content": "Apple · 10 títulos · USD 1,825"
                     },
+                    "Zzbi9": {
+                      "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
+                      "stroke": "$positive"
+                    },
                     "w2FQh": {
                       "content": "+4.0%",
                       "fill": "$positive-fg"
@@ -533,10 +537,6 @@
                     "QrM6I": {
                       "content": "USD 182.50",
                       "fill": "$fg-subtle"
-                    },
-                    "Zzbi9": {
-                      "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -553,6 +553,10 @@
                     "uvrOY": {
                       "content": "Tesla"
                     },
+                    "Zzbi9": {
+                      "geometry": "M2 16 L11 18 L20 13 L29 15 L38 8 L47 10 L54 4",
+                      "stroke": "$positive"
+                    },
                     "w2FQh": {
                       "content": "+3.2%",
                       "fill": "$positive-fg"
@@ -560,10 +564,6 @@
                     "QrM6I": {
                       "content": "USD 248.50",
                       "fill": "$fg-subtle"
-                    },
-                    "Zzbi9": {
-                      "geometry": "M2 16 L11 18 L20 13 L29 15 L38 8 L47 10 L54 4",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -580,6 +580,10 @@
                     "uvrOY": {
                       "content": "Nvidia · 25 títulos · USD 3,000"
                     },
+                    "Zzbi9": {
+                      "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
+                      "stroke": "$positive"
+                    },
                     "w2FQh": {
                       "content": "−2.0%",
                       "fill": "$negative-fg"
@@ -587,10 +591,6 @@
                     "QrM6I": {
                       "content": "USD 120.00",
                       "fill": "$fg-subtle"
-                    },
-                    "Zzbi9": {
-                      "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
-                      "stroke": "$positive"
                     }
                   }
                 },
@@ -605,7 +605,11 @@
                       "content": "VOO"
                     },
                     "uvrOY": {
-                      "content": "Vanguard S&P 500 · 6 títulos ·\nUSD 3,000"
+                      "content": "Vanguard S&P 500 · 6 títulos · USD 3,000"
+                    },
+                    "Zzbi9": {
+                      "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
+                      "stroke": "$fg-subtle"
                     },
                     "w2FQh": {
                       "content": "+1.0%",
@@ -614,10 +618,6 @@
                     "QrM6I": {
                       "content": "USD 500.00",
                       "fill": "$fg-subtle"
-                    },
-                    "Zzbi9": {
-                      "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
-                      "stroke": "$fg-subtle"
                     }
                   }
                 }
@@ -646,107 +646,91 @@
       "cornerRadius": "$radius-lg",
       "stroke": "$border-default",
       "strokeWidth": 1,
-      "layout": "vertical",
-      "gap": "$space-3",
+      "gap": 16,
       "padding": [
         14,
         16
       ],
+      "alignItems": "center",
       "children": [
         {
           "type": "frame",
-          "id": "VgSmH",
-          "name": "R1",
+          "id": "U526Ne",
+          "name": "L",
           "width": "fill_container",
-          "justifyContent": "space_between",
-          "alignItems": "center",
+          "layout": "vertical",
+          "gap": 1,
           "children": [
             {
-              "type": "frame",
-              "id": "U526Ne",
-              "name": "L",
-              "layout": "vertical",
-              "gap": 1,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "eG3WE",
-                  "name": "Ticker",
-                  "fill": "$fg-default",
-                  "content": "AAPL",
-                  "fontFamily": "$font-display",
-                  "fontSize": 15,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "uvrOY",
-                  "name": "Name",
-                  "fill": "$fg-subtle",
-                  "content": "Apple",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
+              "type": "text",
+              "id": "eG3WE",
+              "name": "Ticker",
+              "fill": "$fg-default",
+              "content": "AAPL",
+              "fontFamily": "$font-mono",
+              "fontSize": 14,
+              "fontWeight": "700"
             },
             {
-              "type": "frame",
-              "id": "D8xmuc",
-              "name": "Vals",
-              "layout": "vertical",
-              "gap": 1,
-              "alignItems": "end",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "w2FQh",
-                  "name": "Val",
-                  "fill": "$fg-default",
-                  "content": "$38,000",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 15,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "text",
-                  "id": "QrM6I",
-                  "name": "Pnl",
-                  "fill": "$positive-fg",
-                  "content": "+4.0%",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
+              "type": "text",
+              "id": "uvrOY",
+              "name": "Name",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Apple",
+              "lineHeight": 1.3,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         },
         {
+          "type": "path",
+          "id": "Zzbi9",
+          "name": "Spark",
+          "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+          "viewBox": [
+            0,
+            0,
+            56,
+            22
+          ],
+          "width": 64,
+          "height": 32,
+          "stroke": "$positive",
+          "strokeWidth": 2,
+          "strokeLinejoin": "round",
+          "strokeLinecap": "round"
+        },
+        {
           "type": "frame",
-          "id": "gj6Nc",
-          "name": "R2",
-          "width": "fill_container",
-          "justifyContent": "space_between",
-          "alignItems": "center",
+          "id": "D8xmuc",
+          "name": "Vals",
+          "layout": "vertical",
+          "gap": 1,
+          "alignItems": "end",
           "children": [
             {
-              "type": "path",
-              "id": "Zzbi9",
-              "name": "Spark",
-              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-              "viewBox": [
-                0,
-                0,
-                56,
-                22
-              ],
-              "width": 56,
-              "height": 22,
-              "stroke": "$positive",
-              "strokeWidth": 2,
-              "strokeLinejoin": "round",
-              "strokeLinecap": "round"
+              "type": "text",
+              "id": "w2FQh",
+              "name": "Val",
+              "fill": "$fg-default",
+              "content": "$38,000",
+              "fontFamily": "$font-mono",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "QrM6I",
+              "name": "Pnl",
+              "fill": "$positive-fg",
+              "content": "+4.0%",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         }
@@ -4366,7 +4350,11 @@
                                   "content": "CETES"
                                 },
                                 "uvrOY": {
-                                  "content": "Cetes 28d · 9,000 títulos ·\nMXN 90,000"
+                                  "content": "Cetes 28d · 9,000 títulos · MXN 90,000"
+                                },
+                                "Zzbi9": {
+                                  "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
+                                  "stroke": "$border-strong"
                                 },
                                 "w2FQh": {
                                   "content": "vence en 3 días",
@@ -4375,10 +4363,6 @@
                                 "QrM6I": {
                                   "content": "MXN 10.00",
                                   "fill": "$fg-subtle"
-                                },
-                                "Zzbi9": {
-                                  "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
-                                  "stroke": "$border-strong"
                                 }
                               }
                             },
@@ -4393,7 +4377,11 @@
                                   "content": "BTC"
                                 },
                                 "uvrOY": {
-                                  "content": "Bitcoin · 0.012 títulos ·\nUSD 768"
+                                  "content": "Bitcoin · 0.012 títulos · USD 768"
+                                },
+                                "Zzbi9": {
+                                  "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
+                                  "stroke": "$positive"
                                 },
                                 "w2FQh": {
                                   "content": "+8.0%",
@@ -4402,10 +4390,6 @@
                                 "QrM6I": {
                                   "content": "USD 64,000.00",
                                   "fill": "$fg-subtle"
-                                },
-                                "Zzbi9": {
-                                  "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
-                                  "stroke": "$positive"
                                 }
                               }
                             },
@@ -4422,6 +4406,10 @@
                                 "uvrOY": {
                                   "content": "Apple · 10 títulos · USD 1,825"
                                 },
+                                "Zzbi9": {
+                                  "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
+                                  "stroke": "$positive"
+                                },
                                 "w2FQh": {
                                   "content": "+4.0%",
                                   "fill": "$positive-fg"
@@ -4429,10 +4417,6 @@
                                 "QrM6I": {
                                   "content": "USD 182.50",
                                   "fill": "$fg-subtle"
-                                },
-                                "Zzbi9": {
-                                  "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
-                                  "stroke": "$positive"
                                 }
                               }
                             },
@@ -4449,6 +4433,10 @@
                                 "uvrOY": {
                                   "content": "Tesla"
                                 },
+                                "Zzbi9": {
+                                  "geometry": "M2 16 L11 18 L20 13 L29 15 L38 8 L47 10 L54 4",
+                                  "stroke": "$positive"
+                                },
                                 "w2FQh": {
                                   "content": "+3.2%",
                                   "fill": "$positive-fg"
@@ -4456,10 +4444,6 @@
                                 "QrM6I": {
                                   "content": "USD 248.50",
                                   "fill": "$fg-subtle"
-                                },
-                                "Zzbi9": {
-                                  "geometry": "M2 16 L11 18 L20 13 L29 15 L38 8 L47 10 L54 4",
-                                  "stroke": "$positive"
                                 }
                               }
                             },
@@ -4476,6 +4460,10 @@
                                 "uvrOY": {
                                   "content": "Nvidia · 25 títulos · USD 3,000"
                                 },
+                                "Zzbi9": {
+                                  "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
+                                  "stroke": "$positive"
+                                },
                                 "w2FQh": {
                                   "content": "−2.0%",
                                   "fill": "$negative-fg"
@@ -4483,10 +4471,6 @@
                                 "QrM6I": {
                                   "content": "USD 120.00",
                                   "fill": "$fg-subtle"
-                                },
-                                "Zzbi9": {
-                                  "geometry": "M2 18 L11 14 L20 16 L29 9 L38 11 L47 5 L54 7",
-                                  "stroke": "$positive"
                                 }
                               }
                             },
@@ -4501,7 +4485,11 @@
                                   "content": "VOO"
                                 },
                                 "uvrOY": {
-                                  "content": "Vanguard S&P 500 · 6 títulos ·\nUSD 3,000"
+                                  "content": "Vanguard S&P 500 · 6 títulos · USD 3,000"
+                                },
+                                "Zzbi9": {
+                                  "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
+                                  "stroke": "$fg-subtle"
                                 },
                                 "w2FQh": {
                                   "content": "+1.0%",
@@ -4510,10 +4498,6 @@
                                 "QrM6I": {
                                   "content": "USD 500.00",
                                   "fill": "$fg-subtle"
-                                },
-                                "Zzbi9": {
-                                  "geometry": "M2 12 L11 11 L20 13 L29 11 L38 12 L47 10 L54 12",
-                                  "stroke": "$fg-subtle"
                                 }
                               }
                             }
@@ -6729,7 +6713,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-14 · kit 1.2.0 · Soft Candle wordmark in TopBar and SidebarNav at h-7; fg-subtle light #5E6E84; Segmented options 44 px with a readable inactive label; BottomNav five equal slots\n2026-10-14 · #821 · Panorama and Consolidado mirror the verified figures: currency on the headline, day change against yesterday's snapshot, the quote caption, the real range of the curve, the chip period control, the new legend and both comparisons ending on the same date; the Radar and Señales copy follows the locale\n2026-10-14 · #821 · asset detail: price and currency wrap, the change names its baseline, the quote carries its timestamp; Mi posición stacks and keeps its native cost; Rendimiento names its date and goes two to a row\n2026-10-14 · new artboard: Panorama · Sin cotización\n2026-10-02 · D154 · the Radar's quote slot is the unit price on every row and a holding's value moves into its subtitle; the subtitle drops its '· valores en MXN' clause, which D141 had already removed from the code. Panorama and Panorama · Desktop\n2026-09-05 · #611 · Rendimiento is BUILT; the artboard's four windows became five and its percentages became money · D95\n2026-09-05 · CKP-2 · the chart's range control and O/H/L/C/Vol strip are BUILT; the artboard drew both and the code had neither · D93\n2026-09-05 · #607 · the TradingView toggle and its notice are BUILT; the CSP claim D66 carried was wrong and is corrected — the iframe is served from tradingview-widget.com, not *.tradingview.com\n2026-09-05 · kit 0.8.1 · TradingView opt-in toggle drawn at the foot of Chart (mobile + desktop) and the one-time notice added as Aviso TradingView; band reflowed · D66 · #606\n2026-09-05 · D88 · Cerrar posición is BUILT as a shortcut into the sell sheet — the artboard drew it and the tab had no actions at all\n2026-09-05 · D89 · Rendimiento stays drawn and deferred; the brief records that its declared blocker is not real\n2026-09-05 · #586 · the Semáforo block is deleted from both Análisis artboards — the engine is retired, not pending\n2026-09-05 · #586 · AssetRow drops its Estado chip and confluence dots (CKP-5 declined with a reason); kit goes to 1.0.0 by its own removal rule\n2026-09-05 · #586 · the detail's block order is stated in the brief instead of implied\n2026-09-05 · D80 · the Semáforo block adopts the code's own copy: the 'Tres señales, leídas por separado' subtitle, and light 1 and 3 bodies read what market/_confluence renders rather than a live-looking reading it does not compute\n2026-09-05 · D79 · Señales BUILT at /signals; the artboard's 'Desde tu última visita' subtitle replaced by the window it actually reads — users carry no last-visit column\n2026-09-05 · D79 · the header here is a TopBarDetail with two parts switched off; the code uses HeaderBar (kit 0.9.0) and this file vendors 0.8.1 — a version lag, not a divergence\n2026-09-05 · D78 · Análisis draws Noticias, Razón P/U histórica and Acerca de la empresa — three sections the code ships and this flow had not drawn\n2026-09-05 · C-4 · MasAnalisis deleted from both Análisis artboards: its volume line is the input D3 gave confluence light 2, and its DISPARADORES are threshold copy ADR-014 does not allow\n2026-09-05 · brief §5 corrected — seven market partials are hardcoded es-MX; it claimed nothing on the band was\n2026-09-05 · brief §6/§7 — D3 is resolved; the gate moved from no-definition to no-engine\n2026-09-05 · Asset · Análisis · Desktop grows 1400 → 1680 to hold the three new cards\n2026-08-29 · reflowed band 0 onto the declared grid: every gutter is 100 now, a 590px hole between Tranquilo and Análisis is gone, and Señales moved from x3700 y−780 — the components zone — into the band in reading order. Desktop stack shifted to respect grid-row-gap (3148 → 3244)\n2026-08-29 · brief rewritten into the eight fixed sections. The prose it replaces carried the why and the dates inline; those live in DECISIONS and here now, and the brief cites numbers\n2026-08-29 · Panorama + Panorama · Desktop: the Radar draws a watchlist row at last. Its own subtitle has read 'De tu cartera y watchlist' all along while every row was a holding, so the artboard was incomplete rather than in conflict with the code. Drawn as an AssetRow instance per D72 — the ISO prefix (USD 248.50) is what tells it from a position, since a holding's value drops the symbol under D10. Desktop grew 860 → 963 and the two artboards below it moved down 103 · X12\n2026-08-29 · Panorama: the Radar's ten AssetRow instances (5 mobile, 5 desktop) now lead with the change and demote the value. AssetRow stays generic — the component defines emphasis positions, not what goes in them, so no kit change and no second component · D69, D72, X12\n2026-08-29 · kit 0.8.1 · Asset · Análisis: the 52-week range moved OUT of Señales to sit under the price as Rango52. Señales is #306-blocked and that row is the one part of it buildable today, so it no longer waits on the rest · CKP-9, #426. Applied to the Desktop artboard in the same pass\n2026-08-29 · kit 0.8.1 · Asset · Análisis: VsPlan's second row now reads the alert threshold instead of a Meta — no target_price will exist · D67, CKP-8. Applied to the Desktop artboard in the same pass\n2026-08-29 · declared grid-x0/brief-w/gutter/y0/row-gap and opened this Log; the file predated both conventions\n2026-08-29 · brief corrected: kit-version-source said 0.8.0 against the file's 0.8.1, and the detail height moved 3037 → 2984 (the hoist freed more than Rango52 added)",
+          "content": "2026-10-14 · AssetRow vendored as the code renders it: one horizontal row — symbol and subtitle, the 64 px sparkline, the two emphasis slots — with the subtitle wrapping instead of the hand-broken lines\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark in TopBar and SidebarNav at h-7; fg-subtle light #5E6E84; Segmented options 44 px with a readable inactive label; BottomNav five equal slots\n2026-10-14 · #821 · Panorama and Consolidado mirror the verified figures: currency on the headline, day change against yesterday's snapshot, the quote caption, the real range of the curve, the chip period control, the new legend and both comparisons ending on the same date; the Radar and Señales copy follows the locale\n2026-10-14 · #821 · asset detail: price and currency wrap, the change names its baseline, the quote carries its timestamp; Mi posición stacks and keeps its native cost; Rendimiento names its date and goes two to a row\n2026-10-14 · new artboard: Panorama · Sin cotización\n2026-10-02 · D154 · the Radar's quote slot is the unit price on every row and a holding's value moves into its subtitle; the subtitle drops its '· valores en MXN' clause, which D141 had already removed from the code. Panorama and Panorama · Desktop\n2026-09-05 · #611 · Rendimiento is BUILT; the artboard's four windows became five and its percentages became money · D95\n2026-09-05 · CKP-2 · the chart's range control and O/H/L/C/Vol strip are BUILT; the artboard drew both and the code had neither · D93\n2026-09-05 · #607 · the TradingView toggle and its notice are BUILT; the CSP claim D66 carried was wrong and is corrected — the iframe is served from tradingview-widget.com, not *.tradingview.com\n2026-09-05 · kit 0.8.1 · TradingView opt-in toggle drawn at the foot of Chart (mobile + desktop) and the one-time notice added as Aviso TradingView; band reflowed · D66 · #606\n2026-09-05 · D88 · Cerrar posición is BUILT as a shortcut into the sell sheet — the artboard drew it and the tab had no actions at all\n2026-09-05 · D89 · Rendimiento stays drawn and deferred; the brief records that its declared blocker is not real\n2026-09-05 · #586 · the Semáforo block is deleted from both Análisis artboards — the engine is retired, not pending\n2026-09-05 · #586 · AssetRow drops its Estado chip and confluence dots (CKP-5 declined with a reason); kit goes to 1.0.0 by its own removal rule\n2026-09-05 · #586 · the detail's block order is stated in the brief instead of implied\n2026-09-05 · D80 · the Semáforo block adopts the code's own copy: the 'Tres señales, leídas por separado' subtitle, and light 1 and 3 bodies read what market/_confluence renders rather than a live-looking reading it does not compute\n2026-09-05 · D79 · Señales BUILT at /signals; the artboard's 'Desde tu última visita' subtitle replaced by the window it actually reads — users carry no last-visit column\n2026-09-05 · D79 · the header here is a TopBarDetail with two parts switched off; the code uses HeaderBar (kit 0.9.0) and this file vendors 0.8.1 — a version lag, not a divergence\n2026-09-05 · D78 · Análisis draws Noticias, Razón P/U histórica and Acerca de la empresa — three sections the code ships and this flow had not drawn\n2026-09-05 · C-4 · MasAnalisis deleted from both Análisis artboards: its volume line is the input D3 gave confluence light 2, and its DISPARADORES are threshold copy ADR-014 does not allow\n2026-09-05 · brief §5 corrected — seven market partials are hardcoded es-MX; it claimed nothing on the band was\n2026-09-05 · brief §6/§7 — D3 is resolved; the gate moved from no-definition to no-engine\n2026-09-05 · Asset · Análisis · Desktop grows 1400 → 1680 to hold the three new cards\n2026-08-29 · reflowed band 0 onto the declared grid: every gutter is 100 now, a 590px hole between Tranquilo and Análisis is gone, and Señales moved from x3700 y−780 — the components zone — into the band in reading order. Desktop stack shifted to respect grid-row-gap (3148 → 3244)\n2026-08-29 · brief rewritten into the eight fixed sections. The prose it replaces carried the why and the dates inline; those live in DECISIONS and here now, and the brief cites numbers\n2026-08-29 · Panorama + Panorama · Desktop: the Radar draws a watchlist row at last. Its own subtitle has read 'De tu cartera y watchlist' all along while every row was a holding, so the artboard was incomplete rather than in conflict with the code. Drawn as an AssetRow instance per D72 — the ISO prefix (USD 248.50) is what tells it from a position, since a holding's value drops the symbol under D10. Desktop grew 860 → 963 and the two artboards below it moved down 103 · X12\n2026-08-29 · Panorama: the Radar's ten AssetRow instances (5 mobile, 5 desktop) now lead with the change and demote the value. AssetRow stays generic — the component defines emphasis positions, not what goes in them, so no kit change and no second component · D69, D72, X12\n2026-08-29 · kit 0.8.1 · Asset · Análisis: the 52-week range moved OUT of Señales to sit under the price as Rango52. Señales is #306-blocked and that row is the one part of it buildable today, so it no longer waits on the rest · CKP-9, #426. Applied to the Desktop artboard in the same pass\n2026-08-29 · kit 0.8.1 · Asset · Análisis: VsPlan's second row now reads the alert threshold instead of a Meta — no target_price will exist · D67, CKP-8. Applied to the Desktop artboard in the same pass\n2026-08-29 · declared grid-x0/brief-w/gutter/y0/row-gap and opened this Log; the file predated both conventions\n2026-08-29 · brief corrected: kit-version-source said 0.8.0 against the file's 0.8.1, and the detail height moved 3037 → 2984 (the hoist freed more than Rango52 added)",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,

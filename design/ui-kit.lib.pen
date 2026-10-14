@@ -1308,114 +1308,99 @@
       "x": 1260,
       "y": 1036,
       "name": "AssetRow",
+      "context": "Mirrors components/_asset_row: one horizontal row — symbol, name and optional lines on the left, the 64 px sparkline, then the two emphasis slots right-aligned (D69). Below 380 px the code hides the sparkline; the artboards are 390 wide.",
       "reusable": true,
       "width": 342,
       "fill": "$bg-surface",
       "cornerRadius": "$radius-lg",
       "stroke": "$border-default",
       "strokeWidth": 1,
-      "layout": "vertical",
-      "gap": "$space-3",
+      "gap": 16,
       "padding": [
         14,
         16
       ],
+      "alignItems": "center",
       "children": [
         {
           "type": "frame",
-          "id": "wb0HG",
-          "name": "R1",
+          "id": "RUxw2",
+          "name": "L",
           "width": "fill_container",
-          "justifyContent": "space_between",
-          "alignItems": "center",
+          "layout": "vertical",
+          "gap": 1,
           "children": [
             {
-              "type": "frame",
-              "id": "RUxw2",
-              "name": "L",
-              "layout": "vertical",
-              "gap": 1,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "Iyi9J",
-                  "name": "Ticker",
-                  "fill": "$fg-default",
-                  "content": "AAPL",
-                  "fontFamily": "$font-display",
-                  "fontSize": 15,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "mmOLE",
-                  "name": "Name",
-                  "fill": "$fg-subtle",
-                  "content": "Apple",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
+              "type": "text",
+              "id": "Iyi9J",
+              "name": "Ticker",
+              "fill": "$fg-default",
+              "content": "AAPL",
+              "fontFamily": "$font-mono",
+              "fontSize": 14,
+              "fontWeight": "700"
             },
             {
-              "type": "frame",
-              "id": "WpLXz",
-              "name": "Vals",
-              "layout": "vertical",
-              "gap": 1,
-              "alignItems": "end",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "b0bul",
-                  "name": "Val",
-                  "fill": "$fg-default",
-                  "content": "$38,000",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 15,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "text",
-                  "id": "AM3F5",
-                  "name": "Pnl",
-                  "fill": "$positive-fg",
-                  "content": "+4.0%",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
+              "type": "text",
+              "id": "mmOLE",
+              "name": "Name",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Apple",
+              "lineHeight": 1.3,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         },
         {
+          "type": "path",
+          "id": "gQzbD",
+          "name": "Spark",
+          "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
+          "viewBox": [
+            0,
+            0,
+            56,
+            22
+          ],
+          "fill": "#00000000",
+          "width": 64,
+          "height": 32,
+          "stroke": "$positive",
+          "strokeWidth": 2,
+          "strokeLinejoin": "round",
+          "strokeLinecap": "round"
+        },
+        {
           "type": "frame",
-          "id": "HelhE",
-          "name": "R2",
-          "width": "fill_container",
-          "justifyContent": "space_between",
-          "alignItems": "center",
+          "id": "WpLXz",
+          "name": "Vals",
+          "layout": "vertical",
+          "gap": 1,
+          "alignItems": "end",
           "children": [
             {
-              "type": "path",
-              "id": "gQzbD",
-              "name": "Spark",
-              "geometry": "M2 18l9-4 9 2 9-7 9 2 9-6 7 2",
-              "viewBox": [
-                0,
-                0,
-                56,
-                22
-              ],
-              "fill": "#00000000",
-              "width": 56,
-              "height": 22,
-              "stroke": "$positive",
-              "strokeWidth": 2,
-              "strokeLinejoin": "round",
-              "strokeLinecap": "round"
+              "type": "text",
+              "id": "b0bul",
+              "name": "Val",
+              "fill": "$fg-default",
+              "content": "$38,000",
+              "fontFamily": "$font-mono",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "AM3F5",
+              "name": "Pnl",
+              "fill": "$positive-fg",
+              "content": "+4.0%",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
         }

@@ -673,6 +673,10 @@ re-vendors** (#821 landed the code; this mirrors it).
 - **`Segmented`, `Segmented3`** — options are 44 px high (`min-h-11`) and the inactive label is
   `$fg-default`, not `$fg-subtle` (`components/_segmented`).
 - **`BottomNav`** — five equal slots (`min-w-0 flex-1`) instead of space-around.
+- **`AssetRow`** — one horizontal row as `components/_asset_row` renders it: symbol and wrapping subtitle on
+  the left, the 64 × 32 sparkline, then the two emphasis slots right-aligned. The master was a vertical card
+  (values over a sparkline on its own line) that no screen of the code resembled. `WatchRow` stays a
+  flow-local copy; it is still not in the kit.
 - **`ButtonPrimary`** — fill is `$primary-fg`, not `$primary`, with the `$fg-inverse` label
   (`ApplicationHelper::BUTTON_VARIANTS`): the label now clears AA in both modes.
 
