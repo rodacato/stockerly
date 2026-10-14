@@ -37,7 +37,7 @@ _Listing verified against the directory 2026-08-27._
 | `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Read the version from its `kit-version` variable, never from this row |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed, plus the live **Open kit gaps** list |
 | `flows/*.pen` | **One file per domain** — seven of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`) |
-| `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section. **On kit 1.1.0** |
+| `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section. **On kit 1.2.0**. Its first sheet, `Actual / Soft Candle`, is the mark that ships; the `Archivo` sheets record the disc it replaced |
 | `brand/` | Canonical `glyph.svg` and outlined `lettering.svg`; app partials compose them inline. `bin/brand-assets` generates the wordmark variants, icons, social artwork and offline page from those sources and application tokens. The wordmark needs no installed font. Usage and reproduction: [brand guide](brand/README.md) |
 | `_playground.pen` | Experiments — inside the system (kit installed at 0.8.1; holds `Panel · V1…V4`, the login brand-panel exploration) |
 | `DECISIONS.md` | The numbered findings/decisions registry the `.pen` briefs cite |
@@ -56,7 +56,7 @@ One `.pen` per domain, derived from the app's routes (`config/routes.rb`), not i
 **mirrors the screens that exist in code** (D78). A flow earns its own file at ~3+ screens; smaller
 ones may merge into a neighbor.
 
-> **Kit versions.** The seven flows and `brand.pen` vendor the kit at **1.1.0**, the version of
+> **Kit versions.** The seven flows and `brand.pen` vendor the kit at **1.2.0**, the version of
 > `ui-kit.lib.pen`; `_playground.pen` stays at 0.8.1. Read each file's `kit-version-source`, never
 > this paragraph. The 0.8 → 0.9 migration notes (`MIGRATION.md`) were deleted on close; the durable
 > parts are in `ui-kit.CHANGELOG.md`'s gap list and in D53/D57/D58/D59.
@@ -79,8 +79,8 @@ ones may merge into a neighbor.
 |---|---|---|
 | `flows/auth.pen` | Auth | login (default · error), 2FA, código de recuperación, forgot, email sent, reset, enlace expirado, contraseña actualizada (+ Login desktop); TOTP · alta and códigos de recuperación, which render in the app shell — no signup (account created in onboarding) |
 | `flows/onboarding.pen` | Onboarding | setup (default · error), integrations, assets, seguridad (+ alta · códigos from the wizard, D122), complete, welcome (+ Setup/Welcome desktop) |
-| `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default · tranquilo · primera vez), señales (default · vacío), asset detail (análisis · aviso TradingView · mi posición · CETES), consolidado (default · sin historial) (+ Panorama/Consolidado desktop) |
-| `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings (default · vacía · sin consolidar), watchlist (default · vacía), registrar movimiento (sheet · con teclado · CETES), historial (default · vacío), tracked (default · agregar activo · sin fuente · sin coincidencias), importar CSV (default · revisión · símbolos desconocidos) + Holdings/Registrar/Tracked desktop; **drawn ahead of the code (D125):** buscar (en tu catálogo · fuera de tu catálogo · sin resultados · yahoo no responde · desktop), activo desconocido |
+| `flows/cockpit.pen` | Cockpit (daily driver) | panorama (default · tranquilo · primera vez · sin cotización), señales (default · vacío), asset detail (análisis · aviso TradingView · mi posición · CETES), consolidado (default · sin historial) (+ Panorama/Consolidado desktop) |
+| `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings (default · vacía · sin consolidar · sin cotización), watchlist (default · vacía), registrar movimiento (sheet · con teclado · CETES), historial (default · vacío), tracked (default · agregar activo · sin fuente · sin coincidencias), importar CSV (default · revisión · símbolos desconocidos) + Holdings/Registrar/Tracked desktop; **drawn ahead of the code (D125):** buscar (en tu catálogo · fuera de tu catálogo · sin resultados · yahoo no responde · desktop), activo desconocido |
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (vacío · default), nueva regla (sheet · calendario), bandeja (default · vacía) |
 | `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, nombre y correo, contraseña, integraciones (+ administrar · estados), registros (+ detalle), estado y mantenimiento, errores (+ detalle), en mantenimiento — no desktop artboard, every screen is one column |
 | `flows/discover.pen` | Descubrir — the world, not the instance (D31) | olas (default · todas las canastas · sin datos · calendario agotado) — no desktop artboard, the page reflows |
@@ -100,8 +100,8 @@ plus the kit's own `ui-kit-shell-desktop`.
 
 | Flow | Desktop artboards | Not drawn, because |
 |---|---|---|
-| `auth` | Login | Same split-panel as Setup — the two doors match. The other four keep the centered card |
-| `onboarding` | Setup · Welcome | The wizard steps are one centred column at every width |
+| `auth` | Login | The card is one centred column at every width (D152); Login's artboard shows it at `max-w-md` and stands for the rest |
+| `onboarding` | Setup · Welcome | Setup is the same single card as Login (D152); the wizard steps are one centred column at every width |
 | `cockpit` | Panorama · Consolidado | The asset detail reflows into one column |
 | `assets` | Holdings · Registrar movimiento · Tracked · Buscar (D125) | Watchlist, Holdings vacía and the search states reuse patterns above |
 | `alerts` | — | Its list and sheet are the patterns Cartera and Registrar movimiento settle |
