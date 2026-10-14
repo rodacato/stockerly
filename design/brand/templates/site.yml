@@ -58,11 +58,12 @@ es:
           La renta fija mexicana va junto a las acciones, con aviso antes del vencimiento, y la
           cartera se compara contra CETES reinvertidos — el benchmark al que un inversionista
           mexicano de verdad renuncia.
-      - h: Descriptivo, nunca prescriptivo
+      - h: Señales con su regla a la vista
         p: >-
-          Dice <em>«AAPL entró en zona de sobreventa según RSI(14)»</em>. No dice compra, ni vende,
-          ni es buen momento. Los indicadores y los scores compuestos entran; las predicciones y
-          las recomendaciones no, a propósito.
+          Una señal nace de una observación medida y guardada — <em>«AAPL entró en sobreventa
+          según RSI(14)»</em>, el precio cruzó su media de 200 días — y dice si sigue la tendencia
+          o apuesta a una reversión. Las etiquetas «compra» y «vende» solo salen cuando una
+          observación las respalda; no hay predicciones ni precios objetivo.
       - h: PWA que se instala en el teléfono
         p: >-
           La instalas en la pantalla de inicio y te llegan notificaciones push cuando se dispara
@@ -96,17 +97,20 @@ es:
       Dinero no — es MIT. Atención, y una lista corta de cosas que tienen que ser ciertas en tu
       servidor.
     items:
-      - {n: "8", d: proveedores de datos de mercado, todos opcionales. Corre sin ninguno configurado, solo con las fuentes que no piden llave.}
+      - {n: "8", d: proveedores de datos de mercado, todos opcionales. Corre sin ninguno, solo con Yahoo Finance y Alternative.me; el tipo de cambio automático de Banxico sí pide token.}
       - {n: "6", d: bounded contexts. Las escrituras los cruzan como eventos de dominio, las lecturas por una API publicada, y un ADR nombra cada costura.}
       - {n: "4", d: bases PostgreSQL — primary, cache, queue, cable. Ni Redis que correr, ni Node que compilar.}
       - {n: "1", d: cuenta en la instancia, creada por el Setup Wizard en el primer arranque. No hay una segunda que hacer.}
-      - {n: "0", d: cuentas con nadie más, incluido yo. Sin agregador, sin telemetría, sin servicio externo de errores.}
+      - {n: "0", d: cuentas con nadie más, incluido yo. Sin agregador, sin telemetría de uso, sin servicio externo de errores.}
   run:
     h2: Un comando, en tu máquina
     sub: >-
       <code>bin/setup</code> es idempotente: instala las gemas, crea y migra las cuatro bases de
-      PostgreSQL, las siembra en la primera creación, y levanta el servidor. No necesitas ninguna
-      API key de mercado para correrlo.
+      PostgreSQL, las siembra en la primera creación, y levanta el servidor. Arranca sin llaves de
+      mercado, pero hay dos dependencias que conviene saber: sin llaves, los precios vienen de
+      Yahoo Finance, que necesita Python 3 (solo la imagen de producción lo trae), y el tipo de
+      cambio automático de cada movimiento necesita un token de Banxico; sin él lo capturas a
+      mano.
     cards:
       - h: Dev container
         p: >-
@@ -115,8 +119,7 @@ es:
       - h: Bare metal
         p: >-
           Ruby 4.0.6 y un PostgreSQL 16 en <code>localhost</code>. Node.js no hace falta — el
-          JavaScript viaja por import maps y el CSS por el compilador standalone de Tailwind. Los fundamentales (Yahoo Finance) necesitan Python 3
-          fuera de Docker; sin él, el resto corre.
+          JavaScript viaja por import maps y el CSS por el compilador standalone de Tailwind.
     cmd_label: Los dos caminos acaban aquí
     cmd_tag: puerto 4100
     c1: gemas, bases, seeds, servidor
@@ -140,8 +143,8 @@ es:
     items:
       - {t: Más de una persona, d: "Single-user por diseño. Una instancia, una cuenta, sin roles, sin compartir, sin multi-tenancy. Una casa con dos personas necesita dos instancias."}
       - {t: Quien invierta fuera de México, d: "La matemática asume MXN y USD a través de un broker mexicano: CETES, el FIX de Banxico, la BMV. No es un tracker internacional genérico."}
-      - {t: Quien quiera sync con su broker, d: "Nada de Plaid, Yodlee ni SnapTrade, nunca a esta escala. Capturas los movimientos o importas un CSV. Las comisiones de los agregadores ayudaron a matar a un competidor del mismo stack."}
-      - {t: Day traders, d: "Cierre diario, no ticks. Sin resolución intradía, sin cotizaciones en streaming."}
+      - {t: Quien quiera sync con su broker, d: "Nada de Plaid, Yodlee ni SnapTrade, nunca a esta escala. Capturas los movimientos o importas un CSV."}
+      - {t: Day traders, d: "Los precios se refrescan con jobs periódicos, no en streaming, y el historial es diario. Sin velas intradía ni cotizaciones en tiempo real."}
       - {t: Quien quiera declarar impuestos, d: "Sin reportes de ISR, sin SAT, sin lot tracking, sin retenciones. Registra patrimonio; no reemplaza a tu contador."}
       - {t: Quien necesite soporte, d: "Sin SLA, sin garantía de soporte, sin aviso previo de cambios que rompen. Es el daily driver de una persona, que además se puede leer y correr."}
   facts:
@@ -252,11 +255,12 @@ en:
           Mexican fixed income sits beside the equities, with maturity lead time, and the portfolio
           is compared against reinvested CETES — the benchmark a Mexican investor actually gives
           something up for.
-      - h: Descriptive, never prescriptive
+      - h: Signals with their rule on show
         p: >-
-          It says <em>"AAPL entered oversold per RSI(14)"</em>. It does not say buy, sell, or now
-          is a good time. Indicators and composite scores are in; predictions and recommendations
-          are out, on purpose.
+          A signal comes from a measured, stored observation — <em>"AAPL entered oversold per
+          RSI(14)"</em>, price crossed its 200-day average — and says whether it follows the trend
+          or bets on a reversal. "Buy" and "sell" labels only appear when an observation backs
+          them; there are no predictions and no price targets.
       - h: A PWA you install on your phone
         p: >-
           Install it to the home screen and get push notifications when a rule fires. Offline it
@@ -290,17 +294,19 @@ en:
       Not money — it is MIT. Attention, and a short list of things that have to be true on your
       server.
     items:
-      - {n: "8", d: market-data providers, every one of them optional. It runs with none configured, on the keyless sources only.}
+      - {n: "8", d: market-data providers, every one of them optional. It runs with none, on Yahoo Finance and Alternative.me only; the automatic Banxico exchange rate does need a token.}
       - {n: "6", d: bounded contexts. Writes cross them as domain events, reads through a published API, and an ADR names every seam.}
       - {n: "4", d: PostgreSQL databases — primary, cache, queue, cable. No Redis to run, no Node to build.}
       - {n: "1", d: account on the instance, created by the Setup Wizard on first boot. There is no second one to make.}
-      - {n: "0", d: accounts with anyone else, including me. No aggregator, no telemetry, no external error service.}
+      - {n: "0", d: accounts with anyone else, including me. No aggregator, no usage telemetry, no external error service.}
   run:
     h2: One command, on your machine
     sub: >-
       <code>bin/setup</code> is idempotent: it installs gems, creates and migrates the four
-      PostgreSQL databases, seeds them on first creation, and starts the server. No market-data API
-      key is needed to run.
+      PostgreSQL databases, seeds them on first creation, and starts the server. It starts without market-data
+      keys, but two dependencies are worth knowing: without keys, prices come from Yahoo Finance,
+      which needs Python 3 (only the production image ships it), and the automatic exchange rate
+      for each trade needs a Banxico token; without it you enter the rate by hand.
     cards:
       - h: Dev container
         p: >-
@@ -309,8 +315,7 @@ en:
       - h: Bare metal
         p: >-
           Ruby 4.0.6 and a PostgreSQL 16 on <code>localhost</code>. Node.js is not required —
-          JavaScript ships through import maps and CSS through the Tailwind standalone compiler. Fundamentals (Yahoo Finance) need Python 3
-          outside Docker; without it, everything else runs.
+          JavaScript ships through import maps and CSS through the Tailwind standalone compiler.
     cmd_label: Both paths end here
     cmd_tag: port 4100
     c1: gems, databases, seeds, server
@@ -334,8 +339,8 @@ en:
     items:
       - {t: More than one person, d: "Single-user by design. One instance, one account, no roles, no sharing, no multi-tenancy. A household needs two instances."}
       - {t: Investors outside Mexico, d: "The math assumes MXN and USD through a Mexican broker: CETES, Banxico's FX fix, the BMV. It is not a generic international tracker."}
-      - {t: Anyone wanting broker sync, d: "No Plaid, no Yodlee, no SnapTrade, ever at this scale. You type trades or import a CSV. Aggregator fees helped kill a same-stack competitor."}
-      - {t: Day traders, d: "Daily close, not ticks. No sub-daily resolution, no streaming quotes."}
+      - {t: Anyone wanting broker sync, d: "No Plaid, no Yodlee, no SnapTrade, ever at this scale. You type trades or import a CSV."}
+      - {t: Day traders, d: "Prices refresh through periodic jobs, not streaming, and history is daily. No intraday candles, no real-time quotes."}
       - {t: Tax preparation, d: "No ISR reports, no SAT integration, no lot tracking, no withholding math. It tracks patrimony; it does not replace your accountant."}
       - {t: Anyone who needs support, d: "No SLA, no support guarantee, no advance notice of breaking changes. It is one person's daily driver that happens to be readable and runnable."}
   facts:
