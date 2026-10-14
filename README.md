@@ -24,9 +24,8 @@ from a multi-user beta to a single-user tracker.
 
 > The images in this README are **artboards from the design system**
 > ([`design/`](design/)), not captures of a running instance. A `.pen` file is encrypted JSON, so
-> the PNGs in [`design/exports/`](design/exports/) are what makes a design reviewable — and they
-> predate the Soft Candle branding and metric-clarity changes. Pencil synchronization is deferred;
-> these images illustrate the earlier layout and are not evidence of the current implementation.
+> the PNGs in [`design/exports/`](design/exports/) are what makes a design reviewable. The
+> figures in them are fictional.
 
 ## Features
 

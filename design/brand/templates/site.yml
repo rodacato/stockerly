@@ -18,6 +18,9 @@ es:
     Stockerly registra lo que tienes — acciones en EE. UU., cripto y CETES — y lo reporta todo en
     pesos usando el tipo de cambio del día de cada movimiento, no el de hoy. Corre en tu propio
     servidor. Hay una sola cuenta: la tuya.
+  scope: >-
+    Para una persona, con broker mexicano. Sin sync con brokers y sin reportes de impuestos.
+    Interfaz en español.
   cta_run: Cómo correrlo
   cta_code: Lee el código
   hero_cmd: Córrelo local
@@ -44,8 +47,7 @@ es:
         p: >-
           El costo promedio va ponderado por tipo de cambio. La ganancia no realizada se parte en
           lo que hizo el activo y lo que hizo el peso — para un inversionista mexicano con acciones
-          gringas esas son dos historias distintas, y casi todos los trackers sólo reportan la
-          primera.
+          gringas esas son dos historias distintas.
       - h: Tres niveles, no una lista
         p: >-
           <em>Holdings</em> es lo que tienes, <em>Watchlist</em> lo que sigues, y <em>Tracked</em>
@@ -113,7 +115,8 @@ es:
       - h: Bare metal
         p: >-
           Ruby 4.0.6 y un PostgreSQL 16 en <code>localhost</code>. Node.js no hace falta — el
-          JavaScript viaja por import maps y el CSS por el compilador standalone de Tailwind.
+          JavaScript viaja por import maps y el CSS por el compilador standalone de Tailwind. Los fundamentales (Yahoo Finance) necesitan Python 3
+          fuera de Docker; sin él, el resto corre.
     cmd_label: Los dos caminos acaban aquí
     cmd_tag: puerto 4100
     c1: gemas, bases, seeds, servidor
@@ -156,7 +159,7 @@ es:
           cada uno.
       - k: Seguridad
         v: Repórtala en privado desde la pestaña <b>Security</b> del repo → <em>Report a vulnerability</em>.
-        s: Nunca abras un issue público por una vulnerabilidad. Respuesta en 48 horas; ve <code>SECURITY.md</code>.
+        s: Nunca abras un issue público por una vulnerabilidad. Acuse de recibo en 48 horas; ve <code>SECURITY.md</code>.
       - k: Interfaz
         v: Español de México (es-MX), un solo locale.
         s: >-
@@ -211,6 +214,9 @@ en:
     Stockerly tracks what you own — US stocks, crypto and Mexican CETES — and reports all of it in
     pesos using the exchange rate from the day of each trade, not today's. You run it on your own
     server. There is one account: yours.
+  scope: >-
+    For one person, investing through a Mexican broker. No broker sync, no tax reports. The
+    interface is in Spanish.
   cta_run: How to run it
   cta_code: Read the source
   hero_cmd: Run it locally
@@ -235,8 +241,7 @@ en:
       - h: Multi-currency that tells the truth
         p: >-
           Cost basis is FX-weighted. The unrealised gain is split into what the asset did and what
-          the peso did — for a Mexican investor holding US stocks those are two different stories,
-          and most trackers report only the first.
+          the peso did — for a Mexican investor holding US stocks those are two different stories.
       - h: Three tiers, not one list
         p: >-
           <em>Holdings</em> is what you own, <em>Watchlist</em> is what you follow, and
@@ -304,7 +309,8 @@ en:
       - h: Bare metal
         p: >-
           Ruby 4.0.6 and a PostgreSQL 16 on <code>localhost</code>. Node.js is not required —
-          JavaScript ships through import maps and CSS through the Tailwind standalone compiler.
+          JavaScript ships through import maps and CSS through the Tailwind standalone compiler. Fundamentals (Yahoo Finance) need Python 3
+          outside Docker; without it, everything else runs.
     cmd_label: Both paths end here
     cmd_tag: port 4100
     c1: gems, databases, seeds, server
@@ -347,7 +353,7 @@ en:
           brought.
       - k: Security
         v: Report privately through the repository's <b>Security</b> tab → <em>Report a vulnerability</em>.
-        s: Never open a public issue for a vulnerability. Response within 48 hours; see <code>SECURITY.md</code>.
+        s: Never open a public issue for a vulnerability. Acknowledgment within 48 hours; see <code>SECURITY.md</code>.
       - k: Interface
         v: Mexican Spanish (es-MX), single locale.
         s: >-
