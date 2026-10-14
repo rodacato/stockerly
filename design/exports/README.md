@@ -15,8 +15,8 @@ Files land as `<nodeId>.png` and are renamed to `<flow>-<screen>[-<state>].png` 
 mean nothing to a reviewer. Re-export a flow whenever its artboards change materially; a stale PNG
 is worse than a missing one.
 
-**Index check.** Every PNG on disk has exactly one table row below and every row has a file, 93 of
-each on 2026-10-02. Verify with `ls design/exports/*.png | wc -l` against a grep of the row prefix,
+**Index check.** Every PNG on disk has exactly one table row below and every row has a file, 96 of
+each on 2026-10-14. Verify with `ls design/exports/*.png | wc -l` against a grep of the row prefix,
 not by reading the tables.
 
 > **Names follow D48.** The tier ladder reads **Holdings · Watchlist · Tracked** and *Señales* is
@@ -27,6 +27,7 @@ not by reading the tables.
 | `cockpit-panorama-default.png` | `[Cockpit] / Panorama / Default` |
 | `cockpit-panorama-tranquilo.png` | `[Cockpit] / Panorama / Tranquilo` — nothing moved today |
 | `cockpit-panorama-primera-vez.png` | `[Cockpit] / Panorama / Primera vez` — nothing held or watched yet |
+| `cockpit-panorama-sin-cotizacion.png` | `[Cockpit] / Panorama / Sin cotización` — a held asset has no quote, so the strip gives way to the notice |
 | `cockpit-senales.png` | `[Cockpit] / Señales / Default` |
 | `cockpit-senales-vacio.png` | `[Cockpit] / Señales / Vacío` |
 | `cockpit-asset-analisis.png` | `[Cockpit] / Asset · Análisis / Default` |
@@ -40,6 +41,7 @@ not by reading the tables.
 | `activos-holdings-vacia.png` | `[Activos] / Holdings / Vacío` |
 | `activos-watchlist-vacia.png` | `[Activos] / Watchlist / Vacía` |
 | `activos-holdings-sin-consolidar.png` | `[Activos] / Holdings / Sin consolidar` — no FX rate: rows keep their own currency |
+| `activos-holdings-sin-cotizacion.png` | `[Activos] / Holdings / Sin cotización` — a held asset has no quote, so the notice replaces the summary |
 | `activos-registrar-movimiento.png` | `[Activos] / Registrar movimiento / Sheet` |
 | `activos-registrar-con-teclado.png` | `[Activos] / Registrar movimiento / Con teclado` |
 | `activos-registrar-movimiento-cetes.png` | `[Activos] / Registrar movimiento / CETES` — a fixed-income buy asks for Vencimiento |
@@ -188,8 +190,9 @@ artboards.
 
 | File | Artboard |
 |---|---|
-| `brand-brief.png` | `Brand / Brief` — the five findings and where each one stands |
-| `brand-actual.png` | `Actual / Símbolo` — the mark being replaced, kept deliberately as the before |
+| `brand-soft-candle.png` | `Actual / Soft Candle` — the shipped mark light, dark and monochrome at 64/32/16 px, the wordmarks, the icons and the social cards |
+| `brand-brief.png` | `Brand / Brief` — the seven findings and where each one stands |
+| `brand-actual.png` | `Archivo / Cuatro corchetes + punto` — the mark before the disc, kept deliberately as the before |
 | `brand-exploracion.png` | `C1 / Asimetría sin alargar` — F1 / F2 / F3, the three that survived the cull |
 | `brand-simbolo-color.png` | `F2 / Símbolo y color` — construction, optical ladder, the six valid contrast pairs |
 | `brand-wordmark-lockup.png` | `F2 / Wordmark y lockup` |
