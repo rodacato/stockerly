@@ -673,6 +673,8 @@ re-vendors** (#821 landed the code; this mirrors it).
 - **`Segmented`, `Segmented3`** — options are 44 px high (`min-h-11`) and the inactive label is
   `$fg-default`, not `$fg-subtle` (`components/_segmented`).
 - **`BottomNav`** — five equal slots (`min-w-0 flex-1`) instead of space-around.
+- **`ButtonPrimary`** — fill is `$primary-fg`, not `$primary`, with the `$fg-inverse` label
+  (`ApplicationHelper::BUTTON_VARIANTS`): the label now clears AA in both modes.
 
 ### Not mirrored, on purpose
 
