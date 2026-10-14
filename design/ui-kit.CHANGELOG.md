@@ -651,3 +651,30 @@ consumers** in the app against `primary`'s ~100.
 Whether `info` is retired is a decision, not a tidy-up, and rule 2 of `design/README.md` keeps it
 out of this bump.
 
+
+---
+
+## 1.2.0 — Soft Candle, `fg-subtle` and 44 px controls
+
+Minor: the `Logo` and `LogoMark` masters change shape, and a token value changes — **every consumer
+re-vendors** (#821 landed the code; this mirrors it).
+
+### What changed
+
+- **`LogoMark`, `Logo`** — the disc-and-candles mark is replaced by G / Soft Candle: one continuous
+  rounded path, 5-unit stroke on a 64-unit canvas, no fill (`design/brand/glyph.svg`). `Logo` is the
+  174 × 40 lockup of `shared/_logo`: the glyph at .625 scale in `$primary` plus the **outlined
+  lettering** in `$fg-default` (`design/brand/lettering.svg`), replacing the `stockerly` text
+  node. It needs no installed font.
+- **`TopBar`, `SidebarNav`** — `Brand` is the same lockup at `h-7` (122 × 28), as both partials
+  render it.
+- **`fg-subtle` light `#64748B` → `#5E6E84`** (`app/assets/tailwind/application.css`). Dark is
+  unchanged. A value change, so it forces every consumer.
+- **`Segmented`, `Segmented3`** — options are 44 px high (`min-h-11`) and the inactive label is
+  `$fg-default`, not `$fg-subtle` (`components/_segmented`).
+- **`BottomNav`** — five equal slots (`min-w-0 flex-1`) instead of space-around.
+
+### Not mirrored, on purpose
+
+The 2 px `primary-fg` focus ring and the reduced-motion rule have no kit node: the kit draws no
+focus variants yet, and motion tokens are ui-motion's decision.
