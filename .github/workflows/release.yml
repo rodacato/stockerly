@@ -16,7 +16,7 @@ on:
     paths: [lib/stockerly/version.rb]   # the only push that can carry a new version
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: release
@@ -27,6 +27,8 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -105,6 +107,8 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code

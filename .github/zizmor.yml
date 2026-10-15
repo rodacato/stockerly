@@ -1,0 +1,9 @@
+rules:
+  artipacked:
+    ignore:
+      # Both release jobs push (a branch, then a tag) with the checkout's credentials.
+      - release.yml
+  unpinned-images:
+    ignore:
+      # The scanner image tracks latest on purpose; the job is report-only.
+      - ci-quality.yml
