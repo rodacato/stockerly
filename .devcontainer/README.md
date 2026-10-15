@@ -88,7 +88,7 @@ command path that has not been run from a container yet.
 **What does not work here**, and must not be forced: `deploy`, `redeploy`, `rollback`, `setup`,
 `build`, `app boot`, and `app exec` without `--reuse`. They push an image, need the registry, or
 write the container's env file from `.kamal/secrets` — which in this container resolves every
-secret to an empty string, silently. Run them through GitHub Actions (`deploy.yml`), or from the
+secret to an empty string, silently. Run them through GitHub Actions (`cd-deploy.yml`), or from the
 host with the secrets exported, per [docs/ops/deploy.md](../docs/ops/deploy.md).
 
 ## Security model

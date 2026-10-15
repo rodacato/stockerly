@@ -1,4 +1,4 @@
-name: Release
+name: Release · Cut
 
 # Cutting a release is a decision, not seven steps. `prepare` pushes the branch carrying the
 # version bump and the generated CHANGELOG entry; `publish` tags and publishes once that branch
@@ -128,7 +128,7 @@ jobs:
           fi
 
       # The suite is not re-run here. master only takes pull requests whose required checks
-      # passed on a branch that was up to date with it, which is why deploy.yml stopped
+      # passed on a branch that was up to date with it, which is why cd-deploy.yml stopped
       # re-running CI too (04ab52f3).
       - name: Tag and publish
         if: steps.check.outputs.publish == 'true'

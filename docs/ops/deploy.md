@@ -241,7 +241,7 @@ boot the instance has no users, so it answers at `/setup` again.
 
 ## 6. Subsequent Deploys
 
-`.github/workflows/deploy.yml` triggers on **push to the `production` branch** — not `master`.
+`.github/workflows/cd-deploy.yml` triggers on **push to the `production` branch** — not `master`.
 Merging to `master` runs CI and nothing else; production only moves when you advance `production`
 to a commit already on `master`:
 
