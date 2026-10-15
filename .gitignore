@@ -95,3 +95,6 @@ spec/examples.txt
 /site/assets/
 /site/github-social-preview.png
 /site/og-image-es.png
+
+# Portable brand kit, generated on demand by bin/brand-kit; the sources live in design/brand/
+/design/brand/dist/

@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+# Assemble a portable brand kit into design/brand/dist/ (gitignored).
+# Canonical artwork and tokens stay in design/brand/ and the app; this only exports copies.
+require "digest"
+require "fileutils"
+require "json"
+require "open3"
+require "tmpdir"
+require_relative "../app/shared/domain/brand_assets"
+
+Dir.chdir(BrandAssets::ROOT)
+abort "CSS build failed" unless system("bin/rails", "tailwindcss:build")
+
+Dir.mktmpdir("stockerly-brand-kit-") do |staging|
+  package = File.join(staging, "stockerly-brand-kit")
+  copy = lambda do |source, destination|
+    target = File.join(package, destination)
+    FileUtils.mkdir_p(File.dirname(target))
+    FileUtils.cp(source, target)
+  end
+
+  copy.call("design/brand/templates/kit-README.md", "README.md")
+  copy.call("LICENSE", "LICENSE")
+  %w[glyph lettering].each { |name| copy.call("design/brand/#{name}.svg", "logos/#{name}.svg") }
+  Dir["public/brand/wordmark-*"].sort.each { |path| copy.call(path, "logos/#{File.basename(path)}") }
+  %w[og-image github-social-preview].each do |name|
+    [ "", "-en" ].each do |language|
+      copy.call("public/brand/#{name}#{language}.svg", "social/#{name}#{language}.svg")
+      copy.call("public/#{name}#{language}.png", "social/#{name}#{language}.png")
+    end
+  end
+  %w[favicon.svg icon.svg icon-192.png icon-512.png icon-maskable-192.png
+     icon-maskable-512.png icon-monochrome-512.png apple-touch-icon.png offline.html].each do |name|
+    copy.call("public/#{name}", "pwa/#{name}")
+  end
+  Dir["public/splash/*.png"].sort.each { |path| copy.call(path, "pwa/splash/#{File.basename(path)}") }
+  Dir["design/brand/templates/*"].sort.each do |path|
+    copy.call(path, "sources/templates/#{File.basename(path)}") unless File.basename(path) == "kit-README.md"
+  end
+  copy.call("app/assets/tailwind/application.css", "sources/application.css")
+  copy.call("design/brand/tokens.md", "tokens.md")
+
+  abort "Marketing build failed" unless system("bin/brand-preview", "--site", "--output", File.join(package, "marketing"))
+  files = Dir["#{package}/**/*"].select { |path| File.file?(path) }.sort
+  manifest = { brand_assets_version: BrandAssets::VERSION, files: files.to_h { |path| [ path.delete_prefix("#{package}/"), Digest::SHA256.file(path).hexdigest ] } }
+  File.write("#{package}/manifest.json", "#{JSON.pretty_generate(manifest)}\n")
+  files << "#{package}/manifest.json"
+  # ZIP stores DOS timestamps. A fixed timestamp and sorted entries make repeat builds identical.
+  files.each { |path| File.utime(Time.utc(1980), Time.utc(1980), path); File.chmod(0o644, path) }
+  archive = File.join(staging, "stockerly-brand-kit.zip")
+  output, status = Open3.capture2e({ "TZ" => "UTC" }, "zip", "-q", "-X", archive, "-@",
+    stdin_data: "#{files.sort.map { |path| path.delete_prefix("#{staging}/") }.join("\n")}\n", chdir: staging)
+  abort "ZIP build failed: #{output}" unless status.success?
+
+  destination = File.join(BrandAssets::ROOT, "design/brand/dist")
+  FileUtils.rm_rf(destination)
+  FileUtils.mkdir_p(destination)
+  FileUtils.cp_r(package, destination)
+  FileUtils.cp(archive, destination)
+  puts "Brand kit: #{destination}/stockerly-brand-kit (#{files.length} files, brand assets v#{BrandAssets::VERSION})"
+  puts "ZIP: #{destination}/stockerly-brand-kit.zip"
+  puts "SHA256: #{Digest::SHA256.file(archive).hexdigest}"
+end
