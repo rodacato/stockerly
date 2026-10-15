@@ -73,7 +73,7 @@ Run `bin/quality` on the changed files and act on the result. Decision rule:
 
 - A new or modified file rated **D or F** → fix the flagged smells, or justify in one line why it stays.
 - Real Reek smells (FeatureEnvy, NestedIterators, DuplicateMethodCall) → fix. Idiom noise is already tuned out in `.reek.yml`.
-- It's advisory, not a hard gate — SonarQube in CI (`quality.yml`) is the enforcing gate. Don't wire `bin/quality` into `bin/ci`.
+- It's advisory, not a hard gate — SonarQube in CI (`ci-quality.yml`) is the enforcing gate. Don't wire `bin/quality` into `bin/ci`.
 
 ## Architecture
 

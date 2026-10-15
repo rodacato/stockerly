@@ -1,4 +1,4 @@
-name: CI
+name: CI · Test
 
 on:
   pull_request:
@@ -46,7 +46,7 @@ jobs:
       # Pin the database names so they do not follow the checkout directory here.
       DATABASE_PREFIX: stockerly
       # Nothing in a pull request reads the coverage report — Sonar runs its own
-      # rspec on demand in quality.yml. Skipping it here is about a tenth of the run.
+      # rspec on demand in ci-quality.yml. Skipping it here is about a tenth of the run.
       COVERAGE: "0"
 
     steps:

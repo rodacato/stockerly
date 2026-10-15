@@ -1,4 +1,4 @@
-name: Pages
+name: Site · Pages
 
 on:
   push:
@@ -14,7 +14,7 @@ on:
       - "public/*image*.png"
       - "public/github-social-preview*.png"
       - "lib/stockerly/version.rb"
-      - ".github/workflows/pages.yml"
+      - ".github/workflows/site-pages.yml"
   workflow_dispatch:
 
 permissions:
