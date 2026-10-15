@@ -6,6 +6,10 @@ on:
     branches: [master]
   pull_request:
 
+concurrency:
+  group: quality-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 
@@ -18,11 +22,14 @@ jobs:
   semgrep:
     name: semgrep (SAST)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     container:
       image: semgrep/semgrep
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Scan
         continue-on-error: ${{ env.SECURITY_BLOCKING != 'true' }}
@@ -31,12 +38,15 @@ jobs:
   trivy:
     name: trivy (deps + secrets + IaC)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Scan
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         continue-on-error: ${{ env.SECURITY_BLOCKING != 'true' }}
         with:
           scan-type: fs
@@ -49,14 +59,16 @@ jobs:
   gitleaks:
     name: gitleaks (secret scan)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Scan
-        uses: gitleaks/gitleaks-action@v3
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
         continue-on-error: ${{ env.SECURITY_BLOCKING != 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -96,18 +108,19 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0 # full history → accurate "new code" / blame dates
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1.329.0
         with:
           bundler-cache: true
 
       - name: Install Chrome for the cuprite system specs
         id: chrome
-        uses: browser-actions/setup-chrome@v2
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
         with:
           chrome-version: stable
 
@@ -123,7 +136,7 @@ jobs:
         run: bundle exec rspec
 
       - name: SonarQube scan
-        uses: sonarsource/sonarqube-scan-action@v8.3.0
+        uses: sonarsource/sonarqube-scan-action@d209202bc7d53ff1cc128f7f907dac145c9d6ae9 # v8.3.0
         with:
           args: -Dsonar.projectVersion=${{ github.sha }}
         env:
