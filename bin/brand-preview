@@ -4,12 +4,18 @@ require "erb"
 require "yaml"
 require "json"
 require "fileutils"
+require "optparse"
 require_relative "../app/shared/domain/brand_assets"
 require_relative "../lib/stockerly/version"
 
 Dir.chdir(BrandAssets::ROOT)
-preview = !ARGV.delete("--site")
-output = preview ? "tmp/brand-preview" : "site"
+preview = true
+output = nil
+OptionParser.new do |options|
+  options.on("--site", "Build the bilingual marketing site and brand reference") { preview = false }
+  options.on("--output PATH", "Write to an isolated output directory") { |path| output = path }
+end.parse!
+output ||= preview ? "tmp/brand-preview" : "site"
 FileUtils.mkdir_p("#{output}/assets/brand")
 FileUtils.cp("app/assets/builds/tailwind.css", "#{output}/assets/application.css")
 FileUtils.cp(Dir["public/brand/*"], "#{output}/assets/brand")
