@@ -26,6 +26,10 @@ not by reading the tables.
 |---|---|
 | `cockpit-panorama-default.png` | `[Cockpit] / Panorama / Default` |
 | `cockpit-panorama-tranquilo.png` | `[Cockpit] / Panorama / Tranquilo` — nothing moved today |
+| `cockpit-hoy-default.png` | `[Cockpit] / Hoy / Default` — a verdict line, two figures, three items |
+| `cockpit-hoy-tranquilo.png` | `[Cockpit] / Hoy / Tranquilo` — "todo en orden", nothing to look at |
+| `cockpit-hoy-primera-vez.png` | `[Cockpit] / Hoy / Primera vez` — an empty portfolio |
+| `cockpit-hoy-sin-cotizacion.png` | `[Cockpit] / Hoy / Sin cotización` — stale quotes, never "todo en orden" |
 | `cockpit-panorama-primera-vez.png` | `[Cockpit] / Panorama / Primera vez` — nothing held or watched yet |
 | `cockpit-panorama-sin-cotizacion.png` | `[Cockpit] / Panorama / Sin cotización` — a held asset has no quote, so the strip gives way to the notice |
 | `cockpit-senales.png` | `[Cockpit] / Señales / Default` |
