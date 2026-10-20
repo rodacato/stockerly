@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_17_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -53,6 +53,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_17_120000) do
     t.index ["asset_symbol"], name: "index_alert_rules_on_asset_symbol"
     t.index ["user_id", "status"], name: "index_alert_rules_on_user_id_and_status"
     t.index ["user_id"], name: "index_alert_rules_on_user_id"
+  end
+
+  create_table "app_opens", force: :cascade do |t|
+    t.date "day", null: false
+    t.string "path", null: false
+    t.integer "count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["day", "path"], name: "index_app_opens_on_day_and_path", unique: true
   end
 
   create_table "asset_fundamentals", force: :cascade do |t|

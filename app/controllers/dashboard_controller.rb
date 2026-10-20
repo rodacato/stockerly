@@ -1,4 +1,6 @@
 class DashboardController < AuthenticatedController
+  after_action :record_open, only: :show
+
   def show
     data = Trading::UseCases::AssemblePanorama.call(user: current_user)
 
@@ -13,5 +15,14 @@ class DashboardController < AuthenticatedController
     @tracks_anything = data[:tracks_anything]
     @sparkline_closes = data[:sparkline_closes]
     @day_changes     = data[:day_changes]
+  end
+
+  private
+
+  def record_open
+    return unless response.successful? && request.format.html?
+    return if turbo_frame_request? || request.headers["X-Sec-Purpose"] == "prefetch"
+
+    AppOpen.record(path: request.path)
   end
 end

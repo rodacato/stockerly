@@ -52,6 +52,16 @@ RSpec.describe "Admin pages", type: :request do
       expect(response.body).to include("abierto 1 de las últimas 8 semanas")
     end
 
+    it "shows the cockpit opens of the last 14 days" do
+      3.times { AppOpen.record(path: "/dashboard") }
+
+      get admin_settings_path
+
+      expect(response.body).to include("Aperturas del panorama")
+      expect(response.body).to include(">3<")
+      expect(response.body.scan(%r{\d{1,2}/\d{2}</span>}).size).to eq(14)
+    end
+
     it "says so plainly when Descubrir has not been opened at all" do
       allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
 
