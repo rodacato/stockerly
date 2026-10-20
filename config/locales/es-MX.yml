@@ -142,6 +142,8 @@ es-MX:
         guardados: Ajustes guardados.
       show:
         activado: activado
+        aperturas: Aperturas del panorama
+        aperturas_ayuda: Veces que se abrió /dashboard cada día, los últimos 14 días.
         banner_activo: Quien no haya iniciado sesión ve la página de mantenimiento.
           Tu sesión sigue viva.
         cache: Caché

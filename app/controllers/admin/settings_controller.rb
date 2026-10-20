@@ -67,7 +67,8 @@ module Admin
         # number on screen, not in a console.
         discover_weeks: MarketData::Discover::VisitLog.weeks_seen,
         discover_window: MarketData::Discover::VisitLog.window,
-        discover_last_seen: MarketData::Discover::VisitLog.last_seen
+        discover_last_seen: MarketData::Discover::VisitLog.last_seen,
+        opens_per_day: AppOpen.per_day(path: "/dashboard")
       }
     end
 

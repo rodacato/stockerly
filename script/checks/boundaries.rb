@@ -22,7 +22,7 @@ module Checks
     TITLE = "ADR-002: Trading and MarketData read each other through the read API"
 
     OWNERS = {
-      "administration" => %w[ErrorEvent Integration SiteConfig SiteConfigChange],
+      "administration" => %w[AppOpen ErrorEvent Integration SiteConfig SiteConfigChange],
       "alerts"         => %w[AlertEvent AlertPreference AlertRule],
       "identity"       => %w[OtpRecoveryCode],
       "market_data"    => %w[
