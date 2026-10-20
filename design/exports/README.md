@@ -192,18 +192,7 @@ artboards.
 |---|---|
 | `brand-soft-candle.png` | `Actual / Soft Candle` — the shipped mark light, dark and monochrome at 64/32/16 px, the wordmarks, the icons and the social cards |
 | `brand-brief.png` | `Brand / Brief` — the seven findings and where each one stands |
-| `brand-actual.png` | `Archivo / Cuatro corchetes + punto` — the mark before the disc, kept deliberately as the before |
-| `brand-exploracion.png` | `C1 / Asimetría sin alargar` — F1 / F2 / F3, the three that survived the cull |
-| `brand-simbolo-color.png` | `F2 / Símbolo y color` — construction, optical ladder, the six valid contrast pairs |
-| `brand-wordmark-lockup.png` | `F2 / Wordmark y lockup` |
-| `brand-usos.png` | `F2 / Usos` — correct, and the seven incorrect |
-| `brand-pwa.png` | `F2 / PWA y aplicaciones` |
-| `brand-escala-1x.png` | `F2 / Símbolo y color › Escala` — **exported at `scale: 1`, not 2** |
-
-**Why one file breaks the scale-2 rule.** Every other PNG here is a review artifact and 2× makes it
-readable. `brand-escala-1x.png` is a *measurement*: at 2× a "16 px" sample renders 32 px wide and
-flatters itself. At true 1× it shows the honest floor — the wicks close at 24 px and below, and
-only the candle bodies survive. Re-export it at 1× or do not re-export it at all.
+| `brand-usos.png` | `Actual / Usos` — correct, and the seven incorrect |
 
 > **Renamed and re-shot 2026-08-27 — the whole `activos` set.** D48 moved the tier ladder to
 > Holdings · Watchlist · Tracked, so eight of the twelve filenames changed with their artboards.

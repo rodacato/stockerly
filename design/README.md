@@ -37,7 +37,7 @@ _Listing verified against the directory 2026-08-27._
 | `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Read the version from its `kit-version` variable, never from this row |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed, plus the live **Open kit gaps** list |
 | `flows/*.pen` | **One file per domain** — seven of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`) |
-| `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section. **On kit 1.2.0**. Its first sheet, `Actual / Soft Candle`, is the mark that ships; the `Archivo` sheets record the disc it replaced |
+| `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section. **On kit 1.2.0**. Its first sheet, `Actual / Soft Candle`, is the mark that ships, and `Actual / Usos` its correct and incorrect uses; the sheets for the disc it replaced are in git history |
 | `brand/` | Canonical `glyph.svg` and outlined `lettering.svg`; app partials compose them inline. `bin/brand-assets` generates the wordmark variants, icons, social artwork and offline page from those sources and application tokens. The wordmark needs no installed font. Usage and reproduction: [brand guide](brand/README.md) |
 | `_playground.pen` | Experiments — inside the system (kit installed at 0.8.1; holds `Panel · V1…V4`, the login brand-panel exploration) |
 | `DECISIONS.md` | The numbered findings/decisions registry the `.pen` briefs cite |
