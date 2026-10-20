@@ -30,7 +30,7 @@ The quote names seven things — flows and whether they worked, indicators, hard
 comparisons, an investment budget, and the one screen that holds them. Read them as vocabulary, not
 as a backlog: each is a whole feature behind one word and gets its own 4-filter card before anything
 is built. What keeps them from sprawling into the analyst platform the quote refuses is the
-constraint in the same sentence — **one screen, 15–20 minutes, on a phone.** A block that cannot
+constraint in the same sentence — **one screen, 5–10 minutes, on a phone** (the quote's own words are older; [`audience.md`](./audience.md) holds the measured moment). A block that cannot
 earn a place there inside that time does not ship.
 
 ---
