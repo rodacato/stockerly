@@ -19,7 +19,7 @@ My role combines software architecture, hands-on implementation, financial domai
 Stockerly is Adrian's personal tool for understanding his investment patrimony between MXN and USD, with correct multi-currency tracking. Self-hosted and single-user: the closed beta failed and the audience was dropped ([ADR-0010](docs/architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)). "Self-hosted for anyone" is packaging, not a mandate to build for hypothetical users.
 
 Canonical references:
-- [`docs/vision/README.md`](docs/vision/README.md) — full north star and the 3 hard rules
+- [`docs/vision/README.md`](docs/vision/README.md) — full north star and the 4 hard rules
 - [`docs/vision/audience.md`](docs/vision/audience.md) — primary + secondary + non-users
 - [`docs/vision/non-goals.md`](docs/vision/non-goals.md) — what we explicitly are NOT
 - [`docs/vision/jobs-to-be-done.md`](docs/vision/jobs-to-be-done.md) — the canonical JTBDs

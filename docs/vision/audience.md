@@ -8,9 +8,19 @@
 
 - Personal investor with patrimony split between **MXN (CETES, possibly Cetesdirecto)** and **USD (NYSE/NASDAQ-listed equities, bought via a Mexican broker that operates in USD for MX residents)**, plus **crypto**.
 - The same stocks are quoted in USD; common flow: convert MXN→USD to invest, eventually convert USD→MXN.
-- **Checks the portfolio 2–3 times a day**, in his own words: *"me gusta saber si voy ganando o
-  perdiendo dinero al momento, como 2-3 veces al día reviso mis apps"* (2026-09-05). This line read
-  *"Reviews portfolio weekly, not daily"* from 2026-05-14 until then, and it was never measured.
+- **Opens the app daily, in 5–10 minute bursts on a phone** — before a meeting, waiting outside, any
+  short gap — where he opens a broker app today. In his words (2026-10-20): *"No tengo tiempo de
+  vigilar la bolsa. Quiero abrir la app y que en un vistazo simple me oriente; ya después, con tiempo,
+  me meto a analizar cada acción."* The earlier lines (*"2-3 veces al día"*, 2026-09-05; weekly,
+  2026-05-14) were each stated, not measured; the daily open count in admin settings is what now
+  checks this one.
+- **Two rhythms.** *Daily, one to two minutes:* is anything important about what I hold, and am I on
+  track against CETES and my own plan? *Weekly, 10–15 minutes:* me against my plan, what looks cheap
+  or pricey in my watchlist, one lesson using my positions. Analysing a single stock in depth comes
+  later, when he has time, and is served by the asset page.
+- **The plan comes first.** The first orientation is his own plan — goals, horizon, target allocation,
+  monthly contribution — and benchmarks, not market timing. A calm day is an answer ("nada importante
+  hoy"), not an empty screen.
 - **Trades on 1–2 days a week, in batches.** Measured against production 2026-09-05 — trading days
   per month since the account opened: `8, 13, 13, 12, 6, 2, 8, 8, 4, 4`, about five trades on a day
   he trades. Not a day trader, which is the half of the old line that was right.
@@ -29,12 +39,12 @@
 ### Consult as `el-usuario`
 
 The primary user is also a seat on the [expert panel](./experts.md) — **C11 `el-usuario`**: Adrian on
-the couch on a Sunday night, phone in hand. Kept apart from builder-Adrian on purpose, because the
+a short gap in his day, phone in hand. Kept apart from builder-Adrian on purpose, because the
 builder is the one who wants the events table and the user is the one who wants to know whether he
 is up or down.
 
-- **Who he is in that moment:** part-time, on a phone, 15–20 minutes, wants a *decision* rather than
-  a dashboard, and abandons anything that feels like a chore. He is the person the closed beta
+- **Who he is in that moment:** part-time, on a phone, 5–10 minutes (a waiting room, not a couch),
+  wants to be oriented rather than shown a dashboard, and abandons anything that feels like a chore. He is the person the closed beta
   failed.
 - **Consult on:** every screen, every data-entry flow, every "should we add X".
 - **His job is to veto** a proposal that serves builder ambition over that moment — backend rigor
