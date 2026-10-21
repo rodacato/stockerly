@@ -16665,6 +16665,13 @@
             "JaKDl": {
               "fill": "$fg-subtle",
               "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
             }
           }
         }

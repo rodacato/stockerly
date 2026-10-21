@@ -35,6 +35,15 @@ RSpec.describe "Help", type: :request do
       expect(response.parsed_body.at_css("a[href='#{help_path}']")).to be_present
     end
 
+    it "keeps the Ajustes tab lit, like the hub's other pages" do
+      login_as(user)
+
+      [ help_path, plan_path ].each do |path|
+        get path
+        expect(response.parsed_body.at_css("a[aria-current='page'][href='#{settings_path}']")).to be_present, path
+      end
+    end
+
     it "sends a bug to the issue tracker rather than to somebody else's inbox" do
       login_as(user)
       get help_path

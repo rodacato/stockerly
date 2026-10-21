@@ -10,7 +10,7 @@ module NavigationHelper
     { key: "activos",  icon: "trending_up",   path: :assets_path,    controllers: %w[assets portfolios trades trade_imports positions watchlist_items market] },
     { key: "reglas",   icon: "notifications", path: :alerts_path,    controllers: %w[alerts notifications] },
     { key: "discover", icon: "explore",       path: :discover_path,  controllers: %w[discover] },
-    { key: "ajustes",  icon: "settings",      path: :settings_path,  controllers: %w[settings profiles totp_enrollments] }
+    { key: "ajustes",  icon: "settings",      path: :settings_path,  controllers: %w[settings profiles totp_enrollments plans help] }
   ].freeze
 
   def main_nav_items
