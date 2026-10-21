@@ -36,10 +36,10 @@ _Listing verified against the directory 2026-08-27._
 |---|---|
 | `ui-kit.lib.pen` | **The design library** — tokens (our `@theme` contract) + components. Read the version from its `kit-version` variable, never from this row |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed, plus the live **Open kit gaps** list |
-| `flows/*.pen` | **One file per domain** — seven of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`) |
+| `flows/*.pen` | **One file per domain** — eight of them today (`auth`, `onboarding`, `cockpit`, `assets`, `alerts`, `settings`, `discover`, `assistant`) |
 | `brand.pen` | The identity sheet (D44/D45) — sheets, not `[Flow] / Screen / State` artboards. Not a flow, which is why it has its own file and its own export section. **On kit 1.2.0**. Its first sheet, `Actual / Soft Candle`, is the mark that ships, `Actual / Usos` its correct and incorrect uses, and `Exploración / Panel de marca` the four login brand panels D152 retired; the sheets for the disc it replaced are in git history |
 | `brand/` | Canonical `glyph.svg` and outlined `lettering.svg`; app partials compose them inline. `bin/brand-assets` generates the wordmark variants, icons, social artwork and offline page from those sources and application tokens. The wordmark needs no installed font. Usage and reproduction: [brand guide](brand/README.md) |
-| `_playground.pen` | Experiments — inside the system (kit installed at 0.8.1). Empty between explorations: a screen that earns a home moves to its flow, and the brand-panel exploration moved to `brand.pen` |
+| `_playground.pen` | Experiments — inside the system, vendoring the kit like a flow. Empty between explorations: a screen that earns a home moves to its flow — the brand panels went to `brand.pen`, the assistant to `flows/assistant.pen` |
 | `DECISIONS.md` | The numbered findings/decisions registry the `.pen` briefs cite |
 | `CHECKLIST.md` | What to run, in order, every time a `.pen` is opened for real work |
 | `exports/` | Canvas PNGs for review — **committed** (they must travel) |
@@ -56,9 +56,9 @@ One `.pen` per domain, derived from the app's routes (`config/routes.rb`), not i
 **mirrors the screens that exist in code** (D78). A flow earns its own file at ~3+ screens; smaller
 ones may merge into a neighbor.
 
-> **Kit versions.** The seven flows vendor the kit at **1.3.0**, the version of `ui-kit.lib.pen`;
-> `brand.pen` stays at 1.2.0 and `_playground.pen` at 0.8.1. Read each file's `kit-version-source`, never
-> this paragraph. The 0.8 → 0.9 migration notes (`MIGRATION.md`) were deleted on close; the durable
+> **Kit versions.** Every flow, `brand.pen` and `_playground.pen` vendor the kit at a pinned version, and
+> they do not all match `ui-kit.lib.pen`'s `kit-version`. Read each file's `kit-version-source`; this
+> paragraph deliberately carries no numbers. The 0.8 → 0.9 migration notes (`MIGRATION.md`) were deleted on close; the durable
 > parts are in `ui-kit.CHANGELOG.md`'s gap list and in D53/D57/D58/D59.
 
 > **No status or progress lives in this table.** How closely the code matches a flow is measured,
@@ -84,6 +84,7 @@ ones may merge into a neighbor.
 | `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | **Reglas:** vacío · default · **Nueva regla:** sheet · calendario · **Bandeja:** default · vacía |
 | `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | **Cuenta:** hub (+ avisos bloqueados · dos pasos activa), nombre y correo, contraseña, tu plan (vacío · default · error, D156) · **Integraciones:** lista, administrar, estados, vacío · **Operación:** registros (+ detalle · filtrado sin resultados), estado y mantenimiento (+ mantenimiento activo), en mantenimiento, errores (+ detalle) · **Ayuda:** `/help` (D161) — no desktop artboard, every screen is one column |
 | `flows/discover.pen` | Descubrir — the world, not the instance (D31) | olas (default · todas las canastas · sin datos · calendario agotado) — no desktop artboard, the page reflows |
+| `flows/assistant.pen` | Asistente — invoked, grounded in what it retrieved (ADR-031, proposed) · **design ahead of code** | **Hoy:** Velita en reposo · drawer abierto · drawer con respuesta · ayuda con Pregúntale · **Detalle:** drawer con el símbolo · **Ajustes · Asistente:** conectada · sin configurar · error de conexión · **Velita:** formas, estados y colores (D166/D167) · **Desktop:** panel abierto |
 
 Working model per flow: **(1)** read the existing screens/copy from code (source of truth for
 structure + strings) · **(2)** compose them in the `.pen` with the new ui-kit · **(3)** review/feel ·
