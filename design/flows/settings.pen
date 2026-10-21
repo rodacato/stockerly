@@ -1,5 +1,5 @@
 {
-  "version": "2.20",
+  "version": "2.21",
   "children": [
     {
       "type": "frame",
@@ -500,7 +500,7 @@
       "name": "[Ajustes] / Hub / Default",
       "clip": true,
       "width": 390,
-      "height": 2360,
+      "height": 2502,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -699,6 +699,57 @@
                     },
                     "uH4YA": {
                       "content": "TOTP y códigos de recuperación"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rXRAI",
+              "name": "Tu plan",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "i35zz",
+                  "name": "H",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Wo8a3",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Tu plan",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "id": "yQrqt",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Tu plan",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "target"
+                    },
+                    "GueOK": {
+                      "content": "Tu plan"
+                    },
+                    "uH4YA": {
+                      "content": "Cuánto quieres en cada tipo y cuánto aportas al mes"
                     },
                     "AgU5u": {
                       "content": ""
@@ -9096,6 +9147,1257 @@
         },
         {
           "id": "C6RxtM",
+          "type": "ref",
+          "ref": "PzVx9",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ULvqd",
+      "x": -480,
+      "y": 2560,
+      "name": "[Ajustes] / Tu plan / Vacío",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "AvTKG",
+          "type": "ref",
+          "ref": "B3jgA",
+          "name": "Header",
+          "width": "fill_container",
+          "descendants": {
+            "rBnzV": {
+              "content": "Tu plan"
+            },
+            "bcqqH": {
+              "width": 44,
+              "padding": 0,
+              "enabled": false
+            },
+            "MEluP": {
+              "icon": "download",
+              "width": 20,
+              "height": 20,
+              "enabled": false
+            },
+            "L00Xqd": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "V4GwZa",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-5",
+          "padding": [
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "wgJP5",
+              "name": "Intro",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tu plan es tuyo: la app solo compara lo que tienes con lo que escribes aquí.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "w0AMqC",
+              "name": "Formulario",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-4",
+              "padding": "$space-5",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Au6Bt",
+                  "name": "ACCIONES Y ETF",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DuSVE",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "ACCIONES Y ETF",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ALBo2",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "v7bdy",
+                          "name": "v",
+                          "fill": "$fg-subtle",
+                          "content": "0",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ZDuDK",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "L1JPuB",
+                  "name": "CRIPTO",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "V0bkGy",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "CRIPTO",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "WpVmI",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "AZ6RH",
+                          "name": "v",
+                          "fill": "$fg-subtle",
+                          "content": "0",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "QIovr",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "SBezz",
+                  "name": "RENTA FIJA · CETES",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "w2rqkd",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "RENTA FIJA · CETES",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xIWRj",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "s1qZXD",
+                          "name": "v",
+                          "fill": "$fg-subtle",
+                          "content": "0",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "w7CezB",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "pG0bz",
+                  "name": "Suma",
+                  "width": "fill_container",
+                  "fill": "$bg-muted",
+                  "cornerRadius": "$radius-sm",
+                  "gap": 8,
+                  "padding": [
+                    10,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "SQFEu",
+                      "name": "Icono",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "info",
+                      "library": "Material Symbols Outlined",
+                      "fill": "$fg-subtle"
+                    },
+                    {
+                      "type": "text",
+                      "id": "qDEQH",
+                      "name": "Texto",
+                      "fill": "$fg-subtle",
+                      "content": "Los tres tipos deben sumar 100%.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "JMJTX",
+                  "name": "APORTACIÓN MENSUAL",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "K1rHP",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "APORTACIÓN MENSUAL",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Y6QSS",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "uXFDY",
+                          "name": "v",
+                          "fill": "$fg-subtle",
+                          "content": "0",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "i2uoNG",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "MXN",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "LbKiQ",
+                      "name": "Ayuda",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Cuánto planeas sumar cada mes. Es tuyo: la app solo lo compara con lo que registras.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "PKhfv",
+                  "name": "Guardar",
+                  "width": "fill_container",
+                  "fill": "$bg-muted",
+                  "cornerRadius": "$radius-sm",
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "JybN5",
+                      "name": "t",
+                      "fill": "$fg-subtle",
+                      "content": "Guardar plan",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "B3BZp",
+          "type": "ref",
+          "ref": "PzVx9",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Q3AyoI",
+      "x": 30,
+      "y": 2560,
+      "name": "[Ajustes] / Tu plan / Default",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "XDH4a",
+          "type": "ref",
+          "ref": "B3jgA",
+          "name": "Header",
+          "width": "fill_container",
+          "descendants": {
+            "rBnzV": {
+              "content": "Tu plan"
+            },
+            "bcqqH": {
+              "width": 44,
+              "padding": 0,
+              "enabled": false
+            },
+            "MEluP": {
+              "icon": "download",
+              "width": 20,
+              "height": 20,
+              "enabled": false
+            },
+            "L00Xqd": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "GrflF",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-5",
+          "padding": [
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "b7Y3yo",
+              "name": "Intro",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tu plan es tuyo: la app solo compara lo que tienes con lo que escribes aquí.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "svS4t",
+              "name": "Formulario",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-4",
+              "padding": "$space-5",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "PiTAk",
+                  "name": "ACCIONES Y ETF",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "bEGWf",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "ACCIONES Y ETF",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "pmBFk",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "P1JsJ4",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "50",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "r80oUs",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gfup9",
+                  "name": "CRIPTO",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "J5bfF",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "CRIPTO",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C7YBGP",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "cHGtm",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "20",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "lKfDc",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oK1V3",
+                  "name": "RENTA FIJA · CETES",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "fbGnv",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "RENTA FIJA · CETES",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NbZtM",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wREPk",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "30",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "WGVHQ",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Uv35P",
+                  "name": "Suma",
+                  "width": "fill_container",
+                  "fill": "$positive-bg",
+                  "cornerRadius": "$radius-sm",
+                  "gap": 8,
+                  "padding": [
+                    10,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "hUji6",
+                      "name": "Icono",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "check_circle",
+                      "library": "Material Symbols Outlined",
+                      "fill": "$positive-fg"
+                    },
+                    {
+                      "type": "text",
+                      "id": "YZQVL",
+                      "name": "Texto",
+                      "fill": "$positive-fg",
+                      "content": "Suma 100%.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "RFnYs",
+                  "name": "APORTACIÓN MENSUAL",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "k6bcGG",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "APORTACIÓN MENSUAL",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "monR2",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "b83b4E",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "5,000",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "E2B4c",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "MXN",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "IYQiG",
+                      "name": "Ayuda",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Cuánto planeas sumar cada mes. Es tuyo: la app solo lo compara con lo que registras.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tumrW",
+                  "name": "Guardar",
+                  "width": "fill_container",
+                  "fill": "$primary-fg",
+                  "cornerRadius": "$radius-sm",
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "uFglD",
+                      "name": "t",
+                      "fill": "$fg-inverse",
+                      "content": "Guardar plan",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "nJMpC",
+          "type": "ref",
+          "ref": "PzVx9",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Q60MPi",
+      "x": 540,
+      "y": 2560,
+      "name": "[Ajustes] / Tu plan / Error",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "SajL8",
+          "type": "ref",
+          "ref": "B3jgA",
+          "name": "Header",
+          "width": "fill_container",
+          "descendants": {
+            "rBnzV": {
+              "content": "Tu plan"
+            },
+            "bcqqH": {
+              "width": 44,
+              "padding": 0,
+              "enabled": false
+            },
+            "MEluP": {
+              "icon": "download",
+              "width": 20,
+              "height": 20,
+              "enabled": false
+            },
+            "L00Xqd": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "Ud22u",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-5",
+          "padding": [
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "RI5lo",
+              "name": "Intro",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tu plan es tuyo: la app solo compara lo que tienes con lo que escribes aquí.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "X2kN2t",
+              "name": "Formulario",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": "$space-4",
+              "padding": "$space-5",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "CXeWQ",
+                  "name": "ACCIONES Y ETF",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "fszBf",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "ACCIONES Y ETF",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Z6RnHX",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "yDPJy",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "50",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "K5nLci",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "XfyH4",
+                  "name": "CRIPTO",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "oLtln",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "CRIPTO",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BZdfm",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "A0iq7t",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "20",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "yTo1p",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "MVtmO",
+                  "name": "RENTA FIJA · CETES",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "KuR9f",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "RENTA FIJA · CETES",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "H6CcI",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$negative-fg",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "K0Bknc",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "25",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "q0AhoJ",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "LkhIV",
+                  "name": "Suma",
+                  "width": "fill_container",
+                  "fill": "$negative-bg",
+                  "cornerRadius": "$radius-sm",
+                  "gap": 8,
+                  "padding": [
+                    10,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "dDPcf",
+                      "name": "Icono",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "error",
+                      "library": "Material Symbols Outlined",
+                      "fill": "$negative-fg"
+                    },
+                    {
+                      "type": "text",
+                      "id": "fYTnY",
+                      "name": "Texto",
+                      "fill": "$negative-fg",
+                      "content": "Suma 95%: faltan 5 puntos.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "yOQBJ",
+                  "name": "APORTACIÓN MENSUAL",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "lMbp4",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "APORTACIÓN MENSUAL",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "k92L1",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        10,
+                        12
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "q9z2T",
+                          "name": "v",
+                          "fill": "$fg-default",
+                          "content": "5,000",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Jet5z",
+                          "name": "u",
+                          "fill": "$fg-subtle",
+                          "content": "MXN",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "zxCa7",
+                      "name": "Ayuda",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Cuánto planeas sumar cada mes. Es tuyo: la app solo lo compara con lo que registras.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "wwRK7",
+                  "name": "Guardar",
+                  "width": "fill_container",
+                  "fill": "$primary-fg",
+                  "cornerRadius": "$radius-sm",
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mc0VK",
+                      "name": "t",
+                      "fill": "$fg-inverse",
+                      "content": "Guardar plan",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "P6f0C",
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
