@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "PURPOSE\nOne Ajustes for a single-user instance (D5): the person who owns the account also owns the box, so /profile and the /admin zone are one hub with sections — cuenta, apariencia y región, tu plan, avisos, tu instancia, tus datos.\n\nENTRY POINTS\nThe fifth BottomNav tab (/settings). Its rows open /settings/account, /settings/password, /settings/plan, TOTP enrolment (auth.pen), /admin/integrations, /admin/logs, /admin/settings, Mission Control at /admin/jobs (a new tab), /admin/errors (only with developer_mode, ADR-020) and the importer (assets.pen). /help has no entry point in the app: help_path is linked from nowhere, so it is reached by typing the URL (D161). Errores' back arrow returns to Estado y mantenimiento, where its switch lives. En mantenimiento is what a visitor who is not signed in gets from any page while maintenance_mode is on.\n\nSCREENS (LEFT → RIGHT, BY BAND)\nCuenta: Hub (default · avisos bloqueados · dos pasos activa) · Nombre y correo · Contraseña · Tu plan (vacío · default · error).\nIntegraciones: lista · Administrar (one source opened) · Estados (the five states) · Vacío.\nOperación: Registros · Registros · Detalle · Registros · Filtrado sin resultados · Estado y mantenimiento · Estado · Mantenimiento activo · En mantenimiento · Errores · Errores · Detalle.\nAyuda: /help as shipped (D161) — the app layout, no BottomNav tab lit, the /welcome body without its CTA; its three doors are plain links.\nNo desktop artboards: every screen here is one column (max-w-3xl, or max-w-xl for the three forms — nombre y correo, contraseña, tu plan) inside the shell (D4).\n\nBUSINESS RULES\n• The theme applies on select and the currency PATCHes on select; nothing waits for a Guardar (D58).\n• Avisos: the bell cannot be turned off (D16); the two phone switches (Resumen de Hoy en el teléfono, Avisos en el teléfono) render only where VAPID keys exist.\n• Seguridad is a row until TOTP is enrolled; once it is, a card with the codes left and Generar códigos nuevos.\n• Tu plan: nothing is prefilled; the three shares must sum to 100 before saving; the contribution is MXN. Written here only, Hoy reads it (D156).\n• Integraciones lists every registered source, the ones not connected first. Each card says its role, its own quota in its own unit, and whose problem a non-working source is: sin API key (your instance), sin cuota (your quota), bloqueada (the provider), verificando (a key saved and still being checked; it needs a worker). Near the limit qualifies the figure ('· cerca del límite'), it is not a state. One API key per source (ADR-015).\n• Deleting a source removes it from the list; it comes back only with bin/rails stockerly:sync.\n• Estado: each switch is its own PATCH and every flip is kept in SiteConfigChange. Maintenance shows the 503 page to anyone not signed in; the owner keeps working, and login stays reachable.\n• Tus datos: Borrar movimientos keeps the account; Borrar cuenta returns the instance to the setup wizard.\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — settings.*, plans.*, admin.integrations.*, admin.logs.*, admin.settings.*, admin.errors.*, mantenimiento.*. Provider descriptions and what a missing key costs: MarketData::Domain::ProviderDirectory. Manual sync names: data_sources.* (DataSourceRegistry reads them from the locale). Log messages: whatever each job wrote to SystemLog.\n\nSTATES NOT DRAWN\n• Hub · Dos pasos activa with no codes left: the subline becomes a warning box, \"Activa · ya no te queda ningún código de recuperación\".\n• Hub without developer_mode: no Errores row. Without VAPID keys: neither phone switch.\n• Avisos en el teléfono, the other two lines under the switch in warning-fg (Avisos bloqueados draws the denied one; the switch stays off and simply does not respond): \"En iPhone hay que agregar Stockerly a la pantalla de inicio antes de activarlos.\" / \"Este navegador no admite avisos push.\"\n• Tu plan after saving: the flash \"Plan guardado.\"\n• Registros empty with no filter: \"Tu instancia no ha registrado nada todavía.\" Errores empty: \"Tu instancia no ha registrado ningún error.\", or \"Nada con esos filtros.\" with Limpiar filtros.\n• Registros and Errores past one page: the pager under the count.\n• Estado with no worker: Trabajos reads \"Sin worker · …\" in the warning tone; Errores (24 h) above 0 takes the same tone.\n• Estado with no recorded change: \"Todavía no hay cambios registrados.\"\n• /admin/errors with developer_mode off: back to Estado with \"Activa el modo desarrollador en Ajustes para ver esta sección.\"\n• Tus datos with nothing to delete: Borrar movimientos disabled.\n• Any screen on desktop: the same column inside the SidebarNav shell.\n\nOPEN FINDINGS\nD161 — /help is drawn as shipped and stays open: nothing links to it, its subtitle promises 'qué hacer cuando algo falla, y cómo contactarnos' and the page carries only the bug link, and it renders two <h1>s.\n\nHISTORY\n→ Log · Ajustes",
+          "content": "PURPOSE\nOne Ajustes for a single-user instance (D5): the person who owns the account also owns the box, so /profile and the /admin zone are one hub with sections — cuenta, apariencia y región, tu plan, avisos, tu instancia, tus datos, ayuda.\n\nENTRY POINTS\nThe fifth BottomNav tab (/settings). Its rows open /settings/account, /settings/password, /settings/plan, TOTP enrolment (auth.pen), /admin/integrations, /admin/logs, /admin/settings, Mission Control at /admin/jobs (a new tab), /admin/errors (only with developer_mode, ADR-020) and the importer (assets.pen). Ajustes hub → Ayuda: the Ayuda section's one NavRow, above Cerrar sesión, opens /help. Errores' back arrow returns to Estado y mantenimiento, where its switch lives. En mantenimiento is what a visitor who is not signed in gets from any page while maintenance_mode is on.\n\nSCREENS (LEFT → RIGHT, BY BAND)\nCuenta: Hub (default · avisos bloqueados · dos pasos activa) · Nombre y correo · Contraseña · Tu plan (vacío · default · error).\nIntegraciones: lista · Administrar (one source opened) · Estados (the five states) · Vacío.\nOperación: Registros · Registros · Detalle · Registros · Filtrado sin resultados · Estado y mantenimiento · Estado · Mantenimiento activo · En mantenimiento · Errores · Errores · Detalle.\nAyuda: /help as a hub child — HeaderBar back to Ajustes titled Ayuda y soporte, one subtitle, then the /welcome body without its CTA; its three doors are plain links. No BottomNav tab is lit: the help controller belongs to no tab.\nNo desktop artboards: every screen here is one column (max-w-3xl, or max-w-xl for the three forms — nombre y correo, contraseña, tu plan) inside the shell (D4).\n\nBUSINESS RULES\n• The theme applies on select and the currency PATCHes on select; nothing waits for a Guardar (D58).\n• Avisos: the bell cannot be turned off (D16); the two phone switches (Resumen de Hoy en el teléfono, Avisos en el teléfono) render only where VAPID keys exist.\n• Seguridad is a row until TOTP is enrolled; once it is, a card with the codes left and Generar códigos nuevos.\n• Tu plan: nothing is prefilled; the three shares must sum to 100 before saving; the contribution is MXN. Written here only, Hoy reads it (D156).\n• Integraciones lists every registered source, the ones not connected first. Each card says its role, its own quota in its own unit, and whose problem a non-working source is: sin API key (your instance), sin cuota (your quota), bloqueada (the provider), verificando (a key saved and still being checked; it needs a worker). Near the limit qualifies the figure ('· cerca del límite'), it is not a state. One API key per source (ADR-015).\n• Deleting a source removes it from the list; it comes back only with bin/rails stockerly:sync.\n• Estado: each switch is its own PATCH and every flip is kept in SiteConfigChange. Maintenance shows the 503 page to anyone not signed in; the owner keeps working, and login stays reachable.\n• Tus datos: Borrar movimientos keeps the account; Borrar cuenta returns the instance to the setup wizard.\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — settings.*, plans.*, admin.integrations.*, admin.logs.*, admin.settings.*, admin.errors.*, mantenimiento.*. Provider descriptions and what a missing key costs: MarketData::Domain::ProviderDirectory. Manual sync names: data_sources.* (DataSourceRegistry reads them from the locale). Log messages: whatever each job wrote to SystemLog.\n\nSTATES NOT DRAWN\n• Hub · Dos pasos activa with no codes left: the subline becomes a warning box, \"Activa · ya no te queda ningún código de recuperación\".\n• Hub without developer_mode: no Errores row. Without VAPID keys: neither phone switch.\n• Avisos en el teléfono, the other two lines under the switch in warning-fg (Avisos bloqueados draws the denied one; the switch stays off and simply does not respond): \"En iPhone hay que agregar Stockerly a la pantalla de inicio antes de activarlos.\" / \"Este navegador no admite avisos push.\"\n• Tu plan after saving: the flash \"Plan guardado.\"\n• Registros empty with no filter: \"Tu instancia no ha registrado nada todavía.\" Errores empty: \"Tu instancia no ha registrado ningún error.\", or \"Nada con esos filtros.\" with Limpiar filtros.\n• Registros and Errores past one page: the pager under the count.\n• Estado with no worker: Trabajos reads \"Sin worker · …\" in the warning tone; Errores (24 h) above 0 takes the same tone.\n• Estado with no recorded change: \"Todavía no hay cambios registrados.\"\n• /admin/errors with developer_mode off: back to Estado with \"Activa el modo desarrollador en Ajustes para ver esta sección.\"\n• Tus datos with nothing to delete: Borrar movimientos disabled.\n• Any screen on desktop: the same column inside the SidebarNav shell.\n\nOPEN FINDINGS\nNone.\n\nHISTORY\n→ Log · Ajustes",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -531,7 +531,7 @@
       "name": "[Ajustes] / Hub / Default",
       "clip": true,
       "width": 390,
-      "height": 2577,
+      "height": 2704,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -1634,6 +1634,57 @@
             },
             {
               "type": "frame",
+              "id": "qUxQF",
+              "name": "Ayuda",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Pkq8s",
+                  "name": "H",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "IuVGr",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Ayuda",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "id": "FP5ro",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Ayuda",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "circle-question-mark"
+                    },
+                    "GueOK": {
+                      "content": "Ayuda"
+                    },
+                    "uH4YA": {
+                      "content": "Por dónde empezar y cómo reportar un error"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
               "id": "u0feR",
               "name": "Salir",
               "width": "fill_container",
@@ -1702,7 +1753,7 @@
       "type": "frame",
       "id": "AwEw4",
       "x": 480,
-      "y": 2948,
+      "y": 3075,
       "name": "[Ajustes] / Integraciones / Default",
       "clip": true,
       "width": 390,
@@ -2145,7 +2196,7 @@
       "type": "frame",
       "id": "BiMgc",
       "x": 480,
-      "y": 5367,
+      "y": 5494,
       "name": "[Ajustes] / Registros / Default",
       "clip": true,
       "width": 390,
@@ -3254,7 +3305,7 @@
       "type": "frame",
       "id": "TeLgy",
       "x": 2010,
-      "y": 5367,
+      "y": 5494,
       "name": "[Ajustes] / Estado y mantenimiento / Default",
       "clip": true,
       "width": 390,
@@ -5510,7 +5561,7 @@
       "type": "frame",
       "id": "F0AaA",
       "x": 1500,
-      "y": 2948,
+      "y": 3075,
       "name": "[Ajustes] / Integraciones · Estados / Default",
       "clip": true,
       "width": 390,
@@ -5980,7 +6031,7 @@
       "type": "frame",
       "id": "KKXa3",
       "x": 0,
-      "y": 2727,
+      "y": 2687,
       "name": "Log · Ajustes",
       "width": 360,
       "fill": "$bg-muted",
@@ -6006,7 +6057,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-21 — Drew the screens that ship without an artboard: Hub · Avisos bloqueados (push permission denied) in Cuenta, and a new Ayuda band with /help as shipped (D161, superseding D92).\n2026-10-21 — Mirrored to code at 809ea789: Tu plan mirrored as built (D156) and its hub row moved after Apariencia, Resumen de Hoy switch, current-password field, API KEY label, Aperturas and last-sync lines on Estado, trace and log-module fixes, kit 1.3.0 TopBar search; drew Dos pasos activa, Verificando, Integraciones vacío, Registros filtrado and Mantenimiento activo; re-laid as bands Cuenta, Integraciones, Operación.\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the TopBar at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots\n2026-10-14 · En mantenimiento draws the shared wordmark at h-8 in place of the disc and typed name, as layouts/maintenance renders it\n2026-09-17 · D123: Alpha Vantage and FMP retired — their cards and manual-sync rows removed, source counts 10 → 8, the ProviderCard maintainer notice deleted; Estados draws sin cuota on ExchangeRate\n2026-09-16 · re-vendored to kit 1.0.0; BottomNav and SidebarNav masters had Ajustes lit, every screen now lights its own tab\n2026-09-16 · mirrored to the code (D78): hub sizes and copy, the phone switch, Integraciones rebuilt on a ProviderCard that carries state, quota bar, reason and the maintainer notice, Registros and Estado rebuilt, Errores rows and detail, En mantenimiento in its own chrome\n2026-09-16 · Integraciones · Administrar and Registros · Detalle drawn; the Hub, Integraciones and Estado desktops retired (D4) with the SidebarNav and TopBarDesktop they used\n2026-09-16 · code: the maintenance page lost its English navbar and footer; Estado stopped promising a banner and names each switch in its audit trail; the importer row describes Stockerly's own format; the empty Integraciones stopped sending an owner into the wizard; Registros keeps the task on its own line\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections — its reasoning lives in D5, D16, D58, D78, D90, ADR-015, ADR-020 and git history\n2026-09-05 · En mantenimiento drawn — this flow owns the switch, and nothing drew what the switch causes\n2026-09-05 · that screen was the app's only English one, and the last to call its owner an administrator; fixed in code the same day\n2026-09-05 · A2 · Errores and Errores · Detalle drawn — the last undrawn surface in this flow\n2026-09-05 · D90 · Nombre y correo and Contraseña drawn — /profile retired, AJU-1 closed\n2026-09-05 · the desktop band reflowed: growing Hub · Desktop to 1235 had left it overlapping Integraciones · Desktop by 255px\n2026-09-05 · D78 · Tus datos draws the two real doors; the mailto and its 'pendiente' note are gone\n2026-09-05 · D78 · Zona horaria added to Apariencia y región; Errores row added to Tu instancia (ADR-020, conditional)\n2026-09-05 · D58 · the brief's open Guardar-vs-auto-save question closed — it shipped and the brief had not caught up\n2026-09-05 · Hub grows 1684 → 2140 to hold the two doors without clipping the BottomNav\n2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
+          "content": "2026-10-21 — Mirrored to code at a2f8dd9a (PR #858): Hub (default · dos pasos activa) gains the Ayuda section above Cerrar sesión; Ayuda redrawn as a hub child with HeaderBar and the new subtitle; D161's open finding closed; Cuenta band grew, lower bands shifted down 127.\n2026-10-21 — Drew the screens that ship without an artboard: Hub · Avisos bloqueados (push permission denied) in Cuenta, and a new Ayuda band with /help as shipped (D161, superseding D92).\n2026-10-21 — Mirrored to code at 809ea789: Tu plan mirrored as built (D156) and its hub row moved after Apariencia, Resumen de Hoy switch, current-password field, API KEY label, Aperturas and last-sync lines on Estado, trace and log-module fixes, kit 1.3.0 TopBar search; drew Dos pasos activa, Verificando, Integraciones vacío, Registros filtrado and Mantenimiento activo; re-laid as bands Cuenta, Integraciones, Operación.\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the TopBar at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots\n2026-10-14 · En mantenimiento draws the shared wordmark at h-8 in place of the disc and typed name, as layouts/maintenance renders it\n2026-09-17 · D123: Alpha Vantage and FMP retired — their cards and manual-sync rows removed, source counts 10 → 8, the ProviderCard maintainer notice deleted; Estados draws sin cuota on ExchangeRate\n2026-09-16 · re-vendored to kit 1.0.0; BottomNav and SidebarNav masters had Ajustes lit, every screen now lights its own tab\n2026-09-16 · mirrored to the code (D78): hub sizes and copy, the phone switch, Integraciones rebuilt on a ProviderCard that carries state, quota bar, reason and the maintainer notice, Registros and Estado rebuilt, Errores rows and detail, En mantenimiento in its own chrome\n2026-09-16 · Integraciones · Administrar and Registros · Detalle drawn; the Hub, Integraciones and Estado desktops retired (D4) with the SidebarNav and TopBarDesktop they used\n2026-09-16 · code: the maintenance page lost its English navbar and footer; Estado stopped promising a banner and names each switch in its audit trail; the importer row describes Stockerly's own format; the empty Integraciones stopped sending an owner into the wizard; Registros keeps the task on its own line\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections — its reasoning lives in D5, D16, D58, D78, D90, ADR-015, ADR-020 and git history\n2026-09-05 · En mantenimiento drawn — this flow owns the switch, and nothing drew what the switch causes\n2026-09-05 · that screen was the app's only English one, and the last to call its owner an administrator; fixed in code the same day\n2026-09-05 · A2 · Errores and Errores · Detalle drawn — the last undrawn surface in this flow\n2026-09-05 · D90 · Nombre y correo and Contraseña drawn — /profile retired, AJU-1 closed\n2026-09-05 · the desktop band reflowed: growing Hub · Desktop to 1235 had left it overlapping Integraciones · Desktop by 255px\n2026-09-05 · D78 · Tus datos draws the two real doors; the mailto and its 'pendiente' note are gone\n2026-09-05 · D78 · Zona horaria added to Apariencia y región; Errores row added to Tu instancia (ADR-020, conditional)\n2026-09-05 · D58 · the brief's open Guardar-vs-auto-save question closed — it shipped and the brief had not caught up\n2026-09-05 · Hub grows 1684 → 2140 to hold the two doors without clipping the BottomNav\n2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -6596,7 +6647,7 @@
       "type": "frame",
       "id": "gZIaa",
       "x": 3540,
-      "y": 5367,
+      "y": 5494,
       "name": "[Ajustes] / Errores / Default",
       "clip": true,
       "width": 390,
@@ -7318,7 +7369,7 @@
       "type": "frame",
       "id": "YV9je",
       "x": 4050,
-      "y": 5367,
+      "y": 5494,
       "name": "[Ajustes] / Errores · Detalle / Default",
       "clip": true,
       "width": 390,
@@ -7841,7 +7892,7 @@
       "type": "frame",
       "id": "n41eqV",
       "x": 3030,
-      "y": 5367,
+      "y": 5494,
       "name": "[Ajustes] / En mantenimiento / Default",
       "clip": true,
       "width": 390,
@@ -8534,7 +8585,7 @@
       "type": "frame",
       "id": "zk8QT",
       "x": 990,
-      "y": 2948,
+      "y": 3075,
       "name": "[Ajustes] / Integraciones · Administrar / Default",
       "clip": true,
       "width": 390,
@@ -9029,7 +9080,7 @@
       "type": "frame",
       "id": "gOYTc",
       "x": 990,
-      "y": 5367,
+      "y": 5494,
       "name": "[Ajustes] / Registros · Detalle / Default",
       "clip": true,
       "width": 390,
@@ -11516,7 +11567,7 @@
       "name": "[Ajustes] / Hub / Dos pasos activa",
       "clip": true,
       "width": 390,
-      "height": 2688,
+      "height": 2815,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -12711,6 +12762,57 @@
             },
             {
               "type": "frame",
+              "id": "j1v4r7",
+              "name": "Ayuda",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "w48uC",
+                  "name": "H",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "SUIkF",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Ayuda",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "id": "W8I4a",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Ayuda",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "circle-question-mark"
+                    },
+                    "GueOK": {
+                      "content": "Ayuda"
+                    },
+                    "uH4YA": {
+                      "content": "Por dónde empezar y cómo reportar un error"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
               "id": "qbqvY",
               "name": "Salir",
               "width": "fill_container",
@@ -12779,7 +12881,7 @@
       "type": "frame",
       "id": "zkOdL",
       "x": 2520,
-      "y": 5367,
+      "y": 5494,
       "name": "[Ajustes] / Estado y mantenimiento / Mantenimiento activo",
       "clip": true,
       "width": 390,
@@ -15073,7 +15175,7 @@
       "type": "frame",
       "id": "uKAiF",
       "x": 1500,
-      "y": 5367,
+      "y": 5494,
       "name": "[Ajustes] / Registros / Filtrado sin resultados",
       "clip": true,
       "width": 390,
@@ -15528,7 +15630,7 @@
       "type": "frame",
       "id": "VSmc1",
       "x": 2010,
-      "y": 2948,
+      "y": 3075,
       "name": "[Ajustes] / Integraciones / Vacío",
       "clip": true,
       "width": 390,
@@ -16093,20 +16195,28 @@
       "type": "frame",
       "id": "eLhuZ",
       "x": 480,
-      "y": 7817,
+      "y": 7944,
       "name": "[Ajustes] / Ayuda / Default",
       "clip": true,
       "width": 390,
-      "height": 1273,
+      "height": 1102,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
         {
-          "id": "iD5pW",
+          "id": "lDAiH",
           "type": "ref",
-          "ref": "eMc9I",
-          "name": "TopBar",
-          "width": "fill_container"
+          "ref": "B3jgA",
+          "name": "Header",
+          "width": "fill_container",
+          "descendants": {
+            "rBnzV": {
+              "content": "Ayuda y soporte"
+            },
+            "bcqqH": {
+              "enabled": false
+            }
+          }
         },
         {
           "type": "frame",
@@ -16116,46 +16226,22 @@
           "layout": "vertical",
           "gap": 32,
           "padding": [
-            72,
-            32
+            24,
+            16
           ],
           "children": [
             {
-              "type": "frame",
-              "id": "WmT7l",
-              "name": "Header",
+              "type": "text",
+              "id": "QXaBc",
+              "name": "Subtítulo",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
               "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "Iz1tN",
-                  "name": "Título",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Ayuda y soporte",
-                  "lineHeight": 1.2,
-                  "fontFamily": "$font-display",
-                  "fontSize": 30,
-                  "fontWeight": "700",
-                  "letterSpacing": -0.75
-                },
-                {
-                  "type": "text",
-                  "id": "A1grl",
-                  "name": "Subtítulo",
-                  "fill": "$fg-subtle",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Cómo empezar con Stockerly, qué hacer cuando algo falla, y cómo contactarnos.",
-                  "lineHeight": 1.43,
-                  "fontFamily": "$font-sans",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                }
-              ]
+              "content": "Por dónde empezar y a dónde llevar un error cuando algo no funciona.",
+              "lineHeight": 1.43,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
