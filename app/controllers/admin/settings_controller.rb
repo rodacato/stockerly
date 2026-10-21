@@ -2,7 +2,7 @@ module Admin
   class SettingsController < BaseController
     TOGGLE_KEYS = %w[maintenance_mode auto_sync_enabled email_notifications_enabled developer_mode].freeze
 
-    rate_limit to: 5, within: 1.minute, only: :trigger_data_source
+    rate_limit to: 5, within: 1.minute, only: %i[trigger_data_source run_maintenance]
 
     def show
       configs = SiteConfig.where(key: TOGGLE_KEYS).index_by(&:key)
@@ -22,6 +22,14 @@ module Admin
       source = DataSourceRegistry.find(params[:key].to_sym)
       source.job_class.perform_later(*source.job_args)
       redirect_to admin_settings_path, notice: t(".encolada", source: source.name)
+    rescue KeyError
+      redirect_to admin_settings_path, alert: t(".desconocida")
+    end
+
+    def run_maintenance
+      task = Administration::Domain::MaintenanceTasks.find(params[:key])
+      task.job_class.perform_later
+      redirect_to admin_settings_path, notice: t(".encolada", task: t("admin.settings.mantenimiento.#{task.key}.nombre"))
     rescue KeyError
       redirect_to admin_settings_path, alert: t(".desconocida")
     end

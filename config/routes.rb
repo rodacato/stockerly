@@ -164,5 +164,6 @@ Rails.application.routes.draw do
     # `refresh_fx_rates` used to be its own route; :fx_rates is a registered
     # source whose job_class is RefreshFxRatesJob, so the two collapse into one.
     post "trigger_data_source/:key", to: "settings#trigger_data_source", as: :trigger_data_source
+    post "run_maintenance/:key", to: "settings#run_maintenance", as: :run_maintenance
   end
 end

@@ -26,6 +26,11 @@ RSpec.describe "Admin pages", type: :request do
       expect(flash[:alert]).to eq("No tienes acceso a esa sección.")
     end
 
+    it "does not let a non-admin run a maintenance task" do
+      expect { post admin_run_maintenance_path(key: "catalogue") }.not_to have_enqueued_job(SeedCatalogJob)
+      expect(response).to redirect_to(root_path)
+    end
+
     it "redirects /admin/logs to root for non-admin users" do
       get admin_logs_path
       expect(response).to redirect_to(root_path)

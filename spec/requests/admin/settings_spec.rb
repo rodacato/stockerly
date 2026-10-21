@@ -100,6 +100,21 @@ RSpec.describe "Admin settings", type: :request do
     end
   end
 
+  describe "POST /admin/run_maintenance/:key" do
+    it "enqueues the task's job and says which one" do
+      expect { post admin_run_maintenance_path(key: "bmv_symbols") }.to have_enqueued_job(ResolveBmvSymbolsJob)
+
+      expect(response).to redirect_to(admin_settings_path)
+      expect(flash[:notice]).to include("Nombres de la BMV")
+    end
+
+    it "answers an unknown task with an alert and enqueues nothing" do
+      expect { post admin_run_maintenance_path(key: "rm_rf") }.not_to have_enqueued_job
+
+      expect(flash[:alert]).to eq(I18n.t("admin.settings.run_maintenance.desconocida"))
+    end
+  end
+
   describe "PATCH /admin/settings" do
     it "saves the toggles and says so" do
       patch admin_settings_path, params: { developer_mode: "1" }
