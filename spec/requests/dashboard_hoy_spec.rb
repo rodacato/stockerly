@@ -74,6 +74,43 @@ RSpec.describe "Hoy on the dashboard", type: :request do
     expect(response.body).to include("Hay 2 cosas de lo tuyo para mirar hoy.")
   end
 
+  describe "the brand surface of the verdict (D163)" do
+    def hoy_header(body) = body[/<header[^>]*>(?:(?!<\/header>).)*hoy-veredicto.*?<\/header>/m]
+
+    it "wears the brand surface over current quotes" do
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+
+      get dashboard_path
+
+      expect(hoy_header(response.body)).to include("bg-primary-fg")
+    end
+
+    it "wears it when something is worth a look too" do
+      held = mxn_asset(symbol: "WALMEX", current_price: 70)
+      hold(held)
+      create(:earnings_event, asset: held, report_date: 2.days.from_now.to_date)
+
+      get dashboard_path
+
+      expect(hoy_header(response.body)).to include("bg-primary-fg")
+    end
+
+    it "stays neutral over a quote that is too old, so no calm blue vouches for it" do
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70, price_updated_at: 6.days.ago))
+
+      get dashboard_path
+
+      expect(hoy_header(response.body)).not_to include("bg-primary-fg")
+      expect(hoy_header(response.body)).to include("text-warning-fg")
+    end
+
+    it "stays neutral on a first run" do
+      get dashboard_path
+
+      expect(hoy_header(response.body)).not_to include("bg-primary-fg")
+    end
+  end
+
   it "keeps the compra / vende chips of the Señales block out of Hoy" do
     walmex = mxn_asset(symbol: "WALMEX", current_price: 70)
     hold(walmex)
