@@ -65,6 +65,12 @@ module DashboardHelper
     value.to_i.clamp(0, 100)
   end
 
+  VOLATILITY_SCALE_MAX = 40
+
+  def volatility_offset(value)
+    (value.to_f / VOLATILITY_SCALE_MAX * 100).round.clamp(0, 100)
+  end
+
   def sentiment_delta(delta)
     return nil if delta.nil? || delta.zero?
 
