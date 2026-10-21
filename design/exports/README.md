@@ -67,7 +67,7 @@ not by reading the tables.
 | `activos-importar.png` | `[Activos] / Importar CSV / Default` |
 | `activos-importar-revision.png` | `[Activos] / Importar CSV / Revisión` — the dry run: nothing written yet |
 | `activos-importar-desconocidos.png` | `[Activos] / Importar CSV / Símbolos desconocidos` — the all-or-nothing refusal |
-| `activos-buscar-catalogo.png` | `[Activos] / Buscar / En tu catálogo` — D125, drawn ahead of the code |
+| `activos-buscar-catalogo.png` | `[Activos] / Buscar / En tu catálogo` — D125 |
 | `activos-buscar-catalogo-y-yahoo.png` | `[Activos] / Buscar / Catálogo y Yahoo` — D125: a catalogue hit plus Yahoo's other listings |
 | `activos-buscar-fuera-de-catalogo.png` | `[Activos] / Buscar / Fuera de tu catálogo` — D125: Yahoo's results with Rastrear |
 | `activos-buscar-sin-resultados.png` | `[Activos] / Buscar / Sin resultados` — D125 |

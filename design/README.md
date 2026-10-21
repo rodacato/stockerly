@@ -56,8 +56,8 @@ One `.pen` per domain, derived from the app's routes (`config/routes.rb`), not i
 **mirrors the screens that exist in code** (D78). A flow earns its own file at ~3+ screens; smaller
 ones may merge into a neighbor.
 
-> **Kit versions.** The seven flows and `brand.pen` vendor the kit at **1.2.0**, the version of
-> `ui-kit.lib.pen`; `_playground.pen` stays at 0.8.1. Read each file's `kit-version-source`, never
+> **Kit versions.** The seven flows vendor the kit at **1.3.0**, the version of `ui-kit.lib.pen`;
+> `brand.pen` stays at 1.2.0 and `_playground.pen` at 0.8.1. Read each file's `kit-version-source`, never
 > this paragraph. The 0.8 → 0.9 migration notes (`MIGRATION.md`) were deleted on close; the durable
 > parts are in `ui-kit.CHANGELOG.md`'s gap list and in D53/D57/D58/D59.
 
@@ -77,12 +77,12 @@ ones may merge into a neighbor.
 
 | File | Domain | Screens (from code) |
 |---|---|---|
-| `flows/auth.pen` | Auth | login (default · error), 2FA, código de recuperación, forgot, email sent, reset, enlace expirado, contraseña actualizada (+ Login desktop); TOTP · alta and códigos de recuperación, which render in the app shell — no signup (account created in onboarding) |
-| `flows/onboarding.pen` | Onboarding | setup (default · error), integrations, assets, seguridad (+ alta · códigos from the wizard, D122), complete, welcome (+ Setup/Welcome desktop) |
-| `flows/cockpit.pen` | Cockpit (daily driver) | hoy (default · tranquilo · primera vez · sin cotización — drawn ahead of the code, D155; con plan dentro · brecha, sin plan — D157), panorama (default · tranquilo · primera vez · sin cotización), señales (default · vacío), asset detail (análisis · aviso TradingView · mi posición · CETES), consolidado (default · sin historial) (+ Panorama/Consolidado desktop) |
-| `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | holdings (default · vacía · sin consolidar · sin cotización), watchlist (default · vacía), registrar movimiento (sheet · con teclado · CETES), historial (default · vacío), tracked (default · agregar activo · sin fuente · sin coincidencias), importar CSV (default · revisión · símbolos desconocidos) + Holdings/Registrar/Tracked desktop; **drawn ahead of the code (D125):** buscar (en tu catálogo · fuera de tu catálogo · sin resultados · yahoo no responde · desktop), activo desconocido |
-| `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | reglas (vacío · default), nueva regla (sheet · calendario), bandeja (default · vacía) |
-| `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | hub, nombre y correo, contraseña, tu plan (vacío · default · error — drawn ahead of the code, D156), integraciones (+ administrar · estados), registros (+ detalle), estado y mantenimiento, errores (+ detalle), en mantenimiento — no desktop artboard, every screen is one column |
+| `flows/auth.pen` | Auth | **Login:** login (default · error), 2FA, código de recuperación · **Recuperar contraseña:** forgot, email sent, reset, enlace expirado, contraseña actualizada · **Segundo factor:** TOTP · alta, códigos de recuperación (chromeless, D148) · **Desktop:** login — no signup (account created in onboarding) |
+| `flows/onboarding.pen` | Onboarding | **First boot:** setup (default · error), integrations, assets, seguridad (+ alta · códigos, D122/D148), complete (default · sin worker), welcome · **Desktop:** setup, welcome |
+| `flows/cockpit.pen` | Cockpit (daily driver) | `/dashboard` is one page, drawn as two bands. **Hoy:** default · tranquilo · primera vez · sin cotización · cotizaciones viejas · decisión de tasa · temporada de resultados · con plan dentro · brecha (D155/D157/D160) · **Panorama** (below Hoy): default · tranquilo · primera vez · **Señales:** default · vacío · **Asset detail:** análisis (default · watchlist · aviso TradingView) · mi posición · CETES · **Consolidado:** default · por sector · sin historial · **Desktop:** panorama, consolidado |
+| `flows/assets.pen` | Activos — the three-tier ladder (D9) + data intake | **Holdings:** default · vacía · sin consolidar · sin cotización · **Watchlist:** default · vacía · **Registrar movimiento:** sheet · con teclado · CETES · **Historial:** default · editando · confirmar borrado · vacío · **Tracked:** default · agregar activo · sin fuente · sin coincidencias · vacío · **Importar CSV:** default · revisión · símbolos desconocidos · **Buscar (D125):** en tu catálogo · catálogo y Yahoo · fuera de tu catálogo · sin resultados · yahoo no responde · activo desconocido (default · yahoo no responde) · **Desktop:** holdings, registrar, tracked, buscar |
+| `flows/alerts.pen` | Reglas y avisos (rules + the notification inbox, D13) | **Reglas:** vacío · default · **Nueva regla:** sheet · calendario · **Bandeja:** default · vacía |
+| `flows/settings.pen` | Ajustes — one hub, no admin zone (D5) | **Cuenta:** hub (+ dos pasos activa), nombre y correo, contraseña, tu plan (vacío · default · error, D156) · **Integraciones:** lista, administrar, estados, vacío · **Operación:** registros (+ detalle · filtrado sin resultados), estado y mantenimiento (+ mantenimiento activo), en mantenimiento, errores (+ detalle) — no desktop artboard, every screen is one column |
 | `flows/discover.pen` | Descubrir — the world, not the instance (D31) | olas (default · todas las canastas · sin datos · calendario agotado) — no desktop artboard, the page reflows |
 
 Working model per flow: **(1)** read the existing screens/copy from code (source of truth for
@@ -103,7 +103,7 @@ plus the kit's own `ui-kit-shell-desktop`.
 | `auth` | Login | The card is one centred column at every width (D152); Login's artboard shows it at `max-w-md` and stands for the rest |
 | `onboarding` | Setup · Welcome | Setup is the same single card as Login (D152); the wizard steps are one centred column at every width |
 | `cockpit` | Panorama · Consolidado | The asset detail reflows into one column |
-| `assets` | Holdings · Registrar movimiento · Tracked · Buscar (D125) | Watchlist, Holdings vacía and the search states reuse patterns above |
+| `assets` | Holdings · Registrar movimiento · Tracked · Buscar | Watchlist, Holdings vacía and the search states reuse patterns above |
 | `alerts` | — | Its list and sheet are the patterns Cartera and Registrar movimiento settle |
 | `settings` | — | Every screen is one column inside the shell |
 | `discover` | — | The page is one column at every width |
@@ -160,6 +160,11 @@ Operating notes, not preferences. Each cost a mistake.
   drift and a fourth was a deliberate accent; two `SwitchRow` rows were drift and a third was a real
   OFF state; `alerts`' back-header looked like `cockpit`'s and is a different component. Replacing
   all of them would have erased real hierarchy while calling it consistency.
+- **The lag can pass nine minutes.** On 2026-10-21 one flow's last write had not reached disk after
+  nine minutes and landed only after a fresh write. Before switching tabs, grep the `.pen` on disk
+  for a string you just wrote.
+- **`Move` into a new parent drops the instance overrides** on the moved node and its children. Re-read
+  every instance after moving a child of a master, and re-apply what it lost.
 - **`Get` does not descend into instances without `resolveInstances: true`.** An artboard can change
   visually without any of its own nodes changing, because the change lives in a component master —
   the first query for *which artboards to re-export* missed four that way.
@@ -207,7 +212,7 @@ What the retired audit files taught, kept because each one cost a wrong number.
 - **Tokens, across `.pen` files:** compare the sorted `name=value` list, not the names. Membership
   and equality are two checks.
 - **Kit → code:** cross each component against all of `app/views`, not only `components/` — `NavRow`
-  is `settings/_nav_row`, `MarketCard` is `dashboard/_sentiment_card`. Count render sites with
+  is `components/_nav_row`, `MarketCard` is `dashboard/_sentiment_card`. Count render sites with
   `grep -rc "components/<name>" app lib spec`.
 - **Defect or decision:** a screen off the contract *with* an artboard is unfinished work; one
   *without* is either deliberate or a surface nobody drew, and drawing it is design, not a fix.
@@ -222,7 +227,7 @@ What the retired audit files taught, kept because each one cost a wrong number.
 | `AssetRow` | `components/_asset_row`; its Watchlist sibling is `components/_watch_row`, which the kit lacks |
 | `Segmented` · `Segmented3` | one N-ary `components/_segmented` — the two masters are Pencil's limit, not a split to mirror |
 | `MovementItem` | `trades/_trade_row` and `dashboard/_signal_row` |
-| `MarketCard` · `NavRow` · `SwitchRow` · `Stepper` | `dashboard/_sentiment_card` · `settings/_nav_row` · `settings/_notification_switches` · `onboarding/_step_header` |
+| `MarketCard` · `NavRow` · `SwitchRow` · `Stepper` | `dashboard/_sentiment_card` · `components/_nav_row` · `settings/_notification_switches` · `onboarding/_step_header` |
 | `Card` · `ButtonPrimary`/`Secondary` · `Field` | helpers, not partials: `card_classes` (D75), `button_classes` and `field_classes` (D86) |
 | `Logo` · `LogoMark` | `shared/_logo` · `shared/_logo_mark` |
 
