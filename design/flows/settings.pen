@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "PURPOSE\nOne Ajustes for a single-user instance (D5): the person who owns the account also owns the box, so /profile and the /admin zone are one hub with sections — cuenta, apariencia y región, tu plan, avisos, tu instancia, tus datos.\n\nENTRY POINTS\nThe fifth BottomNav tab (/settings). Its rows open /settings/account, /settings/password, /settings/plan, TOTP enrolment (auth.pen), /admin/integrations, /admin/logs, /admin/settings, Mission Control at /admin/jobs (a new tab), /admin/errors (only with developer_mode, ADR-020) and the importer (assets.pen). Errores' back arrow returns to Estado y mantenimiento, where its switch lives. En mantenimiento is what a visitor who is not signed in gets from any page while maintenance_mode is on.\n\nSCREENS (LEFT → RIGHT, BY BAND)\nCuenta: Hub · Hub · Dos pasos activa · Nombre y correo · Contraseña · Tu plan (vacío · default · error).\nIntegraciones: lista · Administrar (one source opened) · Estados (the five states) · Vacío.\nOperación: Registros · Registros · Detalle · Registros · Filtrado sin resultados · Estado y mantenimiento · Estado · Mantenimiento activo · En mantenimiento · Errores · Errores · Detalle.\nNo desktop artboards: every screen here is one column (max-w-3xl, or max-w-xl for the three forms — nombre y correo, contraseña, tu plan) inside the shell (D4).\n\nBUSINESS RULES\n• The theme applies on select and the currency PATCHes on select; nothing waits for a Guardar (D58).\n• Avisos: the bell cannot be turned off (D16); the two phone switches (Resumen de Hoy en el teléfono, Avisos en el teléfono) render only where VAPID keys exist.\n• Seguridad is a row until TOTP is enrolled; once it is, a card with the codes left and Generar códigos nuevos.\n• Tu plan: nothing is prefilled; the three shares must sum to 100 before saving; the contribution is MXN. Written here only, Hoy reads it (D156).\n• Integraciones lists every registered source, the ones not connected first. Each card says its role, its own quota in its own unit, and whose problem a non-working source is: sin API key (your instance), sin cuota (your quota), bloqueada (the provider), verificando (a key saved and still being checked; it needs a worker). Near the limit qualifies the figure ('· cerca del límite'), it is not a state. One API key per source (ADR-015).\n• Deleting a source removes it from the list; it comes back only with bin/rails stockerly:sync.\n• Estado: each switch is its own PATCH and every flip is kept in SiteConfigChange. Maintenance shows the 503 page to anyone not signed in; the owner keeps working, and login stays reachable.\n• Tus datos: Borrar movimientos keeps the account; Borrar cuenta returns the instance to the setup wizard.\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — settings.*, plans.*, admin.integrations.*, admin.logs.*, admin.settings.*, admin.errors.*, mantenimiento.*. Provider descriptions and what a missing key costs: MarketData::Domain::ProviderDirectory. Manual sync names: data_sources.* (DataSourceRegistry reads them from the locale). Log messages: whatever each job wrote to SystemLog.\n\nSTATES NOT DRAWN\n• Hub · Dos pasos activa with no codes left: the subline becomes a warning box, \"Activa · ya no te queda ningún código de recuperación\".\n• Hub without developer_mode: no Errores row. Without VAPID keys: neither phone switch.\n• Avisos en el teléfono, under the switch in warning-fg: \"Bloqueaste los avisos para este sitio. Se cambia desde el navegador.\" / \"En iPhone hay que agregar Stockerly a la pantalla de inicio antes de activarlos.\" / \"Este navegador no admite avisos push.\"\n• Tu plan after saving: the flash \"Plan guardado.\"\n• Registros empty with no filter: \"Tu instancia no ha registrado nada todavía.\" Errores empty: \"Tu instancia no ha registrado ningún error.\", or \"Nada con esos filtros.\" with Limpiar filtros.\n• Registros and Errores past one page: the pager under the count.\n• Estado with no worker: Trabajos reads \"Sin worker · …\" in the warning tone; Errores (24 h) above 0 takes the same tone.\n• Estado with no recorded change: \"Todavía no hay cambios registrados.\"\n• /admin/errors with developer_mode off: back to Estado with \"Activa el modo desarrollador en Ajustes para ver esta sección.\"\n• Tus datos with nothing to delete: Borrar movimientos disabled.\n• Any screen on desktop: the same column inside the SidebarNav shell.\n\nOPEN FINDINGS\nNone with a D number.\n\nHISTORY\n→ Log · Ajustes",
+          "content": "PURPOSE\nOne Ajustes for a single-user instance (D5): the person who owns the account also owns the box, so /profile and the /admin zone are one hub with sections — cuenta, apariencia y región, tu plan, avisos, tu instancia, tus datos.\n\nENTRY POINTS\nThe fifth BottomNav tab (/settings). Its rows open /settings/account, /settings/password, /settings/plan, TOTP enrolment (auth.pen), /admin/integrations, /admin/logs, /admin/settings, Mission Control at /admin/jobs (a new tab), /admin/errors (only with developer_mode, ADR-020) and the importer (assets.pen). /help has no entry point in the app: help_path is linked from nowhere, so it is reached by typing the URL (D161). Errores' back arrow returns to Estado y mantenimiento, where its switch lives. En mantenimiento is what a visitor who is not signed in gets from any page while maintenance_mode is on.\n\nSCREENS (LEFT → RIGHT, BY BAND)\nCuenta: Hub (default · avisos bloqueados · dos pasos activa) · Nombre y correo · Contraseña · Tu plan (vacío · default · error).\nIntegraciones: lista · Administrar (one source opened) · Estados (the five states) · Vacío.\nOperación: Registros · Registros · Detalle · Registros · Filtrado sin resultados · Estado y mantenimiento · Estado · Mantenimiento activo · En mantenimiento · Errores · Errores · Detalle.\nAyuda: /help as shipped (D161) — the app layout, no BottomNav tab lit, the /welcome body without its CTA; its three doors are plain links.\nNo desktop artboards: every screen here is one column (max-w-3xl, or max-w-xl for the three forms — nombre y correo, contraseña, tu plan) inside the shell (D4).\n\nBUSINESS RULES\n• The theme applies on select and the currency PATCHes on select; nothing waits for a Guardar (D58).\n• Avisos: the bell cannot be turned off (D16); the two phone switches (Resumen de Hoy en el teléfono, Avisos en el teléfono) render only where VAPID keys exist.\n• Seguridad is a row until TOTP is enrolled; once it is, a card with the codes left and Generar códigos nuevos.\n• Tu plan: nothing is prefilled; the three shares must sum to 100 before saving; the contribution is MXN. Written here only, Hoy reads it (D156).\n• Integraciones lists every registered source, the ones not connected first. Each card says its role, its own quota in its own unit, and whose problem a non-working source is: sin API key (your instance), sin cuota (your quota), bloqueada (the provider), verificando (a key saved and still being checked; it needs a worker). Near the limit qualifies the figure ('· cerca del límite'), it is not a state. One API key per source (ADR-015).\n• Deleting a source removes it from the list; it comes back only with bin/rails stockerly:sync.\n• Estado: each switch is its own PATCH and every flip is kept in SiteConfigChange. Maintenance shows the 503 page to anyone not signed in; the owner keeps working, and login stays reachable.\n• Tus datos: Borrar movimientos keeps the account; Borrar cuenta returns the instance to the setup wizard.\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — settings.*, plans.*, admin.integrations.*, admin.logs.*, admin.settings.*, admin.errors.*, mantenimiento.*. Provider descriptions and what a missing key costs: MarketData::Domain::ProviderDirectory. Manual sync names: data_sources.* (DataSourceRegistry reads them from the locale). Log messages: whatever each job wrote to SystemLog.\n\nSTATES NOT DRAWN\n• Hub · Dos pasos activa with no codes left: the subline becomes a warning box, \"Activa · ya no te queda ningún código de recuperación\".\n• Hub without developer_mode: no Errores row. Without VAPID keys: neither phone switch.\n• Avisos en el teléfono, the other two lines under the switch in warning-fg (Avisos bloqueados draws the denied one; the switch stays off and simply does not respond): \"En iPhone hay que agregar Stockerly a la pantalla de inicio antes de activarlos.\" / \"Este navegador no admite avisos push.\"\n• Tu plan after saving: the flash \"Plan guardado.\"\n• Registros empty with no filter: \"Tu instancia no ha registrado nada todavía.\" Errores empty: \"Tu instancia no ha registrado ningún error.\", or \"Nada con esos filtros.\" with Limpiar filtros.\n• Registros and Errores past one page: the pager under the count.\n• Estado with no worker: Trabajos reads \"Sin worker · …\" in the warning tone; Errores (24 h) above 0 takes the same tone.\n• Estado with no recorded change: \"Todavía no hay cambios registrados.\"\n• /admin/errors with developer_mode off: back to Estado with \"Activa el modo desarrollador en Ajustes para ver esta sección.\"\n• Tus datos with nothing to delete: Borrar movimientos disabled.\n• Any screen on desktop: the same column inside the SidebarNav shell.\n\nOPEN FINDINGS\nD161 — /help is drawn as shipped and stays open: nothing links to it, its subtitle promises 'qué hacer cuando algo falla, y cómo contactarnos' and the page carries only the bug link, and it renders two <h1>s.\n\nHISTORY\n→ Log · Ajustes",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -5731,7 +5731,7 @@
       "type": "frame",
       "id": "KKXa3",
       "x": 0,
-      "y": 2527,
+      "y": 2727,
       "name": "Log · Ajustes",
       "width": 360,
       "fill": "$bg-muted",
@@ -5757,7 +5757,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-21 — Mirrored to code at 809ea789: Tu plan mirrored as built (D156) and its hub row moved after Apariencia, Resumen de Hoy switch, current-password field, API KEY label, Aperturas and last-sync lines on Estado, trace and log-module fixes, kit 1.3.0 TopBar search; drew Dos pasos activa, Verificando, Integraciones vacío, Registros filtrado and Mantenimiento activo; re-laid as bands Cuenta, Integraciones, Operación.\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the TopBar at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots\n2026-10-14 · En mantenimiento draws the shared wordmark at h-8 in place of the disc and typed name, as layouts/maintenance renders it\n2026-09-17 · D123: Alpha Vantage and FMP retired — their cards and manual-sync rows removed, source counts 10 → 8, the ProviderCard maintainer notice deleted; Estados draws sin cuota on ExchangeRate\n2026-09-16 · re-vendored to kit 1.0.0; BottomNav and SidebarNav masters had Ajustes lit, every screen now lights its own tab\n2026-09-16 · mirrored to the code (D78): hub sizes and copy, the phone switch, Integraciones rebuilt on a ProviderCard that carries state, quota bar, reason and the maintainer notice, Registros and Estado rebuilt, Errores rows and detail, En mantenimiento in its own chrome\n2026-09-16 · Integraciones · Administrar and Registros · Detalle drawn; the Hub, Integraciones and Estado desktops retired (D4) with the SidebarNav and TopBarDesktop they used\n2026-09-16 · code: the maintenance page lost its English navbar and footer; Estado stopped promising a banner and names each switch in its audit trail; the importer row describes Stockerly's own format; the empty Integraciones stopped sending an owner into the wizard; Registros keeps the task on its own line\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections — its reasoning lives in D5, D16, D58, D78, D90, ADR-015, ADR-020 and git history\n2026-09-05 · En mantenimiento drawn — this flow owns the switch, and nothing drew what the switch causes\n2026-09-05 · that screen was the app's only English one, and the last to call its owner an administrator; fixed in code the same day\n2026-09-05 · A2 · Errores and Errores · Detalle drawn — the last undrawn surface in this flow\n2026-09-05 · D90 · Nombre y correo and Contraseña drawn — /profile retired, AJU-1 closed\n2026-09-05 · the desktop band reflowed: growing Hub · Desktop to 1235 had left it overlapping Integraciones · Desktop by 255px\n2026-09-05 · D78 · Tus datos draws the two real doors; the mailto and its 'pendiente' note are gone\n2026-09-05 · D78 · Zona horaria added to Apariencia y región; Errores row added to Tu instancia (ADR-020, conditional)\n2026-09-05 · D58 · the brief's open Guardar-vs-auto-save question closed — it shipped and the brief had not caught up\n2026-09-05 · Hub grows 1684 → 2140 to hold the two doors without clipping the BottomNav\n2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
+          "content": "2026-10-21 — Drew the screens that ship without an artboard: Hub · Avisos bloqueados (push permission denied) in Cuenta, and a new Ayuda band with /help as shipped (D161, superseding D92).\n2026-10-21 — Mirrored to code at 809ea789: Tu plan mirrored as built (D156) and its hub row moved after Apariencia, Resumen de Hoy switch, current-password field, API KEY label, Aperturas and last-sync lines on Estado, trace and log-module fixes, kit 1.3.0 TopBar search; drew Dos pasos activa, Verificando, Integraciones vacío, Registros filtrado and Mantenimiento activo; re-laid as bands Cuenta, Integraciones, Operación.\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the TopBar at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots\n2026-10-14 · En mantenimiento draws the shared wordmark at h-8 in place of the disc and typed name, as layouts/maintenance renders it\n2026-09-17 · D123: Alpha Vantage and FMP retired — their cards and manual-sync rows removed, source counts 10 → 8, the ProviderCard maintainer notice deleted; Estados draws sin cuota on ExchangeRate\n2026-09-16 · re-vendored to kit 1.0.0; BottomNav and SidebarNav masters had Ajustes lit, every screen now lights its own tab\n2026-09-16 · mirrored to the code (D78): hub sizes and copy, the phone switch, Integraciones rebuilt on a ProviderCard that carries state, quota bar, reason and the maintainer notice, Registros and Estado rebuilt, Errores rows and detail, En mantenimiento in its own chrome\n2026-09-16 · Integraciones · Administrar and Registros · Detalle drawn; the Hub, Integraciones and Estado desktops retired (D4) with the SidebarNav and TopBarDesktop they used\n2026-09-16 · code: the maintenance page lost its English navbar and footer; Estado stopped promising a banner and names each switch in its audit trail; the importer row describes Stockerly's own format; the empty Integraciones stopped sending an owner into the wizard; Registros keeps the task on its own line\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections — its reasoning lives in D5, D16, D58, D78, D90, ADR-015, ADR-020 and git history\n2026-09-05 · En mantenimiento drawn — this flow owns the switch, and nothing drew what the switch causes\n2026-09-05 · that screen was the app's only English one, and the last to call its owner an administrator; fixed in code the same day\n2026-09-05 · A2 · Errores and Errores · Detalle drawn — the last undrawn surface in this flow\n2026-09-05 · D90 · Nombre y correo and Contraseña drawn — /profile retired, AJU-1 closed\n2026-09-05 · the desktop band reflowed: growing Hub · Desktop to 1235 had left it overlapping Integraciones · Desktop by 255px\n2026-09-05 · D78 · Tus datos draws the two real doors; the mailto and its 'pendiente' note are gone\n2026-09-05 · D78 · Zona horaria added to Apariencia y región; Errores row added to Tu instancia (ADR-020, conditional)\n2026-09-05 · D58 · the brief's open Guardar-vs-auto-save question closed — it shipped and the brief had not caught up\n2026-09-05 · Hub grows 1684 → 2140 to hold the two doors without clipping the BottomNav\n2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -5768,7 +5768,7 @@
     {
       "type": "frame",
       "id": "XiQn9",
-      "x": 1500,
+      "x": 2010,
       "y": 0,
       "name": "[Ajustes] / Nombre y correo / Default",
       "clip": true,
@@ -6070,7 +6070,7 @@
     {
       "type": "frame",
       "id": "nMLd1",
-      "x": 2010,
+      "x": 2520,
       "y": 0,
       "name": "[Ajustes] / Contraseña / Default",
       "clip": true,
@@ -10008,7 +10008,7 @@
     {
       "type": "frame",
       "id": "ULvqd",
-      "x": 2520,
+      "x": 3030,
       "y": 0,
       "name": "[Ajustes] / Tu plan / Vacío",
       "clip": true,
@@ -10425,7 +10425,7 @@
     {
       "type": "frame",
       "id": "Q3AyoI",
-      "x": 3030,
+      "x": 3540,
       "y": 0,
       "name": "[Ajustes] / Tu plan / Default",
       "clip": true,
@@ -10842,7 +10842,7 @@
     {
       "type": "frame",
       "id": "Q60MPi",
-      "x": 3540,
+      "x": 4050,
       "y": 0,
       "name": "[Ajustes] / Tu plan / Error",
       "clip": true,
@@ -11262,7 +11262,7 @@
     {
       "type": "frame",
       "id": "kgx5V",
-      "x": 990,
+      "x": 1500,
       "y": 0,
       "name": "[Ajustes] / Hub / Dos pasos activa",
       "clip": true,
@@ -15164,6 +15164,923 @@
             "NXLgt": {
               "fill": "$primary",
               "fontWeight": "600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "DU816",
+      "x": 990,
+      "y": 0,
+      "name": "[Ajustes] / Hub / Avisos bloqueados",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "F9dZX",
+          "type": "ref",
+          "ref": "eMc9I",
+          "name": "TopBar",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "L32aHr",
+          "name": "Content",
+          "clip": true,
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-6",
+          "padding": [
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "voJFV",
+              "name": "Avisos",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "DMYfg",
+                  "name": "H",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Q3BKna",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Avisos",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "l3ksC",
+                      "name": "s",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Todo aviso llega a tu campana; eso no se apaga. El correo sí.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Nnpnu",
+                  "name": "Box",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "wxVFT",
+                      "type": "ref",
+                      "ref": "CagFp",
+                      "name": "Resumen diario por correo",
+                      "width": "fill_container",
+                      "descendants": {
+                        "Q75TA": {
+                          "content": "Resumen diario por correo"
+                        },
+                        "mhAyW": {
+                          "content": "Un solo correo a las 18:30 CDMX con lo que pasó."
+                        },
+                        "PuYXL": {
+                          "fill": "$primary"
+                        },
+                        "byN6b": {
+                          "x": 21
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "b5ixtD",
+                      "name": "Div",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$border-default"
+                    },
+                    {
+                      "id": "jhPt5",
+                      "type": "ref",
+                      "ref": "CagFp",
+                      "name": "Avisos urgentes por correo",
+                      "width": "fill_container",
+                      "descendants": {
+                        "Q75TA": {
+                          "content": "Avisos urgentes por correo"
+                        },
+                        "mhAyW": {
+                          "content": "Un correo aparte al disparar una regla."
+                        },
+                        "PuYXL": {
+                          "fill": "$border-strong"
+                        },
+                        "byN6b": {
+                          "x": 3
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "axof9",
+                      "name": "Div",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$border-default"
+                    },
+                    {
+                      "id": "h4vvT7",
+                      "type": "ref",
+                      "ref": "CagFp",
+                      "name": "Resumen de Hoy en el teléfono",
+                      "width": "fill_container",
+                      "descendants": {
+                        "Q75TA": {
+                          "content": "Resumen de Hoy en el teléfono"
+                        },
+                        "mhAyW": {
+                          "content": "Cada mañana a las 8:00 CDMX, lo que Hoy diría. Necesita los avisos en el teléfono activados."
+                        },
+                        "PuYXL": {
+                          "fill": "$border-strong"
+                        },
+                        "byN6b": {
+                          "x": 3
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "g2zPK",
+                      "name": "Div",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$border-default"
+                    },
+                    {
+                      "id": "W6ybpY",
+                      "type": "ref",
+                      "ref": "CagFp",
+                      "name": "Avisos en el teléfono",
+                      "width": "fill_container",
+                      "descendants": {
+                        "jxWCI": {
+                          "type": "frame",
+                          "id": "Pyr6n",
+                          "name": "TC",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "KPhBg",
+                              "name": "l",
+                              "fill": "$fg-default",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Avisos en el teléfono",
+                              "lineHeight": 1.3,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "b9rlg",
+                              "name": "d",
+                              "fill": "$fg-subtle",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Al disparar una regla, aunque tengas la app cerrada.",
+                              "lineHeight": 1.4,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Ynt6n",
+                              "name": "bloqueado",
+                              "fill": "$warning-fg",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Bloqueaste los avisos para este sitio. Se cambia desde el navegador.",
+                              "lineHeight": 1.4,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        "PuYXL": {
+                          "fill": "$border-strong"
+                        },
+                        "byN6b": {
+                          "x": 3
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "VQY3X",
+              "name": "Tu instancia",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "jLb7z",
+                  "name": "H",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p5NmKN",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Tu instancia",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "uq7X0",
+                      "name": "s",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Esto es tuyo: corre en tu servidor y nadie más lo ve.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "AE7yQ",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Integraciones",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "plug"
+                    },
+                    "GueOK": {
+                      "content": "Integraciones"
+                    },
+                    "uH4YA": {
+                      "content": "Fuentes de datos, API keys y salud"
+                    },
+                    "AgU5u": {
+                      "content": "8"
+                    }
+                  }
+                },
+                {
+                  "id": "YtKOB",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Registros",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "scroll-text"
+                    },
+                    "GueOK": {
+                      "content": "Registros"
+                    },
+                    "uH4YA": {
+                      "content": "Sincronizaciones y avisos de los últimos 90 días"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
+                },
+                {
+                  "id": "Ciic2",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Estado y mantenimiento",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "server-cog"
+                    },
+                    "GueOK": {
+                      "content": "Estado y mantenimiento"
+                    },
+                    "uH4YA": {
+                      "content": "Diagnóstico, modo mantenimiento y cambios recientes"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
+                },
+                {
+                  "id": "X4a3V",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Trabajos en segundo plano",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "list-checks"
+                    },
+                    "GueOK": {
+                      "content": "Trabajos en segundo plano"
+                    },
+                    "uH4YA": {
+                      "content": "Mission Control: colas, reintentos y fallos"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    },
+                    "f0LmK": {
+                      "icon": "external-link"
+                    }
+                  }
+                },
+                {
+                  "id": "a4mOQ",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Errores",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "bug"
+                    },
+                    "GueOK": {
+                      "content": "Errores"
+                    },
+                    "uH4YA": {
+                      "content": "Qué falló, dónde y cuántas veces"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "TtdpO",
+          "type": "ref",
+          "ref": "PzVx9",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "Q5Zrt": {
+              "fill": "$primary"
+            },
+            "NXLgt": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "eLhuZ",
+      "x": 480,
+      "y": 7817,
+      "name": "[Ajustes] / Ayuda / Default",
+      "clip": true,
+      "width": 390,
+      "height": 1273,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "iD5pW",
+          "type": "ref",
+          "ref": "eMc9I",
+          "name": "TopBar",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "lUM8j",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 32,
+          "padding": [
+            72,
+            32
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "WmT7l",
+              "name": "Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Iz1tN",
+                  "name": "Título",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Ayuda y soporte",
+                  "lineHeight": 1.2,
+                  "fontFamily": "$font-display",
+                  "fontSize": 30,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.75
+                },
+                {
+                  "type": "text",
+                  "id": "A1grl",
+                  "name": "Subtítulo",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Cómo empezar con Stockerly, qué hacer cuando algo falla, y cómo contactarnos.",
+                  "lineHeight": 1.43,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cYvXi",
+              "name": "Contexto",
+              "width": "fill_container",
+              "fill": "$primary-muted",
+              "cornerRadius": "$radius-lg",
+              "gap": 16,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Pe1Fl",
+                  "name": "MarkBox",
+                  "width": 32,
+                  "height": 32,
+                  "padding": [
+                    2,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "ZIaNg",
+                      "name": "LogoMark",
+                      "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                      "viewBox": [
+                        0,
+                        0,
+                        64,
+                        64
+                      ],
+                      "width": 28,
+                      "height": 28,
+                      "stroke": "$primary",
+                      "strokeWidth": 2.1875,
+                      "strokeLinejoin": "round",
+                      "strokeLinecap": "round"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "KtIoT",
+                  "name": "Texto",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "N2M82d",
+                      "name": "Título",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Software en desarrollo",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 18,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "TjKBg",
+                      "name": "Cuerpo",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Stockerly está en desarrollo activo. Las cosas pueden cambiar o romperse; si algo no funciona como esperas, probablemente es un bug — repórtalo.",
+                      "lineHeight": 1.625,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jDOQC",
+              "name": "Guía",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "YVtDG",
+                  "name": "Registra tu primer movimiento",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KYTCq",
+                      "name": "IconTile",
+                      "width": 32,
+                      "height": 32,
+                      "fill": "$bg-muted",
+                      "cornerRadius": "$radius-md",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "NgrKv",
+                          "name": "i",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chart-column-increasing",
+                          "library": "lucide",
+                          "fill": "$fg-default"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "SDcyb",
+                      "name": "sp16",
+                      "width": 1,
+                      "height": 16
+                    },
+                    {
+                      "type": "text",
+                      "id": "O0cqu",
+                      "name": "Título",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Registra tu primer movimiento",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TDCry",
+                      "name": "sp6",
+                      "width": 1,
+                      "height": 6
+                    },
+                    {
+                      "type": "text",
+                      "id": "aoJje",
+                      "name": "Cuerpo",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Carga una compra o venta para empezar a calcular tu rendimiento.",
+                      "lineHeight": 1.625,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "isKPn",
+                      "name": "sp12",
+                      "width": 1,
+                      "height": 12
+                    },
+                    {
+                      "type": "icon",
+                      "id": "vHQ5T",
+                      "name": "Flecha",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "arrow-right",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "W4Vqp",
+                  "name": "Crea una watchlist",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "j89lFH",
+                      "name": "IconTile",
+                      "width": 32,
+                      "height": 32,
+                      "fill": "$bg-muted",
+                      "cornerRadius": "$radius-md",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "bdDOb",
+                          "name": "i",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "eye",
+                          "library": "lucide",
+                          "fill": "$fg-default"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "eMFir",
+                      "name": "sp16",
+                      "width": 1,
+                      "height": 16
+                    },
+                    {
+                      "type": "text",
+                      "id": "MhSmA",
+                      "name": "Título",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Crea una watchlist",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "H0ch0",
+                      "name": "sp6",
+                      "width": 1,
+                      "height": 6
+                    },
+                    {
+                      "type": "text",
+                      "id": "rzfBc",
+                      "name": "Cuerpo",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Sigue los activos que te interesan sin tenerlos en cartera.",
+                      "lineHeight": 1.625,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Sdzd0",
+                      "name": "sp12",
+                      "width": 1,
+                      "height": 12
+                    },
+                    {
+                      "type": "icon",
+                      "id": "XFQuV",
+                      "name": "Flecha",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "arrow-right",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "JlIXP",
+                  "name": "Configura una regla",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "TFunI",
+                      "name": "IconTile",
+                      "width": 32,
+                      "height": 32,
+                      "fill": "$bg-muted",
+                      "cornerRadius": "$radius-md",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "onWJc",
+                          "name": "i",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "bell-ring",
+                          "library": "lucide",
+                          "fill": "$fg-default"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "RT087",
+                      "name": "sp16",
+                      "width": 1,
+                      "height": 16
+                    },
+                    {
+                      "type": "text",
+                      "id": "DVL6O",
+                      "name": "Título",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Configura una regla",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "abOg3",
+                      "name": "sp6",
+                      "width": 1,
+                      "height": 6
+                    },
+                    {
+                      "type": "text",
+                      "id": "cOjsE",
+                      "name": "Cuerpo",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Recibe avisos cuando un precio o métrica cruce un umbral.",
+                      "lineHeight": 1.625,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "o4jNED",
+                      "name": "sp12",
+                      "width": 1,
+                      "height": 12
+                    },
+                    {
+                      "type": "icon",
+                      "id": "i8sPN",
+                      "name": "Flecha",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "arrow-right",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "z1tbFi",
+              "name": "Soporte",
+              "width": "fill_container",
+              "gap": 4,
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TL0sT",
+                  "name": "Pregunta",
+                  "fill": "$fg-subtle",
+                  "content": "¿Encontraste un bug?",
+                  "lineHeight": 1.43,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "UjURy",
+                  "name": "Enlace",
+                  "fill": "$primary-fg",
+                  "content": "Ábrelo en GitHub.",
+                  "lineHeight": 1.43,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tj2R3",
+          "type": "ref",
+          "ref": "PzVx9",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "bhDTq": {
+              "fill": "$fg-subtle"
+            },
+            "JaKDl": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
             }
           }
         }
