@@ -68,6 +68,21 @@ RSpec.describe "Registrar movimiento", type: :system, js: true do
     expect(page).to have_no_field("trade[maturity_date]")
   end
 
+  # A modal <dialog> sits in the top layer, where no z-index reaches: the toast
+  # only shows above it from inside the top layer too.
+  it "shows a refused save above the sheet that stays open" do
+    click_link "Registrar movimiento"
+    find("label", text: "Venta").click
+    fill_in "trade[asset_symbol]", with: "AAPL"
+    select "MXN", from: "trade[currency]"
+    fill_in "trade[shares]", with: "10"
+    fill_in "trade[price_per_share]", with: "150"
+    click_button "Guardar movimiento"
+
+    expect(page).to have_css("#flash_messages:popover-open", text: "No tienes suficientes títulos para esa venta.")
+    expect(page).to have_css("dialog[open]")
+  end
+
   it "hides the FX field when there is nothing to convert" do
     click_link "Registrar movimiento"
     select "MXN", from: "trade[currency]"

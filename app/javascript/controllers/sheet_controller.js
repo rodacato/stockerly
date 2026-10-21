@@ -42,8 +42,8 @@ export default class SheetController extends Controller {
     }
   }
 
-  // A failed submit redirects back to the list, which Turbo also reports as
-  // success; only a Turbo Stream answer means the form was saved. Closing with
+  // Only a successful Turbo Stream answer means the form was saved: a refusal
+  // streams its alert as a 422, and a redirect also reports success. Closing with
   // history.back() would restore the cached list and drop the card the stream
   // just inserted, so a saved sheet leaves by replacing its own history entry.
   closeOnSaved(event) {

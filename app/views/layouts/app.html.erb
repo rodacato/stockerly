@@ -12,7 +12,10 @@
       <%= content_for?(:header_bar) ? content_for(:header_bar) : render("components/top_bar") %>
       <%= render "components/top_bar_desktop" %>
 
-      <div id="flash_messages" class="fixed right-4 top-20 z-50 flex max-w-sm flex-col gap-3" style="pointer-events: none;">
+      <%# A popover, because the sheets are modal <dialog>s in the top layer and
+          no z-index reaches above them; each toast re-raises it (flash_controller). %>
+      <div id="flash_messages" popover="manual"
+           class="fixed bottom-auto left-auto right-4 top-20 m-0 flex max-w-sm flex-col gap-3 overflow-visible border-0 bg-transparent p-0" style="pointer-events: none;">
         <%= render "shared/flash" %>
       </div>
 
