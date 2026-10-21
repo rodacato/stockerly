@@ -95,6 +95,8 @@ not by reading the tables.
 | `descubrir-olas-sin-datos.png` | `[Descubrir] / Olas / Sin datos` |
 | `descubrir-olas-calendario-agotado.png` | `[Descubrir] / Olas / Calendario agotado` — past the YAML's horizon (D33) |
 | `ajustes-hub.png` | `[Ajustes] / Hub / Default` |
+| `ajustes-hub-superficie-de-marca.png` | `[Ajustes] / Hub / Superficie de marca (D164)` — the account card on `primary-fg`, `Tu instancia` on a `primary-muted` wash |
+| `ajustes-hub-superficie-de-marca-oscuro.png` | `[Ajustes] / Hub / Superficie de marca · oscuro (D164)` — the same in dark, the softer pair |
 | `ajustes-hub-dos-pasos-activa.png` | `[Ajustes] / Hub / Dos pasos activa` — TOTP enrolled: a card with the codes left and Generar códigos nuevos |
 | `ajustes-hub-avisos-bloqueados.png` | `[Ajustes] / Hub / Avisos bloqueados` — push permission denied: the phone switch stays off with the warning line under it |
 | `ajustes-nombre-correo.png` | `[Ajustes] / Nombre y correo / Default` |
