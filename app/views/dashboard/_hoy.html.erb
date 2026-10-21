@@ -55,10 +55,12 @@
               <%= t(".vs_cetes_nota", term: vs_cetes[:term], date: l(vs_cetes[:as_of], format: :short)) %>
             </p>
           </div>
-          <p class="shrink-0 font-display text-2xl font-bold tracking-tight text-fg-default">
-            <%= signed_points(vs_cetes[:points]) %>
-          </p>
-          <%= render "dashboard/help_tip", figure: "vs_cetes", classes: "absolute right-1 top-1" %>
+          <div class="-mr-3 flex shrink-0 items-center gap-1">
+            <p class="font-display text-2xl font-bold tracking-tight text-fg-default">
+              <%= signed_points(vs_cetes[:points]) %>
+            </p>
+            <%= render "dashboard/help_tip", figure: "vs_cetes" %>
+          </div>
         <% end %>
       <% end %>
     </div>
