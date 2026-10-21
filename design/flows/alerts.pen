@@ -1,5 +1,5 @@
 {
-  "version": "2.20",
+  "version": "2.21",
   "children": [
     {
       "type": "frame",
@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 1.2.0 · updated: 2026-10-14\n\n1. PURPOSE\nThe Reglas tab and the inbox behind the bell: the rules the owner defines, and everything the app decides to tell him. One file, because rules are one of four notification producers and the bandeja is where all four land.\n\n2. ENTRY POINTS\n- Reglas — BottomNav tab (/alerts, alerts#index)\n- Nueva regla — \"Nueva\" opens /alerts/new inside a <dialog> (D11, components/_sheet_dialog); a suggestion's \"Crear\" pre-fills it\n- Bandeja — the TopBar bell and \"Ver bandeja\" (/notifications)\n\n3. SCREENS (left → right)\n- Reglas · Vacío — no rules yet: KPIs at zero, suggestions from what is held, an empty feed\n- Nueva regla · Sheet — a price cross, the default chip\n- Nueva regla · Calendario — a marketwide date rule: no asset, no threshold, \"Días antes\"\n- Reglas · Default — rules, últimos disparos, cómo te aviso\n- Bandeja · Default — one group per day (D119)\n- Bandeja · Vacía\n\n4. BUSINESS RULES\n- A field shows only where the contract reads it: date rules take window_days, never a threshold; bmv_holiday and cete_auction have no asset (alerts/contracts/create_contract.rb)\n- Thresholds are inclusive — the evaluator compares with >= and <= (alerts/domain/alert_evaluator.rb) — so the copy says \"o más\" and \"o menos\"\n- Volume is compared against AlertEvaluator::VOLUME_AVERAGE_DAYS, five days\n- A day-change notice carries the measured move with its sign (D119)\n- Up to three suggestions, derived from holdings, never one already created (alerts/domain/rule_suggestions.rb)\n- The bandeja is not a channel you toggle. Cómo te aviso switches the daily digest, urgent email and push; push renders only when VAPID keys exist\n- Nothing on these screens tells the owner what to do (ADR-001)\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — alerts.*, notifications.*, notificaciones.*, settings.show (the switches). Notices: Alerts::Domain::TriggerNotice, Trading::UseCases::NotifyApproachingEarnings and NotifyApproachingMaturities, ResolveTrackedSymbolsJob, CheckSyncHealthJob. Rule summaries: AlertsHelper.\n\n6. STATES NOT DRAWN\n- Bandeja with a filter that matches nothing — the empty card reads \"Nada en este filtro. Prueba otro.\"\n- Reglas · Vacío with no holdings — the suggestions block and \"Crear una desde cero\" are absent\n- Nueva regla on the other conditions — the threshold label reads \"Cambio en el día · %\", \"Nivel RSI\" or \"Múltiplo del promedio\"\n- Nueva regla on a phone — the sheet caps at 85% of the viewport and scrolls; the artboards draw it whole\n- The empty-state card's dashed border — the .pen format has no dashed stroke\n- Desktop — D4: the list and the sheet reflow\n\n7. OPEN FINDINGS\nNone.\n\n8. HISTORY\n→ Log frame, below this brief. Reasoning before 2026-09-16: git show 120600bb:design/V2_REMAINING.md (ALR-*).",
+          "content": "kit-version-source: 1.3.0 · updated: 2026-10-21\n\n1. PURPOSE\nThe Reglas tab and the inbox behind the bell: the rules the owner defines, and everything the app decides to tell him. One file, because rules are one of five notification producers — four notification types — and the bandeja is where all of them land.\n\n2. ENTRY POINTS\n- Reglas — BottomNav tab (/alerts, alerts#index)\n- Nueva regla — \"Nueva\" opens /alerts/new inside a <dialog> (D11, components/_sheet_dialog); a suggestion's \"Crear\" pre-fills it; the asset detail's \"Crear regla\" pre-fills the symbol (market/_analysis.html.erb); a card's edit icon opens /alerts/:id/edit in the same sheet\n- Bandeja — the TopBar bell and \"Ver bandeja\" (/notifications)\n\n3. SCREENS (left → right, by band)\n- Reglas — Vacío: no rules yet: no KPIs (D142), the empty card, suggestions from what is held, an empty feed · Default: KPIs, rule cards (edit · pause · delete, last fire, next check, cooldown), últimos disparos, one line linking Ajustes (D143)\n- Nueva regla — Sheet: a price cross, the default chip · Calendario: a marketwide date rule: no asset, no threshold, \"Días antes\"\n- Bandeja — Default: one group per day (D119) · Vacía: no filter chips (D142)\n\n4. BUSINESS RULES\n- A field shows only where the contract reads it: date rules take window_days, never a threshold; bmv_holiday and cete_auction have no asset (alerts/contracts/create_contract.rb)\n- Thresholds are inclusive — the evaluator compares with >= and <= (alerts/domain/alert_evaluator.rb) — so the copy says \"o más\" and \"o menos\"\n- Volume is compared against AlertEvaluator::VOLUME_AVERAGE_DAYS, five days\n- A day-change notice carries the measured move with its sign (D119)\n- Up to three suggestions, derived from holdings, never one already created (alerts/domain/rule_suggestions.rb)\n- The bandeja is not a channel you toggle. The digest, urgent-email and push switches live only in Ajustes (D143); Reglas carries one line and a link\n- KPIs and the inbox chips render only when a rule / a notice exists (D142)\n- A card states when it is next checked, read from config/recurring.yml (alerts/domain/check_cadence.rb); a rule whose symbol left the catalogue says it cannot fire (alerts/queries/symbol_listing.rb)\n- A marketwide rule shows its market (CETES, BMV) in the ticker slot, with no kind chip\n- Nothing on these screens tells the owner what to do (ADR-001)\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — alerts.*, alerts.condiciones.*, notifications.*, notificaciones.*. Notices: Alerts::Domain::TriggerNotice, Trading::UseCases::NotifyApproachingEarnings and NotifyApproachingMaturities, ResolveTrackedSymbolsJob, CheckSyncHealthJob. Feed date-rule messages: Alerts::Handlers::CreateAlertEventOnTrigger. Rule summaries: AlertsHelper.\n\n6. STATES NOT DRAWN\n- Bandeja with a filter lit — the chip on primary-muted; an empty bucket reads \"Nada en este filtro. Prueba otro.\" with the chips still shown\n- Bandeja with nothing unread — no \"Marcar leídas\", no unread dots, titles fg-subtle; with nothing read — no \"Borrar las leídas\"\n- Reglas with rules, none fired — the feed card reads \"Todavía no se ha disparado ninguna regla.\"\n- Reglas · Vacío with no holdings — the suggestions block and \"Crear una desde cero\" are absent\n- A rule's explainer — the info icon opens a popover under the card: the condition, then its \"porque\" line\n- An orphan rule — the next-check line becomes a warning: \"<SYM> ya no está en el catálogo; esta regla no puede dispararse.\" (or \"<OLD> ahora es <NEW>; …\"), and the footer drops the status while active\n- Nueva regla on the other conditions — the threshold label reads \"Umbral de precio\", \"Cambio en el día · %\", \"Nivel RSI\" or \"Múltiplo del promedio\", and Al alza / A la baja shows only for the price cross; BMV festivo previews \"Te avisaremos 7 día(s) antes de cada festivo de la BMV.\"; Dividendo próximo adds the Activo field\n- Editar regla — title \"Editar regla\", submit \"Guardar cambios\", fields pre-filled\n- Nueva regla on a phone — the sheet caps at 85% of the viewport and scrolls; the artboards draw it whole\n- The empty-state card's dashed border — the .pen format has no dashed stroke\n- Desktop — D4: the list and the sheet reflow\n\n7. OPEN FINDINGS\n- Code fix owed: the day-change suggestion's \"porque\" says \"más de %{percent}%\" over a >= evaluator (alerts.index.sugerencias.day_change_percent.porque); the artboard keeps \"5% o más\"\n- Code fix owed: format_threshold prints \"3000 títulos\" with no thousands separator (alerts_helper.rb); the artboard keeps \"3,000\", as every other count in the inbox delimits\n\n8. HISTORY\n→ Log frame, below this brief. Reasoning before 2026-09-16: git show 120600bb:design/V2_REMAINING.md (ALR-*).",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -112,34 +112,65 @@
         },
         {
           "type": "frame",
-          "id": "o2vgpN",
-          "name": "BellWrap",
-          "width": 44,
-          "height": 44,
-          "cornerRadius": "$radius-md",
-          "justifyContent": "center",
+          "id": "IYkdG",
+          "name": "Acciones",
+          "gap": "$space-1",
           "alignItems": "center",
           "children": [
             {
-              "type": "icon",
-              "id": "EIfs7",
-              "name": "Bell",
-              "width": 20,
-              "height": 20,
-              "icon": "bell",
-              "library": "lucide",
-              "fill": "$fg-subtle"
+              "type": "frame",
+              "id": "lJ5n5",
+              "name": "SearchWrap",
+              "width": 44,
+              "height": 44,
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "HLpEj",
+                  "name": "Search",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                }
+              ]
             },
             {
-              "type": "ellipse",
-              "id": "r1I7h",
-              "layoutPosition": "absolute",
-              "x": 26,
-              "y": 10,
-              "name": "UnreadDot",
-              "fill": "$negative",
-              "width": 8,
-              "height": 8
+              "type": "frame",
+              "id": "o2vgpN",
+              "name": "BellWrap",
+              "width": 44,
+              "height": 44,
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "EIfs7",
+                  "name": "Bell",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "ellipse",
+                  "id": "r1I7h",
+                  "layoutPosition": "absolute",
+                  "x": 26,
+                  "y": 10,
+                  "name": "UnreadDot",
+                  "fill": "$negative",
+                  "width": 8,
+                  "height": 8
+                }
+              ]
             }
           ]
         }
@@ -509,34 +540,23 @@
             },
             {
               "type": "frame",
-              "id": "elFPG",
-              "name": "Status",
-              "fill": "$positive-bg",
-              "cornerRadius": 99,
-              "gap": 6,
-              "padding": [
-                2,
-                8
-              ],
+              "id": "X0Dsdf",
+              "name": "Editar",
+              "width": 32,
+              "height": 32,
+              "cornerRadius": "$radius-sm",
+              "justifyContent": "center",
               "alignItems": "center",
               "children": [
                 {
-                  "type": "ellipse",
-                  "id": "guo4R",
-                  "name": "d",
-                  "fill": "$positive",
-                  "width": 6,
-                  "height": 6
-                },
-                {
-                  "type": "text",
-                  "id": "ocr58",
-                  "name": "t",
-                  "fill": "$positive-fg",
-                  "content": "activa",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "600"
+                  "type": "icon",
+                  "id": "ejvWu",
+                  "name": "i",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "pencil",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
                 }
               ]
             },
@@ -587,16 +607,37 @@
           ]
         },
         {
-          "type": "text",
-          "id": "NKemD",
-          "name": "Cond",
-          "fill": "$fg-default",
-          "textGrowth": "fixed-width",
+          "type": "frame",
+          "id": "dH6VN",
+          "name": "CondRow",
           "width": "fill_container",
-          "content": "Precio cruza umbral",
-          "fontFamily": "$font-sans",
-          "fontSize": 16,
-          "fontWeight": "600"
+          "gap": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "NKemD",
+              "name": "Cond",
+              "fill": "$fg-default",
+              "content": "Precio cruza umbral",
+              "fontFamily": "$font-sans",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "icon",
+              "id": "m4vMz",
+              "x": 0,
+              "y": 0,
+              "name": "Info",
+              "enabled": false,
+              "width": 14,
+              "height": 14,
+              "icon": "info",
+              "library": "lucide",
+              "fill": "$fg-subtle"
+            }
+          ]
         },
         {
           "type": "text",
@@ -614,11 +655,35 @@
         {
           "type": "text",
           "id": "qngCG",
-          "name": "Meta",
+          "name": "Ultimo",
+          "fill": "$fg-default",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Se disparó hace 3 días",
+          "fontFamily": "$font-mono",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "mB3s8",
+          "name": "Cadencia",
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Se disparó hace 3 días · espera 60 min entre avisos",
+          "content": "Se revisa con cada precio nuevo, hasta cada 5 min",
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "pO4uD",
+          "name": "Pie",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "activa · espera 60 min entre avisos",
           "fontFamily": "$font-mono",
           "fontSize": 12,
           "fontWeight": "normal"
@@ -635,14 +700,6 @@
       "width": 342,
       "gap": "$space-3",
       "children": [
-        {
-          "type": "ellipse",
-          "id": "w4d4b",
-          "name": "d",
-          "fill": "$positive",
-          "width": 8,
-          "height": 8
-        },
         {
           "type": "frame",
           "id": "RJnIc",
@@ -681,7 +738,7 @@
     {
       "type": "frame",
       "id": "Bn1Lk",
-      "x": 2010,
+      "x": 990,
       "y": 0,
       "name": "[Reglas] / Reglas / Default",
       "clip": true,
@@ -835,8 +892,8 @@
               "id": "mh9WM",
               "name": "LH",
               "width": "fill_container",
-              "justifyContent": "space_between",
-              "alignItems": "center",
+              "layout": "vertical",
+              "gap": "$space-3",
               "children": [
                 {
                   "type": "text",
@@ -852,6 +909,7 @@
                   "type": "frame",
                   "id": "jofiA",
                   "name": "Nueva",
+                  "width": "fill_container",
                   "fill": "$primary-fg",
                   "cornerRadius": "$radius-sm",
                   "gap": 8,
@@ -859,6 +917,7 @@
                     12,
                     16
                   ],
+                  "justifyContent": "center",
                   "alignItems": "center",
                   "children": [
                     {
@@ -906,24 +965,23 @@
                     "id7QE": {
                       "content": "Acción"
                     },
-                    "elFPG": {
-                      "fill": "$positive-bg"
-                    },
-                    "guo4R": {
-                      "fill": "$positive"
-                    },
-                    "ocr58": {
-                      "content": "activa",
-                      "fill": "$positive-fg"
-                    },
                     "NKemD": {
                       "content": "Precio cruza umbral"
+                    },
+                    "m4vMz": {
+                      "enabled": false
                     },
                     "U5SuO": {
                       "content": "cruza USD 200 al alza"
                     },
                     "qngCG": {
-                      "content": "Se disparó hace 3 días · espera 60 min entre avisos"
+                      "content": "Se disparó hace 3 días"
+                    },
+                    "mB3s8": {
+                      "content": "Se revisa con cada precio nuevo, hasta cada 5 min"
+                    },
+                    "pO4uD": {
+                      "content": "activa · espera 60 min entre avisos"
                     }
                   }
                 },
@@ -940,24 +998,23 @@
                     "id7QE": {
                       "content": "Acción"
                     },
-                    "elFPG": {
-                      "fill": "$positive-bg"
-                    },
-                    "guo4R": {
-                      "fill": "$positive"
-                    },
-                    "ocr58": {
-                      "content": "activa",
-                      "fill": "$positive-fg"
-                    },
                     "NKemD": {
                       "content": "RSI sobrecomprado"
+                    },
+                    "m4vMz": {
+                      "enabled": true
                     },
                     "U5SuO": {
                       "content": "RSI(14) en 70 o más"
                     },
                     "qngCG": {
-                      "content": "Se disparó hace 2 horas · espera 60 min entre avisos"
+                      "content": "Se disparó hace 2 horas"
+                    },
+                    "mB3s8": {
+                      "content": "Se revisa con cada precio nuevo, hasta cada 5 min"
+                    },
+                    "pO4uD": {
+                      "content": "activa · espera 60 min entre avisos"
                     }
                   }
                 },
@@ -974,24 +1031,23 @@
                     "id7QE": {
                       "content": "Cripto"
                     },
-                    "elFPG": {
-                      "fill": "$positive-bg"
-                    },
-                    "guo4R": {
-                      "fill": "$positive"
-                    },
-                    "ocr58": {
-                      "content": "activa",
-                      "fill": "$positive-fg"
-                    },
                     "NKemD": {
                       "content": "% cambio en el día"
+                    },
+                    "m4vMz": {
+                      "enabled": true
                     },
                     "U5SuO": {
                       "content": "se mueve 6% o más en el día"
                     },
                     "qngCG": {
-                      "content": "Se disparó hace 4 horas · espera 120 min entre avisos"
+                      "content": "Se disparó hace 4 horas"
+                    },
+                    "mB3s8": {
+                      "content": "Se revisa con cada precio nuevo, hasta cada 5 min"
+                    },
+                    "pO4uD": {
+                      "content": "activa · espera 120 min entre avisos"
                     }
                   }
                 },
@@ -1008,27 +1064,26 @@
                     "id7QE": {
                       "content": "Acción MX"
                     },
-                    "elFPG": {
-                      "fill": "$bg-muted"
-                    },
-                    "guo4R": {
-                      "fill": "$border-strong"
-                    },
-                    "ocr58": {
-                      "content": "pausada",
-                      "fill": "$fg-subtle"
-                    },
                     "S15sTV": {
                       "icon": "play"
                     },
                     "NKemD": {
                       "content": "Volumen anómalo"
                     },
+                    "m4vMz": {
+                      "enabled": false
+                    },
                     "U5SuO": {
                       "content": "volumen 3× o más sobre su promedio de 5 días"
                     },
                     "qngCG": {
-                      "content": "Nunca se ha disparado · espera 60 min entre avisos"
+                      "content": "Nunca se ha disparado"
+                    },
+                    "mB3s8": {
+                      "enabled": false
+                    },
+                    "pO4uD": {
+                      "content": "pausada · espera 60 min entre avisos"
                     }
                   }
                 },
@@ -1036,33 +1091,35 @@
                   "id": "P2ehG",
                   "type": "ref",
                   "ref": "mG9ST",
-                  "name": "— Subasta CETES",
+                  "name": "CETES Subasta CETES",
                   "width": "fill_container",
                   "descendants": {
                     "w34gr": {
-                      "content": "—"
+                      "content": "CETES"
+                    },
+                    "bwmAw": {
+                      "enabled": false
                     },
                     "id7QE": {
                       "content": "CETES"
                     },
-                    "elFPG": {
-                      "fill": "$positive-bg"
-                    },
-                    "guo4R": {
-                      "fill": "$positive"
-                    },
-                    "ocr58": {
-                      "content": "activa",
-                      "fill": "$positive-fg"
-                    },
                     "NKemD": {
                       "content": "Subasta CETES"
                     },
+                    "m4vMz": {
+                      "enabled": true
+                    },
                     "U5SuO": {
-                      "content": "3 día(s) antes de una subasta Banxico"
+                      "content": "3 días antes de una subasta Banxico"
                     },
                     "qngCG": {
-                      "content": "Se disparó hace 26 días · espera 60 min entre avisos"
+                      "content": "Se disparó hace 26 días"
+                    },
+                    "mB3s8": {
+                      "content": "Se revisa una vez al día, a las 7:30 h"
+                    },
+                    "pO4uD": {
+                      "content": "activa · espera 60 min entre avisos"
                     }
                   }
                 }
@@ -1118,9 +1175,6 @@
                   "name": "hoy 09:41",
                   "width": "fill_container",
                   "descendants": {
-                    "w4d4b": {
-                      "fill": "$warning"
-                    },
                     "n9N7Qd": {
                       "content": "NVDA entró en zona de sobrecompra (RSI(14) en 70 o más)"
                     },
@@ -1136,9 +1190,6 @@
                   "name": "hoy 07:02",
                   "width": "fill_container",
                   "descendants": {
-                    "w4d4b": {
-                      "fill": "$warning"
-                    },
                     "n9N7Qd": {
                       "content": "BTC se movió −6.4% en el día"
                     },
@@ -1154,9 +1205,6 @@
                   "name": "21 ago 12:10",
                   "width": "fill_container",
                   "descendants": {
-                    "w4d4b": {
-                      "fill": "$primary"
-                    },
                     "n9N7Qd": {
                       "content": "Próxima subasta Banxico de CETES en 3 día(s)."
                     },
@@ -1172,9 +1220,6 @@
                   "name": "21 ago 08:33",
                   "width": "fill_container",
                   "descendants": {
-                    "w4d4b": {
-                      "fill": "$positive"
-                    },
                     "n9N7Qd": {
                       "content": "AAPL cruzó USD 200.00 al alza"
                     },
@@ -1187,146 +1232,34 @@
             },
             {
               "type": "frame",
-              "id": "fpNdy",
-              "name": "ComoTeAviso",
+              "id": "y3tCe",
+              "name": "AvisosNota",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": "$space-3",
               "children": [
                 {
                   "type": "text",
-                  "id": "F5hYGy",
-                  "name": "T",
-                  "fill": "$fg-default",
-                  "content": "Cómo te aviso",
-                  "fontFamily": "$font-display",
-                  "fontSize": 24,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "SdnDZ",
-                  "name": "Campana",
+                  "id": "L4Aj1Z",
+                  "name": "Nota",
                   "fill": "$fg-subtle",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Todo aviso llega a tu campana; eso no se apaga. El correo sí.",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "RLoSX",
-                  "name": "Canales",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-lg",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "layout": "vertical",
-                  "padding": [
-                    0,
-                    16
-                  ],
-                  "children": [
-                    {
-                      "id": "NCX3s",
-                      "type": "ref",
-                      "ref": "a8AyYs",
-                      "name": "Resumen diario por correo",
-                      "width": "fill_container",
-                      "padding": [
-                        16,
-                        0
-                      ],
-                      "gap": 16,
-                      "descendants": {
-                        "L5wrZr": {
-                          "content": "Resumen diario por correo"
-                        },
-                        "uv9qf": {
-                          "content": "Un solo correo a las 18:30 CDMX con lo que pasó.",
-                          "fontSize": 12
-                        }
-                      }
-                    },
-                    {
-                      "id": "oVcDa",
-                      "type": "ref",
-                      "ref": "a8AyYs",
-                      "name": "Avisos urgentes por correo",
-                      "width": "fill_container",
-                      "padding": [
-                        16,
-                        0
-                      ],
-                      "gap": 16,
-                      "stroke": "$border-default",
-                      "strokeWidth": {
-                        "top": 1
-                      },
-                      "descendants": {
-                        "L5wrZr": {
-                          "content": "Avisos urgentes por correo"
-                        },
-                        "uv9qf": {
-                          "content": "Un correo aparte al disparar una regla.",
-                          "fontSize": 12
-                        },
-                        "xGqrS": {
-                          "fill": "$bg-muted"
-                        },
-                        "hNhAm": {
-                          "x": 3
-                        }
-                      }
-                    },
-                    {
-                      "id": "p6TsU",
-                      "type": "ref",
-                      "ref": "a8AyYs",
-                      "name": "Avisos en el teléfono",
-                      "width": "fill_container",
-                      "padding": [
-                        16,
-                        0
-                      ],
-                      "gap": 16,
-                      "stroke": "$border-default",
-                      "strokeWidth": {
-                        "top": 1
-                      },
-                      "descendants": {
-                        "L5wrZr": {
-                          "content": "Avisos en el teléfono"
-                        },
-                        "uv9qf": {
-                          "content": "Al disparar una regla, aunque tengas la app cerrada.",
-                          "fontSize": 12
-                        },
-                        "xGqrS": {
-                          "fill": "$bg-muted"
-                        },
-                        "hNhAm": {
-                          "x": 3
-                        }
-                      }
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "J8Zfns",
-                  "name": "Mail",
-                  "fill": "$fg-subtle",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP no hay correos; la bandeja y el teléfono siguen avisándote.",
+                  "content": "Cómo te avisamos —campana, correo— se configura una vez en:",
                   "lineHeight": 1.4,
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
                   "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "nXKfz",
+                  "name": "Ajustes",
+                  "fill": "$primary-fg",
+                  "content": "Ajustes",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
                 }
               ]
             }
@@ -1454,8 +1387,8 @@
     {
       "type": "frame",
       "id": "MYHxK",
-      "x": 2520,
-      "y": 0,
+      "x": 480,
+      "y": 3436,
       "name": "[Reglas] / Bandeja / Default",
       "clip": true,
       "width": 390,
@@ -1897,7 +1830,7 @@
                           "fill": "$fg-subtle"
                         },
                         "vMj7h": {
-                          "content": "Reporte en 5 días · tienes 12 títulos"
+                          "content": "Reporte en 3 días · tienes 12 títulos"
                         },
                         "pXPqq": {
                           "content": "ayer · 18:30 CDMX"
@@ -2093,8 +2026,8 @@
     {
       "type": "frame",
       "id": "vuJEp",
-      "x": 990,
-      "y": 0,
+      "x": 480,
+      "y": 2105,
       "name": "[Reglas] / Nueva regla / Sheet",
       "clip": true,
       "width": 390,
@@ -2150,8 +2083,20 @@
                     "NKemD": {
                       "content": "Precio cruza umbral"
                     },
+                    "m4vMz": {
+                      "enabled": false
+                    },
                     "U5SuO": {
                       "content": "cruza USD 200 al alza"
+                    },
+                    "qngCG": {
+                      "content": "Se disparó hace 3 días"
+                    },
+                    "mB3s8": {
+                      "content": "Se revisa con cada precio nuevo, hasta cada 5 min"
+                    },
+                    "pO4uD": {
+                      "content": "activa · espera 60 min entre avisos"
                     }
                   }
                 },
@@ -2171,8 +2116,20 @@
                     "NKemD": {
                       "content": "RSI sobrecomprado"
                     },
+                    "m4vMz": {
+                      "enabled": true
+                    },
                     "U5SuO": {
-                      "content": "RSI(14) por encima de 70"
+                      "content": "RSI(14) en 70 o más"
+                    },
+                    "qngCG": {
+                      "content": "Se disparó hace 3 días"
+                    },
+                    "mB3s8": {
+                      "content": "Se revisa con cada precio nuevo, hasta cada 5 min"
+                    },
+                    "pO4uD": {
+                      "content": "activa · espera 60 min entre avisos"
                     }
                   }
                 }
@@ -2600,6 +2557,36 @@
                           ]
                         }
                       ]
+                    },
+                    {
+                      "id": "RR7bS",
+                      "type": "ref",
+                      "ref": "gv2fU",
+                      "name": "Direccion",
+                      "width": "fill_container",
+                      "descendants": {
+                        "YOvJK": {
+                          "padding": [
+                            10,
+                            16
+                          ]
+                        },
+                        "FJ22G": {
+                          "content": "Al alza",
+                          "fontSize": 14
+                        },
+                        "rJqiE": {
+                          "padding": [
+                            10,
+                            16
+                          ]
+                        },
+                        "y8p4ew": {
+                          "content": "A la baja",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      }
                     }
                   ]
                 },
@@ -2665,36 +2652,6 @@
                   ]
                 },
                 {
-                  "id": "RR7bS",
-                  "type": "ref",
-                  "ref": "gv2fU",
-                  "name": "Direccion",
-                  "width": "fill_container",
-                  "descendants": {
-                    "YOvJK": {
-                      "padding": [
-                        10,
-                        16
-                      ]
-                    },
-                    "FJ22G": {
-                      "content": "Al alza",
-                      "fontSize": 14
-                    },
-                    "rJqiE": {
-                      "padding": [
-                        10,
-                        16
-                      ]
-                    },
-                    "y8p4ew": {
-                      "content": "A la baja",
-                      "fontSize": 14,
-                      "fontWeight": "600"
-                    }
-                  }
-                },
-                {
                   "type": "frame",
                   "id": "o6dGfx",
                   "name": "Preview",
@@ -2723,7 +2680,7 @@
                       "fill": "$fg-default",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Te avisaremos cuando AAPL cruce 200 al alza.",
+                      "content": "Te avisaremos cuando AAPL cruce ese precio al alza.",
                       "lineHeight": 1.35,
                       "fontFamily": "$font-sans",
                       "fontSize": 16,
@@ -2814,113 +2771,6 @@
           ],
           "children": [
             {
-              "type": "frame",
-              "id": "cyjqi",
-              "name": "KPIs",
-              "width": "fill_container",
-              "gap": "$space-3",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "ePyYN",
-                  "name": "DISPARADAS HOY",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-lg",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "layout": "vertical",
-                  "gap": 4,
-                  "padding": [
-                    12,
-                    16
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "EaMc6",
-                      "name": "l",
-                      "fill": "$fg-subtle",
-                      "content": "DISPARADAS HOY",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 12,
-                      "fontWeight": "normal",
-                      "letterSpacing": 1.5
-                    },
-                    {
-                      "type": "text",
-                      "id": "qy4jD",
-                      "name": "v",
-                      "fill": "$fg-default",
-                      "content": "0",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 30,
-                      "fontWeight": "700"
-                    },
-                    {
-                      "type": "text",
-                      "id": "c9cxCv",
-                      "name": "s",
-                      "fill": "$fg-subtle",
-                      "content": "de 0 reglas",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "Kwcbe",
-                  "name": "REGLAS ACTIVAS",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-lg",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "layout": "vertical",
-                  "gap": 4,
-                  "padding": [
-                    12,
-                    16
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "b855iS",
-                      "name": "l",
-                      "fill": "$fg-subtle",
-                      "content": "REGLAS ACTIVAS",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 12,
-                      "fontWeight": "normal",
-                      "letterSpacing": 1.5
-                    },
-                    {
-                      "type": "text",
-                      "id": "exEFZ",
-                      "name": "v",
-                      "fill": "$fg-default",
-                      "content": "0",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 30,
-                      "fontWeight": "700"
-                    },
-                    {
-                      "type": "text",
-                      "id": "B7kaDg",
-                      "name": "s",
-                      "fill": "$fg-subtle",
-                      "content": "0 en pausa",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
               "type": "text",
               "id": "Ture9",
               "name": "Voz",
@@ -2938,8 +2788,8 @@
               "id": "N3b4l",
               "name": "LH",
               "width": "fill_container",
-              "justifyContent": "space_between",
-              "alignItems": "center",
+              "layout": "vertical",
+              "gap": "$space-3",
               "children": [
                 {
                   "type": "text",
@@ -2955,6 +2805,7 @@
                   "type": "frame",
                   "id": "cVzwm",
                   "name": "Nueva",
+                  "width": "fill_container",
                   "fill": "$primary-fg",
                   "cornerRadius": "$radius-sm",
                   "gap": 8,
@@ -2962,6 +2813,7 @@
                     12,
                     16
                   ],
+                  "justifyContent": "center",
                   "alignItems": "center",
                   "children": [
                     {
@@ -3442,146 +3294,34 @@
             },
             {
               "type": "frame",
-              "id": "QMWey",
-              "name": "ComoTeAviso",
+              "id": "ZJKbb",
+              "name": "AvisosNota",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": "$space-3",
               "children": [
                 {
                   "type": "text",
-                  "id": "pUHtH",
-                  "name": "T",
-                  "fill": "$fg-default",
-                  "content": "Cómo te aviso",
-                  "fontFamily": "$font-display",
-                  "fontSize": 24,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "QQg3d",
-                  "name": "Campana",
+                  "id": "ZGVOp",
+                  "name": "Nota",
                   "fill": "$fg-subtle",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Todo aviso llega a tu campana; eso no se apaga. El correo sí.",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "bQ0QX",
-                  "name": "Canales",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-lg",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "layout": "vertical",
-                  "padding": [
-                    0,
-                    16
-                  ],
-                  "children": [
-                    {
-                      "id": "Z4bvew",
-                      "type": "ref",
-                      "ref": "a8AyYs",
-                      "name": "Resumen diario por correo",
-                      "width": "fill_container",
-                      "padding": [
-                        16,
-                        0
-                      ],
-                      "gap": 16,
-                      "descendants": {
-                        "L5wrZr": {
-                          "content": "Resumen diario por correo"
-                        },
-                        "uv9qf": {
-                          "content": "Un solo correo a las 18:30 CDMX con lo que pasó.",
-                          "fontSize": 12
-                        }
-                      }
-                    },
-                    {
-                      "id": "GDs49",
-                      "type": "ref",
-                      "ref": "a8AyYs",
-                      "name": "Avisos urgentes por correo",
-                      "width": "fill_container",
-                      "padding": [
-                        16,
-                        0
-                      ],
-                      "gap": 16,
-                      "stroke": "$border-default",
-                      "strokeWidth": {
-                        "top": 1
-                      },
-                      "descendants": {
-                        "L5wrZr": {
-                          "content": "Avisos urgentes por correo"
-                        },
-                        "uv9qf": {
-                          "content": "Un correo aparte al disparar una regla.",
-                          "fontSize": 12
-                        },
-                        "xGqrS": {
-                          "fill": "$bg-muted"
-                        },
-                        "hNhAm": {
-                          "x": 3
-                        }
-                      }
-                    },
-                    {
-                      "id": "oKle5",
-                      "type": "ref",
-                      "ref": "a8AyYs",
-                      "name": "Avisos en el teléfono",
-                      "width": "fill_container",
-                      "padding": [
-                        16,
-                        0
-                      ],
-                      "gap": 16,
-                      "stroke": "$border-default",
-                      "strokeWidth": {
-                        "top": 1
-                      },
-                      "descendants": {
-                        "L5wrZr": {
-                          "content": "Avisos en el teléfono"
-                        },
-                        "uv9qf": {
-                          "content": "Al disparar una regla, aunque tengas la app cerrada.",
-                          "fontSize": 12
-                        },
-                        "xGqrS": {
-                          "fill": "$bg-muted"
-                        },
-                        "hNhAm": {
-                          "x": 3
-                        }
-                      }
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "XSOgn",
-                  "name": "Mail",
-                  "fill": "$fg-subtle",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Los correos salen del SMTP que configuraste en Ajustes. Sin SMTP no hay correos; la bandeja y el teléfono siguen avisándote.",
+                  "content": "Cómo te avisamos —campana, correo— se configura una vez en:",
                   "lineHeight": 1.4,
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
                   "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "aMJzo",
+                  "name": "Ajustes",
+                  "fill": "$primary-fg",
+                  "content": "Ajustes",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
                 }
               ]
             }
@@ -3781,8 +3521,8 @@
     {
       "type": "frame",
       "id": "nloxs",
-      "x": -485,
-      "y": 0,
+      "x": 0,
+      "y": 2727,
       "name": "Log · Reglas y avisos",
       "width": 360,
       "fill": "$bg-muted",
@@ -3808,7 +3548,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the TopBar at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots; Segmented options 44 px\n2026-09-16 · canvas · shared rows above one journey band; brief rewritten into its fixed sections, history moved here\n2026-09-16 · kit 1.0.0 · bell badge → the code's dot (count-badge gap declined), BottomNav lights its tab per screen, HeaderBar hides the placeholder action\n2026-09-16 · D78 · rule cards, feed, cómo te aviso (+ push switch), sheet sizes and labels, bandeja copy, icons and times mirrored to the code; Vacío rebuilt as the index with no rules\n2026-09-16 · removed 'Sincronización de precios reanudada' — the code never sends a recovery notice\n2026-09-16 · D119 · notices carry the reader's facts; the bandeja groups by day\n2026-09-16 · new artboards: Nueva regla · Calendario, Bandeja · Vacía\n2026-09-05 · #586 · the brief's 'the build is a board item' line corrected — D84 retires the engine, it is not pending\n2026-09-05 · D80 · the Confluencia artboard is deleted — the semáforo is a block in the asset detail, not a screen of its own\n2026-09-05 · D80 · brief keeps the reasoning the artboard carried: what nothing computes, and that D3 moved the gate from no-definition to no-engine\n2026-08-29 · Bandeja gains the bulk-alta notification; Todas 12 → 13. Its body names the next step, which the shipped copy does not — CODE_CHANGES\n2026-08-29 · 🐞 fixed: the price-sync row credited Alpha Vantage, which is registered for fundamentals only and has never served a price. Now DataBursatil\n2026-08-29 · this frame created; the brief was not audited for dated lines in this pass\n2026-08-27 · kit 0.8.1 · third channel toggle dropped against the schema's two booleans; SwitchRow and a local HeaderBar vendored; bell badge unclipped",
+          "content": "2026-10-21 — Mirrored to code at 809ea789: kit 1.3.0 TopBar search; rule cards gain edit, info icon and the three meta lines (last fire, next check, status · cooldown) and lose the status pill; KPIs and inbox chips hidden when empty (D142); Cómo te aviso replaced by the Ajustes line (D143); feed dots dropped; Dirección inside Condición; CETES card names its market; earnings notice 3 días; stray ellipse removed; re-laid as bands Reglas, Nueva regla, Bandeja.\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the TopBar at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots; Segmented options 44 px\n2026-09-16 · canvas · shared rows above one journey band; brief rewritten into its fixed sections, history moved here\n2026-09-16 · kit 1.0.0 · bell badge → the code's dot (count-badge gap declined), BottomNav lights its tab per screen, HeaderBar hides the placeholder action\n2026-09-16 · D78 · rule cards, feed, cómo te aviso (+ push switch), sheet sizes and labels, bandeja copy, icons and times mirrored to the code; Vacío rebuilt as the index with no rules\n2026-09-16 · removed 'Sincronización de precios reanudada' — the code never sends a recovery notice\n2026-09-16 · D119 · notices carry the reader's facts; the bandeja groups by day\n2026-09-16 · new artboards: Nueva regla · Calendario, Bandeja · Vacía\n2026-09-05 · #586 · the brief's 'the build is a board item' line corrected — D84 retires the engine, it is not pending\n2026-09-05 · D80 · the Confluencia artboard is deleted — the semáforo is a block in the asset detail, not a screen of its own\n2026-09-05 · D80 · brief keeps the reasoning the artboard carried: what nothing computes, and that D3 moved the gate from no-definition to no-engine\n2026-08-29 · Bandeja gains the bulk-alta notification; Todas 12 → 13. Its body names the next step, which the shipped copy does not — CODE_CHANGES\n2026-08-29 · 🐞 fixed: the price-sync row credited Alpha Vantage, which is registered for fundamentals only and has never served a price. Now DataBursatil\n2026-08-29 · this frame created; the brief was not audited for dated lines in this pass\n2026-08-27 · kit 0.8.1 · third channel toggle dropped against the schema's two booleans; SwitchRow and a local HeaderBar vendored; bell badge unclipped",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -3819,8 +3559,8 @@
     {
       "type": "frame",
       "id": "A3HtO",
-      "x": 3030,
-      "y": 0,
+      "x": 990,
+      "y": 3436,
       "name": "[Reglas] / Bandeja / Vacía",
       "clip": true,
       "width": 390,
@@ -3882,182 +3622,6 @@
             },
             {
               "type": "frame",
-              "id": "dcksc",
-              "name": "Filtros",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "HIOP5",
-                  "name": "Fila 1",
-                  "gap": 8,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "p3o9wI",
-                      "name": "Todas",
-                      "fill": "$primary-muted",
-                      "cornerRadius": 99,
-                      "stroke": "$primary",
-                      "strokeWidth": 1,
-                      "gap": 8,
-                      "padding": [
-                        8,
-                        16
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "u7VEs",
-                          "name": "t",
-                          "fill": "$primary-fg",
-                          "content": "Todas",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "oaezh",
-                          "name": "n",
-                          "fill": "$primary-fg",
-                          "content": "0",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "A1mQ6q",
-                      "name": "Alertas",
-                      "fill": "$bg-surface",
-                      "cornerRadius": 99,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "gap": 8,
-                      "padding": [
-                        8,
-                        16
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "r0UU2",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "Alertas",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "AD2Uh",
-                          "name": "n",
-                          "fill": "$fg-default",
-                          "content": "0",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "NaKGT",
-                      "name": "Reportes",
-                      "fill": "$bg-surface",
-                      "cornerRadius": 99,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "gap": 8,
-                      "padding": [
-                        8,
-                        16
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "u0zgZM",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "Reportes",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "tUSTD",
-                          "name": "n",
-                          "fill": "$fg-default",
-                          "content": "0",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "tVNqG",
-                  "name": "Fila 2",
-                  "gap": 8,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "f2eKZ",
-                      "name": "CETES",
-                      "fill": "$bg-surface",
-                      "cornerRadius": 99,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "gap": 8,
-                      "padding": [
-                        8,
-                        16
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "u3R20",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "CETES",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "x28L3",
-                          "name": "n",
-                          "fill": "$fg-default",
-                          "content": "0",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
               "id": "DWUEY",
               "name": "Vacio",
               "width": "fill_container",
@@ -4113,8 +3677,8 @@
     {
       "type": "frame",
       "id": "gztmY",
-      "x": 1500,
-      "y": 0,
+      "x": 990,
+      "y": 2105,
       "name": "[Reglas] / Nueva regla / Calendario",
       "clip": true,
       "width": 390,
@@ -4170,8 +3734,20 @@
                     "NKemD": {
                       "content": "Precio cruza umbral"
                     },
+                    "m4vMz": {
+                      "enabled": false
+                    },
                     "U5SuO": {
                       "content": "cruza USD 200 al alza"
+                    },
+                    "qngCG": {
+                      "content": "Se disparó hace 3 días"
+                    },
+                    "mB3s8": {
+                      "content": "Se revisa con cada precio nuevo, hasta cada 5 min"
+                    },
+                    "pO4uD": {
+                      "content": "activa · espera 60 min entre avisos"
                     }
                   }
                 },
@@ -4191,8 +3767,20 @@
                     "NKemD": {
                       "content": "RSI sobrecomprado"
                     },
+                    "m4vMz": {
+                      "enabled": true
+                    },
                     "U5SuO": {
-                      "content": "RSI(14) por encima de 70"
+                      "content": "RSI(14) en 70 o más"
+                    },
+                    "qngCG": {
+                      "content": "Se disparó hace 3 días"
+                    },
+                    "mB3s8": {
+                      "content": "Se revisa con cada precio nuevo, hasta cada 5 min"
+                    },
+                    "pO4uD": {
+                      "content": "activa · espera 60 min entre avisos"
                     }
                   }
                 }
@@ -4609,7 +4197,7 @@
                       "type": "ref",
                       "ref": "tAAai",
                       "name": "Espera entre avisos",
-                      "width": 165,
+                      "width": 169,
                       "gap": 6,
                       "descendants": {
                         "MRgsO": {
@@ -4739,15 +4327,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "ellipse",
-      "id": "te7eA",
-      "x": 1470,
-      "y": 2279,
-      "fill": "#CCCCCC",
-      "width": 1,
-      "height": 2
     }
   ],
   "themes": {
@@ -4759,7 +4338,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.2.0"
+      "value": "1.3.0"
     },
     "font-display": {
       "type": "string",
