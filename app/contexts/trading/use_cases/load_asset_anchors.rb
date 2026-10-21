@@ -25,7 +25,7 @@ module Trading
         position = position_data && position_data[:position]
         return nil unless position
 
-        Domain::PriceAnchor.against_cost(price: asset.current_price, cost: position.avg_cost)
+        PriceAnchor.against_cost(price: asset.current_price, cost: position.avg_cost)
       end
 
       # The rule whose threshold_value is a price, so the only kind a quote may
@@ -37,7 +37,7 @@ module Trading
       def threshold_anchor(asset, rule)
         return nil unless rule
 
-        Domain::PriceAnchor.against_threshold(price: asset.current_price, threshold: rule.threshold_value)
+        PriceAnchor.against_threshold(price: asset.current_price, threshold: rule.threshold_value)
       end
     end
   end

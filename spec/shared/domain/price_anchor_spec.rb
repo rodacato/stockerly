@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Trading::Domain::PriceAnchor do
+RSpec.describe PriceAnchor do
   describe ".against_cost" do
     it "reads the price as a gain over what you paid" do
       result = described_class.against_cost(price: 184.20, cost: 120)
