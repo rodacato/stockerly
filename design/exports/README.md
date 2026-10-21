@@ -41,6 +41,8 @@ not by reading the tables.
 | `cockpit-hoy-temporada-resultados.png` | `[Cockpit] / Hoy / Temporada de resultados` — earnings dates read one row per day, symbols joined (D160) |
 | `cockpit-hoy-hero-de-marca.png` | `[Cockpit] / Hoy / Hero de marca · con cosas (D163)` — the verdict on a `primary-fg` surface |
 | `cockpit-hoy-hero-de-marca-tranquilo.png` | `[Cockpit] / Hoy / Hero de marca · tranquilo (D163)` — the same surface when nothing needs a look |
+| `cockpit-hoy-hero-de-marca-oscuro.png` | `[Cockpit] / Hoy / Hero de marca · oscuro (D163)` — the light pair carried into dark: legible, brightest object on the screen |
+| `cockpit-hoy-hero-de-marca-oscuro-tenue.png` | `[Cockpit] / Hoy / Hero de marca · oscuro tenue (D163)` — `primary-muted` with `fg-default`: quieter, 12.4:1 |
 | `cockpit-hoy-decision-tasa.png` | `[Cockpit] / Hoy / Decisión de tasa` — a Fed or Banxico date within 7 days, ranked after maturity and earnings |
 | `cockpit-hoy-push-matutino.png` | `[Cockpit] / Hoy / Push matutino` — the 08:00 daily brief on a lock screen: the verdict as title, the item titles as body |
 | `cockpit-hoy-ayuda-abierta.png` | `[Cockpit] / Hoy / Ayuda abierta` — the verdict's ? open: the ringed header and its popover |
