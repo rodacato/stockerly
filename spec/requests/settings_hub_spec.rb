@@ -15,6 +15,18 @@ RSpec.describe "Ajustes", type: :request do
     expect(response.body).to include(I18n.t("settings.show.datos_titulo"))
   end
 
+  # D164: one solid brand surface on the screen, the account card; the instance
+  # note beside it is only a wash.
+  it "puts the account card on the brand surface and the instance note on a wash" do
+    get settings_path
+    page = response.parsed_body
+
+    card = page.css("section").find { |section| section.text.include?(user.email) }
+    expect(card["class"]).to include("bg-primary-fg")
+    expect(page.css("section[class*='bg-primary-fg']").size).to eq(1)
+    expect(page.at_css("div.bg-primary-muted").text).to include(I18n.t("settings.show.instancia_cuerpo"))
+  end
+
   # The tile earns its place by carrying a distinct glyph per destination, and
   # receipt_long carried two: Historial on Activos and Registros here.
   describe "the nav row's icon tile" do

@@ -1,13 +1,14 @@
 <% content_for :page_title, t(".titulo") %>
 
 <div class="flex flex-col gap-8">
-  <section class="<%= card_classes("flex items-center gap-4 p-5") %>">
-    <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-muted font-display text-lg font-bold text-primary-fg">
+  <%# D164: the one solid brand surface of the screen; dark takes the softer pair. %>
+  <section class="flex items-center gap-4 rounded-2xl bg-primary-fg p-5 text-fg-inverse dark:bg-primary-muted dark:text-fg-default">
+    <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-fg-inverse font-display text-lg font-bold text-primary-fg dark:bg-primary dark:text-fg-inverse">
       <%= @user.full_name.to_s.strip.first&.upcase || "?" %>
     </span>
     <span class="min-w-0 flex-1">
-      <span class="block font-display text-base font-semibold text-fg-default"><%= @user.full_name %></span>
-      <span class="block truncate text-sm text-fg-subtle"><%= @user.email %></span>
+      <span class="block font-display text-base font-semibold"><%= @user.full_name %></span>
+      <span class="block truncate text-sm dark:text-fg-subtle"><%= @user.email %></span>
     </span>
     <span class="shrink-0 rounded-full bg-bg-muted px-3 py-1 text-xs text-fg-subtle"><%= t(".unica_cuenta") %></span>
   </section>
@@ -63,9 +64,9 @@
   </section>
 
   <section class="flex flex-col gap-3">
-    <div>
+    <div class="rounded-xl bg-primary-muted px-4 py-3.5">
       <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".instancia_titulo") %></h2>
-      <p class="mt-1 text-sm text-fg-subtle"><%= t(".instancia_cuerpo") %></p>
+      <p class="mt-1 text-sm text-fg-default"><%= t(".instancia_cuerpo") %></p>
     </div>
     <%= render "components/nav_row", icon: "power", path: admin_integrations_path,
                title: t(".integraciones"), description: t(".integraciones_desc"), badge: @integrations_count %>
