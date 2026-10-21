@@ -340,14 +340,6 @@ module MarketHelper
     l(date, format: include_year ? :day_month_year : :day_month)
   end
 
-  # "may 26" — the EPS chart's x-axis, where a month and a two-digit year is all
-  # that fits. strftime("%b %y") was rendering English month names here.
-  def short_month_year_es(date)
-    return "—" if date.nil?
-
-    l(date, format: :month_year)
-  end
-
   # "13 MAY 2026" — uppercase variant for compact eyebrow contexts.
   def short_date_upper_es(date, include_year: true)
     return "—" if date.nil?

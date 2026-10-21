@@ -42,7 +42,6 @@ emoji_events
 error
 event
 event_available
-event_note
 expand_more
 explore
 gpp_maybe
@@ -103,7 +102,6 @@ swap_horiz
 sync
 target
 toll
-trending_down
 trending_up
 upload_file
 verified_user

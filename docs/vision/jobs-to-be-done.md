@@ -122,7 +122,7 @@ threshold met sixty times over is not a threshold.
 
 **App surface:**
 - Dashboard "Upcoming events" — earnings on holdings with BMO/AMC + EPS estimate
-- Asset detail (`/market/:symbol`) — the Earnings tab for that ticker (the standalone `/earnings` page was deleted, D31)
+- Asset detail (`/market/:symbol`) — the next report date on the *Lo tuyo* card (`market/_mine`); there is no earnings-history tab and no standalone `/earnings` page (D31)
 - Notification — 2d, 1d before (with details)
 
 **Triggers:** `NotifyEarningsJob` daily, 7am. Matches holdings vs upcoming earnings, deduplicated with `last_triggered_at` per event.

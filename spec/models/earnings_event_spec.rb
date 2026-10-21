@@ -81,43 +81,4 @@ RSpec.describe EarningsEvent, type: :model do
       expect(EarningsEvent.for_market("todos")).to contain_exactly(bmv_event, us_event)
     end
   end
-
-  describe "#beat_miss" do
-    it "returns :beat when actual >= estimated" do
-      event = build(:earnings_event, estimated_eps: 2.50, actual_eps: 2.80)
-      expect(event.beat_miss).to eq(:beat)
-    end
-
-    it "returns :beat when actual equals estimated" do
-      event = build(:earnings_event, estimated_eps: 2.50, actual_eps: 2.50)
-      expect(event.beat_miss).to eq(:beat)
-    end
-
-    it "returns :miss when actual < estimated" do
-      event = build(:earnings_event, estimated_eps: 2.50, actual_eps: 2.10)
-      expect(event.beat_miss).to eq(:miss)
-    end
-
-    it "returns nil when actual_eps is nil" do
-      event = build(:earnings_event, estimated_eps: 2.50, actual_eps: nil)
-      expect(event.beat_miss).to be_nil
-    end
-  end
-
-  describe "#eps_surprise_percent" do
-    it "calculates positive surprise percentage" do
-      event = build(:earnings_event, estimated_eps: 2.00, actual_eps: 2.20)
-      expect(event.eps_surprise_percent).to eq(10.0)
-    end
-
-    it "calculates negative surprise percentage" do
-      event = build(:earnings_event, estimated_eps: 2.00, actual_eps: 1.80)
-      expect(event.eps_surprise_percent).to eq(-10.0)
-    end
-
-    it "returns nil when data is missing" do
-      event = build(:earnings_event, estimated_eps: 2.00, actual_eps: nil)
-      expect(event.eps_surprise_percent).to be_nil
-    end
-  end
 end

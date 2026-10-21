@@ -58,12 +58,6 @@ class MarketController < AuthenticatedController
     )
   end
 
-  def earnings_tab
-    @asset = Asset.find_by!(symbol: params[:symbol].upcase)
-    @earnings_events = @asset.earnings_events.order(report_date: :desc).limit(8)
-    render layout: false
-  end
-
   def statements_tab
     @asset = Asset.find_by!(symbol: params[:symbol].upcase)
     render layout: false
