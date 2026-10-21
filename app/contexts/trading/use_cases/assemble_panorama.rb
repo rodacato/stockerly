@@ -24,6 +24,7 @@ module Trading
 
         vs_cetes = positions.any? && currency == "MXN" ? vs_cetes(fx, portfolio, currency) : nil
         quotes_reliable = quotes_reliable?(fx, summary, positions, watched)
+        plan_status = plan_status(fx, portfolio, currency)
 
         {
           currency: currency,
@@ -31,7 +32,8 @@ module Trading
           fx_unavailable: portfolio.present? && fx.degraded?,
           prices_unavailable: fx.prices_unavailable?,
           vs_cetes: vs_cetes,
-          today: today(user, positions, watched, quotes_reliable),
+          plan_status: plan_status,
+          today: today(user, positions, watched, quotes_reliable, plan_status),
           sentiment_cards: sentiment_cards(user),
           signals: signals(positions, watched),
           signals_window_days: MarketData::Queries::NotableObservations::WINDOW_DAYS,
@@ -54,12 +56,38 @@ module Trading
         watched.all? { |item| Domain::QuoteFreshness.current?(item.asset) }
       end
 
-      def today(user, positions, watched, quotes_reliable)
+      def today(user, positions, watched, quotes_reliable, plan_status)
         Domain::TodayBrief.call(
           tracks_anything: positions.any? || watched.any?,
           quotes_reliable: quotes_reliable,
-          candidates: maturity_items(positions) + earnings_items(positions) + target_items(user, watched)
+          candidates: maturity_items(positions) + earnings_items(positions) + target_items(user, watched) +
+                      plan_items(plan_status)
         )
+      end
+
+      # Net capital added this month is in MXN because the plan is: a missing
+      # rate makes the contribution unknown (nil), never zero.
+      def plan_status(fx, portfolio, currency)
+        plan = portfolio&.plan
+        return nil unless plan
+
+        allocation = fx.figure({}) { portfolio.allocation_by_asset_type(currency: currency) }
+        contributed = fx.figure do
+          Domain::ExternalFlows.new(portfolio, currency: "MXN").between(Date.current.beginning_of_month, Date.current)
+        end
+        Domain::PlanStatus.call(plan: plan, allocation: allocation, contributed: contributed)
+      end
+
+      def plan_items(status)
+        return [] unless status
+
+        shares = status.off_shares.map do |share|
+          Domain::TodayBrief::Item.new(kind: :allocation, subject: share.key, actual: share.actual,
+                                       target: share.target, gap: share.gap)
+        end
+        return shares unless status.contribution_missing?
+
+        shares + [ Domain::TodayBrief::Item.new(kind: :contribution, target: status.planned) ]
       end
 
       def maturity_items(positions)

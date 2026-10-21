@@ -6,7 +6,7 @@
 
 <div class="flex flex-col gap-6 lg:grid lg:grid-cols-12 lg:items-start">
   <div class="lg:order-1 lg:col-span-12">
-    <%= render "dashboard/hoy", today: @today, summary: @summary, vs_cetes: @vs_cetes, currency: @currency,
+    <%= render "dashboard/hoy", today: @today, summary: @summary, vs_cetes: @vs_cetes, plan_status: @plan_status, currency: @currency,
                fx_unavailable: @fx_unavailable, prices_unavailable: @prices_unavailable %>
   </div>
 

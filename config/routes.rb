@@ -64,6 +64,7 @@ Rails.application.routes.draw do
 
   get "dashboard",           to: "dashboard#show"
   post "help-opens/:figure", to: "help_opens#create", as: :help_opens
+  resource :plan, only: [ :show, :update ], path: "settings/plan"
   # D31's disposability contract: zero tables, zero rows. Deleting Descubrir is
   # this line, one nav entry, one controller, one view folder and two YAMLs.
   get "discover",            to: "discover#show"
