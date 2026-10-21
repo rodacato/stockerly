@@ -16999,6 +16999,2195 @@
           "name": "BottomNav"
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "W4vsW",
+      "x": -480,
+      "y": 7992,
+      "name": "[Cockpit] / Hoy / Con plan · dentro",
+      "clip": true,
+      "width": 390,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "Af5sx",
+          "type": "ref",
+          "ref": "nZhpf",
+          "name": "TopBar"
+        },
+        {
+          "type": "frame",
+          "id": "o1oWI2",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            24,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "zYRNz",
+              "name": "Veredicto",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "NJ1v1",
+                  "name": "HOY · MAR 20 OCT 2026 · ",
+                  "fill": "$fg-subtle",
+                  "content": "HOY · MAR 20 OCT 2026 · CDMX",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.5
+                },
+                {
+                  "type": "text",
+                  "id": "uLrtp",
+                  "name": "Veredicto",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Todo en orden.",
+                  "lineHeight": 1.15,
+                  "fontFamily": "$font-display",
+                  "fontSize": 32,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "h9ERnO",
+                  "name": "Subtítulo",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "tPqii",
+                      "name": "Dentro de tu plan · vas ",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Dentro de tu plan · vas +2.1 pts vs CETES en 30 días.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wwvBy",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "e3g7Ne",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "wSPez",
+              "name": "Cifras",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "OyzBl",
+                  "name": "PATRIMONIO",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "qJoix",
+                      "name": "Rótulo",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "gOaXN",
+                          "name": "PATRIMONIO",
+                          "fill": "$fg-subtle",
+                          "content": "PATRIMONIO",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Oo0GZ",
+                          "name": "Ayuda ?",
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 9,
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "C3gvb",
+                              "name": "?",
+                              "fill": "$fg-subtle",
+                              "content": "?",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "jxnU4",
+                      "name": "MXN 236,800",
+                      "fill": "$fg-default",
+                      "content": "MXN 236,800",
+                      "fontFamily": "$font-display",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "a1rlg6",
+                      "name": "+1.2% vs ayer",
+                      "fill": "$positive-fg",
+                      "content": "+1.2% vs ayer",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "a6tnMu",
+                  "name": "VS CETES · 30 D",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "qWBFu",
+                      "name": "Rótulo",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WpRgx",
+                          "name": "VS CETES · 30 D",
+                          "fill": "$fg-subtle",
+                          "content": "VS CETES · 30 D",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "yIWhh",
+                          "name": "Ayuda ?",
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 9,
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "D1QFw6",
+                              "name": "?",
+                              "fill": "$fg-subtle",
+                              "content": "?",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "Q3bPpW",
+                      "name": "+2.1 pts",
+                      "fill": "$fg-default",
+                      "content": "+2.1 pts",
+                      "fontFamily": "$font-display",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "qG3Lz",
+                      "name": "CETES 28d · al 20 OCT",
+                      "fill": "$fg-subtle",
+                      "content": "CETES 28d · al 20 OCT",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RMZlK",
+              "name": "Tu plan",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 14,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "WTAp6",
+                  "name": "Encabezado",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "MJ5Ur",
+                      "name": "Tu plan",
+                      "fill": "$fg-default",
+                      "content": "Tu plan",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ZunAx",
+                      "name": "Acciones",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Qd63i",
+                          "name": "Editar",
+                          "fill": "$primary-fg",
+                          "content": "Editar",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "oEZeI",
+                          "name": "Ayuda ?",
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 9,
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "C6VUGu",
+                              "name": "?",
+                              "fill": "$fg-subtle",
+                              "content": "?",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "nCbqR",
+                  "name": "Acciones y ETF",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ZE11m",
+                      "name": "Línea",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "sQuJh",
+                          "name": "Acciones y ETF",
+                          "fill": "$fg-default",
+                          "content": "Acciones y ETF",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "QnNGE",
+                          "name": "52% de 50%",
+                          "fill": "$fg-subtle",
+                          "content": "52% de 50%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "WZV1L",
+                      "name": "Pista",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "$bg-muted",
+                      "cornerRadius": 4,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "R7p9v",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Actual",
+                          "fill": "$primary",
+                          "width": 165,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "Z5rNaN",
+                          "x": 158,
+                          "y": 0,
+                          "name": "Objetivo",
+                          "fill": "$fg-default",
+                          "width": 2,
+                          "height": 8
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "e2RP1",
+                  "name": "Cripto",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "DqTdn",
+                      "name": "Línea",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "YlTui",
+                          "name": "Cripto",
+                          "fill": "$fg-default",
+                          "content": "Cripto",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "EeL5p",
+                          "name": "19% de 20%",
+                          "fill": "$fg-subtle",
+                          "content": "19% de 20%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TlWtv",
+                      "name": "Pista",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "$bg-muted",
+                      "cornerRadius": 4,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "jl1fP",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Actual",
+                          "fill": "$primary",
+                          "width": 60,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "sL9wZ",
+                          "x": 63,
+                          "y": 0,
+                          "name": "Objetivo",
+                          "fill": "$fg-default",
+                          "width": 2,
+                          "height": 8
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "KyNWz",
+                  "name": "Renta fija",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "RB2cj",
+                      "name": "Línea",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "OeKEw",
+                          "name": "Renta fija",
+                          "fill": "$fg-default",
+                          "content": "Renta fija",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Thr5H",
+                          "name": "29% de 30%",
+                          "fill": "$fg-subtle",
+                          "content": "29% de 30%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "I8vO5",
+                      "name": "Pista",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "$bg-muted",
+                      "cornerRadius": 4,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "L2nZT",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Actual",
+                          "fill": "$primary",
+                          "width": 92,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "LiwF5",
+                          "x": 94,
+                          "y": 0,
+                          "name": "Objetivo",
+                          "fill": "$fg-default",
+                          "width": 2,
+                          "height": 8
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "GHYmO",
+                  "name": "Aportación",
+                  "width": "fill_container",
+                  "fill": "$positive-bg",
+                  "cornerRadius": "$radius-sm",
+                  "gap": 8,
+                  "padding": [
+                    10,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "w3yCG",
+                      "name": "Icono check_circle",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "check_circle",
+                      "library": "Material Symbols Outlined",
+                      "fill": "$positive-fg"
+                    },
+                    {
+                      "type": "text",
+                      "id": "qB3Nd",
+                      "name": "Aportación de octubre: M",
+                      "fill": "$positive-fg",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Aportación de octubre: MXN 5,000 de 5,000",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "YUasi",
+              "name": "Cotización más antigua: ",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Cotización más antigua: 20 OCT 2026 · 16:00 · CDMX · Fuentes y fechas por activo en su detalle",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "id": "qHOIk",
+          "type": "ref",
+          "ref": "Tzpmr",
+          "name": "BottomNav"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "l4TL8m",
+      "x": 30,
+      "y": 7992,
+      "name": "[Cockpit] / Hoy / Con plan · brecha",
+      "clip": true,
+      "width": 390,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "SbZb1",
+          "type": "ref",
+          "ref": "nZhpf",
+          "name": "TopBar"
+        },
+        {
+          "type": "frame",
+          "id": "lY3qF",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            24,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "x22GHq",
+              "name": "Veredicto",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "YFYWK",
+                  "name": "HOY · MAR 20 OCT 2026 · ",
+                  "fill": "$fg-subtle",
+                  "content": "HOY · MAR 20 OCT 2026 · CDMX",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.5
+                },
+                {
+                  "type": "text",
+                  "id": "ncIu9",
+                  "name": "Veredicto",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Hay 2 cosas de lo tuyo para mirar hoy.",
+                  "lineHeight": 1.15,
+                  "fontFamily": "$font-display",
+                  "fontSize": 32,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "sIZ9U",
+                  "name": "Subtítulo",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "l9nRrr",
+                      "name": "Vas +2.1 pts vs CETES en",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Vas +2.1 pts vs CETES en 30 días.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Zvx12",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "y4cvN",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "S0eaw",
+              "name": "Cifras",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "O7LCF",
+                  "name": "PATRIMONIO",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "wjtm2",
+                      "name": "Rótulo",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "C8EGU",
+                          "name": "PATRIMONIO",
+                          "fill": "$fg-subtle",
+                          "content": "PATRIMONIO",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "fs6SX",
+                          "name": "Ayuda ?",
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 9,
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ZqjUQ",
+                              "name": "?",
+                              "fill": "$fg-subtle",
+                              "content": "?",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "xuEmi",
+                      "name": "MXN 236,800",
+                      "fill": "$fg-default",
+                      "content": "MXN 236,800",
+                      "fontFamily": "$font-display",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "IDqsP",
+                      "name": "+1.2% vs ayer",
+                      "fill": "$positive-fg",
+                      "content": "+1.2% vs ayer",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "N7wWk",
+                  "name": "VS CETES · 30 D",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "npOYO",
+                      "name": "Rótulo",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "N4Mdd",
+                          "name": "VS CETES · 30 D",
+                          "fill": "$fg-subtle",
+                          "content": "VS CETES · 30 D",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "OhKyz",
+                          "name": "Ayuda ?",
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 9,
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "UqYVA",
+                              "name": "?",
+                              "fill": "$fg-subtle",
+                              "content": "?",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "X4lodu",
+                      "name": "+2.1 pts",
+                      "fill": "$fg-default",
+                      "content": "+2.1 pts",
+                      "fontFamily": "$font-display",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "hi9k2",
+                      "name": "CETES 28d · al 20 OCT",
+                      "fill": "$fg-subtle",
+                      "content": "CETES 28d · al 20 OCT",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ihiZm",
+              "name": "Lo tuyo hoy",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ZpRj4",
+                  "name": "Encabezado",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jSsnu",
+                      "name": "Lo tuyo hoy",
+                      "fill": "$fg-default",
+                      "content": "Lo tuyo hoy",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "aMAGo",
+                      "name": "2 de 2",
+                      "fill": "$fg-subtle",
+                      "content": "2 de 2",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "LDt4g",
+                  "name": "Acciones y ETF: 40% vs 25% de tu plan",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FYaM6",
+                      "name": "Icono",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$primary-muted",
+                      "cornerRadius": 18,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "F9W15",
+                          "name": "Icono pie_chart",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "pie_chart",
+                          "library": "Material Symbols Outlined",
+                          "fill": "$primary-fg"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NIcq6",
+                      "name": "Texto",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "kv0kg",
+                          "name": "Acciones y ETF: 40% vs 2",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Acciones y ETF: 40% vs 25% de tu plan",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Br8x9",
+                          "name": "15 puntos arriba de lo q",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "15 puntos arriba de lo que planeaste",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "a31gyg",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "g62Vfn",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "HCPG9",
+                  "name": "Sin aportación este mes",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Pomyr",
+                      "name": "Icono",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$primary-muted",
+                      "cornerRadius": 18,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "QoHYS",
+                          "name": "Icono savings",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "savings",
+                          "library": "Material Symbols Outlined",
+                          "fill": "$primary-fg"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dHX0t",
+                      "name": "Texto",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "EbWMe",
+                          "name": "Sin aportación este mes",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Sin aportación este mes",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "GDH5E",
+                          "name": "Plan: MXN 5,000 al mes",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Plan: MXN 5,000 al mes",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "R3ytJS",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "W7kbc",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "vGyfa",
+              "name": "Tu plan",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 14,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "T4tQi",
+                  "name": "Encabezado",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "D6QPE",
+                      "name": "Tu plan",
+                      "fill": "$fg-default",
+                      "content": "Tu plan",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BFdYz",
+                      "name": "Acciones",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "I5C2ym",
+                          "name": "Editar",
+                          "fill": "$primary-fg",
+                          "content": "Editar",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "LNpI3",
+                          "name": "Ayuda ?",
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 9,
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "byem6",
+                              "name": "?",
+                              "fill": "$fg-subtle",
+                              "content": "?",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "yAfJM",
+                  "name": "Acciones y ETF",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Z1oNE",
+                      "name": "Línea",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "aIUPm",
+                          "name": "Acciones y ETF",
+                          "fill": "$fg-default",
+                          "content": "Acciones y ETF",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "C77fki",
+                          "name": "40% de 25%",
+                          "fill": "$warning-fg",
+                          "content": "40% de 25%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UcuZC",
+                      "name": "Pista",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "$bg-muted",
+                      "cornerRadius": 4,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "nRqMc",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Actual",
+                          "fill": "$warning-fg",
+                          "width": 127,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "Z2BWw5",
+                          "x": 79,
+                          "y": 0,
+                          "name": "Objetivo",
+                          "fill": "$fg-default",
+                          "width": 2,
+                          "height": 8
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xyylg",
+                  "name": "Cripto",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "q55Kd",
+                      "name": "Línea",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "S4TKKN",
+                          "name": "Cripto",
+                          "fill": "$fg-default",
+                          "content": "Cripto",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "y51NuE",
+                          "name": "12% de 20%",
+                          "fill": "$warning-fg",
+                          "content": "12% de 20%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "A4e0Hq",
+                      "name": "Pista",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "$bg-muted",
+                      "cornerRadius": 4,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "tJkdH",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Actual",
+                          "fill": "$warning-fg",
+                          "width": 38,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "VVxTU",
+                          "x": 63,
+                          "y": 0,
+                          "name": "Objetivo",
+                          "fill": "$fg-default",
+                          "width": 2,
+                          "height": 8
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "o4x0X",
+                  "name": "Renta fija",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "k7nFL",
+                      "name": "Línea",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ypJZM",
+                          "name": "Renta fija",
+                          "fill": "$fg-default",
+                          "content": "Renta fija",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "FBWwT",
+                          "name": "48% de 55%",
+                          "fill": "$fg-subtle",
+                          "content": "48% de 55%",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "t5QSAk",
+                      "name": "Pista",
+                      "width": "fill_container",
+                      "height": 8,
+                      "fill": "$bg-muted",
+                      "cornerRadius": 4,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "cOuL3",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Actual",
+                          "fill": "$primary",
+                          "width": 153,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "d55oWq",
+                          "x": 174,
+                          "y": 0,
+                          "name": "Objetivo",
+                          "fill": "$fg-default",
+                          "width": 2,
+                          "height": 8
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "c1udT",
+                  "name": "Aportación",
+                  "width": "fill_container",
+                  "fill": "$warning-bg",
+                  "cornerRadius": "$radius-sm",
+                  "gap": 8,
+                  "padding": [
+                    10,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "vhm5c",
+                      "name": "Icono schedule",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "schedule",
+                      "library": "Material Symbols Outlined",
+                      "fill": "$warning-fg"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mjUR4",
+                      "name": "Aportación de octubre: M",
+                      "fill": "$warning-fg",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Aportación de octubre: MXN 0 de 5,000",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "MUOrp",
+              "name": "Cotización más antigua: ",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Cotización más antigua: 20 OCT 2026 · 16:00 · CDMX · Fuentes y fechas por activo en su detalle",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "id": "ykVVL",
+          "type": "ref",
+          "ref": "Tzpmr",
+          "name": "BottomNav"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ReC3R",
+      "x": 540,
+      "y": 7992,
+      "name": "[Cockpit] / Hoy / Sin plan",
+      "clip": true,
+      "width": 390,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "tiJ3f",
+          "type": "ref",
+          "ref": "nZhpf",
+          "name": "TopBar"
+        },
+        {
+          "type": "frame",
+          "id": "vzDJ1",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            24,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "M0d9T",
+              "name": "Veredicto",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "n1ZhTs",
+                  "name": "HOY · MAR 20 OCT 2026 · ",
+                  "fill": "$fg-subtle",
+                  "content": "HOY · MAR 20 OCT 2026 · CDMX",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.5
+                },
+                {
+                  "type": "text",
+                  "id": "BaUZX",
+                  "name": "Veredicto",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Hay 3 cosas de lo tuyo para mirar hoy.",
+                  "lineHeight": 1.15,
+                  "fontFamily": "$font-display",
+                  "fontSize": 32,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "WXKfo",
+                  "name": "Subtítulo",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "cik5o",
+                      "name": "Vas +2.1 pts vs CETES en",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Vas +2.1 pts vs CETES en 30 días.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "VqJGd",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fI56H",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "pGhsf",
+              "name": "Cifras",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "YQnCg",
+                  "name": "PATRIMONIO",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cYbs7",
+                      "name": "Rótulo",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Bjl5W",
+                          "name": "PATRIMONIO",
+                          "fill": "$fg-subtle",
+                          "content": "PATRIMONIO",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "WP6rI",
+                          "name": "Ayuda ?",
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 9,
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "rhMZL",
+                              "name": "?",
+                              "fill": "$fg-subtle",
+                              "content": "?",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "pnOHj",
+                      "name": "MXN 236,800",
+                      "fill": "$fg-default",
+                      "content": "MXN 236,800",
+                      "fontFamily": "$font-display",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "J66XEH",
+                      "name": "+1.2% vs ayer",
+                      "fill": "$positive-fg",
+                      "content": "+1.2% vs ayer",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "XDJR6",
+                  "name": "VS CETES · 30 D",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "sq1wZ",
+                      "name": "Rótulo",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "iRLnb",
+                          "name": "VS CETES · 30 D",
+                          "fill": "$fg-subtle",
+                          "content": "VS CETES · 30 D",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "LmiC4",
+                          "name": "Ayuda ?",
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 9,
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Sfjz2",
+                              "name": "?",
+                              "fill": "$fg-subtle",
+                              "content": "?",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "Y3IjAt",
+                      "name": "+2.1 pts",
+                      "fill": "$fg-default",
+                      "content": "+2.1 pts",
+                      "fontFamily": "$font-display",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "gEnmk",
+                      "name": "CETES 28d · al 20 OCT",
+                      "fill": "$fg-subtle",
+                      "content": "CETES 28d · al 20 OCT",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "AeY1a",
+              "name": "Lo tuyo hoy",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "sx0PL",
+                  "name": "Encabezado",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "FSfIY",
+                      "name": "Lo tuyo hoy",
+                      "fill": "$fg-default",
+                      "content": "Lo tuyo hoy",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "CxRWt",
+                      "name": "3 de 3",
+                      "fill": "$fg-subtle",
+                      "content": "3 de 3",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "NU07U",
+                  "name": "NVDA reporta resultados",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "fGx6X",
+                      "name": "Icono",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$primary-muted",
+                      "cornerRadius": 18,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "fGea1",
+                          "name": "Icono event",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "event",
+                          "library": "Material Symbols Outlined",
+                          "fill": "$primary-fg"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "t37oQ",
+                      "name": "Texto",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "z4SJK",
+                          "name": "NVDA reporta resultados",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "NVDA reporta resultados",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "fbsdc",
+                          "name": "En 2 días · 22 de oct",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "En 2 días · 22 de oct",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "B3IUt",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "NVcBV",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "j3W8B",
+                  "name": "CETES 28d vence en 3 días",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "C93vv",
+                      "name": "Icono",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$primary-muted",
+                      "cornerRadius": 18,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "P70QHd",
+                          "name": "Icono schedule",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "schedule",
+                          "library": "Material Symbols Outlined",
+                          "fill": "$primary-fg"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yeI3y",
+                      "name": "Texto",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "i5tNw",
+                          "name": "CETES 28d vence en 3 día",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "CETES 28d vence en 3 días",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "o9nmEm",
+                          "name": "Vence el 23 de oct",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Vence el 23 de oct",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "qU2k9",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "sSWo0",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hjn4A",
+                  "name": "AAPL · falta 3.2% para tu objetivo",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "PPnos",
+                      "name": "Icono",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$primary-muted",
+                      "cornerRadius": 18,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "V5CjCW",
+                          "name": "Icono target",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "target",
+                          "library": "Material Symbols Outlined",
+                          "fill": "$primary-fg"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "n25CMa",
+                      "name": "Texto",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fmchu",
+                          "name": "AAPL · falta 3.2% para t",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "AAPL · falta 3.2% para tu objetivo",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "mKJKL",
+                          "name": "USD 182.50",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "USD 182.50",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "djCH1",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "xnBg3",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "DF5Cm",
+              "name": "Sin plan",
+              "width": "fill_container",
+              "fill": "$bg-muted",
+              "cornerRadius": "$radius-md",
+              "gap": 12,
+              "padding": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "XSEhY",
+                  "name": "Icono target",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "target",
+                  "library": "Material Symbols Outlined",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "frame",
+                  "id": "j9atuI",
+                  "name": "Texto",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "U0GXv2",
+                      "name": "Aún no tienes un plan",
+                      "fill": "$fg-default",
+                      "content": "Aún no tienes un plan",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "h3ihjd",
+                      "name": "Define cuánto quieres en",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Define cuánto quieres en cada tipo y cuánto aportas al mes, y Hoy dirá si vas en él.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "O1h74y",
+                  "name": "→",
+                  "fill": "$primary-fg",
+                  "content": "→",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "C5Dcf",
+              "name": "Cotización más antigua: ",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Cotización más antigua: 20 OCT 2026 · 16:00 · CDMX · Fuentes y fechas por activo en su detalle",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "id": "px05N",
+          "type": "ref",
+          "ref": "Tzpmr",
+          "name": "BottomNav"
+        }
+      ]
     }
   ],
   "themes": {

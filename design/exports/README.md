@@ -30,6 +30,9 @@ not by reading the tables.
 | `cockpit-hoy-tranquilo.png` | `[Cockpit] / Hoy / Tranquilo` — "todo en orden", nothing to look at |
 | `cockpit-hoy-primera-vez.png` | `[Cockpit] / Hoy / Primera vez` — an empty portfolio |
 | `cockpit-hoy-sin-cotizacion.png` | `[Cockpit] / Hoy / Sin cotización` — stale quotes, never "todo en orden" |
+| `cockpit-hoy-con-plan-dentro.png` | `[Cockpit] / Hoy / Con plan · dentro` — on plan, the plan card |
+| `cockpit-hoy-con-plan-brecha.png` | `[Cockpit] / Hoy / Con plan · brecha` — a share off its target and no contribution, as items |
+| `cockpit-hoy-sin-plan.png` | `[Cockpit] / Hoy / Sin plan` — a quiet row linking to Ajustes |
 | `cockpit-panorama-primera-vez.png` | `[Cockpit] / Panorama / Primera vez` — nothing held or watched yet |
 | `cockpit-panorama-sin-cotizacion.png` | `[Cockpit] / Panorama / Sin cotización` — a held asset has no quote, so the strip gives way to the notice |
 | `cockpit-senales.png` | `[Cockpit] / Señales / Default` |
