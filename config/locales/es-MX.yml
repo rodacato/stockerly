@@ -1784,6 +1784,9 @@ es-MX:
       push_no_disponible: Este navegador no admite avisos push.
       registros: Registros
       registros_desc: Sincronizaciones y avisos de los últimos 90 días
+      resumen_hoy: Resumen de Hoy en el teléfono
+      resumen_hoy_desc: Cada mañana a las 8:00 CDMX, lo que Hoy diría. Necesita los
+        avisos en el teléfono activados.
       tema: Apariencia y región
       tema_claro: Claro
       tema_control: Tema

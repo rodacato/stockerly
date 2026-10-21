@@ -117,6 +117,8 @@ RSpec.describe "Ajustes", type: :request do
   # D16 left the in-app inbox always on, and a switch that does nothing is the
   # defect this slice's precondition existed to remove.
   it "does not offer a switch for the bell, which cannot be turned off" do
+    allow(Notifications::Domain::WebPushDelivery).to receive(:configured?).and_return(false)
+
     get settings_path
 
     expect(response.body).to include(I18n.t("settings.show.avisos_campana"))
