@@ -133,15 +133,17 @@ module Trading
         end
       end
 
+      # One item per report day: a season is a moment, not a row per company (D160).
       def earnings_items(positions)
         held = positions.map(&:asset_id)
 
         MarketData::Queries::UpcomingEarnings.within(days: EARNINGS_WINDOW_DAYS)
                                              .select { |event| held.include?(event.asset_id) }
-                                             .map do |event|
-          Domain::TodayBrief::Item.new(kind: :earnings, asset: event.asset,
-                                       days: (event.report_date.to_date - Date.current).to_i,
-                                       date: event.report_date.to_date, gap: nil)
+                                             .group_by { |event| event.report_date.to_date }
+                                             .map do |date, events|
+          assets = events.map(&:asset).uniq.sort_by(&:symbol)
+          Domain::TodayBrief::Item.new(kind: :earnings, asset: assets.first, assets: assets,
+                                       days: (date - Date.current).to_i, date: date, gap: nil)
         end
       end
 

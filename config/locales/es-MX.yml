@@ -665,7 +665,9 @@ es-MX:
           one: Mañana · %{date}
           other: En %{count} días · %{date}
           zero: Hoy · %{date}
-        titulo: "%{symbol} reporta resultados"
+        titulo:
+          one: "%{symbols} reporta resultados"
+          other: "%{symbols} reportan resultados"
       macro:
         detalle: "%{date}%{tentative}"
         tentativa: " · fecha tentativa"
