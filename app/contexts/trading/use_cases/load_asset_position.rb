@@ -12,17 +12,28 @@ module Trading
         return nil unless position
 
         currency = user.preferred_currency
+        breakdown = Domain::FxDegradation.new.figure { breakdown_for(position, currency) }
 
         {
           position: position,
           currency: currency,
-          breakdown: Domain::FxDegradation.new.figure { breakdown_for(position, currency) },
+          breakdown: breakdown,
+          weight_percent: breakdown && Domain::FxDegradation.new.figure { weight_of(breakdown, portfolio, currency) },
           retrospective: Domain::PurchaseRetrospective.call(position),
           trades: position.trades.kept.order(executed_at: :desc).limit(5)
         }
       end
 
       private
+
+      # Share of the patrimonio this holding is, in whole percent; absent when
+      # either figure cannot be valued rather than a share of a partial total.
+      def weight_of(breakdown, portfolio, currency)
+        total = Domain::PortfolioSummary.new(portfolio, currency: currency).total_value
+        return nil unless total.positive?
+
+        (breakdown.market_value / total * 100).round
+      end
 
       # A missing rate makes the split impossible, not the tab: the shares,
       # the average cost and the operations are all still true.

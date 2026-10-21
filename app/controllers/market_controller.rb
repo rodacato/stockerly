@@ -20,6 +20,7 @@ class MarketController < AuthenticatedController
       @market_context = data[:market_context]
       @day_change = data[:day_change]
       @news = data[:news] || []
+      @next_earnings = data[:next_earnings]
       @reading = data[:reading]
       @range_52w = data[:range_52w]
       @signals = data[:signals] || []

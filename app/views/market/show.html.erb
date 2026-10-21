@@ -11,6 +11,15 @@
   <%= render "market/asset_header", asset: @asset, presenter: @presenter, is_watchlisted: @is_watchlisted,
                                    day_change: @day_change %>
 
+  <%# D159: lo tuyo goes first, above both tabs, for the holder and the watcher. %>
+  <% unless @asset.asset_type_fixed_income? %>
+    <% if @position_data || @anchors[:cost] || @anchors[:threshold] || @asset_rules.any? || @next_earnings %>
+      <%= render "market/mine", position_data: @position_data, cost_anchor: @anchors[:cost],
+                 threshold_anchor: @anchors[:threshold], threshold_currency: @anchors[:threshold_rule]&.currency,
+                 rules: @anchors[:other_rules], currency: @asset.currency, next_earnings: @next_earnings %>
+    <% end %>
+  <% end %>
+
   <%# Two tabs (D8's asset-detail shape). "Mi posición" only exists when you
       hold the asset, so a watched asset shows Análisis alone rather than an
       empty second tab. %>

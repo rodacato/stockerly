@@ -1264,6 +1264,22 @@ es-MX:
     metricas_que_mide: Qué mide
     metricas_referencial: Información referencial. El desempeño pasado no garantiza
       resultados futuros.
+    mine:
+      activa: activa
+      costo: Tu costo · %{value}
+      en_pausa: en pausa
+      peso: Pesa %{percent}% de tu patrimonio
+      posicion: Tu posición · %{value}
+      regla: Regla · %{summary}
+      resultados: Resultados · %{date}
+      resultados_dias:
+        one: mañana
+        other: en %{count} días
+        zero: hoy
+      titulo: LO TUYO
+      umbral: Tu umbral · %{value}
+      umbral_baja: necesita bajar %{percent}
+      umbral_sube: necesita subir %{percent}
     news:
       atribucion: Titulares de sus fuentes, sin editar.
       filtro_html: Filtradas a %{symbol} · últimos %{days} días
@@ -1392,15 +1408,6 @@ es-MX:
       titulo: Gráfico de TradingView
     unknown:
       yahoo_lo_tiene: "%{symbol} no está en tu catálogo. Yahoo Finance sí lo tiene:"
-    vs_plan:
-      activa: activa
-      costo: Tu costo · %{value}
-      en_pausa: en pausa
-      regla: Regla · %{summary}
-      titulo: VS. TU PLAN
-      umbral: Tu umbral · %{value}
-      umbral_baja: necesita bajar %{percent}
-      umbral_sube: necesita subir %{percent}
   nav:
     abrir_avisos: Abrir avisos
     activos: Activos

@@ -77,6 +77,7 @@ module MarketData
           dividends: dividends,
           company_overview: company_overview,
           news: Queries::RecentNews.call(asset: asset),
+          next_earnings: next_earnings(asset),
           range_52w: fifty_two_week_range(asset, presenter),
           reading: reading_record,
           signals: Domain::IndicatorSignals.for(reading_record),
@@ -86,6 +87,13 @@ module MarketData
       end
 
       private
+
+      # A date, whatever its distance: the page Hoy's earnings item links to has to state it.
+      def next_earnings(asset)
+        return nil unless asset.asset_type_stock? || asset.asset_type_etf?
+
+        asset.earnings_events.upcoming.first
+      end
 
       # ADR-014: the state is derived, the phrase is selected, neither is composed downstream.
       def reading_for(asset)
