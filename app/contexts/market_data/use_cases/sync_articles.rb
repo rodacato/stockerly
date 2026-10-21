@@ -2,14 +2,15 @@ module MarketData
   module UseCases
     class SyncArticles < ApplicationUseCase
       TITLE_SIMILARITY_THRESHOLD = 0.65
+      TRACKED_LIMIT = 30
+      TRACKED_ARTICLES = 50
 
       def call
         result = GatewayChain.for_capability(:news).fetch_news(limit: 20)
 
         return result if result.failure?
 
-        articles = result.value!
-        created = upsert_articles(articles)
+        created = upsert_articles(result.value!) + sync_tracked
 
         publish(Events::NewsSynced.new(count: created))
 
@@ -17,6 +18,20 @@ module MarketData
       end
 
     private
+
+    # The general feed answers with whatever the market is talking about, which
+    # rarely names what one person holds. One more call asks for the tracked
+    # US symbols together (Alpaca takes a list; the Finnhub fallback takes one
+    # symbol, so this is not routed through the chain). Its failure never fails
+    # the general sync.
+    def sync_tracked
+      equities = Asset.syncing.where(asset_type: %i[stock etf])
+      symbols = equities.where(country: [ nil, "" ]).or(equities.where.not(country: "MX")).limit(TRACKED_LIMIT).pluck(:symbol)
+      return 0 if symbols.empty?
+
+      result = Gateways::AlpacaGateway.new.fetch_news(ticker: symbols.join(","), limit: TRACKED_ARTICLES)
+      result.success? ? upsert_articles(result.value!) : 0
+    end
 
     def upsert_articles(articles)
       created = 0

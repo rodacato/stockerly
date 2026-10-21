@@ -229,4 +229,27 @@ RSpec.describe "Hoy on the dashboard", type: :request do
       end
     end
   end
+
+  describe "the headlines of what is tracked" do
+    it "lists what was published for a holding, attributed, and leaves out the rest" do
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+      create(:news_article, related_ticker: "WALMEX", title: "Walmex reports steady quarter", source: "Reuters", published_at: 2.hours.ago)
+      create(:news_article, related_ticker: "TSLA", title: "Tesla unveils something", published_at: 1.hour.ago)
+
+      get dashboard_path
+
+      expect(response.body).to include(I18n.t("dashboard.show.titulares_titulo"))
+      expect(response.body).to include("Walmex reports steady quarter")
+      expect(response.body).to include("Reuters")
+      expect(response.body).not_to include("Tesla unveils something")
+    end
+
+    it "shows no block when nothing was published" do
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+
+      get dashboard_path
+
+      expect(response.body).not_to include(I18n.t("dashboard.show.titulares_titulo"))
+    end
+  end
 end

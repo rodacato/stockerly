@@ -184,4 +184,28 @@ RSpec.describe MarketData::UseCases::SyncArticles do
         .not_to change(NewsArticle, :count)
     end
   end
+
+  context "with tracked US equities" do
+    let!(:us) { create(:asset, :stock, symbol: "AAPL", country: "US") }
+    let!(:mx) { create(:asset, :stock, symbol: "WALMEX", country: "MX") }
+    let!(:crypto) { create(:asset, :crypto, symbol: "BTC") }
+
+    it "asks once more for the tracked US symbols together, and keeps what it returns" do
+      allow(gateway).to receive(:fetch_news).with(ticker: nil, limit: 20).and_return(Dry::Monads::Success([]))
+      allow(gateway).to receive(:fetch_news).with(ticker: "AAPL", limit: 50)
+                                            .and_return(Dry::Monads::Success([ article_data(1) ]))
+
+      expect { described_class.call }.to change(NewsArticle, :count).by(1)
+      expect(gateway).to have_received(:fetch_news).with(ticker: "AAPL", limit: 50).once
+    end
+
+    it "does not fail the sync when the tracked call fails" do
+      allow(gateway).to receive(:fetch_news).with(ticker: nil, limit: 20).and_return(Dry::Monads::Success([ article_data(2) ]))
+      allow(gateway).to receive(:fetch_news).with(ticker: "AAPL", limit: 50)
+                                            .and_return(Dry::Monads::Failure([ :gateway_error, "boom" ]))
+
+      expect(described_class.call).to be_success
+      expect(NewsArticle.count).to eq(1)
+    end
+  end
 end

@@ -12,6 +12,15 @@ module MarketData
       WINDOW_DAYS = 7
       LIMIT = 5
 
+      # The same window across several symbols — what a reader following a
+      # set of assets sees together. Newest first, each article tagged with its ticker.
+      def self.for_symbols(symbols:, limit: LIMIT)
+        tickers = Array(symbols).compact_blank.map { |ticker| ticker.to_s.upcase }.uniq
+        return NewsArticle.none if tickers.empty?
+
+        NewsArticle.for_tickers(tickers).published_after(WINDOW_DAYS.days.ago).order(published_at: :desc).limit(limit)
+      end
+
       def self.call(asset:)
         tickers = ([ asset.symbol ] + Array(asset.former_symbols)).compact_blank.map { |ticker| ticker.to_s.upcase }.uniq
         return NewsArticle.none if tickers.empty?

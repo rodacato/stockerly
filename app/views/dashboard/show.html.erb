@@ -85,4 +85,27 @@
       </div>
     <% end %>
   </section>
+
+  <%# Quoted material, attributed and never re-toned by us (ADR-0001 governs our
+      copy, not a third party's). Absent when nothing was published for what is tracked. %>
+  <% if @headlines.any? %>
+    <section class="lg:order-5 lg:col-span-12">
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".titulares_titulo") %></h2>
+        <span class="text-[11px] italic text-fg-subtle"><%= t(".titulares_atribucion", count: MarketData::Queries::RecentNews::WINDOW_DAYS) %></span>
+      </div>
+      <ul class="<%= card_classes("mt-3 divide-y divide-border-default overflow-hidden") %>">
+        <% @headlines.each do |article| %>
+          <li class="flex items-start gap-3 px-5 py-3.5">
+            <span class="mt-0.5 shrink-0 rounded-md bg-bg-muted px-2 py-0.5 font-mono text-[11px] text-fg-default"><%= article.related_ticker %></span>
+            <div class="min-w-0">
+              <%= link_to article.title, article.url, target: "_blank", rel: "noopener noreferrer",
+                          class: "text-sm font-medium leading-snug text-fg-default hover:text-primary-fg" %>
+              <p class="mt-1 text-xs text-fg-subtle"><%= article.source %> · <%= relative_age(article.published_at) %></p>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
 </div>
