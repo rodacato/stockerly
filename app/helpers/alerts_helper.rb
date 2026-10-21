@@ -25,6 +25,18 @@ module AlertsHelper
     listing unless listing[:state] == :listed
   end
 
+  # How far the price still has to move to reach a price rule's threshold —
+  # the reading the asset page's Lo tuyo shows (D67). Nil for any other rule.
+  def alert_rule_threshold_anchor(rule)
+    return unless AlertRule::PRICE_THRESHOLD_CONDITIONS.include?(rule.condition)
+
+    @alert_rule_prices ||= {}
+    price = @alert_rule_prices.fetch(rule.asset_symbol) do
+      @alert_rule_prices[rule.asset_symbol] = Alerts::Queries::CurrentPrice.call(symbol: rule.asset_symbol)
+    end
+    PriceAnchor.against_threshold(price: price, threshold: rule.threshold_value)
+  end
+
   def alert_orphan_label(rule, orphan)
     if orphan[:state] == :renamed
       t("alerts.index.huerfana.renombrada", old: rule.asset_symbol, symbol: orphan[:current_symbol])

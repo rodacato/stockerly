@@ -176,6 +176,48 @@ RSpec.describe "Reglas", type: :request do
     end
   end
 
+  # D67: the asset page reads the price against your threshold; the rule that
+  # owns the threshold says the same.
+  describe "how far the price sits from a rule's threshold" do
+    it "says how much the price still has to rise to reach it" do
+      create(:asset, symbol: "AAPL", current_price: 187)
+      create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "price_crosses_above", threshold_value: 200)
+
+      get alerts_path
+
+      expect(response.body).to include("necesita subir 7.0%")
+    end
+
+    it "says how much it has to fall when the threshold sits below the price" do
+      create(:asset, symbol: "AAPL", current_price: 220)
+      create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "price_crosses_below", threshold_value: 200)
+
+      get alerts_path
+
+      expect(response.body).to include("necesita bajar 9.1%")
+    end
+
+    it "reads nothing off a threshold that is not a price" do
+      create(:asset, symbol: "AAPL", current_price: 187)
+      create(:alert_rule, user: user, asset_symbol: "AAPL", condition: "rsi_overbought", threshold_value: 72)
+
+      get alerts_path
+
+      expect(response.body).not_to include("necesita")
+    end
+
+    it "reads nothing when the catalogue has no price for the symbol" do
+      create(:asset, symbol: "META", current_price: 500, former_symbols: [ "FB" ])
+      create(:alert_rule, user: user, asset_symbol: "FB", condition: "price_crosses_above", threshold_value: 200)
+      create(:asset, symbol: "NEW", current_price: nil)
+      create(:alert_rule, user: user, asset_symbol: "NEW", condition: "price_crosses_above", threshold_value: 10)
+
+      get alerts_path
+
+      expect(response.body).not_to include("necesita")
+    end
+  end
+
   describe "a rule whose symbol the catalogue no longer answers to" do
     it "says the rule was orphaned by a rename instead of reporting it active" do
       create(:asset, symbol: "META", former_symbols: [ "FB" ])
