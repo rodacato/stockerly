@@ -708,3 +708,28 @@ opened**; an instance that does not opt in renders as before.
 
 `TopBarDesktop`'s `Sub` is still sans 12 in the kit; the code renders it mono 11 uppercase with
 wide tracking. A style change to an existing child, so it waits for its own bump.
+
+---
+
+## 1.4.0 — the trade row's actions
+
+Minor: one component gains a child, no token changes. **Additive — flows re-vendor when next
+opened**; an instance that does not opt in renders as before. Promoted because the owner asked for
+it (README rule 2's asked case), for `assets.pen`'s Historial.
+
+- **`MovementItem`** — an `Acciones` slot after `Tag`, `enabled: false` by default: two 32 × 32
+  icon buttons, radius 8, no fill and no stroke, gap 4 — `Editar` (Lucide `pencil` for the code's
+  `edit`) and `Eliminar` (`trash-2` for `delete`), 18 px in `$fg-subtle`; hover turns the icon
+  `$primary` and `$negative` respectively (`trades/_trade_row.html.erb:21-34`). It renders only
+  while `Trade#editable?` holds — not discarded and executed in the last 30 days
+  (`app/models/trade.rb:27-31`); otherwise the cluster is absent, not disabled. Signal, alert,
+  dividend and closed-position rows never turn it on.
+
+### Not mirrored, on purpose
+
+- The buttons are 32 px (`size-8`), under the README's 44 pt touch-target rule. That is the code,
+  drawn as it is; enlarging it is a code change, not a kit one.
+- The two open `MovementItem` gaps (age slot, slot under the tag) stay open: they are the signal
+  row's shape, not the trade row's, and nobody asked for them in this bump.
+- Alert rule rows render the same 32 × 32 icon-button pair (`alerts/_alert_rule.html.erb:18-23`,
+  hover `$fg-default`). A resemblance, noted; not a component.
