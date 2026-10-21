@@ -1,5 +1,5 @@
 {
-  "version": "2.20",
+  "version": "2.21",
   "children": [
     {
       "type": "frame",
@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 1.2.0 · brief-schema: 2\n\n1. PURPOSE\n   The one surface that reads the world instead of the instance: what moved outside your portfolio (D31).\n\n2. ENTRY POINTS\n   - Fourth shell destination, /discover, with Descubrir lit — between Reglas and Ajustes (D31)\n\n3. SCREENS  (left → right)\n   - Olas — Default · Todas las canastas · Sin datos · Calendario agotado\n\n4. BUSINESS RULES\n   - Order: heading, the Alpaca notice when there is no world data, Olas, Titulares, Calendario\n   - Olas ranks 16 baskets by their move over a window from your last visit — at least 7 days, at most 90 — and shows the top five (WarmDiscoverJob)\n   - Every basket is measured against SPY, which is the baseline and not a wave; the difference carries its sign\n   - The exposure chip says \"ya vía <symbol>\" when a referent is held and \"sin exposición\" otherwise, neutral in both (ADR-001)\n   - \"Ver las N canastas\" opens the whole basket in place, grouped, rather than on another screen (D94)\n   - Titulares: up to five headlines filtered to the baskets' symbols\n   - Calendario: the next three Banxico and Fed dates from config/discover_calendar.yml; Fed dates say \"tentativa\"; past its horizon the block says so and links both sources (D33)\n   - What retires the notice is world data, not a credential: a connected Alpaca whose job has not run still shows it\n   - Disposable by contract: no tables, no events, no writes to Asset; the cache is warmed every 4 h with a 24 h TTL, and a visit is logged for the kill criterion (D31)\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — discover.show.*. Basket names and groups: config/discover_baskets.yml. Calendar titles: config/discover_calendar.yml.\n\n6. STATES NOT DRAWN\n   - Olas without Titulares, or Titulares without Olas — the empty block is absent\n   - A basket without a SPY series — no \"vs SPY\" line\n   - The desktop — one column, max-w-3xl; it reflows (D4)\n   - Reportan pronto — dropped (D46)\n\n7. OPEN FINDINGS\n   —  · the job can serve waves up to 24 h old and the screen does not say how old; showing it would be new information, so it needs a D first\n\n8. HISTORY\n   → Log · Descubrir, left of this brief.",
+          "content": "kit-version-source: 1.3.0 · brief-schema: 2\n\n1. PURPOSE\n   The one surface that reads the world instead of the instance: what moved outside your portfolio (D31).\n\n2. ENTRY POINTS\n   - Fourth shell destination, /discover, with Descubrir lit — between Reglas and Ajustes (D31)\n\n3. SCREENS  (left → right, by band)\n   - Olas — Default · Todas las canastas · Sin datos · Calendario agotado\n\n4. BUSINESS RULES\n   - Order: heading, the Alpaca notice when there is no world data, Olas, Titulares, Calendario\n   - Olas ranks the 16 baskets by their signed move, highest first, over a window from your last visit — at least 7 days, at most 90 — and shows the top five, each linking to its asset page. The meta states the window's length (WarmDiscoverJob, WaveRanking)\n   - Past 6 h the Olas meta adds the data's age (discover_helper.rb)\n   - Every basket is measured against SPY, which is the baseline and not a wave; the difference is stated in points with its sign (\"vs SPY +5.2 pts\"); EWW carries a note that SPY is its reference\n   - The exposure chip says \"ya vía <symbol>\" when a referent is held and \"sin exposición\" otherwise, neutral in both (ADR-001). It sits on the ticker line, never the row's loudest element, never coloured, never a sort key (D144). No sparkline (D145)\n   - \"Ver las N canastas\" opens, in place, the baskets the five rows did not show, grouped by kind in rank order (D94)\n   - Titulares: up to five headlines filtered to the baskets' symbols\n   - Calendario: the next three Banxico and Fed dates from config/discover_calendar.yml; Fed dates say \"tentativa\"; past its horizon the block says so and links both sources (D33)\n   - What retires the notice is world data, not a credential: a connected Alpaca whose job has not run still shows it, and the notice says the first sync may simply not have run yet\n   - Disposable by contract: no tables, no events, no writes to Asset; the cache is warmed every 4 h with a 24 h TTL, and a visit is logged for the kill criterion (D31)\n\n5. COPY SOURCE\n   config/locales/es-MX.yml — discover.show.*. Basket names and groups: config/discover_baskets.yml. Calendar titles: config/discover_calendar.yml.\n\n6. STATES NOT DRAWN\n   - Olas without Titulares, or Titulares without Olas — the empty block is absent\n   - A basket without a SPY series — no \"vs SPY\" line\n   - Waves older than 6 h — the Olas meta gains \"· datos de hace 7 horas\"\n   - Five baskets or fewer with data — no \"Ver las N canastas…\" disclosure\n   - A headline with no URL — plain text, not a link; no visual change\n   - The desktop — one column, max-w-3xl; it reflows (D4)\n   - Reportan pronto — dropped (D47)\n\n7. OPEN FINDINGS\n   None.\n\n8. HISTORY\n   → Log · Descubrir, below this brief.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -112,34 +112,65 @@
         },
         {
           "type": "frame",
-          "id": "n1HmyI",
-          "name": "BellWrap",
-          "width": 44,
-          "height": 44,
-          "cornerRadius": "$radius-md",
-          "justifyContent": "center",
+          "id": "f4shSj",
+          "name": "Acciones",
+          "gap": "$space-1",
           "alignItems": "center",
           "children": [
             {
-              "type": "icon",
-              "id": "HWFMD",
-              "name": "Bell",
-              "width": 20,
-              "height": 20,
-              "icon": "bell",
-              "library": "lucide",
-              "fill": "$fg-subtle"
+              "type": "frame",
+              "id": "oGEOI",
+              "name": "SearchWrap",
+              "width": 44,
+              "height": 44,
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "lHZKt",
+                  "name": "Search",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                }
+              ]
             },
             {
-              "type": "ellipse",
-              "id": "MixjR",
-              "layoutPosition": "absolute",
-              "x": 26,
-              "y": 10,
-              "name": "UnreadDot",
-              "fill": "$negative",
-              "width": 8,
-              "height": 8
+              "type": "frame",
+              "id": "n1HmyI",
+              "name": "BellWrap",
+              "width": 44,
+              "height": 44,
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "HWFMD",
+                  "name": "Bell",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "ellipse",
+                  "id": "MixjR",
+                  "layoutPosition": "absolute",
+                  "x": 26,
+                  "y": 10,
+                  "name": "UnreadDot",
+                  "fill": "$negative",
+                  "width": 8,
+                  "height": 8
+                }
+              ]
             }
           ]
         }
@@ -416,7 +447,7 @@
                       "id": "aURzb",
                       "name": "M",
                       "fill": "$fg-subtle",
-                      "content": "desde tu última visita · 8 de sep",
+                      "content": "desde tu última visita · 8 de sep · 13 días",
                       "fontFamily": "$font-mono",
                       "fontSize": 12,
                       "fontWeight": "normal"
@@ -433,22 +464,21 @@
                     "z9stp": {
                       "content": "SMH"
                     },
-                    "CHZGM": {
-                      "content": "Semiconductores · sector"
-                    },
                     "qdB91": {
                       "content": "ya vía NVDA"
                     },
-                    "Cjyrb": {
-                      "geometry": "M3.6 29.1 L16.8 25.5 L30.2 27.3 L43.4 19.2 L56.6 14.7 L69.8 16.4 L83.2 8.3 L96.4 2.9",
-                      "stroke": "$positive"
+                    "CHZGM": {
+                      "content": "Semiconductores · sector"
+                    },
+                    "XOPZh": {
+                      "enabled": false
                     },
                     "n1jaH": {
                       "content": "+8.4%",
                       "fill": "$positive"
                     },
                     "jlRjt": {
-                      "content": "vs SPY +5.2"
+                      "content": "vs SPY +5.2 pts"
                     }
                   }
                 },
@@ -462,22 +492,49 @@
                     "z9stp": {
                       "content": "URA"
                     },
-                    "CHZGM": {
-                      "content": "Uranio y nuclear · tema"
-                    },
                     "qdB91": {
                       "content": "sin exposición"
                     },
-                    "Cjyrb": {
-                      "geometry": "M3.6 29.1 L16.8 23.4 L30.2 27.2 L43.4 29.1 L56.6 17.9 L69.8 10.3 L83.2 14.1 L96.4 2.9",
-                      "stroke": "$positive"
+                    "CHZGM": {
+                      "content": "Uranio y nuclear · tema"
+                    },
+                    "XOPZh": {
+                      "enabled": false
                     },
                     "n1jaH": {
                       "content": "+6.1%",
                       "fill": "$positive"
                     },
                     "jlRjt": {
-                      "content": "vs SPY +2.9"
+                      "content": "vs SPY +2.9 pts"
+                    }
+                  }
+                },
+                {
+                  "id": "DKTYd",
+                  "type": "ref",
+                  "ref": "k9gIg",
+                  "name": "Wave GLD",
+                  "width": "fill_container",
+                  "descendants": {
+                    "z9stp": {
+                      "content": "GLD"
+                    },
+                    "qdB91": {
+                      "content": "sin exposición"
+                    },
+                    "CHZGM": {
+                      "content": "Oro · termómetro"
+                    },
+                    "XOPZh": {
+                      "enabled": false
+                    },
+                    "n1jaH": {
+                      "content": "+5.5%",
+                      "fill": "$positive"
+                    },
+                    "jlRjt": {
+                      "content": "vs SPY +2.3 pts"
                     }
                   }
                 },
@@ -491,22 +548,21 @@
                     "z9stp": {
                       "content": "EWW"
                     },
-                    "CHZGM": {
-                      "content": "México · geografía"
-                    },
                     "qdB91": {
                       "content": "sin exposición"
                     },
-                    "Cjyrb": {
-                      "geometry": "M3.6 26.2 L16.8 23.3 L30.2 29.1 L43.4 17.5 L56.6 20.4 L69.8 8.7 L83.2 11.6 L96.4 2.9",
-                      "stroke": "$positive"
+                    "CHZGM": {
+                      "content": "México · geografía"
+                    },
+                    "XOPZh": {
+                      "enabled": true
                     },
                     "n1jaH": {
                       "content": "+4.7%",
                       "fill": "$positive"
                     },
                     "jlRjt": {
-                      "content": "vs SPY +1.5"
+                      "content": "vs SPY +1.5 pts"
                     }
                   }
                 },
@@ -520,63 +576,52 @@
                     "z9stp": {
                       "content": "MCHI"
                     },
-                    "CHZGM": {
-                      "content": "China · geografía"
-                    },
                     "qdB91": {
                       "content": "sin exposición"
                     },
-                    "Cjyrb": {
-                      "geometry": "M3.6 29.1 L16.8 13.4 L30.2 21.2 L43.4 5.5 L56.6 16.0 L69.8 8.1 L83.2 10.8 L96.4 2.9",
-                      "stroke": "$positive"
+                    "CHZGM": {
+                      "content": "China · geografía"
+                    },
+                    "XOPZh": {
+                      "enabled": false
                     },
                     "n1jaH": {
                       "content": "+3.0%",
                       "fill": "$positive"
                     },
                     "jlRjt": {
-                      "content": "vs SPY −0.2"
+                      "content": "vs SPY −0.2 pts"
                     }
                   }
                 },
                 {
-                  "id": "DKTYd",
-                  "type": "ref",
-                  "ref": "k9gIg",
-                  "name": "Wave XLE",
-                  "width": "fill_container",
-                  "descendants": {
-                    "z9stp": {
-                      "content": "XLE"
-                    },
-                    "CHZGM": {
-                      "content": "Energía · sector"
-                    },
-                    "qdB91": {
-                      "content": "ya vía OKE"
-                    },
-                    "Cjyrb": {
-                      "geometry": "M3.6 4.8 L16.8 8.6 L30.2 2.9 L43.4 16.0 L56.6 12.2 L69.8 23.4 L83.2 19.8 L96.4 29.1",
-                      "stroke": "$negative"
-                    },
-                    "n1jaH": {
-                      "content": "−2.9%",
-                      "fill": "$negative"
-                    },
-                    "jlRjt": {
-                      "content": "vs SPY −6.1"
-                    }
-                  }
-                },
-                {
-                  "type": "text",
-                  "id": "LuOBr",
+                  "type": "frame",
+                  "id": "DQW9M",
                   "name": "VerTodas",
-                  "fill": "$primary-fg",
-                  "content": "▸ Ver las 16 canastas con datos en la ventana",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "600"
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ixrkI",
+                      "name": "t",
+                      "fill": "$primary-fg",
+                      "content": "Ver las 16 canastas con datos en la ventana",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "jHfhH",
+                      "name": "i",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "chevron-down",
+                      "library": "lucide",
+                      "fill": "$primary-fg"
+                    }
+                  ]
                 }
               ]
             },
@@ -713,7 +758,7 @@
                     {
                       "type": "frame",
                       "id": "t4nTV8",
-                      "name": "El peso cierra en ",
+                      "name": "El oro toca un máximo",
                       "width": "fill_container",
                       "stroke": "$border-default",
                       "strokeWidth": {
@@ -1190,6 +1235,19 @@
                 },
                 {
                   "type": "text",
+                  "id": "ae9hz",
+                  "name": "Pendiente",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Si ya la conectaste, la primera sincronización todavía no ha corrido.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
                   "id": "eGo48",
                   "name": "L",
                   "fill": "$primary-fg",
@@ -1481,14 +1539,46 @@
           "layout": "vertical",
           "children": [
             {
-              "type": "text",
-              "id": "z9stp",
-              "name": "Ticker",
-              "fill": "$fg-default",
-              "content": "SMH",
-              "fontFamily": "$font-display",
-              "fontSize": 14,
-              "fontWeight": "700"
+              "type": "frame",
+              "id": "GwvxI",
+              "name": "Line1",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "z9stp",
+                  "name": "Ticker",
+                  "fill": "$fg-default",
+                  "content": "SMH",
+                  "fontFamily": "$font-display",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "X9XxqQ",
+                  "name": "Exp",
+                  "fill": "$bg-muted",
+                  "cornerRadius": 99,
+                  "padding": [
+                    2,
+                    8
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "qdB91",
+                      "name": "ET",
+                      "fill": "$fg-subtle",
+                      "content": "ya vía NVDA",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
             },
             {
               "type": "text",
@@ -1503,54 +1593,21 @@
               "fontWeight": "normal"
             },
             {
-              "type": "frame",
-              "id": "Gy2g4",
-              "name": "gap",
-              "width": "fill_container",
-              "height": 4
-            },
-            {
-              "type": "frame",
-              "id": "X9XxqQ",
-              "name": "Exp",
-              "fill": "$bg-muted",
-              "cornerRadius": 99,
-              "padding": [
-                2,
-                8
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "qdB91",
-                  "name": "ET",
-                  "fill": "$fg-subtle",
-                  "content": "ya vía NVDA",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 10,
-                  "fontWeight": "normal"
-                }
-              ]
+              "type": "text",
+              "id": "XOPZh",
+              "x": 0,
+              "y": 0,
+              "name": "Nota",
+              "enabled": false,
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container(0)",
+              "content": "La referencia es SPY; no se usa una serie de referencia mexicana.",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
             }
           ]
-        },
-        {
-          "type": "path",
-          "id": "Cjyrb",
-          "name": "Spark",
-          "geometry": "M0 26l20-4 20 2 20-8 20-4 20-8",
-          "viewBox": [
-            0,
-            0,
-            100,
-            32
-          ],
-          "width": 64,
-          "height": 32,
-          "stroke": "$positive",
-          "strokeWidth": 2,
-          "strokeLinejoin": "round",
-          "strokeLinecap": "round"
         },
         {
           "type": "frame",
@@ -1574,7 +1631,7 @@
               "id": "jlRjt",
               "name": "Vs",
               "fill": "$fg-subtle",
-              "content": "vs SPY +5.2",
+              "content": "vs SPY +5.2 pts",
               "fontFamily": "$font-mono",
               "fontSize": 12,
               "fontWeight": "normal"
@@ -1678,7 +1735,7 @@
                       "id": "vaYnY",
                       "name": "M",
                       "fill": "$fg-subtle",
-                      "content": "desde tu última visita · 8 de sep",
+                      "content": "desde tu última visita · 8 de sep · 13 días",
                       "fontFamily": "$font-mono",
                       "fontSize": 12,
                       "fontWeight": "normal"
@@ -1695,22 +1752,21 @@
                     "z9stp": {
                       "content": "SMH"
                     },
-                    "CHZGM": {
-                      "content": "Semiconductores · sector"
-                    },
                     "qdB91": {
                       "content": "ya vía NVDA"
                     },
-                    "Cjyrb": {
-                      "geometry": "M3.6 29.1 L16.8 25.5 L30.2 27.3 L43.4 19.2 L56.6 14.7 L69.8 16.4 L83.2 8.3 L96.4 2.9",
-                      "stroke": "$positive"
+                    "CHZGM": {
+                      "content": "Semiconductores · sector"
+                    },
+                    "XOPZh": {
+                      "enabled": false
                     },
                     "n1jaH": {
                       "content": "+8.4%",
                       "fill": "$positive"
                     },
                     "jlRjt": {
-                      "content": "vs SPY +5.2"
+                      "content": "vs SPY +5.2 pts"
                     }
                   }
                 },
@@ -1724,22 +1780,49 @@
                     "z9stp": {
                       "content": "URA"
                     },
-                    "CHZGM": {
-                      "content": "Uranio y nuclear · tema"
-                    },
                     "qdB91": {
                       "content": "sin exposición"
                     },
-                    "Cjyrb": {
-                      "geometry": "M3.6 29.1 L16.8 23.4 L30.2 27.2 L43.4 29.1 L56.6 17.9 L69.8 10.3 L83.2 14.1 L96.4 2.9",
-                      "stroke": "$positive"
+                    "CHZGM": {
+                      "content": "Uranio y nuclear · tema"
+                    },
+                    "XOPZh": {
+                      "enabled": false
                     },
                     "n1jaH": {
                       "content": "+6.1%",
                       "fill": "$positive"
                     },
                     "jlRjt": {
-                      "content": "vs SPY +2.9"
+                      "content": "vs SPY +2.9 pts"
+                    }
+                  }
+                },
+                {
+                  "id": "IW08h",
+                  "type": "ref",
+                  "ref": "k9gIg",
+                  "name": "Wave GLD",
+                  "width": "fill_container",
+                  "descendants": {
+                    "z9stp": {
+                      "content": "GLD"
+                    },
+                    "qdB91": {
+                      "content": "sin exposición"
+                    },
+                    "CHZGM": {
+                      "content": "Oro · termómetro"
+                    },
+                    "XOPZh": {
+                      "enabled": false
+                    },
+                    "n1jaH": {
+                      "content": "+5.5%",
+                      "fill": "$positive"
+                    },
+                    "jlRjt": {
+                      "content": "vs SPY +2.3 pts"
                     }
                   }
                 },
@@ -1753,22 +1836,21 @@
                     "z9stp": {
                       "content": "EWW"
                     },
-                    "CHZGM": {
-                      "content": "México · geografía"
-                    },
                     "qdB91": {
                       "content": "sin exposición"
                     },
-                    "Cjyrb": {
-                      "geometry": "M3.6 26.2 L16.8 23.3 L30.2 29.1 L43.4 17.5 L56.6 20.4 L69.8 8.7 L83.2 11.6 L96.4 2.9",
-                      "stroke": "$positive"
+                    "CHZGM": {
+                      "content": "México · geografía"
+                    },
+                    "XOPZh": {
+                      "enabled": true
                     },
                     "n1jaH": {
                       "content": "+4.7%",
                       "fill": "$positive"
                     },
                     "jlRjt": {
-                      "content": "vs SPY +1.5"
+                      "content": "vs SPY +1.5 pts"
                     }
                   }
                 },
@@ -1782,63 +1864,52 @@
                     "z9stp": {
                       "content": "MCHI"
                     },
-                    "CHZGM": {
-                      "content": "China · geografía"
-                    },
                     "qdB91": {
                       "content": "sin exposición"
                     },
-                    "Cjyrb": {
-                      "geometry": "M3.6 29.1 L16.8 13.4 L30.2 21.2 L43.4 5.5 L56.6 16.0 L69.8 8.1 L83.2 10.8 L96.4 2.9",
-                      "stroke": "$positive"
+                    "CHZGM": {
+                      "content": "China · geografía"
+                    },
+                    "XOPZh": {
+                      "enabled": false
                     },
                     "n1jaH": {
                       "content": "+3.0%",
                       "fill": "$positive"
                     },
                     "jlRjt": {
-                      "content": "vs SPY −0.2"
+                      "content": "vs SPY −0.2 pts"
                     }
                   }
                 },
                 {
-                  "id": "IW08h",
-                  "type": "ref",
-                  "ref": "k9gIg",
-                  "name": "Wave XLE",
-                  "width": "fill_container",
-                  "descendants": {
-                    "z9stp": {
-                      "content": "XLE"
-                    },
-                    "CHZGM": {
-                      "content": "Energía · sector"
-                    },
-                    "qdB91": {
-                      "content": "ya vía OKE"
-                    },
-                    "Cjyrb": {
-                      "geometry": "M3.6 4.8 L16.8 8.6 L30.2 2.9 L43.4 16.0 L56.6 12.2 L69.8 23.4 L83.2 19.8 L96.4 29.1",
-                      "stroke": "$negative"
-                    },
-                    "n1jaH": {
-                      "content": "−2.9%",
-                      "fill": "$negative"
-                    },
-                    "jlRjt": {
-                      "content": "vs SPY −6.1"
-                    }
-                  }
-                },
-                {
-                  "type": "text",
-                  "id": "jkUQJ",
+                  "type": "frame",
+                  "id": "E2dRbc",
                   "name": "VerTodas",
-                  "fill": "$primary-fg",
-                  "content": "▾ Ver las 16 canastas con datos en la ventana",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "600"
+                  "gap": 4,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "pa79c",
+                      "name": "t",
+                      "fill": "$primary-fg",
+                      "content": "Ver las 16 canastas con datos en la ventana",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "cP2wd",
+                      "name": "i",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "chevron-up",
+                      "library": "lucide",
+                      "fill": "$primary-fg"
+                    }
+                  ]
                 },
                 {
                   "type": "frame",
@@ -1872,54 +1943,6 @@
                           "fontSize": 10,
                           "fontWeight": "normal",
                           "letterSpacing": 0.8
-                        },
-                        {
-                          "type": "frame",
-                          "id": "X3CbrX",
-                          "name": "SMH",
-                          "width": "fill_container",
-                          "gap": 12,
-                          "justifyContent": "space_between",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "JzChY",
-                              "name": "l",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "oAtZn",
-                                  "name": "s",
-                                  "fill": "$fg-default",
-                                  "content": "SMH",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "r3p69W",
-                                  "name": "n",
-                                  "fill": "$fg-default",
-                                  "content": " · Semiconductores",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "m3nIUs",
-                              "name": "p",
-                              "fill": "$positive",
-                              "content": "+8.4%",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
                         },
                         {
                           "type": "frame",
@@ -2136,54 +2159,6 @@
                         },
                         {
                           "type": "frame",
-                          "id": "AYJXZ",
-                          "name": "URA",
-                          "width": "fill_container",
-                          "gap": 12,
-                          "justifyContent": "space_between",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "cbBoR",
-                              "name": "l",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "lYvnL",
-                                  "name": "s",
-                                  "fill": "$fg-default",
-                                  "content": "URA",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "FyDS4",
-                                  "name": "n",
-                                  "fill": "$fg-default",
-                                  "content": " · Uranio y nuclear",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "J3Byy",
-                              "name": "p",
-                              "fill": "$positive",
-                              "content": "+6.1%",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
                           "id": "s8wLE",
                           "name": "COPX",
                           "width": "fill_container",
@@ -2330,123 +2305,6 @@
                     },
                     {
                       "type": "frame",
-                      "id": "PyCrR",
-                      "name": "TERMÓMETRO",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 4,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "ZkGu6",
-                          "name": "H",
-                          "fill": "$fg-subtle",
-                          "content": "TERMÓMETRO",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 10,
-                          "fontWeight": "normal",
-                          "letterSpacing": 0.8
-                        },
-                        {
-                          "type": "frame",
-                          "id": "SYMDa",
-                          "name": "GLD",
-                          "width": "fill_container",
-                          "gap": 12,
-                          "justifyContent": "space_between",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "V9xtIC",
-                              "name": "l",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "Geiqf",
-                                  "name": "s",
-                                  "fill": "$fg-default",
-                                  "content": "GLD",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "fzlPY",
-                                  "name": "n",
-                                  "fill": "$fg-default",
-                                  "content": " · Oro",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "UV4Ys",
-                              "name": "p",
-                              "fill": "$positive",
-                              "content": "+5.5%",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "N4MFt",
-                          "name": "TLT",
-                          "width": "fill_container",
-                          "gap": 12,
-                          "justifyContent": "space_between",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "ohAYZ",
-                              "name": "l",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "Xys1P",
-                                  "name": "s",
-                                  "fill": "$fg-default",
-                                  "content": "TLT",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "MgekD",
-                                  "name": "n",
-                                  "fill": "$fg-default",
-                                  "content": " · Bonos del Tesoro a 20 años",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "Z8xlIP",
-                              "name": "p",
-                              "fill": "$negative",
-                              "content": "−1.2%",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
                       "id": "TV84c",
                       "name": "GEOGRAFÍA",
                       "width": "fill_container",
@@ -2463,102 +2321,6 @@
                           "fontSize": 10,
                           "fontWeight": "normal",
                           "letterSpacing": 0.8
-                        },
-                        {
-                          "type": "frame",
-                          "id": "CQLM0",
-                          "name": "EWW",
-                          "width": "fill_container",
-                          "gap": 12,
-                          "justifyContent": "space_between",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "Ovsgm",
-                              "name": "l",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "Y6hN2",
-                                  "name": "s",
-                                  "fill": "$fg-default",
-                                  "content": "EWW",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "VpgcM",
-                                  "name": "n",
-                                  "fill": "$fg-default",
-                                  "content": " · México",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "A4X22",
-                              "name": "p",
-                              "fill": "$positive",
-                              "content": "+4.7%",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "wJI4S",
-                          "name": "MCHI",
-                          "width": "fill_container",
-                          "gap": 12,
-                          "justifyContent": "space_between",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "dOeVx",
-                              "name": "l",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "BP8CL",
-                                  "name": "s",
-                                  "fill": "$fg-default",
-                                  "content": "MCHI",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "M4Q6k",
-                                  "name": "n",
-                                  "fill": "$fg-default",
-                                  "content": " · China",
-                                  "fontFamily": "$font-sans",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "ApoGu",
-                              "name": "p",
-                              "fill": "$positive",
-                              "content": "+3.0%",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
                         },
                         {
                           "type": "frame",
@@ -2698,6 +2460,75 @@
                               "name": "p",
                               "fill": "$positive",
                               "content": "+0.3%",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "PyCrR",
+                      "name": "TERMÓMETRO",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ZkGu6",
+                          "name": "H",
+                          "fill": "$fg-subtle",
+                          "content": "TERMÓMETRO",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 0.8
+                        },
+                        {
+                          "type": "frame",
+                          "id": "N4MFt",
+                          "name": "TLT",
+                          "width": "fill_container",
+                          "gap": 12,
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "ohAYZ",
+                              "name": "l",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Xys1P",
+                                  "name": "s",
+                                  "fill": "$fg-default",
+                                  "content": "TLT",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 12,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "MgekD",
+                                  "name": "n",
+                                  "fill": "$fg-default",
+                                  "content": " · Bonos del Tesoro a 20 años",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "Z8xlIP",
+                              "name": "p",
+                              "fill": "$negative",
+                              "content": "−1.2%",
                               "fontFamily": "$font-mono",
                               "fontSize": 12,
                               "fontWeight": "normal"
@@ -3320,6 +3151,19 @@
                 },
                 {
                   "type": "text",
+                  "id": "TJyws",
+                  "name": "Pendiente",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Si ya la conectaste, la primera sincronización todavía no ha corrido.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
                   "id": "MnKQp",
                   "name": "L",
                   "fill": "$primary-fg",
@@ -3456,8 +3300,8 @@
     {
       "type": "frame",
       "id": "C0z2r",
-      "x": -480,
-      "y": 0,
+      "x": 0,
+      "y": 1809,
       "name": "Log · Descubrir",
       "width": 360,
       "fill": "$bg-surface",
@@ -3475,6 +3319,19 @@
           "fontFamily": "$font-display",
           "fontSize": 16,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "XAXzW",
+          "name": "Entry",
+          "fill": "$fg-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-21 — Mirrored to code at 809ea789: kit 1.3.0 TopBar search; WaveRow loses the sparkline (D145), the exposure chip moves to the ticker line (D144), distance in pts, EWW baseline note; top five re-ranked by signed move (GLD in, XLE to Todas); the disclosure holds only the other eleven; chevron icon; window length in the meta; the 'primera sincronización' line in the notice; re-laid as band Olas.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 12,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -3553,7 +3410,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.2.0"
+      "value": "1.3.0"
     },
     "font-display": {
       "type": "string",
