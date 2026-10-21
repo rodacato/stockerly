@@ -5,7 +5,7 @@ RSpec.describe Notifications::Domain::WebPushDelivery do
 
   def deliver
     described_class.call(subscription: subscription, title: "AAPL", body: "cruzó 180",
-                         path: "/notifications", badge_count: 3)
+                         path: "/notifications", tag: "alert-7", badge_count: 3)
   end
 
   # WebPush talks to the push service over the network, so it is the one thing
@@ -44,11 +44,21 @@ RSpec.describe Notifications::Domain::WebPushDelivery do
     it "encrypts the payload to the subscription and records the delivery" do
       expect(WebPush).to receive(:payload_send) do |args|
         expect(args[:endpoint]).to eq(subscription.endpoint)
-        expect(JSON.parse(args[:message])).to include("title" => "AAPL", "badge" => 3)
+        expect(JSON.parse(args[:message])).to include("title" => "AAPL", "tag" => "alert-7", "badge" => 3)
       end
 
       expect(deliver).to be(true)
       expect(subscription.reload.last_delivered_at).to be_present
+    end
+
+    # The worker sets the app badge from any number it receives, and 0 clears
+    # it, so a message with no count to report must not send one.
+    it "leaves the badge out of a message that carries no count" do
+      expect(WebPush).to receive(:payload_send) do |args|
+        expect(JSON.parse(args[:message])).not_to have_key("badge")
+      end
+
+      described_class.call(subscription: subscription, title: "Hoy", body: "b", path: "/dashboard", tag: "daily-brief")
     end
 
     # A dead endpoint retried forever is the failure mode this prevents.

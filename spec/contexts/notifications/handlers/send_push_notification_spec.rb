@@ -25,6 +25,19 @@ RSpec.describe Notifications::Handlers::SendPushNotification do
       described_class.call(event_for(notification))
     end
 
+    # A shared tag makes the phone replace the notification already showing,
+    # so two rules firing the same morning would leave only the last one.
+    it "tags each fired rule apart, so one does not replace another" do
+      second = create(:notification, user: user, notification_type: :alert_triggered, title: "NVDA cayó 5%")
+      tags = []
+      allow(Notifications::Domain::WebPushDelivery).to receive(:call) { |**args| tags << args[:tag] }
+
+      described_class.call(event_for(notification))
+      described_class.call(event_for(second))
+
+      expect(tags).to eq([ "alert-#{notification.id}", "alert-#{second.id}" ])
+    end
+
     # Earnings and maturity notices have a date, not an urgency — same line the
     # urgent email draws. Pushing them would make the channel unusable.
     it "stays quiet for a notification that is not a fired rule" do

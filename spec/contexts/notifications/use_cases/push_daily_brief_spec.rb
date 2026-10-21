@@ -14,7 +14,7 @@ RSpec.describe Notifications::UseCases::PushDailyBrief do
     [ first, second ].each do |subscription|
       expect(Notifications::Domain::WebPushDelivery).to have_received(:call)
         .with(subscription: subscription, title: "Todo en orden.", body: "Vas +1.2 pts sobre CETES.",
-              path: "/dashboard", badge_count: 0)
+              path: "/dashboard", tag: "daily-brief")
     end
   end
 

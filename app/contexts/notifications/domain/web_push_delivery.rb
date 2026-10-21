@@ -16,14 +16,14 @@ module Notifications
       # string rather than absent, so a default keyed on absence never fires.
       def self.subject = ENV["VAPID_SUBJECT"].presence || "mailto:stockerly@localhost"
 
-      def self.call(subscription:, title:, body:, path:, badge_count:)
+      def self.call(subscription:, title:, body:, path:, tag:, badge_count: nil)
         return false unless configured?
 
         WebPush.payload_send(
           endpoint: subscription.endpoint,
           p256dh: subscription.p256dh_key,
           auth: subscription.auth_key,
-          message: { title: title, body: body, path: path, badge: badge_count }.to_json,
+          message: { title: title, body: body, path: path, tag: tag, badge: badge_count }.compact.to_json,
           vapid: { subject: subject, public_key: public_key, private_key: private_key }
         )
         subscription.update_column(:last_delivered_at, Time.current)
