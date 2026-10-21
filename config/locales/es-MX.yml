@@ -7,6 +7,10 @@ es-MX:
         password_confirmation: La confirmación
     errors:
       models:
+        plan:
+          attributes:
+            base:
+              shares_must_sum: Los tres tipos deben sumar 100%
         user:
           attributes:
             password:
@@ -540,7 +544,15 @@ es-MX:
       zero: vence hoy
   dashboard:
     ayuda:
+      allocation:
+        cuerpo: Qué parte de lo que tienes está en cada tipo de activo, contra el
+          reparto que escribiste en tu plan. Se marca desde 8 puntos de distancia.
+        titulo: Tu reparto
       cerrar: Cerrar
+      contribution:
+        cuerpo: Capital neto que sumaste este mes (compras menos ventas), en pesos.
+          Se avisa si pasa del día 10 sin aportar.
+        titulo: Aportación
       earnings:
         cuerpo: Fecha en que la empresa publica sus resultados trimestrales, según
           el proveedor de datos. Es una fecha, no un pronóstico de lo que dirá.
@@ -555,6 +567,10 @@ es-MX:
           al tipo de cambio del día. El chip lo compara con el registro de ayer. Es
           antes de impuestos.
         titulo: Patrimonio
+      plan:
+        cuerpo: Es lo que tú escribiste en Ajustes. La app solo compara lo que tienes
+          con tu plan; no propone ninguno.
+        titulo: Tu plan
       target:
         cuerpo: Qué tan lejos está el precio del número que pusiste en una regla de
           alerta. Es tu umbral, no una señal del mercado.
@@ -572,9 +588,22 @@ es-MX:
     hoy:
       calma: Sin resultados, vencimientos ni objetivos cerca en lo que sigues.
       de: "%{shown} de %{total}"
+      dentro_del_plan: Dentro de tu plan
       fecha: HOY · %{date} · CDMX
       lo_tuyo: Lo tuyo hoy
       nada_importante: Nada importante hoy
+      plan:
+        acciones: Acciones y ETF
+        aportacion: 'Aportación de %{month}: %{contributed} de %{planned}'
+        aportacion_sin_dato: 'Aportación de %{month}: no se pudo calcular'
+        cripto: Cripto
+        de: "%{actual}% de %{target}%"
+        editar: Editar
+        renta_fija: Renta fija
+        sin_plan_cuerpo: Define cuánto quieres en cada tipo y cuánto aportas al mes,
+          y Hoy dirá si vas en él.
+        sin_plan_titulo: Aún no tienes un plan
+        titulo: Tu plan
       primera_vez_sub: Registra tu primer movimiento y aquí verás cómo vas.
       primera_vez_titulo: Tu cartera está vacía.
       solo_sin_precio: Mostramos solo lo que no depende de un precio.
@@ -590,6 +619,17 @@ es-MX:
       vs_cetes_nota: CETES %{term}d reinvertido · al %{date}
       vs_cetes_rotulo: VS CETES · 30 D
     hoy_item:
+      allocation:
+        abajo:
+          one: 1 punto abajo de lo que planeaste
+          other: "%{count} puntos abajo de lo que planeaste"
+        arriba:
+          one: 1 punto arriba de lo que planeaste
+          other: "%{count} puntos arriba de lo que planeaste"
+        titulo: "%{label}: %{actual}% vs %{target}% de tu plan"
+      contribution:
+        detalle: 'Plan: %{amount} al mes'
+        titulo: Sin aportación este mes
       earnings:
         detalle:
           one: Mañana · %{date}
@@ -785,6 +825,7 @@ es-MX:
       format?: tiene un formato inválido
       future_trade_date: La fecha del movimiento no puede ser futura.
       greater_than_zero: debe ser mayor que 0
+      gteq?: debe ser mayor o igual a %{num}
       https_endpoint_required: debe ser un endpoint https
       included_in?:
         arg:
@@ -797,6 +838,7 @@ es-MX:
       invalid_https_url: debe ser una URL https
       invalid_symbol_format: debe tener de 1 a 20 caracteres, en mayúsculas o dígitos
       key?: falta
+      lteq?: debe ser menor o igual a %{num}
       maturity_must_be_future: debe ser una fecha futura
       min_one_minute: debe ser al menos 1 minuto
       min_size?: debe tener al menos %{num} caracteres
@@ -1467,6 +1509,24 @@ es-MX:
       totp_desc: Un código de 6 dígitos de tu app de autenticación.
     step_header:
       paso: Paso %{step} de %{total}
+  plans:
+    errors:
+      suma: Suman %{total}%, y deben sumar 100%%. Faltan %{missing} puntos.
+    flash:
+      guardado: Plan guardado.
+    show:
+      acciones: Acciones y ETF
+      aportacion: Aportación mensual
+      aportacion_ayuda: Cuánto planeas sumar cada mes. Es tuyo; la app solo lo compara
+        con lo que registras.
+      cripto: Cripto
+      descripcion: 'Tu plan es tuyo: la app solo compara lo que tienes con lo que
+        escribes aquí.'
+      guardar: Guardar plan
+      renta_fija: Renta fija · CETES
+      suma_hint: Los tres tipos deben sumar 100%.
+      suma_ok: Suman 100%.
+      titulo: Tu plan
   portfolios:
     show:
       aportado: Base inicial + aportaciones netas
@@ -1645,6 +1705,8 @@ es-MX:
       moneda: Moneda preferida · en la que se te muestra todo tu patrimonio
       nombre_correo: Nombre y correo
       nombre_correo_desc: Cómo te llamas y a dónde llegan los correos
+      plan: Tu plan
+      plan_desc: Cuánto quieres en cada tipo y cuánto aportas al mes
       push: Avisos en el teléfono
       push_bloqueado: Bloqueaste los avisos para este sitio. Se cambia desde el navegador.
       push_desc: Al disparar una regla, aunque tengas la app cerrada.

@@ -73,20 +73,34 @@ module DashboardHelper
 
   # The line under the verdict: the benchmark when there is one to state, and
   # never a comparison over quotes the view cannot vouch for.
-  def hoy_subtitle(state, vs_cetes)
+  def hoy_subtitle(state, vs_cetes, has_plan: false)
     vs = vs_cetes && t("dashboard.hoy.vas", points: signed_points(vs_cetes[:points]))
 
     case state
     when :items then vs && "#{vs.upcase_first}."
-    when :calm then [ t("dashboard.hoy.nada_importante"), vs ].compact.join(" · ").then { |line| vs ? "#{line}." : line }
+    when :calm then [ (has_plan ? t("dashboard.hoy.dentro_del_plan") : t("dashboard.hoy.nada_importante")), vs ].compact.join(" · ").then { |line| vs ? "#{line}." : line }
     when :stale then t("dashboard.hoy.solo_sin_precio")
     when :first_run then t("dashboard.hoy.primera_vez_sub")
     end
   end
 
-  HOY_ITEM_ICONS = { maturity: "schedule", earnings: "event", target: "target" }.freeze
+  HOY_ITEM_ICONS = { maturity: "schedule", earnings: "event", target: "target", allocation: "pie_chart", contribution: "savings" }.freeze
+
+  PLAN_LABELS = { stocks_share: "acciones", crypto_share: "cripto", fixed_income_share: "renta_fija" }.freeze
+
+  def plan_label(key) = t("dashboard.hoy.plan.#{PLAN_LABELS.fetch(key)}")
 
   def hoy_item_icon(kind) = HOY_ITEM_ICONS.fetch(kind)
+
+  def hoy_item_title(item)
+    key = "dashboard.hoy_item.#{item.kind}.titulo"
+
+    case item.kind
+    when :allocation then t(key, label: plan_label(item.subject), actual: item.actual, target: item.target)
+    when :contribution then t(key)
+    else t(key, symbol: item.asset.symbol, count: item.days || 0, percent: unsigned_percent(item.gap))
+    end
+  end
 
   def hoy_item_detail(item)
     key = "dashboard.hoy_item.#{item.kind}.detalle"
@@ -94,7 +108,17 @@ module DashboardHelper
     case item.kind
     when :target then format_currency_mx(item.asset.current_price, currency: item.asset.currency)
     when :earnings then t(key, count: item.days, date: l(item.date, format: :short))
+    when :allocation then t("dashboard.hoy_item.allocation.#{item.gap.positive? ? 'arriba' : 'abajo'}", count: item.gap.abs)
+    when :contribution then t(key, amount: format_currency_mx(item.target, currency: "MXN", precision: 0))
     else t(key, date: l(item.date, format: :short))
+    end
+  end
+
+  def hoy_item_path(item)
+    case item.kind
+    when :allocation then portfolio_path
+    when :contribution then new_trade_path
+    else market_asset_path(item.asset.symbol)
     end
   end
 

@@ -1,5 +1,5 @@
 class HelpOpensController < AuthenticatedController
-  FIGURES = %w[veredicto patrimonio vs_cetes earnings maturity target].freeze
+  FIGURES = %w[veredicto patrimonio vs_cetes earnings maturity target allocation contribution plan].freeze
 
   def create
     return head :unprocessable_content unless FIGURES.include?(params[:figure])

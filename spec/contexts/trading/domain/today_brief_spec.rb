@@ -39,6 +39,26 @@ RSpec.describe Trading::Domain::TodayBrief do
     expect(result.total).to eq(4)
   end
 
+  it "puts a missed contribution before a share off its plan, and the widest gap first" do
+    result = brief(candidates: [
+      described_class::Item.new(kind: :allocation, subject: :crypto_share, gap: -8),
+      described_class::Item.new(kind: :allocation, subject: :stocks_share, gap: 15),
+      described_class::Item.new(kind: :contribution, target: 5_000)
+    ])
+
+    expect(result.items.map { |i| [ i.kind, i.subject ] })
+      .to eq([ [ :contribution, nil ], [ :allocation, :stocks_share ], [ :allocation, :crypto_share ] ])
+  end
+
+  it "drops a share off its plan under stale quotes but keeps the contribution, which is not a price" do
+    result = brief(quotes_reliable: false, candidates: [
+      described_class::Item.new(kind: :allocation, subject: :stocks_share, gap: 15),
+      described_class::Item.new(kind: :contribution, target: 5_000)
+    ])
+
+    expect(result.items.map(&:kind)).to eq([ :contribution ])
+  end
+
   it "shows at most three items and reports how many qualified" do
     result = brief(candidates: Array.new(5) { |n| item(:earnings, days: n) })
 

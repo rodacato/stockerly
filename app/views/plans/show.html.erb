@@ -1,0 +1,58 @@
+<%# Tu plan (D156): written from Ajustes, never from Hoy, so a target is not
+    nudged toward the number it is being compared with. Nothing is prefilled. %>
+<% content_for :page_title, t(".titulo") %>
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: settings_path %>
+<% end %>
+
+<% errors = @errors || {} %>
+<% values = @values || {} %>
+<div class="mx-auto flex w-full max-w-xl flex-col gap-5">
+  <p class="text-sm text-fg-subtle"><%= t(".descripcion") %></p>
+
+  <section class="<%= card_classes("p-5") %>">
+    <%= form_with scope: :plan, url: plan_path, method: :patch, class: "flex flex-col gap-4" do |f| %>
+      <% [ [ :stocks_share, t(".acciones") ], [ :crypto_share, t(".cripto") ], [ :fixed_income_share, t(".renta_fija") ] ].each do |field, label| %>
+        <label class="flex flex-col gap-1.5">
+          <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= label %></span>
+          <span class="relative">
+            <%= f.number_field field, value: values[field.to_s] || values[field], min: 0, max: 100, step: 1, inputmode: "numeric",
+                               placeholder: "0", required: true,
+                               class: field_classes(:md, "w-full pr-10 font-mono #{'border-negative-fg' if errors[field].present?}") %>
+            <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-mono text-sm text-fg-subtle">%</span>
+          </span>
+        </label>
+      <% end %>
+
+      <% if errors.present? %>
+        <p role="alert" class="flex items-center gap-2 rounded-lg bg-negative-bg px-3 py-2.5 text-sm text-negative-fg">
+          <%= icon_svg "error", class: "text-lg", "aria-hidden": "true" %>
+          <%= errors.values.flatten.first %>
+        </p>
+      <% elsif @plan&.persisted? %>
+        <p class="flex items-center gap-2 rounded-lg bg-positive-bg px-3 py-2.5 text-sm text-positive-fg">
+          <%= icon_svg "check_circle", class: "text-lg", "aria-hidden": "true" %>
+          <%= t(".suma_ok") %>
+        </p>
+      <% else %>
+        <p class="flex items-center gap-2 rounded-lg bg-bg-muted px-3 py-2.5 text-sm text-fg-subtle">
+          <%= icon_svg "info", class: "text-lg", "aria-hidden": "true" %>
+          <%= t(".suma_hint") %>
+        </p>
+      <% end %>
+
+      <label class="flex flex-col gap-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t(".aportacion") %></span>
+        <span class="relative">
+          <%= f.number_field :monthly_contribution, value: values["monthly_contribution"] || values[:monthly_contribution], min: 0, step: 1,
+                             inputmode: "numeric", placeholder: "0", required: true,
+                             class: field_classes(:md, "w-full pr-14 font-mono #{'border-negative-fg' if errors[:monthly_contribution].present?}") %>
+          <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-mono text-sm text-fg-subtle">MXN</span>
+        </span>
+        <span class="text-xs text-fg-subtle"><%= t(".aportacion_ayuda") %></span>
+      </label>
+
+      <%= f.submit t(".guardar"), class: button_classes(:primary, :md, "cursor-pointer") %>
+    <% end %>
+  </section>
+</div>

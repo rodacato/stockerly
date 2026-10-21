@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_21_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -373,6 +373,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
     t.index ["user_id"], name: "index_otp_recovery_codes_on_user_id"
   end
 
+  create_table "plans", force: :cascade do |t|
+    t.bigint "portfolio_id", null: false
+    t.integer "stocks_share", null: false
+    t.integer "crypto_share", null: false
+    t.integer "fixed_income_share", null: false
+    t.decimal "monthly_contribution", precision: 15, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["portfolio_id"], name: "index_plans_on_portfolio_id", unique: true
+  end
+
   create_table "portfolio_snapshots", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "currency", null: false
@@ -584,6 +595,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
   add_foreign_key "market_index_histories", "market_indices"
   add_foreign_key "notifications", "users"
   add_foreign_key "otp_recovery_codes", "users"
+  add_foreign_key "plans", "portfolios"
   add_foreign_key "portfolio_snapshots", "portfolios"
   add_foreign_key "portfolios", "users"
   add_foreign_key "positions", "assets"

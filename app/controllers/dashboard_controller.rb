@@ -17,6 +17,7 @@ class DashboardController < AuthenticatedController
     @day_changes     = data[:day_changes]
     @today           = data[:today]
     @vs_cetes        = data[:vs_cetes]
+    @plan_status     = data[:plan_status]
   end
 
   private

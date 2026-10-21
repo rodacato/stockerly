@@ -1,0 +1,43 @@
+<%# Tu plan on Hoy: what was written in Ajustes against what is held, or the
+    quiet step to write one. Locals: plan_status (Trading::Domain::PlanStatus::Status or nil). %>
+<% if plan_status.nil? %>
+  <%= link_to plan_path, class: "flex items-center gap-3 rounded-xl border border-dashed border-border-default p-3.5 transition-colors hover:border-border-strong" do %>
+    <span class="min-w-0 flex-1">
+      <span class="block text-sm font-semibold text-fg-default"><%= t("dashboard.hoy.plan.sin_plan_titulo") %></span>
+      <span class="block text-xs text-fg-subtle"><%= t("dashboard.hoy.plan.sin_plan_cuerpo") %></span>
+    </span>
+    <span aria-hidden="true" class="text-primary-fg">→</span>
+  <% end %>
+<% else %>
+  <%= tag.section class: "relative flex flex-col gap-3 rounded-2xl border border-border-default bg-bg-surface p-5", data: help_tip_data("plan") do %>
+    <div class="flex items-baseline justify-between gap-3 pr-8">
+      <h3 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t("dashboard.hoy.plan.titulo") %></h3>
+      <%= link_to t("dashboard.hoy.plan.editar"), plan_path, class: "text-sm font-semibold text-primary-fg hover:underline" %>
+    </div>
+    <% plan_status.shares.each do |share| %>
+      <div class="flex flex-col gap-1">
+        <div class="flex items-baseline justify-between gap-3 text-sm">
+          <span class="text-fg-default"><%= plan_label(share.key) %></span>
+          <span class="font-mono text-xs <%= share.off? ? "text-warning-fg" : "text-fg-subtle" %>">
+            <%= t("dashboard.hoy.plan.de", actual: share.actual, target: share.target) %>
+          </span>
+        </div>
+        <div class="relative h-2 rounded-full bg-bg-muted" role="img"
+             aria-label="<%= t("dashboard.hoy.plan.de", actual: share.actual, target: share.target) %>">
+          <div class="h-2 rounded-full <%= share.off? ? "bg-warning-fg" : "bg-primary" %>" style="width: <%= share.actual.clamp(0, 100) %>%"></div>
+          <div class="absolute -top-0.5 h-3 w-0.5 bg-fg-default" style="left: <%= share.target.clamp(0, 100) %>%"></div>
+        </div>
+      </div>
+    <% end %>
+    <p class="text-xs text-fg-subtle">
+      <% if plan_status.contributed.nil? %>
+        <%= t("dashboard.hoy.plan.aportacion_sin_dato", month: l(Date.current, format: "%B")) %>
+      <% else %>
+        <%= t("dashboard.hoy.plan.aportacion", month: l(Date.current, format: "%B"),
+              contributed: format_currency_mx(plan_status.contributed, currency: "MXN", precision: 0),
+              planned: format_currency_mx(plan_status.planned, currency: "MXN", precision: 0)) %>
+      <% end %>
+    </p>
+    <%= render "dashboard/help_tip", figure: "plan", classes: "absolute right-1 top-1" %>
+  <% end %>
+<% end %>

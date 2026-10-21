@@ -49,6 +49,12 @@
   <%= render "settings/appearance", user: @user %>
 
   <section class="flex flex-col gap-3">
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".plan") %></h2>
+    <%= render "components/nav_row", icon: "target", path: plan_path,
+               title: t(".plan"), description: t(".plan_desc") %>
+  </section>
+
+  <section class="flex flex-col gap-3">
     <div>
       <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".avisos_titulo") %></h2>
       <p class="mt-1 text-sm text-fg-subtle"><%= t(".avisos_campana") %></p>

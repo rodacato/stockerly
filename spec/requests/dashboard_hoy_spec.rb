@@ -116,4 +116,67 @@ RSpec.describe "Hoy on the dashboard", type: :request do
       expect(entries.join(" ")).not_to match(/\b(compra|vende|te recomendamos|deberías|conviene)\b/i)
     end
   end
+
+  describe "the plan" do
+    include ActiveSupport::Testing::TimeHelpers
+
+    def plan(**shares) = create(:plan, portfolio: portfolio, **{ stocks_share: 100, crypto_share: 0, fixed_income_share: 0 }.merge(shares))
+
+    it "offers the first step quietly when there is no plan, and does not call a verdict on it" do
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+
+      get dashboard_path
+
+      expect(response.body).to include(I18n.t("dashboard.hoy.plan.sin_plan_titulo"))
+      expect(response.body).to include(%(href="#{plan_path}"))
+      expect(response.body).not_to include(I18n.t("dashboard.hoy.dentro_del_plan"))
+    end
+
+    it "says it is inside the plan when every share is near its target and nothing is planned to add" do
+      plan(monthly_contribution: 0)
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+
+      get dashboard_path
+
+      expect(response.body).to include(I18n.t("dashboard.hoy.dentro_del_plan"))
+      expect(response.body).to include(I18n.t("dashboard.hoy.plan.titulo"))
+      expect(response.body).to include("100% de 100%")
+    end
+
+    it "names a gap against the plan in descriptive words" do
+      plan(stocks_share: 25, crypto_share: 0, fixed_income_share: 75)
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+
+      get dashboard_path
+
+      expect(response.body).to include("Acciones y ETF: 100% vs 25% de tu plan")
+      expect(response.body).to include("75 puntos arriba de lo que planeaste")
+      expect(response.body).not_to include("Dentro de tu plan.")
+    end
+
+    it "flags a missing contribution only after the 10th" do
+      plan
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+
+      travel_to(Time.zone.local(2026, 10, 15, 12)) do
+        get dashboard_path
+        expect(response.body).to include(I18n.t("dashboard.hoy_item.contribution.titulo"))
+      end
+
+      travel_to(Time.zone.local(2026, 10, 5, 12)) do
+        get dashboard_path
+        expect(response.body).not_to include(I18n.t("dashboard.hoy_item.contribution.titulo"))
+      end
+    end
+
+    it "keeps the plan card out of a stale-quote day" do
+      plan
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70, price_updated_at: 6.days.ago))
+
+      get dashboard_path
+
+      expect(response.body).not_to include(I18n.t("dashboard.hoy.plan.titulo"))
+      expect(response.body).not_to include(I18n.t("dashboard.hoy.dentro_del_plan"))
+    end
+  end
 end
