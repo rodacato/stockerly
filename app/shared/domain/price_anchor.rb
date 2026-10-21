@@ -8,19 +8,24 @@ class PriceAnchor
 
   class << self
     def against_cost(price:, cost:)
-      return nil if price.blank? || cost.blank? || cost.to_d.zero?
+      return nil if price.blank? || cost.blank?
 
-      Reading.new(kind: :cost, reference: cost.to_d,
-                  percent: percent_of(price.to_d - cost.to_d, cost.to_d))
+      cost = cost.to_d
+      return nil if cost.zero?
+
+      Reading.new(kind: :cost, reference: cost, percent: percent_of(price.to_d - cost, cost))
     end
 
     # Signed from the price's point of view: how far it still has to move to
     # reach the threshold, so a buy-below target reads negative.
     def against_threshold(price:, threshold:)
-      return nil if price.blank? || threshold.blank? || price.to_d.zero?
+      return nil if price.blank? || threshold.blank?
 
-      Reading.new(kind: :threshold, reference: threshold.to_d,
-                  percent: percent_of(threshold.to_d - price.to_d, price.to_d))
+      price = price.to_d
+      threshold = threshold.to_d
+      return nil if price.zero?
+
+      Reading.new(kind: :threshold, reference: threshold, percent: percent_of(threshold - price, price))
     end
 
     private
