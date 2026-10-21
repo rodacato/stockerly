@@ -3258,7 +3258,7 @@
       "name": "[Ajustes] / Estado y mantenimiento / Default",
       "clip": true,
       "width": 390,
-      "height": 2114,
+      "height": 2544,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -5108,6 +5108,255 @@
                           "name": "Última",
                           "fill": "$fg-subtle",
                           "content": "Última: hace 4 min",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "NCw2n",
+              "name": "Mantenimiento",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Ro86U",
+                  "name": "H",
+                  "fill": "$fg-default",
+                  "content": "Mantenimiento",
+                  "fontFamily": "$font-display",
+                  "fontSize": 18,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "sYHa9",
+                  "name": "D",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Limpiezas que puedes repetir sin riesgo: si ya no hay nada que hacer, no hacen nada.",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "oTmTj",
+                  "name": "Sources",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "XsqD5",
+                      "name": "Nombres de la BMV",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "iDB7n",
+                          "name": "Nombres de la BMV",
+                          "fill": "$bg-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "gap": 6,
+                          "padding": [
+                            8,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "HoloU",
+                              "name": "i",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "arrow-left-right",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            },
+                            {
+                              "type": "text",
+                              "id": "O5aijW",
+                              "name": "t",
+                              "fill": "$fg-default",
+                              "content": "Nombres de la BMV",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "OgJ1j",
+                          "name": "Descripción",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Busca el nombre que DataBursatil usa para cada activo mexicano que aún no lo tiene.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "u0tw4",
+                          "name": "Última",
+                          "fill": "$fg-subtle",
+                          "content": "Última: hace 2 h",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "L9b6o",
+                      "name": "Historiales de precio",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "wtIaK",
+                          "name": "Historiales de precio",
+                          "fill": "$bg-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "gap": 6,
+                          "padding": [
+                            8,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "kDXw7",
+                              "name": "i",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "history",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            },
+                            {
+                              "type": "text",
+                              "id": "x9ouD",
+                              "name": "t",
+                              "fill": "$fg-default",
+                              "content": "Historiales de precio",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "d2egcC",
+                          "name": "Descripción",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Encola la descarga del historial de los activos con menos de 200 días.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "paTi0",
+                          "name": "Última",
+                          "fill": "$fg-subtle",
+                          "content": "Última: Nunca ha corrido",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "tBMrr",
+                      "name": "Catálogo de activos",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "eI0KW",
+                          "name": "Catálogo de activos",
+                          "fill": "$bg-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "gap": 6,
+                          "padding": [
+                            8,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "SnUVb",
+                              "name": "i",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "package",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            },
+                            {
+                              "type": "text",
+                              "id": "dNUhh",
+                              "name": "t",
+                              "fill": "$fg-default",
+                              "content": "Catálogo de activos",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "AlhLB",
+                          "name": "Descripción",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Crea los activos del catálogo que falten y corrige los datos de los que ya existen.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "A6IdbW",
+                          "name": "Última",
+                          "fill": "$fg-subtle",
+                          "content": "Última: hace 3 d",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -12534,7 +12783,7 @@
       "name": "[Ajustes] / Estado y mantenimiento / Mantenimiento activo",
       "clip": true,
       "width": 390,
-      "height": 2190,
+      "height": 2620,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -14422,6 +14671,255 @@
                           "name": "Última",
                           "fill": "$fg-subtle",
                           "content": "Última: hace 4 min",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "c099sF",
+              "name": "Mantenimiento",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "VhWxl",
+                  "name": "H",
+                  "fill": "$fg-default",
+                  "content": "Mantenimiento",
+                  "fontFamily": "$font-display",
+                  "fontSize": 18,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "vx7jL",
+                  "name": "D",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Limpiezas que puedes repetir sin riesgo: si ya no hay nada que hacer, no hacen nada.",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "sFjl0",
+                  "name": "Sources",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "LGVBf",
+                      "name": "Nombres de la BMV",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "F5Dxm",
+                          "name": "Nombres de la BMV",
+                          "fill": "$bg-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "gap": 6,
+                          "padding": [
+                            8,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "V1tdF",
+                              "name": "i",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "arrow-left-right",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            },
+                            {
+                              "type": "text",
+                              "id": "zxDBB",
+                              "name": "t",
+                              "fill": "$fg-default",
+                              "content": "Nombres de la BMV",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "O3Jqh",
+                          "name": "Descripción",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Busca el nombre que DataBursatil usa para cada activo mexicano que aún no lo tiene.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "N18GvH",
+                          "name": "Última",
+                          "fill": "$fg-subtle",
+                          "content": "Última: hace 2 h",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NDY2P",
+                      "name": "Historiales de precio",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "A6dQCq",
+                          "name": "Historiales de precio",
+                          "fill": "$bg-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "gap": 6,
+                          "padding": [
+                            8,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "i6vE1",
+                              "name": "i",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "history",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            },
+                            {
+                              "type": "text",
+                              "id": "B45RQ7",
+                              "name": "t",
+                              "fill": "$fg-default",
+                              "content": "Historiales de precio",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "IqiRt",
+                          "name": "Descripción",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Encola la descarga del historial de los activos con menos de 200 días.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "imnh9",
+                          "name": "Última",
+                          "fill": "$fg-subtle",
+                          "content": "Última: Nunca ha corrido",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "iSOVa",
+                      "name": "Catálogo de activos",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "lDVFm",
+                          "name": "Catálogo de activos",
+                          "fill": "$bg-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "gap": 6,
+                          "padding": [
+                            8,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "A7bJh",
+                              "name": "i",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "package",
+                              "library": "lucide",
+                              "fill": "$fg-default"
+                            },
+                            {
+                              "type": "text",
+                              "id": "UpZ70",
+                              "name": "t",
+                              "fill": "$fg-default",
+                              "content": "Catálogo de activos",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "m4VFfP",
+                          "name": "Descripción",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Crea los activos del catálogo que falten y corrige los datos de los que ya existen.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "vaJxd",
+                          "name": "Última",
+                          "fill": "$fg-subtle",
+                          "content": "Última: hace 3 d",
                           "fontFamily": "$font-mono",
                           "fontSize": 12,
                           "fontWeight": "normal"

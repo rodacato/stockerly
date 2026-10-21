@@ -146,10 +146,15 @@ es-MX:
         guardados: Ajustes guardados.
       mantenimiento:
         bmv_symbols:
+          desc: Busca el nombre que DataBursatil usa para cada activo mexicano que
+            aún no lo tiene.
           nombre: Nombres de la BMV
         catalogue:
+          desc: Crea los activos del catálogo que falten y corrige los datos de los
+            que ya existen.
           nombre: Catálogo de activos
         price_histories:
+          desc: Encola la descarga del historial de los activos con menos de 200 días.
           nombre: Historiales de precio
       run_maintenance:
         desconocida: Tarea de mantenimiento desconocida.
@@ -183,6 +188,11 @@ es-MX:
         entradas: "%{count} entradas"
         errores: Errores (24 h)
         interruptores: Interruptores de la instancia
+        limpieza: Mantenimiento
+        limpieza_desc: 'Limpiezas que puedes repetir sin riesgo: si ya no hay nada
+          que hacer, no hacen nada.'
+        limpieza_pausa: La sincronización automática está en pausa; esta tarea no
+          hará nada hasta reanudarla.
         mantenimiento: Modo mantenimiento
         mantenimiento_desc: Muestra la página de mantenimiento a quien no haya iniciado
           sesión. Tu sesión sigue viva.
