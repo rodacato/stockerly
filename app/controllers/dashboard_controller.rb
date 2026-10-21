@@ -18,6 +18,7 @@ class DashboardController < AuthenticatedController
     @today           = data[:today]
     @vs_cetes        = data[:vs_cetes]
     @plan_status     = data[:plan_status]
+    @stale_watched   = data[:stale_watched]
     @headlines       = data[:headlines]
   end
 

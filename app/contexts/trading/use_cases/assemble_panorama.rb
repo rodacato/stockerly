@@ -37,6 +37,7 @@ module Trading
           prices_unavailable: fx.prices_unavailable?,
           vs_cetes: vs_cetes,
           plan_status: plan_status,
+          stale_watched: stale_watched(positions, watched),
           headlines: headlines(positions, watched),
           today: today(user, positions, watched, quotes_reliable, plan_status),
           sentiment_cards: sentiment_cards(user),
@@ -54,11 +55,21 @@ module Trading
       # Valuing here is the load-bearing part: AssembleDashboard built the
       # summary lazily, so Portfolio#convert raised in the template instead.
 
+      # The verdict stands on what is held: one abandoned watched asset must not
+      # turn every day into "sin cotizaciones". Watched assets only vouch for
+      # themselves (see `stale_watched`), unless they are all there is.
       def quotes_reliable?(fx, summary, positions, watched)
         return false if fx.degraded? || fx.prices_unavailable?
-        return false if positions.any? && !summary&.quotes_current?
+        return summary&.quotes_current? == true if positions.any?
 
-        watched.all? { |item| Domain::QuoteFreshness.current?(item.asset) }
+        watched.any? { |item| Domain::QuoteFreshness.current?(item.asset) }
+      end
+
+      def stale_watched(positions, watched)
+        held = positions.map(&:asset_id)
+
+        watched.reject { |item| held.include?(item.asset_id) || Domain::QuoteFreshness.current?(item.asset) }
+               .map { |item| item.asset.symbol }
       end
 
       def today(user, positions, watched, quotes_reliable, plan_status)
@@ -140,6 +151,7 @@ module Trading
         watched.filter_map do |item|
           gap = gaps[item.asset.symbol]
           next unless gap && gap <= Domain::TodayBrief::NEAR_TARGET_PERCENT
+          next unless Domain::QuoteFreshness.current?(item.asset)
 
           Domain::TodayBrief::Item.new(kind: :target, asset: item.asset, days: nil, date: nil, gap: gap)
         end

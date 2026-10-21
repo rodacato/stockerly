@@ -252,4 +252,46 @@ RSpec.describe "Hoy on the dashboard", type: :request do
       expect(response.body).not_to include(I18n.t("dashboard.show.titulares_titulo"))
     end
   end
+
+  describe "a watched asset that stopped syncing" do
+    it "does not turn the verdict into sin cotizaciones, and is named as not reviewed" do
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+      abandoned = mxn_asset(symbol: "IVVPESO", current_price: 50, price_updated_at: 200.days.ago)
+      create(:watchlist_item, user: user, asset: abandoned)
+
+      get dashboard_path
+
+      expect(response.body).to include("Todo en orden.")
+      expect(response.body).not_to include("Sin cotizaciones al día.")
+      expect(response.body).to include("IVVPESO sigue sin cotización al día y no se revisó.")
+    end
+
+    it "never lists it as near its target on a quote that old" do
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+      abandoned = mxn_asset(symbol: "IVVPESO", current_price: 100, price_updated_at: 200.days.ago)
+      create(:watchlist_item, user: user, asset: abandoned)
+      create(:alert_rule, user: user, asset_symbol: "IVVPESO", threshold_value: 103)
+
+      get dashboard_path
+
+      expect(response.body).not_to include("falta 3.0% para tu objetivo")
+    end
+
+    it "still says there are no current quotes when nothing held or watched is current" do
+      create(:watchlist_item, user: user, asset: mxn_asset(symbol: "IVVPESO", current_price: 50, price_updated_at: 200.days.ago))
+
+      get dashboard_path
+
+      expect(response.body).to include("Sin cotizaciones al día.")
+    end
+
+    it "keeps a stale held asset deciding the verdict, whatever else is fresh" do
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70, price_updated_at: 6.days.ago))
+      create(:watchlist_item, user: user, asset: mxn_asset(symbol: "FRESH", current_price: 10))
+
+      get dashboard_path
+
+      expect(response.body).to include("Sin cotizaciones al día.")
+    end
+  end
 end

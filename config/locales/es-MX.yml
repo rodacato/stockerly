@@ -643,6 +643,9 @@ es-MX:
           one: Hay %{count} cosa de lo tuyo para mirar hoy.
           other: Hay %{count} cosas de lo tuyo para mirar hoy.
         stale: Sin cotizaciones al día.
+      vigilados_sin_cotizacion:
+        one: "%{symbols} sigue sin cotización al día y no se revisó."
+        other: "%{symbols} siguen sin cotización al día y no se revisaron."
       vs_cetes_nota: CETES %{term}d reinvertido · al %{date}
       vs_cetes_rotulo: VS CETES · 30 D
     hoy_item:
