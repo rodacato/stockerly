@@ -153,8 +153,8 @@ and recovery-code entry at login (ADR-018). `auth-2fa.png` was re-shot: its `Env
 correo` link is now `Usar un código de recuperación`, email OTP being explicitly out of scope. Per
 D4 none of the three needs a desktop variant.
 
-**`_playground.pen` has no exports on purpose.** It holds exploration, not screens; `Panel · V1…V4`
-moved there from `auth.pen` in the same pass.
+**`_playground.pen` has no exports on purpose.** It holds exploration, not screens. `Panel · V1…V4`
+moved there from `auth.pen` in the same pass, and on to `brand.pen` on 2026-10-21.
 
 **Cockpit re-shot 2026-08-27** on kit 0.8.0 — all nine artboards, because the vendored `TopBar`
 grew 57 → 76 and `TopBarDesktop` 76 → 80. `cockpit-panorama-black-swan.png` is gone with its
@@ -197,6 +197,7 @@ artboards.
 | `brand-soft-candle.png` | `Actual / Soft Candle` — the shipped mark light, dark and monochrome at 64/32/16 px, the wordmarks, the icons and the social cards |
 | `brand-brief.png` | `Brand / Brief` — the seven findings and where each one stands |
 | `brand-usos.png` | `Actual / Usos` — correct, and the seven incorrect |
+| `brand-panel-exploracion.png` | `Exploración / Panel de marca` — the four login brand panels; none ships (D152) |
 
 > **Renamed and re-shot 2026-08-27 — the whole `activos` set.** D48 moved the tier ladder to
 > Holdings · Watchlist · Tracked, so eight of the twelve filenames changed with their artboards.
