@@ -1,4 +1,6 @@
-# Orchestrator: enqueues SyncStatementsJob for eligible assets, weekly.
+# Orchestrator: enqueues SyncStatementsJob for eligible assets, weekly. Stocks
+# only: an ETF has no income statement to fetch (Yahoo answers "no data" to all
+# three calls, and in production that was fifty logged errors every cycle).
 # 3 calls per asset (income + balance + cash flow).
 #
 # It does not ration against FundamentalsBudget, though since D123 it spends the
@@ -28,7 +30,7 @@ class SyncAllStatementsJob < ApplicationJob
   private
 
   def eligible_assets
-    Asset.where(asset_type: [ :stock, :etf ], sync_status: :active)
+    Asset.where(asset_type: :stock, sync_status: :active)
          .where.not(fundamentals_synced_at: nil)
          .where(
            "id NOT IN (SELECT DISTINCT asset_id FROM financial_statements WHERE fetched_at > ?)",
