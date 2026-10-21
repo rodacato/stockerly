@@ -58,16 +58,21 @@ not by reading the tables.
 | `activos-tracked-agregar.png` | `[Activos] / Tracked · Agregar activo / Default` — D64 |
 | `activos-tracked-sin-fuente.png` | `[Activos] / Tracked / Sin fuente` |
 | `activos-tracked-sin-coincidencias.png` | `[Activos] / Tracked / Sin coincidencias` |
+| `activos-tracked-vacio.png` | `[Activos] / Tracked / Vacío` — an empty catalogue: no budget bar |
 | `activos-historial.png` | `[Activos] / Historial / Default` — ⚠ see D43, designed after /positions hit its D35 deadline |
+| `activos-historial-editando.png` | `[Activos] / Historial / Editando` — a movement edited in place |
+| `activos-historial-confirmar-borrado.png` | `[Activos] / Historial / Confirmar borrado` — the in-place delete confirmation |
 | `activos-historial-vacio.png` | `[Activos] / Historial / Vacío` |
 | `activos-importar.png` | `[Activos] / Importar CSV / Default` |
 | `activos-importar-revision.png` | `[Activos] / Importar CSV / Revisión` — the dry run: nothing written yet |
 | `activos-importar-desconocidos.png` | `[Activos] / Importar CSV / Símbolos desconocidos` — the all-or-nothing refusal |
 | `activos-buscar-catalogo.png` | `[Activos] / Buscar / En tu catálogo` — D125, drawn ahead of the code |
+| `activos-buscar-catalogo-y-yahoo.png` | `[Activos] / Buscar / Catálogo y Yahoo` — D125: a catalogue hit plus Yahoo's other listings |
 | `activos-buscar-fuera-de-catalogo.png` | `[Activos] / Buscar / Fuera de tu catálogo` — D125: Yahoo's results with Rastrear |
 | `activos-buscar-sin-resultados.png` | `[Activos] / Buscar / Sin resultados` — D125 |
 | `activos-buscar-yahoo-no-responde.png` | `[Activos] / Buscar / Yahoo no responde` — D125 |
 | `activos-activo-desconocido.png` | `[Activos] / Activo desconocido / Default` — D125: /market/:symbol for a symbol the catalogue lacks |
+| `activos-activo-desconocido-yahoo-no-responde.png` | `[Activos] / Activo desconocido / Yahoo no responde` — D125 |
 | `reglas-vacio.png` | `[Reglas] / Reglas / Vacío` |
 | `reglas-nueva-regla.png` | `[Reglas] / Nueva regla / Sheet` |
 | `reglas-nueva-regla-calendario.png` | `[Reglas] / Nueva regla / Calendario` |
