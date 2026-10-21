@@ -67,4 +67,53 @@ RSpec.describe "Hoy on the dashboard", type: :request do
     expect(response.body).to match(/compra/i)
     expect(hoy).not_to match(/compra|vende/i)
   end
+
+  describe "the ? on every figure" do
+    def figures_with_help(body) = body.scan(%r{data-help-url="/help-opens/([a-z_]+)"}).flatten
+
+    it "puts one on the verdict, the patrimonio and each kind of item" do
+      held = mxn_asset(symbol: "WALMEX", current_price: 70)
+      hold(held)
+      create(:earnings_event, asset: held, report_date: 2.days.from_now.to_date)
+      cetes = create(:asset, :fixed_income, symbol: "CETES28", currency: "MXN", current_price: 10)
+      create(:position, portfolio: portfolio, asset: cetes, shares: 1_000, avg_cost: 10, status: :open,
+                        maturity_date: 3.days.from_now.to_date)
+      create(:watchlist_item, user: user, asset: mxn_asset(symbol: "NEAR", current_price: 100))
+      create(:alert_rule, user: user, asset_symbol: "NEAR", threshold_value: 103)
+
+      get dashboard_path
+
+      expect(figures_with_help(response.body)).to include("veredicto", "patrimonio", "earnings", "maturity", "target")
+    end
+
+    it "puts one on the CETES comparison when there is one to show" do
+      portfolio.update!(inception_date: 2.years.ago.to_date)
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+      portfolio.snapshots.create!(date: 20.days.ago.to_date, currency: "MXN", total_value: 1_000)
+      portfolio.snapshots.create!(date: 1.day.ago.to_date, currency: "MXN", total_value: 1_100)
+      CetesRateHistory.record(term: "28", date: 2.years.ago.to_date, rate: 10.0)
+
+      get dashboard_path
+
+      expect(figures_with_help(response.body)).to include("vs_cetes")
+      expect(response.body).to include(I18n.t("dashboard.hoy.vs_cetes_rotulo"))
+    end
+
+    it "explains each one in the catalogue's own words, without advice" do
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+
+      get dashboard_path
+
+      %w[veredicto patrimonio].each do |figure|
+        expect(response.body).to include(I18n.t("dashboard.ayuda.#{figure}.cuerpo"))
+      end
+      expect(response.body).to include(I18n.t("dashboard.ayuda.veredicto.pie"))
+    end
+
+    it "keeps every catalogue entry free of imperative or advisory wording" do
+      entries = I18n.t("dashboard.ayuda").except(:cerrar, :explicar).values.flat_map { |entry| entry.values }
+
+      expect(entries.join(" ")).not_to match(/\b(compra|vende|te recomendamos|deberías|conviene)\b/i)
+    end
+  end
 end

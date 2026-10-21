@@ -58,6 +58,7 @@ RSpec.describe "Admin pages", type: :request do
       get admin_settings_path
 
       expect(response.body).to include("Aperturas del panorama")
+      expect(response.body).to include("Ningún ? abierto en los últimos 7 días")
       expect(response.body).to include(">3<")
       expect(response.body.scan(%r{\d{1,2}/\d{2}</span>}).size).to eq(14)
     end

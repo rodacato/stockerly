@@ -20,6 +20,16 @@ export default class MetricTooltipController extends Controller {
     this.popoverTarget.classList.toggle("hidden")
     this.element.classList.toggle("ring-2", isHidden)
     this.element.classList.toggle("ring-focus", isHidden)
+    if (isHidden) this.countOpen()
+  }
+
+  // Only a tooltip that names a counter (data-help-url) reports being opened.
+  countOpen() {
+    const url = this.element.dataset.helpUrl
+    if (!url) return
+
+    const token = document.querySelector("meta[name='csrf-token']")?.content
+    fetch(url, { method: "POST", headers: { "X-CSRF-Token": token }, keepalive: true })
   }
 
   close(event) {

@@ -4,19 +4,22 @@
     vs_cetes, currency, fx_unavailable, prices_unavailable. %>
 <% state = today.state %>
 <section class="flex flex-col gap-6" aria-labelledby="hoy-veredicto">
-  <header class="flex flex-col gap-2">
-    <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
-      <%= t(".fecha", date: l(Date.current, format: "%a · %d %b %Y").upcase) %>
-    </p>
-    <h2 id="hoy-veredicto"
-        class="font-display text-3xl font-bold leading-tight tracking-tight <%= state == :stale ? "text-warning-fg" : "text-fg-default" %>">
-      <%= t(".veredicto.#{state}", count: today.total) %>
-    </h2>
-    <% subtitle = hoy_subtitle(state, vs_cetes) %>
-    <% if subtitle %>
-      <p class="text-base text-fg-subtle"><%= subtitle %></p>
-    <% end %>
-  </header>
+  <%= tag.header class: "relative flex items-start gap-2", data: help_tip_data("veredicto") do %>
+    <div class="flex min-w-0 flex-1 flex-col gap-2">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
+        <%= t(".fecha", date: l(Date.current, format: "%a · %d %b %Y").upcase) %>
+      </p>
+      <h2 id="hoy-veredicto"
+          class="font-display text-3xl font-bold leading-tight tracking-tight <%= state == :stale ? "text-warning-fg" : "text-fg-default" %>">
+        <%= t(".veredicto.#{state}", count: today.total) %>
+      </h2>
+      <% subtitle = hoy_subtitle(state, vs_cetes) %>
+      <% if subtitle %>
+        <p class="text-base text-fg-subtle"><%= subtitle %></p>
+      <% end %>
+    </div>
+    <%= render "dashboard/help_tip", figure: "veredicto", classes: "mt-4" %>
+  <% end %>
 
   <% if state == :first_run %>
     <%= render "components/empty_state", size: :inline, icon: "bedtime",
@@ -24,9 +27,16 @@
                cta_text: t("trades.new.titulo"), cta_path: new_trade_path %>
   <% else %>
     <div class="flex flex-col gap-3">
-      <%= render "dashboard/patrimonio_strip", summary: summary, currency: currency, fx_unavailable: fx_unavailable %>
+      <% if summary %>
+        <%= tag.div class: "relative", data: help_tip_data("patrimonio") do %>
+          <%= render "dashboard/patrimonio_strip", summary: summary, currency: currency, fx_unavailable: fx_unavailable %>
+          <%= render "dashboard/help_tip", figure: "patrimonio", classes: "absolute right-1 top-1" %>
+        <% end %>
+      <% else %>
+        <%= render "dashboard/patrimonio_strip", summary: summary, currency: currency, fx_unavailable: fx_unavailable %>
+      <% end %>
       <% if vs_cetes && state != :stale %>
-        <div class="flex items-center justify-between gap-4 rounded-2xl border border-border-default bg-bg-surface px-5 py-4">
+        <%= tag.div class: "relative flex items-center justify-between gap-4 rounded-2xl border border-border-default bg-bg-surface px-5 py-4", data: help_tip_data("vs_cetes") do %>
           <div class="min-w-0">
             <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".vs_cetes_rotulo") %></p>
             <p class="mt-1 text-xs text-fg-subtle">
@@ -36,7 +46,8 @@
           <p class="shrink-0 font-display text-2xl font-bold tracking-tight text-fg-default">
             <%= signed_points(vs_cetes[:points]) %>
           </p>
-        </div>
+          <%= render "dashboard/help_tip", figure: "vs_cetes", classes: "absolute right-1 top-1" %>
+        <% end %>
       <% end %>
     </div>
 

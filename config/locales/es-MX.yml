@@ -144,6 +144,10 @@ es-MX:
         activado: activado
         aperturas: Aperturas del panorama
         aperturas_ayuda: Veces que se abrió /dashboard cada día, los últimos 14 días.
+        ayudas_abiertas:
+          one: 1 ? abierto en los últimos 7 días
+          other: "%{count} ? abiertos en los últimos 7 días"
+          zero: Ningún ? abierto en los últimos 7 días
         banner_activo: Quien no haya iniciado sesión ve la página de mantenimiento.
           Tu sesión sigue viva.
         cache: Caché
@@ -535,6 +539,36 @@ es-MX:
       other: vence en %{count} días
       zero: vence hoy
   dashboard:
+    ayuda:
+      cerrar: Cerrar
+      earnings:
+        cuerpo: Fecha en que la empresa publica sus resultados trimestrales, según
+          el proveedor de datos. Es una fecha, no un pronóstico de lo que dirá.
+        titulo: Resultados
+      explicar: 'Qué significa: %{titulo}'
+      maturity:
+        cuerpo: Un CETE vence al terminar su plazo; ese día el capital se libera.
+          Qué hacer con él es decisión tuya.
+        titulo: Vencimiento
+      patrimonio:
+        cuerpo: Lo que valen hoy todas tus posiciones, en la moneda que elegiste y
+          al tipo de cambio del día. El chip lo compara con el registro de ayer. Es
+          antes de impuestos.
+        titulo: Patrimonio
+      target:
+        cuerpo: Qué tan lejos está el precio del número que pusiste en una regla de
+          alerta. Es tu umbral, no una señal del mercado.
+        titulo: Tu objetivo
+      veredicto:
+        cuerpo: Cuenta lo tuyo que vence, reporta resultados o se acerca a un objetivo
+          que pusiste. «Todo en orden» solo aparece con cotizaciones al día.
+        pie: Es una lectura de tus datos, no una recomendación.
+        titulo: Cómo se arma esta frase
+      vs_cetes:
+        cuerpo: Tu rendimiento del último mes, sin contar lo que depositaste o retiraste,
+          menos lo que habrían rendido CETES a 28 días reinvertidos. Se dice en puntos,
+          porque es la diferencia entre dos rendimientos.
+        titulo: Contra CETES
     hoy:
       calma: Sin resultados, vencimientos ni objetivos cerca en lo que sigues.
       de: "%{shown} de %{total}"

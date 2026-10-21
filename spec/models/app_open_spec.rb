@@ -39,4 +39,15 @@ RSpec.describe AppOpen, type: :model do
       expect(series.size).to eq(14)
     end
   end
+
+  describe ".total" do
+    it "adds the opens of every path under the prefix inside the window, and nothing else" do
+      2.times { described_class.record(path: "help:veredicto", day:) }
+      described_class.record(path: "help:target", day: day - 6)
+      described_class.record(path: "help:target", day: day - 7)
+      described_class.record(path: "/dashboard", day:)
+
+      expect(described_class.total(prefix: "help:", days: 7, today: day)).to eq(3)
+    end
+  end
 end

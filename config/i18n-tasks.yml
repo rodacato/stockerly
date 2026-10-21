@@ -29,6 +29,7 @@ ignore_unused:
   # The Hoy verdict and its items are keyed by the TodayBrief state and the item
   # kind; dashboard_hoy_spec renders every state and kind.
   - dashboard.hoy.veredicto.*
+  - dashboard.ayuda.*
   - dashboard.hoy_item.*
   - brand.offline.*
   - brand.social.headline
