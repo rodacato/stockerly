@@ -44,8 +44,10 @@ class Portfolio < ApplicationRecord
     end
   end
 
-  def allocation_by_sector(currency: user.preferred_currency)
-    open_positions_with_assets.group_by { |p| p.asset.sector }.transform_values do |group|
+  # `sector_of` lets a caller name the sector of an asset by something better
+  # than the column (the provider overview), and an asset type where it has none.
+  def allocation_by_sector(currency: user.preferred_currency, sector_of: ->(asset) { asset.sector })
+    open_positions_with_assets.group_by { |p| sector_of.call(p.asset) }.transform_values do |group|
       group.sum { |p| position_market_value_in(p, currency) }
     end
   end

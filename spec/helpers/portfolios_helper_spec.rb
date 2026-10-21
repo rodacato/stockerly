@@ -15,6 +15,12 @@ RSpec.describe PortfoliosHelper, type: :helper do
       expect(segments.map { |s| [ s[:label], s[:pct] ] }).to contain_exactly([ "Sin sector", 50 ], [ "Energía", 50 ])
     end
 
+    it "names what has no sector by what it is, not as missing data" do
+      segments = helper.sector_segments({ :etf => 300.to_d, :crypto => 100.to_d, "Energy" => 600.to_d })
+
+      expect(segments.pluck(:label)).to eq([ "Energía", "ETF", "Cripto" ])
+    end
+
     it "shows a sector the table does not know as Yahoo gives it" do
       expect(helper.sector_segments({ "Space Mining" => 100.to_d }).first[:label]).to eq("Space Mining")
     end

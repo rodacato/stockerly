@@ -11,7 +11,7 @@ module PortfoliosHelper
   # segments never share a colour. Yahoo's names are translated; one the table
   # does not know shows as given.
   def sector_segments(allocation)
-    ranked = allocation.group_by { |sector, _| sector.presence }.transform_values { |rows| rows.sum { |_, value| value } }
+    ranked = allocation.group_by { |sector, _| sector.is_a?(Symbol) ? sector : sector.presence }.transform_values { |rows| rows.sum { |_, value| value } }
                        .sort_by { |_, value| -value }
     if ranked.size > CHART_COLORS.size
       rest = ranked.drop(CHART_COLORS.size - 1)
@@ -24,6 +24,7 @@ module PortfoliosHelper
   def sector_label(sector)
     return t("portfolios.show.sector.sin_sector") if sector.nil?
     return t("portfolios.show.sector.otros") if sector == :otros
+    return t("comun.tipo_activo.#{sector}") if sector.is_a?(Symbol)
 
     t("comun.sector.#{sector.parameterize(separator: '_')}", default: sector)
   end

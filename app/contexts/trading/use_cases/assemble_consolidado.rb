@@ -56,7 +56,7 @@ module Trading
       private
 
       def allocation_for(portfolio, currency, by)
-        return portfolio.allocation_by_sector(currency: currency) if by == "sector"
+        return sector_allocation(portfolio, currency) if by == "sector"
 
         portfolio.allocation_by_asset_type(currency: currency)
       end
@@ -66,6 +66,16 @@ module Trading
         return nil unless summary&.quotes_current?
 
         Domain::CurrencyExposure.call(by_currency: portfolio.allocation_by_currency(currency: "MXN"))
+      end
+
+      # A stock reads as its sector; what has none reads as what it is (ETF,
+      # Cripto, Renta fija) rather than as missing data.
+      def sector_allocation(portfolio, currency)
+        sectors = MarketData::Queries::AssetSectors.call(assets: portfolio.open_positions.includes(:asset).map(&:asset))
+        portfolio.allocation_by_sector(
+          currency: currency,
+          sector_of: ->(asset) { sectors[asset.id] || (asset.asset_type.to_sym unless asset.asset_type_stock?) }
+        )
       end
 
       def empty(currency, period)

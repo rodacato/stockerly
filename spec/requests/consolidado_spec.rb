@@ -243,6 +243,19 @@ RSpec.describe "Consolidado", type: :request do
       expect(response.body).to match(/aria-current="true"[^>]*>Sector</)
     end
 
+    it "reads a stock's sector from the provider's overview when the column is blank, and an ETF as an ETF" do
+      blank = hold_sector("AVGO", nil)
+      create(:asset_fundamental, asset: blank.asset, period_label: "OVERVIEW", metrics: { "sector" => "Technology" })
+      etf = create(:asset, :etf, symbol: "VOO", currency: "MXN", current_price: 10, sector: nil)
+      create(:position, portfolio: portfolio, asset: etf, shares: 10, avg_cost: 8, status: :open)
+
+      get portfolio_path(por: "sector")
+
+      expect(response.body).to include("Tecnología")
+      expect(response.body).not_to include(I18n.t("portfolios.show.sector.sin_sector"))
+      expect(response.body).to include(I18n.t("comun.tipo_activo.etf"))
+    end
+
     it "falls back to the asset type view for a view it does not know" do
       get portfolio_path(por: "nope")
 
