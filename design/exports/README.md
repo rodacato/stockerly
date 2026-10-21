@@ -92,6 +92,7 @@ not by reading the tables.
 | `descubrir-olas-calendario-agotado.png` | `[Descubrir] / Olas / Calendario agotado` — past the YAML's horizon (D33) |
 | `ajustes-hub.png` | `[Ajustes] / Hub / Default` |
 | `ajustes-hub-dos-pasos-activa.png` | `[Ajustes] / Hub / Dos pasos activa` — TOTP enrolled: a card with the codes left and Generar códigos nuevos |
+| `ajustes-hub-avisos-bloqueados.png` | `[Ajustes] / Hub / Avisos bloqueados` — push permission denied: the phone switch stays off with the warning line under it |
 | `ajustes-nombre-correo.png` | `[Ajustes] / Nombre y correo / Default` |
 | `ajustes-contrasena.png` | `[Ajustes] / Contraseña / Default` |
 | `ajustes-tu-plan-vacio.png` | `[Ajustes] / Tu plan / Vacío` — no plan yet, nothing prefilled |
@@ -109,6 +110,7 @@ not by reading the tables.
 | `ajustes-errores.png` | `[Ajustes] / Errores / Default` — only with developer_mode (ADR-020) |
 | `ajustes-errores-detalle.png` | `[Ajustes] / Errores · Detalle / Default` |
 | `ajustes-en-mantenimiento.png` | `[Ajustes] / En mantenimiento / Default` — the 503 page a visitor gets while maintenance_mode is on |
+| `ajustes-ayuda.png` | `[Ajustes] / Ayuda / Default` — /help as shipped (D161); nothing in the app links to it |
 
 **Desktop (1280).** Drawn for the screens whose layout genuinely diverges, per D4 — the rest
 reflow. The kit's shell variant is included because it is what every desktop artboard instances.
@@ -207,6 +209,9 @@ so an export that is never renamed survives as an orphan nobody can identify.
 | `auth-reset.png` | `[Auth] / Reset / Default` |
 | `auth-enlace-expirado.png` | `[Auth] / Enlace expirado / Default` |
 | `auth-contrasena-actualizada.png` | `[Auth] / Contraseña actualizada / Default` |
+| `auth-errores-404.png` | `[Auth] / Errores / 404` — public/404.html as shipped (retired disc mark) |
+| `auth-errores-429.png` | `[Auth] / Errores / 429` — public/429.html, the one-button case |
+| `auth-errores-500.png` | `[Auth] / Errores / 500` — public/500.html as shipped (English buttons) |
 | `auth-login-desktop.png` | `[Auth] / Login · Desktop / Default` |
 
 ## Brand (`brand.pen`)
