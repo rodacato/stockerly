@@ -40,6 +40,9 @@ not by reading the tables.
 | `cockpit-asset-analisis-watchlist.png` | `[Cockpit] / Asset · Análisis / Watchlist` — watched, not held: no toggle, LO TUYO reads threshold, rule and earnings |
 | `cockpit-hoy-temporada-resultados.png` | `[Cockpit] / Hoy / Temporada de resultados` — earnings dates read one row per day, symbols joined (D160) |
 | `cockpit-hoy-decision-tasa.png` | `[Cockpit] / Hoy / Decisión de tasa` — a Fed or Banxico date within 7 days, ranked after maturity and earnings |
+| `cockpit-hoy-push-matutino.png` | `[Cockpit] / Hoy / Push matutino` — the 08:00 daily brief on a lock screen: the verdict as title, the item titles as body |
+| `cockpit-hoy-ayuda-abierta.png` | `[Cockpit] / Hoy / Ayuda abierta` — the verdict's ? open: the ringed header and its popover |
+| `cockpit-hoy-actualizacion-disponible.png` | `[Cockpit] / Hoy / Actualización disponible` — the shell-wide PWA update toast above the BottomNav |
 | `cockpit-asset-analisis-aviso.png` | `[Cockpit] / Asset · Análisis / Aviso TradingView` |
 | `cockpit-asset-mi-posicion.png` | `[Cockpit] / Asset · Mi posición / Default` |
 | `cockpit-asset-cetes.png` | `[Cockpit] / Asset · CETES / Default` — fixed income, no chart (D98) |
