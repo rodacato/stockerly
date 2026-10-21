@@ -287,13 +287,13 @@ es-MX:
           other: Tienes %{amount} títulos
         crear: Crear
         day_change_percent:
-          porque: Avisa cuando el precio sube o baja más de %{percent}% en una sola
+          porque: Avisa cuando el precio sube o baja %{percent}% o más en una sola
             jornada.
           titulo: "%{symbol} se mueve %{percent}% en un día"
         desde_cero: Crear una desde cero
         rsi_overbought:
-          porque: El RSI mide si un activo subió mucho muy rápido; arriba de %{threshold}
-            suele llamarse sobrecompra.
+          porque: El RSI mide si un activo subió mucho muy rápido; en %{threshold}
+            o más suele llamarse sobrecompra.
           titulo: "%{symbol} entra en sobrecompra"
         titulo: A partir de lo que ya tienes
       titulo: Reglas

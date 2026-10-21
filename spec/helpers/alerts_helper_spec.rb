@@ -28,6 +28,15 @@ RSpec.describe AlertsHelper, type: :helper do
     end
   end
 
+  describe "#alert_rule_explainer" do
+    it "states the day-change and RSI thresholds as inclusive, like the evaluator's >=" do
+      expect(helper.alert_rule_explainer(build(:alert_rule, condition: :day_change_percent, threshold_value: 5)))
+        .to eq("Avisa cuando el precio sube o baja 5% o más en una sola jornada.")
+      expect(helper.alert_rule_explainer(build(:alert_rule, condition: :rsi_overbought, threshold_value: 70)))
+        .to end_with("en 70 o más suele llamarse sobrecompra.")
+    end
+  end
+
   describe "#alert_cooldown_label" do
     it "falls back to the model's default when the rule carries no cooldown" do
       expect(helper.alert_cooldown_label(build(:alert_rule, cooldown_minutes: nil)))
