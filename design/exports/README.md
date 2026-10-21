@@ -79,6 +79,9 @@ not by reading the tables.
 | `ajustes-hub.png` | `[Ajustes] / Hub / Default` |
 | `ajustes-nombre-correo.png` | `[Ajustes] / Nombre y correo / Default` |
 | `ajustes-contrasena.png` | `[Ajustes] / Contraseña / Default` |
+| `ajustes-tu-plan-vacio.png` | `[Ajustes] / Tu plan / Vacío` — no plan yet, nothing prefilled |
+| `ajustes-tu-plan-default.png` | `[Ajustes] / Tu plan / Default` — three shares summing to 100% and a contribution |
+| `ajustes-tu-plan-error.png` | `[Ajustes] / Tu plan / Error` — the shares sum to 95% |
 | `ajustes-integraciones.png` | `[Ajustes] / Integraciones / Default` |
 | `ajustes-integraciones-administrar.png` | `[Ajustes] / Integraciones · Administrar / Default` — one source opened: verify, key, limits, delete |
 | `ajustes-integraciones-estados.png` | `[Ajustes] / Integraciones · Estados / Default` |
