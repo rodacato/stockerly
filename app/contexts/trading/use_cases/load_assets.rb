@@ -12,7 +12,7 @@ module Trading
 
         fx = Trading::Domain::FxDegradation.new
         summary = summarize(fx, portfolio, currency)
-        gaps = tab == "watchlist" ? watchlist_gaps(user) : {}
+        gaps = tab == "watchlist" ? Trading::Domain::WatchlistProximity.gaps(user) : {}
         rows = tab == "cartera" ? positions_for(fx, portfolio, currency) : user.watchlist_items.includes(:asset).to_a
         closes = MarketData::Queries::PriceSeries.recent_closes(rows.map(&:asset))
         day_changes = MarketData::Domain::DayChange.by_asset(closes)
@@ -98,27 +98,6 @@ module Trading
         items.sort_by { |item| proximity_key(item.asset, gaps, day_changes) }
       end
 
-      # The distance the list is ordered by, keyed by symbol so the row can show
-      # the number it is ranked on. An order the reader cannot see is a guess.
-      def watchlist_gaps(user)
-        thresholds = thresholds_by_symbol(user)
-
-        user.watchlist_items.includes(:asset).each_with_object({}) do |item, gaps|
-          distance = nearest_distance(item.asset.current_price, thresholds[item.asset.symbol])
-          gaps[item.asset.symbol] = distance if distance
-        end
-      end
-
-      def thresholds_by_symbol(user)
-        user.alert_rules
-            .active
-            .where(condition: AlertRule::PRICE_THRESHOLD_CONDITIONS)
-            .where.not(threshold_value: nil)
-            .pluck(:asset_symbol, :threshold_value)
-            .group_by(&:first)
-            .transform_values { |rows| rows.map(&:last) }
-      end
-
       # A row with a threshold sorts ahead of a row without one: a distance to
       # your own number and a day's movement do not share an axis.
       # ADR-021: the fallback reads the same computed day change the row shows,
@@ -129,12 +108,6 @@ module Trading
         return [ 0, distance, symbol ] if distance
 
         [ 1, -day_changes[asset.id].to_f.abs, symbol ]
-      end
-
-      def nearest_distance(price, thresholds)
-        return nil if price.blank? || price.zero? || thresholds.blank?
-
-        thresholds.map { |threshold| ((threshold - price) / price * 100).abs }.min
       end
     end
   end
