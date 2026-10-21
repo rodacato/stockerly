@@ -49,6 +49,17 @@
     <% end %>
   </div>
   <p class="text-sm text-fg-subtle"><%= alert_condition_summary(rule) %></p>
+  <% threshold_anchor = alert_rule_threshold_anchor(rule) %>
+  <% if threshold_anchor %>
+    <p class="font-mono text-sm text-fg-subtle">
+      <% gap = unsigned_percent(threshold_anchor.percent) %>
+      <% if threshold_anchor.percent.negative? %>
+        <%= t("alerts.index.umbral_baja", percent: gap) %>
+      <% else %>
+        <%= t("alerts.index.umbral_sube", percent: gap) %>
+      <% end %>
+    </p>
+  <% end %>
 
   <p class="font-mono text-sm font-semibold text-fg-default">
     <% if rule.last_triggered_at %>

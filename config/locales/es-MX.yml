@@ -309,6 +309,8 @@ es-MX:
       titulo: Reglas
       tus_reglas: Tus reglas
       ultimos_disparos: Últimos disparos
+      umbral_baja: necesita bajar %{percent}
+      umbral_sube: necesita subir %{percent}
       vacio_cuerpo: 'Una regla vigila algo que tú definiste y te avisa cuando pasa.
         No decide por ti, no compra, no vende: sólo te ahorra estar mirando la pantalla.'
       vacio_titulo: Todavía no tienes reglas
