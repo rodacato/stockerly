@@ -84,7 +84,7 @@ module DashboardHelper
     end
   end
 
-  HOY_ITEM_ICONS = { maturity: "schedule", earnings: "event", target: "target", allocation: "pie_chart", contribution: "savings" }.freeze
+  HOY_ITEM_ICONS = { maturity: "schedule", earnings: "event", target: "target", allocation: "pie_chart", contribution: "savings", macro: "account_balance" }.freeze
 
   PLAN_LABELS = { stocks_share: "acciones", crypto_share: "cripto", fixed_income_share: "renta_fija" }.freeze
 
@@ -98,6 +98,7 @@ module DashboardHelper
     case item.kind
     when :allocation then t(key, label: plan_label(item.subject), actual: item.actual, target: item.target)
     when :contribution then t(key)
+    when :macro then t(key, label: item.label, count: item.days)
     else t(key, symbol: item.asset.symbol, count: item.days || 0, percent: unsigned_percent(item.gap))
     end
   end
@@ -108,6 +109,7 @@ module DashboardHelper
     case item.kind
     when :target then format_currency_mx(item.asset.current_price, currency: item.asset.currency)
     when :earnings then t(key, count: item.days, date: l(item.date, format: :short))
+    when :macro then t(key, date: l(item.date, format: :short), tentative: item.tentative ? t("dashboard.hoy_item.macro.tentativa") : "")
     when :allocation then t("dashboard.hoy_item.allocation.#{item.gap.positive? ? 'arriba' : 'abajo'}", count: item.gap.abs)
     when :contribution then t(key, amount: format_currency_mx(item.target, currency: "MXN", precision: 0))
     else t(key, date: l(item.date, format: :short))
@@ -118,6 +120,7 @@ module DashboardHelper
     case item.kind
     when :allocation then portfolio_path
     when :contribution then new_trade_path
+    when :macro then discover_path
     else market_asset_path(item.asset.symbol)
     end
   end

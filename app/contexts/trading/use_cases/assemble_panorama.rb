@@ -7,6 +7,8 @@ module Trading
       RADAR_LIMIT = 6
       SIGNALS_LIMIT = 3
       EARNINGS_WINDOW_DAYS = 7
+      POLICY_WINDOW_DAYS = 7
+      POLICY_CURRENCY = { "Fed" => "USD", "Banxico" => "MXN" }.freeze
       VS_CETES_PERIOD = 1.month
 
       SentimentCard = Data.define(:key, :value, :label_key, :delta)
@@ -60,7 +62,7 @@ module Trading
         Domain::TodayBrief.call(
           tracks_anything: positions.any? || watched.any?,
           quotes_reliable: quotes_reliable,
-          candidates: maturity_items(positions) + earnings_items(positions) + target_items(user, watched) +
+          candidates: maturity_items(positions) + earnings_items(positions) + policy_items(positions) + target_items(user, watched) +
                       plan_items(plan_status)
         )
       end
@@ -97,6 +99,19 @@ module Trading
 
           Domain::TodayBrief::Item.new(kind: :maturity, asset: position.asset, days: days,
                                        date: position.maturity_date, gap: nil)
+        end
+      end
+
+      # A central bank's decision is worth a look when something held is
+      # quoted in that bank's currency.
+      def policy_items(positions)
+        currencies = positions.map { |position| position.asset.currency }.uniq
+
+        MarketData::Queries::UpcomingPolicyDates.within(days: POLICY_WINDOW_DAYS)
+                                                .select { |event| currencies.include?(POLICY_CURRENCY[event.source]) }
+                                                .map do |event|
+          Domain::TodayBrief::Item.new(kind: :macro, days: (event.date - Date.current).to_i, date: event.date,
+                                       label: "#{event.source} · #{event.title}", tentative: event.tentative)
         end
       end
 

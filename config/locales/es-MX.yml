@@ -570,6 +570,11 @@ es-MX:
           el proveedor de datos. Es una fecha, no un pronóstico de lo que dirá.
         titulo: Resultados
       explicar: 'Qué significa: %{titulo}'
+      macro:
+        cuerpo: Fecha de una decisión de tasa de la Fed o de Banxico, según su calendario
+          publicado. Aparece cuando tienes algo en esa moneda. No dice qué hará la
+          tasa.
+        titulo: Decisión de tasa
       maturity:
         cuerpo: Un CETE vence al terminar su plazo; ese día el capital se libera.
           Qué hacer con él es decisión tuya.
@@ -648,6 +653,13 @@ es-MX:
           other: En %{count} días · %{date}
           zero: Hoy · %{date}
         titulo: "%{symbol} reporta resultados"
+      macro:
+        detalle: "%{date}%{tentative}"
+        tentativa: " · fecha tentativa"
+        titulo:
+          one: "%{label} mañana"
+          other: "%{label} en %{count} días"
+          zero: "%{label} hoy"
       maturity:
         detalle: Vence el %{date}
         titulo:

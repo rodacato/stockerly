@@ -16,6 +16,10 @@ module MarketData
           events.select { |event| event.date >= today }.first(limit)
         end
 
+        def within(days:, today: Date.current)
+          events.select { |event| (today..(today + days)).cover?(event.date) }
+        end
+
         def exhausted?(today: Date.current)
           upcoming(limit: 1, today: today).empty?
         end

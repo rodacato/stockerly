@@ -6,12 +6,12 @@ module Trading
     class TodayBrief
       LIMIT = 3
       NEAR_TARGET_PERCENT = 5.0
-      PRIORITY = { maturity: 0, earnings: 1, contribution: 2, allocation: 3, target: 4 }.freeze
+      PRIORITY = { maturity: 0, earnings: 1, macro: 2, contribution: 3, allocation: 4, target: 5 }.freeze
       # What a quote has to be current for: a distance to a price, a share of the patrimonio.
       PRICE_DEPENDENT = %i[allocation target].freeze
 
-      Item = Data.define(:kind, :asset, :days, :date, :gap, :subject, :actual, :target) do
-        def initialize(kind:, asset: nil, days: nil, date: nil, gap: nil, subject: nil, actual: nil, target: nil) = super
+      Item = Data.define(:kind, :asset, :days, :date, :gap, :subject, :actual, :target, :label, :tentative) do
+        def initialize(kind:, asset: nil, days: nil, date: nil, gap: nil, subject: nil, actual: nil, target: nil, label: nil, tentative: false) = super
 
         # Nearest first; for a share off its plan, the widest gap first.
         def rank

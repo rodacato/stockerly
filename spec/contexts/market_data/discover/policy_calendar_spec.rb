@@ -19,6 +19,18 @@ RSpec.describe MarketData::Discover::PolicyCalendar do
     end
   end
 
+  describe ".within" do
+    it "returns only the decisions inside the window, today included" do
+      events = described_class.within(days: 7, today: Date.new(2026, 10, 21))
+
+      expect(events.map(&:date)).to eq([ Date.new(2026, 10, 28) ])
+    end
+
+    it "is empty when nothing is due" do
+      expect(described_class.within(days: 3, today: Date.new(2026, 10, 21))).to be_empty
+    end
+  end
+
   describe ".exhausted?" do
     it "is false while the file still has dates ahead" do
       expect(described_class.exhausted?(today: Date.new(2026, 12, 1))).to be false

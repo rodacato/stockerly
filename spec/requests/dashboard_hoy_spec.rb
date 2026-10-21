@@ -179,4 +179,54 @@ RSpec.describe "Hoy on the dashboard", type: :request do
       expect(response.body).not_to include(I18n.t("dashboard.hoy.dentro_del_plan"))
     end
   end
+
+  describe "a central bank's decision" do
+    include ActiveSupport::Testing::TimeHelpers
+
+    def usd_asset(**attrs) = create(:asset, :stock, currency: "USD", **attrs)
+
+    it "is an item when something held is quoted in the bank's currency" do
+      travel_to(Time.zone.local(2026, 10, 26, 12)) do
+        hold(usd_asset(symbol: "AAPL", current_price: 100))
+
+        get dashboard_path
+
+        expect(response.body).to include("Fed · FOMC en 2 días")
+        expect(response.body).to include("fecha tentativa")
+        expect(response.body).not_to include("Banxico ·")
+      end
+    end
+
+    it "is not shown to someone who holds nothing in that currency" do
+      travel_to(Time.zone.local(2026, 10, 26, 12)) do
+        hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+
+        get dashboard_path
+
+        expect(response.body).not_to include("Fed · FOMC")
+      end
+    end
+
+    it "reads Banxico's decision for a peso holding" do
+      travel_to(Time.zone.local(2026, 12, 15, 12)) do
+        login_as(user)
+        hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+
+        get dashboard_path
+
+        expect(response.body).to include("Banxico · decisión de tasa en 2 días")
+      end
+    end
+
+    it "says nothing when no decision is near" do
+      travel_to(Time.zone.local(2026, 11, 20, 12)) do
+        login_as(user)
+        hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+
+        get dashboard_path
+
+        expect(response.body).not_to include("decisión de tasa en")
+      end
+    end
+  end
 end
