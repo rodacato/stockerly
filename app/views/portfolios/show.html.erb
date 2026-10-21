@@ -91,7 +91,7 @@
   <section class="flex flex-col gap-4">
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".valio_la_pena") %></h2>
 
-    <div class="grid gap-4 lg:grid-cols-2">
+    <div class="grid gap-4 lg:grid-cols-3">
       <%= render "portfolios/comparison_card",
                  label: t(".vs_cetes", term: Trading::Domain::CetesComparison::TERM),
                  card: @vs_cetes,
@@ -101,6 +101,16 @@
                         mine: signed_percent(@vs_cetes[:mine]),
                         benchmark: signed_percent(@vs_cetes[:benchmark]),
                         term: @vs_cetes[:term],
+                        from: l(@from, format: :long), to: l(@to, format: :long))) %>
+
+      <%= render "portfolios/comparison_card",
+                 label: t(".vs_ipc"),
+                 card: @vs_index,
+                 level_label: t(".igual_ipc"),
+                 empty_body: (@currency != "MXN" ? t(".ipc_solo_mxn") : nil),
+                 body: (@vs_index && t(".vs_ipc_cuerpo",
+                        mine: signed_percent(@vs_index[:mine]),
+                        benchmark: signed_percent(@vs_index[:benchmark]),
                         from: l(@from, format: :long), to: l(@to, format: :long))) %>
 
       <% if @vs_hold %>
@@ -116,7 +126,7 @@
       <%= render "portfolios/comparison_card", label: t(".vs_hold"), card: @vs_hold, body: hold_body, level_label: t(".igual_hold") %>
     </div>
 
-    <% if @vs_cetes || @vs_hold %>
+    <% if @vs_cetes || @vs_hold || @vs_index %>
       <div class="flex items-start gap-3 rounded-2xl border border-warning bg-warning-bg p-4">
         <%= icon_svg "info", class: "text-lg text-warning-fg", "aria-hidden": "true" %>
         <p class="text-xs text-warning-fg"><%= t(".twr_nota") %></p>

@@ -42,6 +42,22 @@ RSpec.describe SyncIndexHistoryJob do
       end
     end
 
+    context "when an index has no history yet" do
+      let!(:ipc) { create(:market_index, symbol: "IPC", name: "IPC") }
+
+      it "reads back as far as the owner could have started, and only a few days once it has some" do
+        gateway = instance_double(MarketData::Gateways::YfinanceGateway)
+        allow(MarketData::Gateways::YfinanceGateway).to receive(:new).and_return(gateway)
+        allow(gateway).to receive(:fetch_historical).and_return(Dry::Monads::Success([ { date: 1.day.ago.to_date, close: 50_000.to_d } ]))
+
+        described_class.perform_now
+        described_class.perform_now
+
+        expect(gateway).to have_received(:fetch_historical).with("^MXX", described_class::BACKFILL_DAYS.days.ago.to_date, Date.current).once
+        expect(gateway).to have_received(:fetch_historical).with("^MXX", 5.days.ago.to_date, Date.current).once
+      end
+    end
+
     context "when Yahoo gateway fails" do
       before do
         allow_any_instance_of(MarketData::Gateways::YfinanceGateway).to receive(:fetch_historical)
