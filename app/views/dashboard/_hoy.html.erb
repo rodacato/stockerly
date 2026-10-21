@@ -1,0 +1,61 @@
+<%# Hoy (realign A5, D155): the sentence first, then the figures, then at most
+    three things of yours worth a look. The patrimonio strip is the figure it
+    already was; the rest of the Panorama stays below. Locals: today, summary,
+    vs_cetes, currency, fx_unavailable, prices_unavailable. %>
+<% state = today.state %>
+<section class="flex flex-col gap-6" aria-labelledby="hoy-veredicto">
+  <header class="flex flex-col gap-2">
+    <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle">
+      <%= t(".fecha", date: l(Date.current, format: "%a · %d %b %Y").upcase) %>
+    </p>
+    <h2 id="hoy-veredicto"
+        class="font-display text-3xl font-bold leading-tight tracking-tight <%= state == :stale ? "text-warning-fg" : "text-fg-default" %>">
+      <%= t(".veredicto.#{state}", count: today.total) %>
+    </h2>
+    <% subtitle = hoy_subtitle(state, vs_cetes) %>
+    <% if subtitle %>
+      <p class="text-base text-fg-subtle"><%= subtitle %></p>
+    <% end %>
+  </header>
+
+  <% if state == :first_run %>
+    <%= render "components/empty_state", size: :inline, icon: "bedtime",
+               title: t(".primera_vez_titulo"),
+               cta_text: t("trades.new.titulo"), cta_path: new_trade_path %>
+  <% else %>
+    <div class="flex flex-col gap-3">
+      <%= render "dashboard/patrimonio_strip", summary: summary, currency: currency, fx_unavailable: fx_unavailable %>
+      <% if vs_cetes && state != :stale %>
+        <div class="flex items-center justify-between gap-4 rounded-2xl border border-border-default bg-bg-surface px-5 py-4">
+          <div class="min-w-0">
+            <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".vs_cetes_rotulo") %></p>
+            <p class="mt-1 text-xs text-fg-subtle">
+              <%= t(".vs_cetes_nota", term: vs_cetes[:term], date: l(vs_cetes[:as_of], format: :short)) %>
+            </p>
+          </div>
+          <p class="shrink-0 font-display text-2xl font-bold tracking-tight text-fg-default">
+            <%= signed_points(vs_cetes[:points]) %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+
+    <% if today.items.any? %>
+      <section class="flex flex-col gap-3" aria-labelledby="hoy-lo-tuyo">
+        <div class="flex items-baseline justify-between gap-3">
+          <h3 id="hoy-lo-tuyo" class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".lo_tuyo") %></h3>
+          <span class="font-mono text-xs text-fg-subtle"><%= t(".de", shown: today.items.size, total: today.total) %></span>
+        </div>
+        <% today.items.each do |item| %>
+          <%= render "dashboard/hoy_item", item: item %>
+        <% end %>
+      </section>
+    <% elsif state == :calm %>
+      <%= render "components/empty_state", size: :inline, icon: "local_cafe", title: t(".calma") %>
+    <% end %>
+
+    <a href="#radar" class="text-sm font-semibold text-primary-fg hover:underline">
+      <%= t(".ver_radar") %> <span aria-hidden="true">→</span>
+    </a>
+  <% end %>
+</section>

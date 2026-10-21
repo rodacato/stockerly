@@ -169,4 +169,51 @@ RSpec.describe Trading::UseCases::AssemblePanorama do
       expect(radar.map(&:kind)).to eq([ :position ])
     end
   end
+
+  describe "today" do
+    def hold(asset, **attrs)
+      create(:position, portfolio: portfolio, asset: asset, shares: 10, avg_cost: 50, status: :open, **attrs)
+    end
+
+    it "is a first run for a user with nothing held or watched" do
+      expect(described_class.call(user: user)[:today].state).to eq(:first_run)
+    end
+
+    it "is calm when quotes are current and nothing is near" do
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70))
+
+      expect(described_class.call(user: user)[:today].state).to eq(:calm)
+    end
+
+    it "is stale, never calm, when a held quote is too old" do
+      hold(mxn_asset(symbol: "WALMEX", current_price: 70, price_updated_at: 6.days.ago))
+
+      expect(described_class.call(user: user)[:today].state).to eq(:stale)
+    end
+
+    it "lists earnings of what is held inside the window, and ignores the rest" do
+      held = mxn_asset(symbol: "WALMEX", current_price: 70)
+      other = mxn_asset(symbol: "GMEXICO", current_price: 60)
+      hold(held)
+      create(:earnings_event, asset: held, report_date: 2.days.from_now.to_date)
+      create(:earnings_event, asset: other, report_date: 2.days.from_now.to_date)
+      create(:earnings_event, asset: held, report_date: 20.days.from_now.to_date)
+
+      today = described_class.call(user: user)[:today]
+
+      expect(today.items.map { |i| [ i.kind, i.asset.symbol, i.days ] }).to eq([ [ :earnings, "WALMEX", 2 ] ])
+    end
+
+    it "lists a watched asset near its own threshold, and not one far from it" do
+      near = mxn_asset(symbol: "NEAR", current_price: 100)
+      far = mxn_asset(symbol: "FAR", current_price: 100)
+      [ near, far ].each { |asset| create(:watchlist_item, user: user, asset: asset) }
+      create(:alert_rule, user: user, asset_symbol: "NEAR", threshold_value: 103)
+      create(:alert_rule, user: user, asset_symbol: "FAR", threshold_value: 150)
+
+      today = described_class.call(user: user)[:today]
+
+      expect(today.items.map { |i| i.asset.symbol }).to eq([ "NEAR" ])
+    end
+  end
 end
