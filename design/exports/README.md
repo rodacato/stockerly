@@ -82,6 +82,7 @@ not by reading the tables.
 | `descubrir-olas-sin-datos.png` | `[Descubrir] / Olas / Sin datos` |
 | `descubrir-olas-calendario-agotado.png` | `[Descubrir] / Olas / Calendario agotado` — past the YAML's horizon (D33) |
 | `ajustes-hub.png` | `[Ajustes] / Hub / Default` |
+| `ajustes-hub-dos-pasos-activa.png` | `[Ajustes] / Hub / Dos pasos activa` — TOTP enrolled: a card with the codes left and Generar códigos nuevos |
 | `ajustes-nombre-correo.png` | `[Ajustes] / Nombre y correo / Default` |
 | `ajustes-contrasena.png` | `[Ajustes] / Contraseña / Default` |
 | `ajustes-tu-plan-vacio.png` | `[Ajustes] / Tu plan / Vacío` — no plan yet, nothing prefilled |
@@ -90,9 +91,12 @@ not by reading the tables.
 | `ajustes-integraciones.png` | `[Ajustes] / Integraciones / Default` |
 | `ajustes-integraciones-administrar.png` | `[Ajustes] / Integraciones · Administrar / Default` — one source opened: verify, key, limits, delete |
 | `ajustes-integraciones-estados.png` | `[Ajustes] / Integraciones · Estados / Default` |
+| `ajustes-integraciones-vacio.png` | `[Ajustes] / Integraciones / Vacío` — every source deleted |
 | `ajustes-registros.png` | `[Ajustes] / Registros / Default` |
-| `ajustes-registros-detalle.png` | `[Ajustes] / Registros · Detalle / Default` — one entry opened: payload and detail |
+| `ajustes-registros-detalle.png` | `[Ajustes] / Registros · Detalle / Default` — one entry opened: ID, severity and duration |
+| `ajustes-registros-filtrado.png` | `[Ajustes] / Registros / Filtrado sin resultados` — a filter that matches nothing |
 | `ajustes-estado.png` | `[Ajustes] / Estado y mantenimiento / Default` |
+| `ajustes-estado-mantenimiento-activo.png` | `[Ajustes] / Estado y mantenimiento / Mantenimiento activo` — the switch on, with its warning box |
 | `ajustes-errores.png` | `[Ajustes] / Errores / Default` — only with developer_mode (ADR-020) |
 | `ajustes-errores-detalle.png` | `[Ajustes] / Errores · Detalle / Default` |
 | `ajustes-en-mantenimiento.png` | `[Ajustes] / En mantenimiento / Default` — the 503 page a visitor gets while maintenance_mode is on |
