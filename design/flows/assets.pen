@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 1.3.0 · updated: 2026-10-21\n\n1. PURPOSE\nThe Activos tab: the three tiers of interest in a symbol (D9, named per D48) — Holdings (open positions), Watchlist (watchlist_items) and Tracked (the catalogue the instance syncs) — plus the two ways data gets in: the trade sheet and the CSV importer. Historial holds the three lists with no other home (D43, D60).\n\n2. ENTRY POINTS\n- Holdings / Watchlist — BottomNav tab (/assets, assets#index; ?tab=watchlist)\n- Registrar movimiento — the primary button above the tabs opens /trades/new inside a <dialog> (D11, components/_sheet_dialog); the asset detail opens it pre-filled\n- Historial, Importar movimientos, Tracked — the three foot-of-list rows under either tab (/positions, /trades/import, /tracked). All three carry HeaderBar back to /assets\n- Rows link to the asset detail in cockpit.pen\n- Buscar (D125) — the search icon in TopBar on every screen that shows TopBar (screens with a HeaderBar have none), and the field in TopBarDesktop on every desktop screen, whose results open as a dropdown. /search on mobile carries HeaderBar back to /dashboard. Activo desconocido is /market/:symbol for a symbol the catalogue lacks\n\n3. SCREENS (left → right, by band)\nHoldings\n- Holdings · Default — summary with the unrealised-gain chip, the sheet button, holdings by market value (D68), each with its share of the patrimonio and its gain\n- Holdings · Vacío — nothing open: no summary (D120), the empty state's door is the importer\n- Holdings · Sin consolidar — no FX rate: the notice replaces the summary\n- Holdings · Sin cotización — a held asset has no quote: \"Valuación no disponible\" replaces the summary, that row shows a dash, and the list falls back to alphabetical\nWatchlist\n- Watchlist · Default — rows ordered by distance to their own alert threshold, then by day move (D68)\n- Watchlist · Vacía\nRegistrar movimiento\n- Registrar movimiento · Sheet — a USD buy into a held position: projection and FX card showing\n- Registrar movimiento · Con teclado — D11's acceptance: the footer survives the keyboard (the note beside it)\n- Registrar movimiento · CETES — a fixed-income buy asks for Vencimiento; MXN hides the FX card\nHistorial\n- Historial · Default — Movimientos, Dividendos cobrados, Posiciones cerradas\n- Historial · Editando — a movement replaced in place by its edit form (trades/_edit_row)\n- Historial · Confirmar borrado — a movement replaced in place by the delete confirmation (trades/_confirm_delete_row)\n- Historial · Vacío\nTracked\n- Tracked · Default — catalogue rows, the budget last on mobile\n- Tracked · Agregar activo — the typeahead and the six fields it fills (D64)\n- Tracked · Sin fuente — an asset the provider cannot name, with its fix in place (D46)\n- Tracked · Sin coincidencias — a filter that matches nothing\n- Tracked · Vacío — an empty catalogue: no budget bar, no legend\nImportar CSV\n- Importar CSV · Default, Revisión, Símbolos desconocidos (#401, D62, D63, D65)\nBuscar (D125)\n- Buscar · En tu catálogo, Catálogo y Yahoo, Fuera de tu catálogo, Sin resultados, Yahoo no responde; Activo desconocido · Default, Yahoo no responde\nDesktop\n- Holdings, Registrar movimiento (the same dialog, centred), Tracked (list beside the budget) and Buscar · En tu catálogo (the results as a dropdown under the field). The rest reflow (D4)\n\n4. BUSINESS RULES\n- The summary renders only while something is open (D120); the unrealised gain is a signed chip beside the figures, not part of the Invertido line. Without an FX rate the summary becomes the Sin consolidar notice and rows keep their own currency\n- Without a quote or a rate, holdings fall back to alphabetical order (trading/use_cases/load_assets.rb)\n- Money per D10: the summary declares the currency, rows in it drop the symbol, anything else keeps its ISO prefix. Historial's trade and dividend rows keep theirs because they mix\n- The summary is followed by a caption that dates the oldest held quote in CDMX and says where to find sources; a missing date, stale quotes and a failed sync each get their own line (shared/_valuation_caption). A missing quote removes the composite instead of valuing it at zero (shared/_valuation_notice)\n- A holding row leads with its value and follows with the day's move, a dash when there is no previous close (D69, ADR-021); a third line states its share of the patrimonio and its unrealised gain; both are absent without a consolidated total (Sin consolidar, Sin cotización). No state chip, no confluence dots (D85)\n- A watchlist row reads \"falta X%\" when an alert threshold exists, \"sigues ±X%\" from entry_price otherwise\n- The sheet asks for Vencimiento only on a fixed-income buy; the FX card hides when the currency is blank or MXN; the average-cost projection shows only on a buy into the held symbol in its own currency (trades/new.html.erb, trade_sheet_controller.js)\n- A movement executed within the last 30 days can be edited or deleted in place from Historial (trade.rb)\n- Tracked counts the whole catalogue; the filter narrows the list only. Seguir shows on the Tracked tier alone; a paused row dims, a sourceless one does not (D46)\n- The budget bar is in spend order — Holdings, Watchlist, the rest — over active stocks and ETFs only (D82); with none of those it is absent\n- An import is all-or-nothing unless the owner chooses to leave the unknown symbols out\n- Buscar (D125): the catalogue answers first, by symbol or name, from two characters, with no provider call; a hit opens the asset. Yahoo is asked only when the catalogue has no match or on Buscar «…» en Yahoo Finance; its results leave out symbols already tracked, and its failure never hides catalogue results. Rastrear tracks the symbol at once and lands on its page. Option contracts are not offered\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — assets.index, assets.tracked, trades.new, positions.index, trade_imports.*, comun.sin_tc_*, comun.cancelar, comun.guardar. Row figures: AssetsHelper. Buscar: search.results.* (en_tu_catalogo, en_yahoo, buscar_en_yahoo, rastrear, nada, yahoo_caido), market.unknown.yahoo_lo_tiene, nav.buscar, plus assets.tracked.buscar, buscar_placeholder, buscar_vacio, sin_resultados, no_encontrado, agregado and comun.tipo_activo. FX note date: FxRatesController (date_label).\n\n6. STATES NOT DRAWN\n- \"Guardado. Registra el siguiente.\" above the sheet after Guardar y registrar otro\n- A refused save in the sheet (trades.errores.titulos_insuficientes, tc_faltante, a validation error) arrives as a flash alert toast (trades_controller.rb), not inside the sheet\n- /trades/new opened directly (the PWA shortcut pwa.manifest.registrar, or no JS) renders the form as a full page in the shell, not a sheet (trades/new.html.erb)\n- The importer's error line, and the other refusals (invalid_rows, missing_fx_history, repeated_external_ids, unsupported_asset_type): the same card with the detail listed below it\n- Import track_missing: the flashes \"Di de alta %{count} símbolos. Vuelve a subir tu archivo.\" and \"Di de alta %{count} de una vez. Voy por %{pending} más con el proveedor y te aviso al terminar.\" (trade_imports.track_missing.*)\n- The budget exhausted or unlimited — exhausted: the headline reads \"Sin llamadas\" and the detail \"Agotado hasta mañana\". Unlimited: the headline reads \"Sin límite\"\n- The edit and delete icons on Historial rows — MovementItem has no action slot in the kit; rows within 30 days render both icons, so Historial · Default, Editando and Confirmar borrado under-draw them\n- The typeahead results are an overlay in code; the artboard draws them in flow\n- A Watchlist tab with nothing held — the summary is absent\n- Empty states and the drop zone have a dashed border — the .pen format has none\n- Buscar with an empty or one-character query: the field and nothing else\n- Buscar · Catálogo y Yahoo when Yahoo fails: the Yahoo no responde notice replaces the Yahoo section\n- Buscar when Yahoo is rate limited: the same notice as Yahoo no responde\n- After Rastrear: the asset page with \"%{symbol} se agregó a Tracked.\"\n- Activo desconocido when Yahoo does not know the symbol either: the empty state alone, no row\n\n7. OPEN FINDINGS\nD125 — shipped; the kit TopBar and TopBarDesktop carry search since kit 1.3.0.\n\n8. HISTORY\n→ Log frame, below this brief. Reasoning before 2026-09-16: git show 120600bb:design/V2_REMAINING.md (ACT-*).\n",
+          "content": "kit-version-source: 1.4.0 · updated: 2026-10-21\n\n1. PURPOSE\nThe Activos tab: the three tiers of interest in a symbol (D9, named per D48) — Holdings (open positions), Watchlist (watchlist_items) and Tracked (the catalogue the instance syncs) — plus the two ways data gets in: the trade sheet and the CSV importer. Historial holds the three lists with no other home (D43, D60).\n\n2. ENTRY POINTS\n- Holdings / Watchlist — BottomNav tab (/assets, assets#index; ?tab=watchlist)\n- Registrar movimiento — the primary button above the tabs opens /trades/new inside a <dialog> (D11, components/_sheet_dialog); the asset detail opens it pre-filled\n- Historial, Importar movimientos, Tracked — the three foot-of-list rows under either tab (/positions, /trades/import, /tracked). All three carry HeaderBar back to /assets\n- Rows link to the asset detail in cockpit.pen\n- Buscar (D125) — the search icon in TopBar on every screen that shows TopBar (screens with a HeaderBar have none), and the field in TopBarDesktop on every desktop screen, whose results open as a dropdown. /search on mobile carries HeaderBar back to /dashboard. Activo desconocido is /market/:symbol for a symbol the catalogue lacks\n\n3. SCREENS (left → right, by band)\nHoldings\n- Holdings · Default — summary with the unrealised-gain chip, the sheet button, holdings by market value (D68), each with its share of the patrimonio and its gain\n- Holdings · Vacío — nothing open: no summary (D120), the empty state's door is the importer\n- Holdings · Sin consolidar — no FX rate: the notice replaces the summary\n- Holdings · Sin cotización — a held asset has no quote: \"Valuación no disponible\" replaces the summary, that row shows a dash, and the list falls back to alphabetical\nWatchlist\n- Watchlist · Default — rows ordered by distance to their own alert threshold, then by day move (D68)\n- Watchlist · Vacía\nRegistrar movimiento\n- Registrar movimiento · Sheet — a USD buy into a held position: projection and FX card showing\n- Registrar movimiento · Con teclado — D11's acceptance: the footer survives the keyboard (the note beside it)\n- Registrar movimiento · CETES — a fixed-income buy asks for Vencimiento; MXN hides the FX card\nHistorial\n- Historial · Default — Movimientos, Dividendos cobrados, Posiciones cerradas; the two movements within 30 days carry the edit and delete icons (MovementItem's Acciones slot), the older one has none\n- Historial · Editando — a movement replaced in place by its edit form (trades/_edit_row)\n- Historial · Confirmar borrado — a movement replaced in place by the delete confirmation (trades/_confirm_delete_row)\n- Historial · Vacío\nTracked\n- Tracked · Default — catalogue rows, the budget last on mobile\n- Tracked · Agregar activo — the typeahead and the six fields it fills (D64)\n- Tracked · Sin fuente — an asset the provider cannot name, with its fix in place (D46)\n- Tracked · Sin coincidencias — a filter that matches nothing\n- Tracked · Vacío — an empty catalogue: no budget bar, no legend\nImportar CSV\n- Importar CSV · Default, Revisión, Símbolos desconocidos (#401, D62, D63, D65)\nBuscar (D125)\n- Buscar · En tu catálogo, Catálogo y Yahoo, Fuera de tu catálogo, Sin resultados, Yahoo no responde; Activo desconocido · Default, Yahoo no responde\nDesktop\n- Holdings, Registrar movimiento (the same dialog, centred), Tracked (list beside the budget) and Buscar · En tu catálogo (the results as a dropdown under the field). The rest reflow (D4)\n\n4. BUSINESS RULES\n- The summary renders only while something is open (D120); the unrealised gain is a signed chip beside the figures, not part of the Invertido line. Without an FX rate the summary becomes the Sin consolidar notice and rows keep their own currency\n- Without a quote or a rate, holdings fall back to alphabetical order (trading/use_cases/load_assets.rb)\n- Money per D10: the summary declares the currency, rows in it drop the symbol, anything else keeps its ISO prefix. Historial's trade and dividend rows keep theirs because they mix\n- The summary is followed by a caption that dates the oldest held quote in CDMX and says where to find sources; a missing date, stale quotes and a failed sync each get their own line (shared/_valuation_caption). A missing quote removes the composite instead of valuing it at zero (shared/_valuation_notice)\n- A holding row leads with its value and follows with the day's move, a dash when there is no previous close (D69, ADR-021); a third line states its share of the patrimonio and its unrealised gain; both are absent without a consolidated total (Sin consolidar, Sin cotización). No state chip, no confluence dots (D85)\n- A watchlist row reads \"falta X%\" when an alert threshold exists, \"sigues ±X%\" from entry_price otherwise\n- The sheet asks for Vencimiento only on a fixed-income buy; the FX card hides when the currency is blank or MXN; the average-cost projection shows only on a buy into the held symbol in its own currency (trades/new.html.erb, trade_sheet_controller.js)\n- A movement executed within the last 30 days can be edited or deleted in place from Historial (trade.rb)\n- Tracked counts the whole catalogue; the filter narrows the list only. Seguir shows on the Tracked tier alone; a paused row dims, a sourceless one does not (D46)\n- The budget bar is in spend order — Holdings, Watchlist, the rest — over active stocks and ETFs only (D82); with none of those it is absent\n- An import is all-or-nothing unless the owner chooses to leave the unknown symbols out\n- Buscar (D125): the catalogue answers first, by symbol or name, from two characters, with no provider call; a hit opens the asset. Yahoo is asked only when the catalogue has no match or on Buscar «…» en Yahoo Finance; its results leave out symbols already tracked, and its failure never hides catalogue results. Rastrear tracks the symbol at once and lands on its page. Option contracts are not offered\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — assets.index, assets.tracked, trades.new, positions.index, trade_imports.*, comun.sin_tc_*, comun.cancelar, comun.guardar. Row figures: AssetsHelper. Buscar: search.results.* (en_tu_catalogo, en_yahoo, buscar_en_yahoo, rastrear, nada, yahoo_caido), market.unknown.yahoo_lo_tiene, nav.buscar, plus assets.tracked.buscar, buscar_placeholder, buscar_vacio, sin_resultados, no_encontrado, agregado and comun.tipo_activo. FX note date: FxRatesController (date_label).\n\n6. STATES NOT DRAWN\n- \"Guardado. Registra el siguiente.\" above the sheet after Guardar y registrar otro\n- A refused save in the sheet (trades.errores.titulos_insuficientes, tc_faltante, a validation error) arrives as a flash alert toast (trades_controller.rb), not inside the sheet\n- /trades/new opened directly (the PWA shortcut pwa.manifest.registrar, or no JS) renders the form as a full page in the shell, not a sheet (trades/new.html.erb)\n- The importer's error line, and the other refusals (invalid_rows, missing_fx_history, repeated_external_ids, unsupported_asset_type): the same card with the detail listed below it\n- Import track_missing: the flashes \"Di de alta %{count} símbolos. Vuelve a subir tu archivo.\" and \"Di de alta %{count} de una vez. Voy por %{pending} más con el proveedor y te aviso al terminar.\" (trade_imports.track_missing.*)\n- The budget exhausted or unlimited — exhausted: the headline reads \"Sin llamadas\" and the detail \"Agotado hasta mañana\". Unlimited: the headline reads \"Sin límite\"\n- A save after editing returns the row to normal with the flash \"Movimiento actualizado.\"; a delete removes it with \"Movimiento eliminado.\"; a validation failure redirects to Historial with the error as a flash (trades.flash.*)\n- The edit window lapsing between render and click: the flash \"Sólo se pueden editar los movimientos de los últimos 30 días.\" / \"Sólo se pueden eliminar los movimientos de los últimos 30 días.\" (trades.errores.muy_antiguo_*)\n- The typeahead results are an overlay in code; the artboard draws them in flow\n- A Watchlist tab with nothing held — the summary is absent\n- Empty states and the drop zone have a dashed border — the .pen format has none\n- Buscar with an empty or one-character query: the field and nothing else\n- Buscar · Catálogo y Yahoo when Yahoo fails: the Yahoo no responde notice replaces the Yahoo section\n- Buscar when Yahoo is rate limited: the same notice as Yahoo no responde\n- After Rastrear: the asset page with \"%{symbol} se agregó a Tracked.\"\n- Activo desconocido when Yahoo does not know the symbol either: the empty state alone, no row\n\n7. OPEN FINDINGS\nD125 — shipped; the kit TopBar and TopBarDesktop carry search since kit 1.3.0.\n\n8. HISTORY\n→ Log frame, below this brief. Reasoning before 2026-09-16: git show 120600bb:design/V2_REMAINING.md (ACT-*).\n",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -588,6 +588,65 @@
               "fontFamily": "$font-sans",
               "fontSize": 11,
               "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ZJD5x",
+          "x": 0,
+          "y": 0,
+          "name": "Acciones",
+          "context": "Acciones: on only for trades within the 30-day edit window (Trade#editable?, app/models/trade.rb:27-31); absent, not disabled, otherwise. Hover: Editar icon → $primary, Eliminar icon → $negative (trades/_trade_row).",
+          "enabled": false,
+          "gap": 4,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Y2BIx",
+              "name": "Editar",
+              "context": "aria-label: Editar movimiento",
+              "width": 32,
+              "height": 32,
+              "cornerRadius": 8,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ovWo7",
+                  "name": "EditarIcon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "pencil",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "j0RCm",
+              "name": "Eliminar",
+              "context": "aria-label: Eliminar movimiento",
+              "width": 32,
+              "height": 32,
+              "cornerRadius": 8,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "f3Hclo",
+                  "name": "EliminarIcon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "trash-2",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                }
+              ]
             }
           ]
         }
@@ -8189,7 +8248,7 @@
                       "fontWeight": "700"
                     },
                     "DVcPe": {
-                      "content": "24 de ago · compra 12 títulos · USD 172.40"
+                      "content": "14 de oct · compra 12 títulos · USD 172.40"
                     },
                     "k9DgTC": {
                       "fill": "$positive-bg",
@@ -8202,6 +8261,9 @@
                       "content": "compra",
                       "fill": "$positive-fg",
                       "fontSize": 12
+                    },
+                    "ZJD5x": {
+                      "enabled": true
                     }
                   }
                 },
@@ -8224,7 +8286,7 @@
                       "fontWeight": "700"
                     },
                     "DVcPe": {
-                      "content": "21 de ago · venta 4 títulos · USD 118.90"
+                      "content": "9 de oct · venta 4 títulos · USD 118.90"
                     },
                     "k9DgTC": {
                       "fill": "$warning-bg",
@@ -8237,6 +8299,9 @@
                       "content": "venta",
                       "fill": "$warning-fg",
                       "fontSize": 12
+                    },
+                    "ZJD5x": {
+                      "enabled": true
                     }
                   }
                 },
@@ -12322,7 +12387,7 @@
       "type": "frame",
       "id": "YTft3",
       "x": 0,
-      "y": 4627,
+      "y": 4787,
       "name": "Log · Activos",
       "width": 360,
       "fill": "$bg-surface",
@@ -12353,7 +12418,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-21 — Mirrored to code at 809ea789: kit 1.3.0 (search in TopBar and TopBarDesktop, AssetRow holding line), unrealised-gain chip, CETES_28D, alphabetical Sin cotización, new Buscar · Catálogo y Yahoo, Activo desconocido · Yahoo no responde, Historial · Editando and Confirmar borrado, Tracked · Vacío; flow-local TopBar · Buscar and TopBarDesktop · Buscar removed; re-laid as bands Holdings, Watchlist, Registrar movimiento, Historial, Tracked, Importar CSV, Buscar, Desktop.\n2026-10-14 · AssetRow and WatchRow vendored as the code renders them: one horizontal row — symbol and subtitle, the 64 px sparkline, the two emphasis slots (a watchlist row keeps its threshold line under them) — with the subtitle wrapping\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the three top bars at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots; Segmented options 44 px\n2026-10-14 · #821 · Holdings and Watchlist (mobile and desktop) carry the quote caption under the summary; new artboard Holdings · Sin cotización\n2026-09-17 · D125 · Buscar drawn ahead of the code: five mobile artboards, one desktop, and flow-local TopBar · Buscar and TopBarDesktop · Buscar\n2026-09-17 · D123: the Tracked budget panel on all five Tracked artboards names Yahoo Finance, reads 4000 calls, and gains the whole-quota line\n2026-09-16 · fidelity pass against the rendered app at 390 and 1280: holdings reordered by market value (D68), share counts in the code's significant digits, watchlist prices at two decimals; the paused Tracked-tier row now wraps its symbol line, as the code does since it stopped overflowing the phone\n2026-09-16 · kit 1.0.0 · BottomNav, SidebarNav and TopBarDesktop masters back to the kit, each screen lights its own tab; HeaderBar vendored and replaces seven hand-built headers\n2026-09-16 · D78 · every artboard mirrored to the code: summary and sheet button above the tabs, no counts on the tabs, the three foot rows, day move in the row, the sheet's title and sticky footer, Tracked rows with tier chip and Seguir / Pausar / borrar, the two-segment budget, Historial without icons, the importer's real copy\n2026-09-16 · removed Tracked · Buscar — the filter is an input on Tracked, not a screen; search is its own feature\n2026-09-16 · new artboards: Watchlist · Vacía, Tracked · Sin coincidencias, Holdings · Sin consolidar, Registrar movimiento · CETES, Historial · Vacío\n2026-09-16 · code fixed alongside: CETES could not be recorded, the projection showed on a sale, the dividends header named a currency its rows did not use, Tracked's count followed the filter\n2026-09-16 · canvas · grid gutter 70 → 120, bands reflowed\n2026-09-11 · Tracked · Agregar activo drawn, closing D64: the search field with the placeholder the locale carries, three typeahead results in the row shape Tracked·Buscar already uses, the six fields the gateway fills with the code's own placeholders, and the two actions. Copied from Tracked / Default so the shell stays one thing, and the band was reflowed so the screen reads where it belongs. Two drifts recorded in the brief rather than fixed here: the entry point is a button, not the header icon, and the budget renders last on mobile · D64\n\n2026-09-11 · Both drifts now FIXED in the code's favour — Adrian's call. The header + icon is gone from Tracked/Default, Tracked/Sin fuente and Tracked · Agregar activo; each opens instead with a justify-between row carrying the count and a primary Agregar activo button, which is tracked.html.erb:5-12. The budget moved to the end of the mobile scroll in all three, which is the aside's real DOM order; desktop keeps it beside the column because lg:flex-row does. Two smaller divergences were measured and left recorded, not swept: the intro belongs to the aside in code, and the list's count caption exists only here · D64\n2026-09-05 · D85 fallout · Watchlist's Resumen block deleted — a 'con señal hoy' count needs the chip that is not being built, and the code never had the block\n2026-09-05 · #586 · AssetRow drops Estado and Dots here too — three files carried them, the code backed none\n2026-09-05 · C-3 · Holdings/Vacío drops the demo door; the CSV one it also drew has shipped, so the state now draws what exists\n2026-09-05 · D78 · the trade sheet gains the Moneda select, the average-cost projection (#428) and the code's field pairing — Sheet, Con teclado and Desktop\n2026-09-05 · Sheet grows 844 → 940 and Desktop dialog 800 → 920; both anchored by math rather than by eye\n2026-09-05 · brief records D64 as open — the typeahead has no artboard and Tracked · Buscar is a different control\n2026-08-29 · Watchlist: the row's third slot moved from 'sigues +X%' (entry_price, history) to 'falta X%' — distance to the active alert threshold — and the six rows are ordered by it, so the artboard shows the queue D68 describes. Subtitle rewritten to name the new column · D67, D68, D69\n2026-08-29 · Símbolos desconocidos gains two escapes per row — rename (alias) and delisted (frozen). D63 answered: the source column is now a state, not nine copies of one string · D65\n2026-08-29 · Símbolos desconocidos becomes a checkbox list with a bulk action; the CTA was a link carrying no symbols · D63\n2026-08-29 · finding: the Agregar activo typeahead has no artboard in this flow, and the code changed under it · D64\n2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
+          "content": "2026-10-21 — kit 1.4.0: MovementItem's Acciones slot vendored; Historial · Default, Editando and Confirmar borrado show the edit and delete icons on the two movements within 30 days (dated 14 and 9 de oct); Guardar on $primary-fg at sm padding and the delete icon at 16, as the code renders them.\n2026-10-21 — Mirrored to code at 809ea789: kit 1.3.0 (search in TopBar and TopBarDesktop, AssetRow holding line), unrealised-gain chip, CETES_28D, alphabetical Sin cotización, new Buscar · Catálogo y Yahoo, Activo desconocido · Yahoo no responde, Historial · Editando and Confirmar borrado, Tracked · Vacío; flow-local TopBar · Buscar and TopBarDesktop · Buscar removed; re-laid as bands Holdings, Watchlist, Registrar movimiento, Historial, Tracked, Importar CSV, Buscar, Desktop.\n2026-10-14 · AssetRow and WatchRow vendored as the code renders them: one horizontal row — symbol and subtitle, the 64 px sparkline, the two emphasis slots (a watchlist row keeps its threshold line under them) — with the subtitle wrapping\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the three top bars at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots; Segmented options 44 px\n2026-10-14 · #821 · Holdings and Watchlist (mobile and desktop) carry the quote caption under the summary; new artboard Holdings · Sin cotización\n2026-09-17 · D125 · Buscar drawn ahead of the code: five mobile artboards, one desktop, and flow-local TopBar · Buscar and TopBarDesktop · Buscar\n2026-09-17 · D123: the Tracked budget panel on all five Tracked artboards names Yahoo Finance, reads 4000 calls, and gains the whole-quota line\n2026-09-16 · fidelity pass against the rendered app at 390 and 1280: holdings reordered by market value (D68), share counts in the code's significant digits, watchlist prices at two decimals; the paused Tracked-tier row now wraps its symbol line, as the code does since it stopped overflowing the phone\n2026-09-16 · kit 1.0.0 · BottomNav, SidebarNav and TopBarDesktop masters back to the kit, each screen lights its own tab; HeaderBar vendored and replaces seven hand-built headers\n2026-09-16 · D78 · every artboard mirrored to the code: summary and sheet button above the tabs, no counts on the tabs, the three foot rows, day move in the row, the sheet's title and sticky footer, Tracked rows with tier chip and Seguir / Pausar / borrar, the two-segment budget, Historial without icons, the importer's real copy\n2026-09-16 · removed Tracked · Buscar — the filter is an input on Tracked, not a screen; search is its own feature\n2026-09-16 · new artboards: Watchlist · Vacía, Tracked · Sin coincidencias, Holdings · Sin consolidar, Registrar movimiento · CETES, Historial · Vacío\n2026-09-16 · code fixed alongside: CETES could not be recorded, the projection showed on a sale, the dividends header named a currency its rows did not use, Tracked's count followed the filter\n2026-09-16 · canvas · grid gutter 70 → 120, bands reflowed\n2026-09-11 · Tracked · Agregar activo drawn, closing D64: the search field with the placeholder the locale carries, three typeahead results in the row shape Tracked·Buscar already uses, the six fields the gateway fills with the code's own placeholders, and the two actions. Copied from Tracked / Default so the shell stays one thing, and the band was reflowed so the screen reads where it belongs. Two drifts recorded in the brief rather than fixed here: the entry point is a button, not the header icon, and the budget renders last on mobile · D64\n\n2026-09-11 · Both drifts now FIXED in the code's favour — Adrian's call. The header + icon is gone from Tracked/Default, Tracked/Sin fuente and Tracked · Agregar activo; each opens instead with a justify-between row carrying the count and a primary Agregar activo button, which is tracked.html.erb:5-12. The budget moved to the end of the mobile scroll in all three, which is the aside's real DOM order; desktop keeps it beside the column because lg:flex-row does. Two smaller divergences were measured and left recorded, not swept: the intro belongs to the aside in code, and the list's count caption exists only here · D64\n2026-09-05 · D85 fallout · Watchlist's Resumen block deleted — a 'con señal hoy' count needs the chip that is not being built, and the code never had the block\n2026-09-05 · #586 · AssetRow drops Estado and Dots here too — three files carried them, the code backed none\n2026-09-05 · C-3 · Holdings/Vacío drops the demo door; the CSV one it also drew has shipped, so the state now draws what exists\n2026-09-05 · D78 · the trade sheet gains the Moneda select, the average-cost projection (#428) and the code's field pairing — Sheet, Con teclado and Desktop\n2026-09-05 · Sheet grows 844 → 940 and Desktop dialog 800 → 920; both anchored by math rather than by eye\n2026-09-05 · brief records D64 as open — the typeahead has no artboard and Tracked · Buscar is a different control\n2026-08-29 · Watchlist: the row's third slot moved from 'sigues +X%' (entry_price, history) to 'falta X%' — distance to the active alert threshold — and the six rows are ordered by it, so the artboard shows the queue D68 describes. Subtitle rewritten to name the new column · D67, D68, D69\n2026-08-29 · Símbolos desconocidos gains two escapes per row — rename (alias) and delisted (frozen). D63 answered: the source column is now a state, not nine copies of one string · D65\n2026-08-29 · Símbolos desconocidos becomes a checkbox list with a bulk action; the CTA was a link carrying no symbols · D63\n2026-08-29 · finding: the Agregar activo typeahead has no artboard in this flow, and the code changed under it · D64\n2026-08-28 · D62 resolved · the CSV door drops the broker names — one format, Stockerly's\n2026-08-28 · bands reflowed onto the grid-* variables; Historial moved out of the component row into the band its x already put it in\n2026-08-28 · dated lines migrated out of the brief into this frame; the brief is present tense from here\n2026-08-28 · kit 0.8.1 · Importar CSV drawn — Default, Revisión, Símbolos desconocidos (#401; engine shipped first in #400) · D62\n2026-08-27 · kit 0.8.0 · Tracked · Sin fuente drawn (#329, cut down) · D46\n2026-08-27 · Historial drawn as three sections; posiciones abiertas dropped · D43, D35\n2026-08-27 · NavRow vendored; the four hand-built copies replaced by instances · D49\n2026-08-27 · vocabulary moved to Holdings · Watchlist · Tracked · D48\n2026-08-27 · brief corrected: Segmented and OptionCard were listed as kit candidates and are in the kit\n2026-08-24 · desktop pass — Holdings grid, Resumen as a bar (panel C1/C5/C4) · D4",
           "lineHeight": 1.6,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -21421,7 +21486,7 @@
                                       "id": "Ijwcn",
                                       "name": "v",
                                       "fill": "$fg-default",
-                                      "content": "24/08/2026 10:30",
+                                      "content": "14/10/2026, 10:30",
                                       "fontFamily": "$font-mono",
                                       "fontSize": 14,
                                       "fontWeight": "normal"
@@ -21625,10 +21690,10 @@
                           "type": "frame",
                           "id": "Q3BAFY",
                           "name": "Guardar",
-                          "fill": "$primary",
+                          "fill": "$primary-fg",
                           "cornerRadius": "$radius-sm",
                           "padding": [
-                            6,
+                            8,
                             12
                           ],
                           "alignItems": "center",
@@ -21668,7 +21733,7 @@
                       "fontWeight": "700"
                     },
                     "DVcPe": {
-                      "content": "21 de ago · venta 4 títulos · USD 118.90"
+                      "content": "9 de oct · venta 4 títulos · USD 118.90"
                     },
                     "k9DgTC": {
                       "fill": "$warning-bg",
@@ -21681,6 +21746,9 @@
                       "content": "venta",
                       "fill": "$warning-fg",
                       "fontSize": 12
+                    },
+                    "ZJD5x": {
+                      "enabled": true
                     }
                   }
                 },
@@ -22069,8 +22137,8 @@
                       "type": "icon",
                       "id": "y2Kbtd",
                       "name": "i",
-                      "width": 20,
-                      "height": 20,
+                      "width": 16,
+                      "height": 16,
                       "icon": "trash-2",
                       "library": "lucide",
                       "fill": "$negative-fg"
@@ -22118,7 +22186,7 @@
                               "fill": "$negative-fg",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": " · 24 de ago · compra 12 títulos · USD 172.40",
+                              "content": " · 14 de oct · compra 12 títulos · USD 172.40",
                               "fontFamily": "$font-sans",
                               "fontSize": 12,
                               "fontWeight": "normal"
@@ -22207,7 +22275,7 @@
                       "fontWeight": "700"
                     },
                     "DVcPe": {
-                      "content": "21 de ago · venta 4 títulos · USD 118.90"
+                      "content": "9 de oct · venta 4 títulos · USD 118.90"
                     },
                     "k9DgTC": {
                       "fill": "$warning-bg",
@@ -22220,6 +22288,9 @@
                       "content": "venta",
                       "fill": "$warning-fg",
                       "fontSize": 12
+                    },
+                    "ZJD5x": {
+                      "enabled": true
                     }
                   }
                 },
@@ -22519,7 +22590,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.3.0"
+      "value": "1.4.0"
     },
     "font-display": {
       "type": "string",
