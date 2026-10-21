@@ -43,7 +43,7 @@
       "type": "frame",
       "id": "bha3e",
       "x": 480,
-      "y": 1398,
+      "y": 1415,
       "name": "[Cockpit] / Panorama / Default",
       "clip": true,
       "width": 390,
@@ -161,28 +161,27 @@
                         },
                         {
                           "type": "frame",
-                          "id": "V0F1wR",
+                          "id": "o7zov",
                           "layoutPosition": "absolute",
-                          "x": 278,
+                          "x": 260,
                           "y": 4,
-                          "name": "Ayuda ?",
-                          "width": 18,
-                          "height": 18,
-                          "cornerRadius": 9,
-                          "stroke": "$border-default",
-                          "strokeWidth": 1,
+                          "name": "Ayuda",
+                          "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                          "width": 36,
+                          "height": 36,
+                          "cornerRadius": 8,
                           "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
-                              "type": "text",
-                              "id": "m2XCpR",
-                              "name": "?",
-                              "fill": "$fg-subtle",
-                              "content": "?",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 11,
-                              "fontWeight": "600"
+                              "type": "icon",
+                              "id": "AK31y",
+                              "name": "Info",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "info",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
                             }
                           ]
                         }
@@ -1430,7 +1429,7 @@
       "type": "frame",
       "id": "H9a5cH",
       "x": 990,
-      "y": 1398,
+      "y": 1415,
       "name": "[Cockpit] / Panorama / Tranquilo",
       "clip": true,
       "width": 390,
@@ -1549,28 +1548,27 @@
                         },
                         {
                           "type": "frame",
-                          "id": "c0WRK",
+                          "id": "pzOxD",
                           "layoutPosition": "absolute",
-                          "x": 278,
+                          "x": 260,
                           "y": 4,
-                          "name": "Ayuda ?",
-                          "width": 18,
-                          "height": 18,
-                          "cornerRadius": 9,
-                          "stroke": "$border-default",
-                          "strokeWidth": 1,
+                          "name": "Ayuda",
+                          "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                          "width": 36,
+                          "height": 36,
+                          "cornerRadius": 8,
                           "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
-                              "type": "text",
-                              "id": "k133n1",
-                              "name": "?",
-                              "fill": "$fg-subtle",
-                              "content": "?",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 11,
-                              "fontWeight": "600"
+                              "type": "icon",
+                              "id": "fei1k",
+                              "name": "Info",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "info",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
                             }
                           ]
                         }
@@ -1806,7 +1804,7 @@
       "type": "frame",
       "id": "fP4zv",
       "x": 2010,
-      "y": 4563,
+      "y": 4580,
       "name": "[Cockpit] / Asset · Mi posición / Default",
       "clip": true,
       "width": 390,
@@ -2023,7 +2021,7 @@
               "name": "LoTuyo",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -2186,7 +2184,7 @@
               "name": "Posicion",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -2469,7 +2467,7 @@
               "name": "Rendimiento",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -2824,7 +2822,7 @@
               "name": "Movimientos",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -3595,7 +3593,7 @@
       "type": "frame",
       "id": "tHAu1",
       "x": 480,
-      "y": 10446,
+      "y": 10463,
       "name": "[Cockpit] / Consolidado / Default",
       "clip": true,
       "width": 390,
@@ -5035,7 +5033,7 @@
       "type": "frame",
       "id": "FL7Uk",
       "x": 480,
-      "y": 12982,
+      "y": 12999,
       "name": "[Cockpit] / Panorama · Desktop / Default",
       "clip": true,
       "width": 1280,
@@ -5092,41 +5090,40 @@
                       "id": "X4BEc",
                       "name": "Veredicto",
                       "width": "fill_container",
-                      "layout": "vertical",
                       "gap": 8,
                       "children": [
                         {
-                          "type": "text",
-                          "id": "yWuwR",
-                          "name": "Fecha",
-                          "fill": "$fg-subtle",
-                          "content": "HOY · MAR · 20 OCT 2026 · CDMX",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal",
-                          "letterSpacing": 1.5
-                        },
-                        {
-                          "type": "text",
-                          "id": "Ti8mh",
-                          "name": "Veredicto",
-                          "fill": "$fg-default",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "Hay 3 cosas de lo tuyo para mirar hoy.",
-                          "lineHeight": 1.15,
-                          "fontFamily": "$font-display",
-                          "fontSize": 32,
-                          "fontWeight": "700"
-                        },
-                        {
                           "type": "frame",
-                          "id": "xKoRV",
-                          "name": "Subtítulo",
+                          "id": "IAWy2",
+                          "name": "Texto",
                           "width": "fill_container",
+                          "layout": "vertical",
                           "gap": 8,
-                          "alignItems": "center",
                           "children": [
+                            {
+                              "type": "text",
+                              "id": "yWuwR",
+                              "name": "Fecha",
+                              "fill": "$fg-subtle",
+                              "content": "HOY · MAR · 20 OCT 2026 · CDMX",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal",
+                              "letterSpacing": 1.5
+                            },
+                            {
+                              "type": "text",
+                              "id": "Ti8mh",
+                              "name": "Veredicto",
+                              "fill": "$fg-default",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Hay 3 cosas de lo tuyo para mirar hoy.",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$font-display",
+                              "fontSize": 32,
+                              "fontWeight": "700"
+                            },
                             {
                               "type": "text",
                               "id": "C4azN",
@@ -5138,28 +5135,40 @@
                               "fontFamily": "$font-sans",
                               "fontSize": 15,
                               "fontWeight": "normal"
-                            },
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wTmYR",
+                          "name": "AyudaWrap",
+                          "padding": [
+                            16,
+                            0,
+                            0,
+                            0
+                          ],
+                          "children": [
                             {
                               "type": "frame",
-                              "id": "Xwu9E",
-                              "name": "Ayuda ?",
-                              "width": 18,
-                              "height": 18,
-                              "cornerRadius": 9,
-                              "stroke": "$border-default",
-                              "strokeWidth": 1,
+                              "id": "juI4B",
+                              "name": "Ayuda",
+                              "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                              "width": 36,
+                              "height": 36,
+                              "cornerRadius": 8,
                               "justifyContent": "center",
                               "alignItems": "center",
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "B93w6",
-                                  "name": "?",
-                                  "fill": "$fg-subtle",
-                                  "content": "?",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 11,
-                                  "fontWeight": "600"
+                                  "type": "icon",
+                                  "id": "h6C55b",
+                                  "name": "Info",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "info",
+                                  "library": "lucide",
+                                  "fill": "$fg-subtle"
                                 }
                               ]
                             }
@@ -5191,28 +5200,27 @@
                             },
                             {
                               "type": "frame",
-                              "id": "YUeQs",
+                              "id": "pwYvN",
                               "layoutPosition": "absolute",
-                              "x": 954,
+                              "x": 936,
                               "y": 4,
-                              "name": "Ayuda ?",
-                              "width": 18,
-                              "height": 18,
-                              "cornerRadius": 9,
-                              "stroke": "$border-default",
-                              "strokeWidth": 1,
+                              "name": "Ayuda",
+                              "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                              "width": 36,
+                              "height": 36,
+                              "cornerRadius": 8,
                               "justifyContent": "center",
                               "alignItems": "center",
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "Ej8dS",
-                                  "name": "?",
-                                  "fill": "$fg-subtle",
-                                  "content": "?",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 11,
-                                  "fontWeight": "600"
+                                  "type": "icon",
+                                  "id": "gGVT7",
+                                  "name": "Info",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "info",
+                                  "library": "lucide",
+                                  "fill": "$fg-subtle"
                                 }
                               ]
                             }
@@ -5281,28 +5289,27 @@
                             },
                             {
                               "type": "frame",
-                              "id": "d532F",
+                              "id": "cq7ti",
                               "layoutPosition": "absolute",
-                              "x": 954,
+                              "x": 936,
                               "y": 4,
-                              "name": "Ayuda ?",
-                              "width": 18,
-                              "height": 18,
-                              "cornerRadius": 9,
-                              "stroke": "$border-default",
-                              "strokeWidth": 1,
+                              "name": "Ayuda",
+                              "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                              "width": 36,
+                              "height": 36,
+                              "cornerRadius": 8,
                               "justifyContent": "center",
                               "alignItems": "center",
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "apilL",
-                                  "name": "?",
-                                  "fill": "$fg-subtle",
-                                  "content": "?",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 11,
-                                  "fontWeight": "600"
+                                  "type": "icon",
+                                  "id": "ROVLE",
+                                  "name": "Info",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "info",
+                                  "library": "lucide",
+                                  "fill": "$fg-subtle"
                                 }
                               ]
                             }
@@ -5358,7 +5365,12 @@
                           "stroke": "$border-default",
                           "strokeWidth": 1,
                           "gap": 12,
-                          "padding": 14,
+                          "padding": [
+                            14,
+                            48,
+                            14,
+                            14
+                          ],
                           "alignItems": "center",
                           "children": [
                             {
@@ -5416,25 +5428,27 @@
                             },
                             {
                               "type": "frame",
-                              "id": "v5bKh",
-                              "name": "Ayuda ?",
-                              "width": 18,
-                              "height": 18,
-                              "cornerRadius": 9,
-                              "stroke": "$border-default",
-                              "strokeWidth": 1,
+                              "id": "M16XJR",
+                              "layoutPosition": "absolute",
+                              "x": 936,
+                              "y": 14,
+                              "name": "Ayuda",
+                              "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                              "width": 36,
+                              "height": 36,
+                              "cornerRadius": 8,
                               "justifyContent": "center",
                               "alignItems": "center",
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "Jrm9a",
-                                  "name": "?",
-                                  "fill": "$fg-subtle",
-                                  "content": "?",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 11,
-                                  "fontWeight": "600"
+                                  "type": "icon",
+                                  "id": "hswhW",
+                                  "name": "Info",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "info",
+                                  "library": "lucide",
+                                  "fill": "$fg-subtle"
                                 }
                               ]
                             }
@@ -5450,7 +5464,12 @@
                           "stroke": "$border-default",
                           "strokeWidth": 1,
                           "gap": 12,
-                          "padding": 14,
+                          "padding": [
+                            14,
+                            48,
+                            14,
+                            14
+                          ],
                           "alignItems": "center",
                           "children": [
                             {
@@ -5508,25 +5527,27 @@
                             },
                             {
                               "type": "frame",
-                              "id": "ZnHBz",
-                              "name": "Ayuda ?",
-                              "width": 18,
-                              "height": 18,
-                              "cornerRadius": 9,
-                              "stroke": "$border-default",
-                              "strokeWidth": 1,
+                              "id": "HDHdc",
+                              "layoutPosition": "absolute",
+                              "x": 936,
+                              "y": 14,
+                              "name": "Ayuda",
+                              "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                              "width": 36,
+                              "height": 36,
+                              "cornerRadius": 8,
                               "justifyContent": "center",
                               "alignItems": "center",
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "dpS1p",
-                                  "name": "?",
-                                  "fill": "$fg-subtle",
-                                  "content": "?",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 11,
-                                  "fontWeight": "600"
+                                  "type": "icon",
+                                  "id": "mlUyR",
+                                  "name": "Info",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "info",
+                                  "library": "lucide",
+                                  "fill": "$fg-subtle"
                                 }
                               ]
                             }
@@ -5542,7 +5563,12 @@
                           "stroke": "$border-default",
                           "strokeWidth": 1,
                           "gap": 12,
-                          "padding": 14,
+                          "padding": [
+                            14,
+                            48,
+                            14,
+                            14
+                          ],
                           "alignItems": "center",
                           "children": [
                             {
@@ -5600,25 +5626,27 @@
                             },
                             {
                               "type": "frame",
-                              "id": "IWMJP",
-                              "name": "Ayuda ?",
-                              "width": 18,
-                              "height": 18,
-                              "cornerRadius": 9,
-                              "stroke": "$border-default",
-                              "strokeWidth": 1,
+                              "id": "U7yu5F",
+                              "layoutPosition": "absolute",
+                              "x": 936,
+                              "y": 14,
+                              "name": "Ayuda",
+                              "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                              "width": 36,
+                              "height": 36,
+                              "cornerRadius": 8,
                               "justifyContent": "center",
                               "alignItems": "center",
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "c1S9JF",
-                                  "name": "?",
-                                  "fill": "$fg-subtle",
-                                  "content": "?",
-                                  "fontFamily": "$font-mono",
-                                  "fontSize": 11,
-                                  "fontWeight": "600"
+                                  "type": "icon",
+                                  "id": "cLChA",
+                                  "name": "Info",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "info",
+                                  "library": "lucide",
+                                  "fill": "$fg-subtle"
                                 }
                               ]
                             }
@@ -6315,28 +6343,27 @@
                                     },
                                     {
                                       "type": "frame",
-                                      "id": "oBvbX",
+                                      "id": "CuQ0N",
                                       "layoutPosition": "absolute",
-                                      "x": 287,
+                                      "x": 269,
                                       "y": 4,
-                                      "name": "Ayuda ?",
-                                      "width": 18,
-                                      "height": 18,
-                                      "cornerRadius": 9,
-                                      "stroke": "$border-default",
-                                      "strokeWidth": 1,
+                                      "name": "Ayuda",
+                                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                                      "width": 36,
+                                      "height": 36,
+                                      "cornerRadius": 8,
                                       "justifyContent": "center",
                                       "alignItems": "center",
                                       "children": [
                                         {
-                                          "type": "text",
-                                          "id": "n6WlQz",
-                                          "name": "?",
-                                          "fill": "$fg-subtle",
-                                          "content": "?",
-                                          "fontFamily": "$font-mono",
-                                          "fontSize": 11,
-                                          "fontWeight": "600"
+                                          "type": "icon",
+                                          "id": "JmxfE",
+                                          "name": "Info",
+                                          "width": 16,
+                                          "height": 16,
+                                          "icon": "info",
+                                          "library": "lucide",
+                                          "fill": "$fg-subtle"
                                         }
                                       ]
                                     }
@@ -6661,7 +6688,7 @@
       "type": "frame",
       "id": "lc9x8",
       "x": 1880,
-      "y": 12982,
+      "y": 12999,
       "name": "[Cockpit] / Consolidado · Desktop / Default",
       "clip": true,
       "width": 1280,
@@ -7739,7 +7766,7 @@
       "type": "frame",
       "id": "lNpAd",
       "x": 480,
-      "y": 3459,
+      "y": 3476,
       "name": "[Cockpit] / Señales / Default",
       "clip": true,
       "width": 390,
@@ -8530,7 +8557,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-21 — kit 1.4.0: MovementItem's Acciones slot vendored, off on every signal row. New Hoy artboards Push matutino, Ayuda abierta and Actualización disponible; Hoy / Default's ? glyphs become the code's 36 px info buttons (the verdict's beside the header); Mi posición's Cómo entraste card on radius 16 with a tight title; Hoy band reflowed.\n2026-10-21 — Mirrored to code at 809ea789: Hoy draws the top of /dashboard (patrimonio strip + caption and the VS CETES card replace the Cifras tiles; dates, points, item details and order follow the code; sin-plan row, Calma and Ver radar added; Cotizaciones viejas and Decisión de tasa drawn) and Panorama what renders below it (strip removed; Sentimiento del mercado heading, VIX card, Titulares); Señales rows drop their age; Asset · Análisis / Lo tuyo becomes Default and a Watchlist state is drawn; Mi posición gains LO TUYO; Consolidado gains the Tipo/Sector toggle, Cuánto pesa el dólar, VS IPC and a Por sector state; Panorama / Sin cotización, Hoy / Sin plan and the old Análisis Default retired; kit 1.3.0 re-vendored (TopBar search, TopBarDesktop search, AssetRow Holding); re-laid as bands Hoy · Panorama · Señales · Asset detail · Consolidado · Desktop.",
+          "content": "2026-10-21 — Help sweep: every Hoy artboard, Panorama's VIX card and the desktop Panorama now draw help_tip's 36×36 info button (16px icon) instead of the 18px ? glyph; the veredicto puts it beside the text column, Hoy items reserve pr-12; three Hoy artboards grew where the heading rewraps, lower bands moved 17px. Cards that render through card_classes on Mi posición, CETES and Análisis now use radius-lg (16).\n2026-10-21 — kit 1.4.0: MovementItem's Acciones slot vendored, off on every signal row. New Hoy artboards Push matutino, Ayuda abierta and Actualización disponible; Hoy / Default's ? glyphs become the code's 36 px info buttons (the verdict's beside the header); Mi posición's Cómo entraste card on radius 16 with a tight title; Hoy band reflowed.\n2026-10-21 — Mirrored to code at 809ea789: Hoy draws the top of /dashboard (patrimonio strip + caption and the VS CETES card replace the Cifras tiles; dates, points, item details and order follow the code; sin-plan row, Calma and Ver radar added; Cotizaciones viejas and Decisión de tasa drawn) and Panorama what renders below it (strip removed; Sentimiento del mercado heading, VIX card, Titulares); Señales rows drop their age; Asset · Análisis / Lo tuyo becomes Default and a Watchlist state is drawn; Mi posición gains LO TUYO; Consolidado gains the Tipo/Sector toggle, Cuánto pesa el dólar, VS IPC and a Por sector state; Panorama / Sin cotización, Hoy / Sin plan and the old Análisis Default retired; kit 1.3.0 re-vendored (TopBar search, TopBarDesktop search, AssetRow Holding); re-laid as bands Hoy · Panorama · Señales · Asset detail · Consolidado · Desktop.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -8724,7 +8751,7 @@
       "type": "frame",
       "id": "L0HacI",
       "x": 1500,
-      "y": 4563,
+      "y": 4580,
       "name": "[Cockpit] / Asset · Análisis / Aviso TradingView",
       "clip": true,
       "width": 390,
@@ -8755,7 +8782,7 @@
               "name": "Chart",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -10379,7 +10406,7 @@
       "type": "frame",
       "id": "s8gUIL",
       "x": 1500,
-      "y": 1398,
+      "y": 1415,
       "name": "[Cockpit] / Panorama / Primera vez",
       "clip": true,
       "width": 390,
@@ -10498,28 +10525,27 @@
                         },
                         {
                           "type": "frame",
-                          "id": "GZrm4",
+                          "id": "d6fWk",
                           "layoutPosition": "absolute",
-                          "x": 278,
+                          "x": 260,
                           "y": 4,
-                          "name": "Ayuda ?",
-                          "width": 18,
-                          "height": 18,
-                          "cornerRadius": 9,
-                          "stroke": "$border-default",
-                          "strokeWidth": 1,
+                          "name": "Ayuda",
+                          "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                          "width": 36,
+                          "height": 36,
+                          "cornerRadius": 8,
                           "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
-                              "type": "text",
-                              "id": "S3c5X",
-                              "name": "?",
-                              "fill": "$fg-subtle",
-                              "content": "?",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 11,
-                              "fontWeight": "600"
+                              "type": "icon",
+                              "id": "u4o5Vm",
+                              "name": "Info",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "info",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
                             }
                           ]
                         }
@@ -10765,7 +10791,7 @@
       "type": "frame",
       "id": "IvfRL",
       "x": 990,
-      "y": 3459,
+      "y": 3476,
       "name": "[Cockpit] / Señales / Vacío",
       "clip": true,
       "width": 390,
@@ -10889,7 +10915,7 @@
       "type": "frame",
       "id": "SP2xk",
       "x": 1500,
-      "y": 10446,
+      "y": 10463,
       "name": "[Cockpit] / Consolidado / Sin historial",
       "clip": true,
       "width": 390,
@@ -11442,7 +11468,7 @@
       "type": "frame",
       "id": "E7Hgd",
       "x": 2520,
-      "y": 4563,
+      "y": 4580,
       "name": "[Cockpit] / Asset · CETES / Default",
       "clip": true,
       "width": 390,
@@ -11696,7 +11722,7 @@
               "name": "Lectura",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -11765,7 +11791,7 @@
               "name": "Detalle de la emisión",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -12048,7 +12074,7 @@
               "name": "Avance al vencimiento",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -12181,7 +12207,7 @@
               "name": "Simulación de inversión",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -13416,41 +13442,40 @@
               "id": "pDIvQ",
               "name": "Veredicto",
               "width": "fill_container",
-              "layout": "vertical",
               "gap": 8,
               "children": [
                 {
-                  "type": "text",
-                  "id": "z9xSb",
-                  "name": "Fecha",
-                  "fill": "$fg-subtle",
-                  "content": "HOY · MAR · 20 OCT 2026 · CDMX",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1.5
-                },
-                {
-                  "type": "text",
-                  "id": "ovjhq",
-                  "name": "Veredicto",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Todo en orden.",
-                  "lineHeight": 1.15,
-                  "fontFamily": "$font-display",
-                  "fontSize": 32,
-                  "fontWeight": "700"
-                },
-                {
                   "type": "frame",
-                  "id": "Gz6oH",
-                  "name": "Subtítulo",
+                  "id": "WjpZi",
+                  "name": "Texto",
                   "width": "fill_container",
+                  "layout": "vertical",
                   "gap": 8,
-                  "alignItems": "center",
                   "children": [
+                    {
+                      "type": "text",
+                      "id": "z9xSb",
+                      "name": "Fecha",
+                      "fill": "$fg-subtle",
+                      "content": "HOY · MAR · 20 OCT 2026 · CDMX",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "ovjhq",
+                      "name": "Veredicto",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Todo en orden.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$font-display",
+                      "fontSize": 32,
+                      "fontWeight": "700"
+                    },
                     {
                       "type": "text",
                       "id": "se6q4",
@@ -13462,28 +13487,40 @@
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
-                    },
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Q2vhi",
+                  "name": "AyudaWrap",
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
                     {
                       "type": "frame",
-                      "id": "C8LW7",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "r23t4f",
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "uUg5O",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "bVykx",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -13520,28 +13557,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "JgxWi",
+                      "id": "fwELK",
                       "layoutPosition": "absolute",
-                      "x": 328,
+                      "x": 310,
                       "y": 4,
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "uaC6G",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "tbgTM",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -13610,28 +13646,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "yBc3u",
+                      "id": "Aldmq",
                       "layoutPosition": "absolute",
-                      "x": 328,
+                      "x": 310,
                       "y": 4,
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "MxZjj",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "F9MYd",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -13804,41 +13839,40 @@
               "id": "BMQfI",
               "name": "Veredicto",
               "width": "fill_container",
-              "layout": "vertical",
               "gap": 8,
               "children": [
                 {
-                  "type": "text",
-                  "id": "X2564",
-                  "name": "Fecha",
-                  "fill": "$fg-subtle",
-                  "content": "HOY · MAR · 20 OCT 2026 · CDMX",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1.5
-                },
-                {
-                  "type": "text",
-                  "id": "v0uI8",
-                  "name": "Veredicto",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Aún no hay nada que orientar.",
-                  "lineHeight": 1.15,
-                  "fontFamily": "$font-display",
-                  "fontSize": 32,
-                  "fontWeight": "700"
-                },
-                {
                   "type": "frame",
-                  "id": "DWEhl",
-                  "name": "Subtítulo",
+                  "id": "FOlbB",
+                  "name": "Texto",
                   "width": "fill_container",
+                  "layout": "vertical",
                   "gap": 8,
-                  "alignItems": "center",
                   "children": [
+                    {
+                      "type": "text",
+                      "id": "X2564",
+                      "name": "Fecha",
+                      "fill": "$fg-subtle",
+                      "content": "HOY · MAR · 20 OCT 2026 · CDMX",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "v0uI8",
+                      "name": "Veredicto",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Aún no hay nada que orientar.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$font-display",
+                      "fontSize": 32,
+                      "fontWeight": "700"
+                    },
                     {
                       "type": "text",
                       "id": "hD4a7",
@@ -13850,28 +13884,40 @@
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
-                    },
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "T53IC",
+                  "name": "AyudaWrap",
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
                     {
                       "type": "frame",
-                      "id": "xZDW1",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "q0aRNh",
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "hhyGg",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "O67jB",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -13985,41 +14031,40 @@
               "id": "o5xS1",
               "name": "Veredicto",
               "width": "fill_container",
-              "layout": "vertical",
               "gap": 8,
               "children": [
                 {
-                  "type": "text",
-                  "id": "z6a6w",
-                  "name": "Fecha",
-                  "fill": "$fg-subtle",
-                  "content": "HOY · MAR · 20 OCT 2026 · CDMX",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1.5
-                },
-                {
-                  "type": "text",
-                  "id": "r8AY4",
-                  "name": "Veredicto",
-                  "fill": "$warning-fg",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Sin cotizaciones al día.",
-                  "lineHeight": 1.15,
-                  "fontFamily": "$font-display",
-                  "fontSize": 32,
-                  "fontWeight": "700"
-                },
-                {
                   "type": "frame",
-                  "id": "m7TT0",
-                  "name": "Subtítulo",
+                  "id": "R5epM",
+                  "name": "Texto",
                   "width": "fill_container",
+                  "layout": "vertical",
                   "gap": 8,
-                  "alignItems": "center",
                   "children": [
+                    {
+                      "type": "text",
+                      "id": "z6a6w",
+                      "name": "Fecha",
+                      "fill": "$fg-subtle",
+                      "content": "HOY · MAR · 20 OCT 2026 · CDMX",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "r8AY4",
+                      "name": "Veredicto",
+                      "fill": "$warning-fg",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Sin cotizaciones al día.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$font-display",
+                      "fontSize": 32,
+                      "fontWeight": "700"
+                    },
                     {
                       "type": "text",
                       "id": "l4RqX",
@@ -14031,28 +14076,40 @@
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
-                    },
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "B6uuy",
+                  "name": "AyudaWrap",
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
                     {
                       "type": "frame",
-                      "id": "Hegcv",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "u0pWK",
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "ASy9F",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "GLJzr",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -14148,7 +14205,12 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "gap": 12,
-                  "padding": 14,
+                  "padding": [
+                    14,
+                    48,
+                    14,
+                    14
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
@@ -14206,25 +14268,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "U8xNx",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "wGe2b",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 14,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "RjiwC",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "HtGZt",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -14307,41 +14371,40 @@
               "id": "zYRNz",
               "name": "Veredicto",
               "width": "fill_container",
-              "layout": "vertical",
               "gap": 8,
               "children": [
                 {
-                  "type": "text",
-                  "id": "NJ1v1",
-                  "name": "Fecha",
-                  "fill": "$fg-subtle",
-                  "content": "HOY · MAR · 20 OCT 2026 · CDMX",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1.5
-                },
-                {
-                  "type": "text",
-                  "id": "uLrtp",
-                  "name": "Veredicto",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Todo en orden.",
-                  "lineHeight": 1.15,
-                  "fontFamily": "$font-display",
-                  "fontSize": 32,
-                  "fontWeight": "700"
-                },
-                {
                   "type": "frame",
-                  "id": "h9ERnO",
-                  "name": "Subtítulo",
+                  "id": "lmfQo",
+                  "name": "Texto",
                   "width": "fill_container",
+                  "layout": "vertical",
                   "gap": 8,
-                  "alignItems": "center",
                   "children": [
+                    {
+                      "type": "text",
+                      "id": "NJ1v1",
+                      "name": "Fecha",
+                      "fill": "$fg-subtle",
+                      "content": "HOY · MAR · 20 OCT 2026 · CDMX",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "uLrtp",
+                      "name": "Veredicto",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Todo en orden.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$font-display",
+                      "fontSize": 32,
+                      "fontWeight": "700"
+                    },
                     {
                       "type": "text",
                       "id": "tPqii",
@@ -14353,28 +14416,40 @@
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
-                    },
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "x6ft1",
+                  "name": "AyudaWrap",
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
                     {
                       "type": "frame",
-                      "id": "wwvBy",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "xtajF",
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "e3g7Ne",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "RWmdX",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -14411,28 +14486,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "dJnl0",
+                      "id": "Zn43G",
                       "layoutPosition": "absolute",
-                      "x": 328,
+                      "x": 310,
                       "y": 4,
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "O1QMaO",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "y8NeG",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -14501,28 +14575,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "tU6yR",
+                      "id": "myAsG",
                       "layoutPosition": "absolute",
-                      "x": 328,
+                      "x": 310,
                       "y": 4,
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "bMvmQ",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "iyqAs",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -14583,6 +14656,12 @@
                   "id": "WTAp6",
                   "name": "Encabezado",
                   "width": "fill_container",
+                  "padding": [
+                    0,
+                    32,
+                    0,
+                    0
+                  ],
                   "justifyContent": "space_between",
                   "alignItems": "center",
                   "children": [
@@ -14612,30 +14691,6 @@
                           "fontFamily": "$font-sans",
                           "fontSize": 13,
                           "fontWeight": "600"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "oEZeI",
-                          "name": "Ayuda ?",
-                          "width": 18,
-                          "height": 18,
-                          "cornerRadius": 9,
-                          "stroke": "$border-default",
-                          "strokeWidth": 1,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "C6VUGu",
-                              "name": "?",
-                              "fill": "$fg-subtle",
-                              "content": "?",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 11,
-                              "fontWeight": "600"
-                            }
-                          ]
                         }
                       ]
                     }
@@ -14878,6 +14933,32 @@
                       "fontWeight": "normal"
                     }
                   ]
+                },
+                {
+                  "type": "frame",
+                  "id": "SbKen",
+                  "layoutPosition": "absolute",
+                  "x": 310,
+                  "y": 4,
+                  "name": "Ayuda",
+                  "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                  "width": 36,
+                  "height": 36,
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "MWaw6",
+                      "name": "Info",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "info",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
                 }
               ]
             },
@@ -14928,7 +15009,7 @@
       "name": "[Cockpit] / Hoy / Con plan · brecha",
       "clip": true,
       "width": 390,
-      "height": 1138,
+      "height": 1155,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -14956,41 +15037,40 @@
               "id": "x22GHq",
               "name": "Veredicto",
               "width": "fill_container",
-              "layout": "vertical",
               "gap": 8,
               "children": [
                 {
-                  "type": "text",
-                  "id": "YFYWK",
-                  "name": "Fecha",
-                  "fill": "$fg-subtle",
-                  "content": "HOY · MAR · 20 OCT 2026 · CDMX",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1.5
-                },
-                {
-                  "type": "text",
-                  "id": "ncIu9",
-                  "name": "Veredicto",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Hay 2 cosas de lo tuyo para mirar hoy.",
-                  "lineHeight": 1.15,
-                  "fontFamily": "$font-display",
-                  "fontSize": 32,
-                  "fontWeight": "700"
-                },
-                {
                   "type": "frame",
-                  "id": "sIZ9U",
-                  "name": "Subtítulo",
+                  "id": "QAZrV",
+                  "name": "Texto",
                   "width": "fill_container",
+                  "layout": "vertical",
                   "gap": 8,
-                  "alignItems": "center",
                   "children": [
+                    {
+                      "type": "text",
+                      "id": "YFYWK",
+                      "name": "Fecha",
+                      "fill": "$fg-subtle",
+                      "content": "HOY · MAR · 20 OCT 2026 · CDMX",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "ncIu9",
+                      "name": "Veredicto",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Hay 2 cosas de lo tuyo para mirar hoy.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$font-display",
+                      "fontSize": 32,
+                      "fontWeight": "700"
+                    },
                     {
                       "type": "text",
                       "id": "l9nRrr",
@@ -15002,28 +15082,40 @@
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
-                    },
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "v8xkec",
+                  "name": "AyudaWrap",
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
                     {
                       "type": "frame",
-                      "id": "Zvx12",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "ggTeN",
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "y4cvN",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "obdKJ",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -15060,28 +15152,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "Ja0y3",
+                      "id": "QeYfN",
                       "layoutPosition": "absolute",
-                      "x": 328,
+                      "x": 310,
                       "y": 4,
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "pmQhD",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "Lotkt",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -15150,28 +15241,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "FBfQi",
+                      "id": "CeMd3",
                       "layoutPosition": "absolute",
-                      "x": 328,
+                      "x": 310,
                       "y": 4,
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "UCvQm",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "QUCW7",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -15227,7 +15317,12 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "gap": 12,
-                  "padding": 14,
+                  "padding": [
+                    14,
+                    48,
+                    14,
+                    14
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
@@ -15289,25 +15384,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "R3ytJS",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "uWEjm",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 14,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "W7kbc",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "NVBBR",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -15323,7 +15420,12 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "gap": 12,
-                  "padding": 14,
+                  "padding": [
+                    14,
+                    48,
+                    14,
+                    14
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
@@ -15385,25 +15487,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "a31gyg",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "Fi6eN",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 30,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "g62Vfn",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "Bssxv",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -15429,6 +15533,12 @@
                   "id": "T4tQi",
                   "name": "Encabezado",
                   "width": "fill_container",
+                  "padding": [
+                    0,
+                    32,
+                    0,
+                    0
+                  ],
                   "justifyContent": "space_between",
                   "alignItems": "center",
                   "children": [
@@ -15458,30 +15568,6 @@
                           "fontFamily": "$font-sans",
                           "fontSize": 13,
                           "fontWeight": "600"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "LNpI3",
-                          "name": "Ayuda ?",
-                          "width": 18,
-                          "height": 18,
-                          "cornerRadius": 9,
-                          "stroke": "$border-default",
-                          "strokeWidth": 1,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "byem6",
-                              "name": "?",
-                              "fill": "$fg-subtle",
-                              "content": "?",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 11,
-                              "fontWeight": "600"
-                            }
-                          ]
                         }
                       ]
                     }
@@ -15724,6 +15810,32 @@
                       "fontWeight": "normal"
                     }
                   ]
+                },
+                {
+                  "type": "frame",
+                  "id": "RjTOd",
+                  "layoutPosition": "absolute",
+                  "x": 310,
+                  "y": 4,
+                  "name": "Ayuda",
+                  "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                  "width": 36,
+                  "height": 36,
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "L9HXO",
+                      "name": "Info",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "info",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
                 }
               ]
             },
@@ -15770,7 +15882,7 @@
       "type": "frame",
       "id": "pVTRb",
       "x": 480,
-      "y": 4563,
+      "y": 4580,
       "name": "[Cockpit] / Asset · Análisis / Default",
       "clip": true,
       "width": 390,
@@ -15986,7 +16098,7 @@
               "name": "LoTuyo",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -16149,7 +16261,7 @@
               "name": "Rango52",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -16278,7 +16390,7 @@
               "name": "Lectura",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -16362,7 +16474,7 @@
               "name": "Chart",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -17713,7 +17825,7 @@
               "name": "Contexto",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -17818,7 +17930,7 @@
               "clip": true,
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -18399,7 +18511,7 @@
               "clip": true,
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -18592,7 +18704,7 @@
               "name": "Fundamentales",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -19043,7 +19155,7 @@
                       "name": "Card",
                       "width": "fill_container",
                       "fill": "$bg-surface",
-                      "cornerRadius": "$radius-card",
+                      "cornerRadius": "$radius-lg",
                       "stroke": "$border-default",
                       "strokeWidth": 1,
                       "layout": "vertical",
@@ -19345,7 +19457,7 @@
               "clip": true,
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -19464,7 +19576,7 @@
               "name": "Acerca de la empresa",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -19734,7 +19846,7 @@
               "name": "Dividendos",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -20089,7 +20201,7 @@
               "name": "Estados financieros",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -20378,7 +20490,7 @@
       "name": "[Cockpit] / Hoy / Temporada de resultados",
       "clip": true,
       "width": 390,
-      "height": 1061,
+      "height": 1098,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -20406,41 +20518,40 @@
               "id": "UBHtr",
               "name": "Veredicto",
               "width": "fill_container",
-              "layout": "vertical",
               "gap": 8,
               "children": [
                 {
-                  "type": "text",
-                  "id": "roc3t",
-                  "name": "Fecha",
-                  "fill": "$fg-subtle",
-                  "content": "HOY · MAR · 20 OCT 2026 · CDMX",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1.5
-                },
-                {
-                  "type": "text",
-                  "id": "v9wBy",
-                  "name": "Veredicto",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Hay 3 cosas de lo tuyo para mirar hoy.",
-                  "lineHeight": 1.15,
-                  "fontFamily": "$font-display",
-                  "fontSize": 32,
-                  "fontWeight": "700"
-                },
-                {
                   "type": "frame",
-                  "id": "b1d9KN",
-                  "name": "Subtítulo",
+                  "id": "UC6pu",
+                  "name": "Texto",
                   "width": "fill_container",
+                  "layout": "vertical",
                   "gap": 8,
-                  "alignItems": "center",
                   "children": [
+                    {
+                      "type": "text",
+                      "id": "roc3t",
+                      "name": "Fecha",
+                      "fill": "$fg-subtle",
+                      "content": "HOY · MAR · 20 OCT 2026 · CDMX",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "v9wBy",
+                      "name": "Veredicto",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Hay 3 cosas de lo tuyo para mirar hoy.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$font-display",
+                      "fontSize": 32,
+                      "fontWeight": "700"
+                    },
                     {
                       "type": "text",
                       "id": "r34QLG",
@@ -20452,28 +20563,40 @@
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
-                    },
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vjtTP",
+                  "name": "AyudaWrap",
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
                     {
                       "type": "frame",
-                      "id": "gqghO",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "kOCYh",
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "wHrVI",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "SAVHj",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -20505,28 +20628,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "G6QDf",
+                      "id": "C63s5",
                       "layoutPosition": "absolute",
-                      "x": 328,
+                      "x": 310,
                       "y": 4,
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "oo6gw",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "P0lbr",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -20595,28 +20717,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "UgxE8",
+                      "id": "GrBoY",
                       "layoutPosition": "absolute",
-                      "x": 328,
+                      "x": 310,
                       "y": 4,
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "B3MRSj",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "DOH1k",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -20672,7 +20793,12 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "gap": 12,
-                  "padding": 14,
+                  "padding": [
+                    14,
+                    48,
+                    14,
+                    14
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
@@ -20734,25 +20860,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "FObTK",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "Vf6dS",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 14,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "RpjTT",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "xMqK7",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -20768,7 +20896,12 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "gap": 12,
-                  "padding": 14,
+                  "padding": [
+                    14,
+                    48,
+                    14,
+                    14
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
@@ -20830,25 +20963,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "cvQLe",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "xz1Hh",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 22,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "NdL26",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "h6LCoX",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -20864,7 +20999,12 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "gap": 12,
-                  "padding": 14,
+                  "padding": [
+                    14,
+                    48,
+                    14,
+                    14
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
@@ -20926,25 +21066,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "C062y",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "GOXTa",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 22,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "mKnXa",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "NR9IC",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -21082,41 +21224,40 @@
               "id": "LM9pd",
               "name": "Veredicto",
               "width": "fill_container",
-              "layout": "vertical",
               "gap": 8,
               "children": [
                 {
-                  "type": "text",
-                  "id": "H72FAy",
-                  "name": "Fecha",
-                  "fill": "$fg-subtle",
-                  "content": "HOY · MAR · 20 OCT 2026 · CDMX",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1.5
-                },
-                {
-                  "type": "text",
-                  "id": "py7j0",
-                  "name": "Veredicto",
-                  "fill": "$warning-fg",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Sin cotizaciones al día.",
-                  "lineHeight": 1.15,
-                  "fontFamily": "$font-display",
-                  "fontSize": 32,
-                  "fontWeight": "700"
-                },
-                {
                   "type": "frame",
-                  "id": "V5T05",
-                  "name": "Subtítulo",
+                  "id": "MqE9I",
+                  "name": "Texto",
                   "width": "fill_container",
+                  "layout": "vertical",
                   "gap": 8,
-                  "alignItems": "center",
                   "children": [
+                    {
+                      "type": "text",
+                      "id": "H72FAy",
+                      "name": "Fecha",
+                      "fill": "$fg-subtle",
+                      "content": "HOY · MAR · 20 OCT 2026 · CDMX",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "py7j0",
+                      "name": "Veredicto",
+                      "fill": "$warning-fg",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Sin cotizaciones al día.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$font-display",
+                      "fontSize": 32,
+                      "fontWeight": "700"
+                    },
                     {
                       "type": "text",
                       "id": "b8vw8J",
@@ -21128,28 +21269,40 @@
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
-                    },
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "sqyl2",
+                  "name": "AyudaWrap",
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
                     {
                       "type": "frame",
-                      "id": "mEF4Q",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "L9WKA",
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "mVVrY",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "Vkx8p",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -21181,33 +21334,6 @@
                       "width": "fill_container"
                     },
                     {
-                      "type": "frame",
-                      "id": "sWF39",
-                      "layoutPosition": "absolute",
-                      "x": 328,
-                      "y": 4,
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "SMyJf",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
                       "type": "text",
                       "id": "y6guWg",
                       "name": "Desactualizado",
@@ -21218,6 +21344,32 @@
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
                       "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "blpck",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 4,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "pS9UA",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -21271,7 +21423,12 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "gap": 12,
-                  "padding": 14,
+                  "padding": [
+                    14,
+                    48,
+                    14,
+                    14
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
@@ -21329,25 +21486,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "VA6FU",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "r9DPt",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 14,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "ZxEar",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "B9Dd5",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -21363,7 +21522,12 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "gap": 12,
-                  "padding": 14,
+                  "padding": [
+                    14,
+                    48,
+                    14,
+                    14
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
@@ -21421,25 +21585,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "PrUrH",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "UsL4y",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 14,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "l32Vi",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "eFKUz",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -21494,7 +21660,7 @@
       "name": "[Cockpit] / Hoy / Decisión de tasa",
       "clip": true,
       "width": 390,
-      "height": 1045,
+      "height": 1082,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -21522,41 +21688,40 @@
               "id": "lPS6z",
               "name": "Veredicto",
               "width": "fill_container",
-              "layout": "vertical",
               "gap": 8,
               "children": [
                 {
-                  "type": "text",
-                  "id": "d6IWke",
-                  "name": "Fecha",
-                  "fill": "$fg-subtle",
-                  "content": "HOY · MAR · 20 OCT 2026 · CDMX",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1.5
-                },
-                {
-                  "type": "text",
-                  "id": "Of2Ux",
-                  "name": "Veredicto",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Hay 3 cosas de lo tuyo para mirar hoy.",
-                  "lineHeight": 1.15,
-                  "fontFamily": "$font-display",
-                  "fontSize": 32,
-                  "fontWeight": "700"
-                },
-                {
                   "type": "frame",
-                  "id": "E1Jqc4",
-                  "name": "Subtítulo",
+                  "id": "weOuT",
+                  "name": "Texto",
                   "width": "fill_container",
+                  "layout": "vertical",
                   "gap": 8,
-                  "alignItems": "center",
                   "children": [
+                    {
+                      "type": "text",
+                      "id": "d6IWke",
+                      "name": "Fecha",
+                      "fill": "$fg-subtle",
+                      "content": "HOY · MAR · 20 OCT 2026 · CDMX",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "Of2Ux",
+                      "name": "Veredicto",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Hay 3 cosas de lo tuyo para mirar hoy.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$font-display",
+                      "fontSize": 32,
+                      "fontWeight": "700"
+                    },
                     {
                       "type": "text",
                       "id": "BQxwM",
@@ -21568,28 +21733,40 @@
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
-                    },
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "skE70",
+                  "name": "AyudaWrap",
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
                     {
                       "type": "frame",
-                      "id": "qMAIT",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "zO7VN",
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "rykqJ",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "VUJFl",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -21621,28 +21798,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "TGTgN",
+                      "id": "bl9ox",
                       "layoutPosition": "absolute",
-                      "x": 328,
+                      "x": 310,
                       "y": 4,
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "hFRtY",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "s68NG",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -21711,28 +21887,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "kn53C",
+                      "id": "G0FXi",
                       "layoutPosition": "absolute",
-                      "x": 328,
+                      "x": 310,
                       "y": 4,
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "d0uxC",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "PFKaC",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -21788,7 +21963,12 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "gap": 12,
-                  "padding": 14,
+                  "padding": [
+                    14,
+                    48,
+                    14,
+                    14
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
@@ -21850,25 +22030,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "F14bu",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "yAjlz",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 14,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "Vwfw7",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "F2AVx",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -21884,7 +22066,12 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "gap": 12,
-                  "padding": 14,
+                  "padding": [
+                    14,
+                    48,
+                    14,
+                    14
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
@@ -21946,25 +22133,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "G6t30V",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "g9St3",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 22,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "x0okm",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "iMAJs",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -21980,7 +22169,12 @@
                   "stroke": "$border-default",
                   "strokeWidth": 1,
                   "gap": 12,
-                  "padding": 14,
+                  "padding": [
+                    14,
+                    48,
+                    14,
+                    14
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
@@ -22042,25 +22236,27 @@
                     },
                     {
                       "type": "frame",
-                      "id": "tM4D0",
-                      "name": "Ayuda ?",
-                      "width": 18,
-                      "height": 18,
-                      "cornerRadius": 9,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
+                      "id": "YoXNC",
+                      "layoutPosition": "absolute",
+                      "x": 310,
+                      "y": 14,
+                      "name": "Ayuda",
+                      "context": "help_tip: icon info 16, $fg-subtle (hover $primary)",
+                      "width": 36,
+                      "height": 36,
+                      "cornerRadius": 8,
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "n0InPy",
-                          "name": "?",
-                          "fill": "$fg-subtle",
-                          "content": "?",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "600"
+                          "type": "icon",
+                          "id": "GGap6",
+                          "name": "Info",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "info",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
                         }
                       ]
                     }
@@ -22166,7 +22362,7 @@
       "type": "frame",
       "id": "JtpRY",
       "x": 990,
-      "y": 4563,
+      "y": 4580,
       "name": "[Cockpit] / Asset · Análisis / Watchlist",
       "clip": true,
       "width": 390,
@@ -22383,7 +22579,7 @@
               "name": "LoTuyo",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -22518,7 +22714,7 @@
               "name": "Rango52",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -22624,7 +22820,7 @@
               "name": "Lectura",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -22708,7 +22904,7 @@
               "name": "Chart",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -23932,7 +24128,7 @@
               "name": "Contexto",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -24037,7 +24233,7 @@
               "clip": true,
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -24576,7 +24772,7 @@
               "clip": true,
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -24769,7 +24965,7 @@
               "name": "Fundamentales",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -25220,7 +25416,7 @@
                       "name": "Card",
                       "width": "fill_container",
                       "fill": "$bg-surface",
-                      "cornerRadius": "$radius-card",
+                      "cornerRadius": "$radius-lg",
                       "stroke": "$border-default",
                       "strokeWidth": 1,
                       "layout": "vertical",
@@ -25522,7 +25718,7 @@
               "clip": true,
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -25641,7 +25837,7 @@
               "name": "Acerca de la empresa",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -25911,7 +26107,7 @@
               "name": "Dividendos",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -26266,7 +26462,7 @@
               "name": "Estados financieros",
               "width": "fill_container",
               "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
+              "cornerRadius": "$radius-lg",
               "stroke": "$border-default",
               "strokeWidth": 1,
               "layout": "vertical",
@@ -26551,7 +26747,7 @@
       "type": "frame",
       "id": "GsjFA",
       "x": 990,
-      "y": 10446,
+      "y": 10463,
       "name": "[Cockpit] / Consolidado / Por sector",
       "clip": true,
       "width": 390,
