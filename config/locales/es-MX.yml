@@ -504,7 +504,7 @@ es-MX:
   components:
     asset_price:
       actualizado: Cotización del %{date} · CDMX
-      desactualizado: Cotización desactualizada · más de 15 minutos sin actualizar.
+      desactualizado: Cotización desactualizada · más de %{minutes} minutos sin actualizar.
       error_proveedor: La última sincronización falló. La cotización mostrada, si
         existe, corresponde a la última actualización disponible.
       periodo: vs. cierre anterior disponible
@@ -1823,7 +1823,8 @@ es-MX:
       cambio: "%{percent} · vs. registro de ayer"
       sin_base: 'Cambio diario: sin registro previo comparable'
     valuation_caption:
-      desactualizado: Hay cotizaciones desactualizadas · más de 15 minutos sin actualizar.
+      desactualizado: Hay cotizaciones desactualizadas · más de %{minutes} minutos
+        sin actualizar.
       error_proveedor: Falló la última sincronización de uno o más activos. La valuación
         usa las últimas cotizaciones disponibles.
       fecha: 'Cotización más antigua: %{date} · CDMX'

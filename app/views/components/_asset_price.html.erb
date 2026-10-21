@@ -36,6 +36,6 @@
   <% if !asset.last_sync_ok? %>
     <p class="mt-2 text-xs text-warning-fg"><%= t(".error_proveedor") %></p>
   <% elsif asset.current_price && asset.price_stale? %>
-    <p class="mt-2 text-xs text-warning-fg"><%= t(".desactualizado") %></p>
+    <p class="mt-2 text-xs text-warning-fg"><%= t(".desactualizado", minutes: Asset::STALE_AFTER.in_minutes.to_i) %></p>
   <% end %>
 </div>

@@ -5,5 +5,5 @@
 <% if summary.provider_errors? %>
   <p class="mt-1 text-xs text-warning-fg"><%= t(".error_proveedor") %></p>
 <% elsif summary.stale_prices? %>
-  <p class="mt-1 text-xs text-warning-fg"><%= t(".desactualizado") %></p>
+  <p class="mt-1 text-xs text-warning-fg"><%= t(".desactualizado", minutes: Asset::STALE_AFTER.in_minutes.to_i) %></p>
 <% end %>
