@@ -20,6 +20,9 @@ RSpec.describe "Asset chart crosshair", type: :system, js: true do
     fill_in "Contraseña", with: "password123"
     click_button "Iniciar sesión"
     visit market_asset_path(asset.symbol, range: "1M")
+    # The library draws its canvas inside connect(), so this is the first moment
+    # the controller and its series exist for the examples to read.
+    expect(page).to have_css("[data-chart-target='canvas'] canvas")
   end
 
   def close_figure = all("[data-chart-target='stat']")[3].text
