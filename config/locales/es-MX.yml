@@ -144,6 +144,16 @@ es-MX:
     settings:
       flash:
         guardados: Ajustes guardados.
+      mantenimiento:
+        bmv_symbols:
+          nombre: Nombres de la BMV
+        catalogue:
+          nombre: Catálogo de activos
+        price_histories:
+          nombre: Historiales de precio
+      run_maintenance:
+        desconocida: Tarea de mantenimiento desconocida.
+        encolada: "%{task}: encolada."
       show:
         activado: activado
         aperturas: Aperturas del panorama
