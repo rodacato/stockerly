@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 1.3.0 · updated: 2026-10-21\n\n1. PURPOSE\nThe doors into a single-user instance: login, the second factor (ADR-018), password recovery, and the two TOTP screens enrolment reaches. No signup — the one account is created by the first-boot setup wizard (onboarding.pen).\n\n2. ENTRY POINTS\n- Login — / redirects to /login (sessions#new)\n- 2FA and Código de recuperación — only with a pending login, after the password step (/two-factor, /recovery-code)\n- Forgot → Email sent → Reset → Enlace expirado or Contraseña actualizada — \"¿Olvidaste tu contraseña?\" on Login (/forgot-password, /reset-password/:token)\n- TOTP · Alta and Códigos de recuperación — from Ajustes' Seguridad row (/two-factor/setup, /two-factor/codes). Opened from the wizard's Seguridad step (D52), TOTP · Alta wears the wizard's frame, drawn in onboarding.pen (D122); Códigos wears the same bare frame from both doors (D148)\n\n3. SCREENS (left → right, by band)\n- Login band: Login · Default · Login · Error · 2FA · Código de recuperación\n- Recuperar contraseña band: Forgot · Email sent · Reset · Enlace expirado · Contraseña actualizada\n- Second factor band (from Ajustes): TOTP · Alta · Códigos de recuperación — neither is the auth card: Alta renders in the app shell, Códigos in a bare column with no chrome (D148); this file draws the Ajustes entry. Códigos renders the same page as onboarding.pen's Seguridad · Códigos; each file keeps it as its journey's entry\n- Desktop band: Login\n\n4. BUSINESS RULES\n- Every screen from Login to Contraseña actualizada renders in layouts/auth: one centred card at every width, the wordmark inside it, outcome screens included (D152). Login's desktop artboard shows the same card at its max-w-md and stands for all of them (D4)\n- TOTP · Alta renders in layouts/app with HeaderBar back to Ajustes once the account is onboarded; the nav lights Ajustes. Mid-wizard it renders in layouts/onboarding under the step header (D122). Códigos renders in layouts/onboarding with no HeaderBar, nav or step header from either door, because the codes are destroyed as the page paints; its one exit is Ya los guardé, continuar, to Ajustes or to the summary (D148)\n- Every password field carries a reveal toggle (Mostrar contraseña)\n- 2FA states the window it allows: Tienes 10 minutos para verificar… (TwoFactorController::PENDING_TIMEOUT)\n- Email sent ranks its two actions: Reenviar enlace is a text link, Volver a iniciar sesión the primary button\n- Email OTP and SMS are out: a lost authenticator is answered by one-time recovery codes, ten of them, shown once (ADR-018)\n- Email sent says the same thing whether or not the address exists, so the page cannot confirm an account (password_resets/sent.html.erb)\n- The reset window is stated from User::PASSWORD_RESET_EXPIRES_IN, never in prose\n- The codes are not downloadable: the list is select-all and the page warns they are not shown again\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — auth.*, two_factor.*, totp_enrollments.*. Failure messages: Identity::UseCases::Login, VerifyTotpCode, ConsumeRecoveryCode.\n\n6. STATES NOT DRAWN\n- 2FA and Código de recuperación with a wrong code — the Login · Error alert above the form, reading \"Ese código no es válido.\"; TOTP · Alta reads \"Ese código no es válido. Revisa tu app de autenticación.\"\n- Login after the pending second factor timed out — a toast, not the inline alert: \"Se agotó el tiempo para verificar. Inicia sesión otra vez.\"\n- Login reached after setup already ran — the inline alert reads \"Esta instancia ya está configurada.\"\n- Reset with an invalid password — a negative box listing the model's errors above the fields\n- Login's notices after logout or an expired session — a flash, not the inline alert\n- A password field with the toggle pressed — the text shows and the icon turns primary-fg\n- Desktop for every auth-layout screen — the same one-column card Login draws\n- TOTP · Alta when already enrolled — it redirects to Ajustes, or to the wizard's summary mid-wizard, with \"La verificación en dos pasos ya está activa en esta cuenta.\"\n- Códigos reloaded after they left the session — it redirects with \"Los códigos solo se muestran una vez. Podrás generar unos nuevos desde Ajustes.\" to Ajustes, or to the summary mid-wizard\n- The QR is drawn as an icon; the code renders a real one on a white plate\n\n7. OPEN FINDINGS\nNone.\n\n8. HISTORY\n→ Log frame, below this brief.",
+          "content": "kit-version-source: 1.3.0 · updated: 2026-10-21\n\n1. PURPOSE\nThe doors into a single-user instance: login, the second factor (ADR-018), password recovery, the two TOTP screens enrolment reaches, and the static error pages Rails serves from public/. No signup — the one account is created by the first-boot setup wizard (onboarding.pen).\n\n2. ENTRY POINTS\n- Login — / redirects to /login (sessions#new)\n- 2FA and Código de recuperación — only with a pending login, after the password step (/two-factor, /recovery-code)\n- Forgot → Email sent → Reset → Enlace expirado or Contraseña actualizada — \"¿Olvidaste tu contraseña?\" on Login (/forgot-password, /reset-password/:token)\n- TOTP · Alta and Códigos de recuperación — from Ajustes' Seguridad row (/two-factor/setup, /two-factor/codes). Opened from the wizard's Seguridad step (D52), TOTP · Alta wears the wizard's frame, drawn in onboarding.pen (D122); Códigos wears the same bare frame from both doors (D148)\n- Errores — public/404.html, 429.html and 500.html, served by Rails with no layout when a request fails\n\n3. SCREENS (left → right, by band)\n- Login band: Login · Default · Login · Error · 2FA · Código de recuperación\n- Recuperar contraseña band: Forgot · Email sent · Reset · Enlace expirado · Contraseña actualizada\n- Second factor band (from Ajustes): TOTP · Alta · Códigos de recuperación — neither is the auth card: Alta renders in the app shell, Códigos in a bare column with no chrome (D148); this file draws the Ajustes entry. Códigos renders the same page as onboarding.pen's Seguridad · Códigos; each file keeps it as its journey's entry\n- Errores band: 404 · 429 (one button) · 500 — hand-written HTML with inline CSS, drawn as shipped: their own mark (the retired counterform disc on a primary tile, plus the word stockerly), a white canvas, Material Symbols icons\n- Desktop band: Login\n\n4. BUSINESS RULES\n- Every screen from Login to Contraseña actualizada renders in layouts/auth: one centred card at every width, the wordmark inside it, outcome screens included (D152). Login's desktop artboard shows the same card at its max-w-md and stands for all of them (D4)\n- TOTP · Alta renders in layouts/app with HeaderBar back to Ajustes once the account is onboarded; the nav lights Ajustes. Mid-wizard it renders in layouts/onboarding under the step header (D122). Códigos renders in layouts/onboarding with no HeaderBar, nav or step header from either door, because the codes are destroyed as the page paints; its one exit is Ya los guardé, continuar, to Ajustes or to the summary (D148)\n- Every password field carries a reveal toggle (Mostrar contraseña)\n- 2FA states the window it allows: Tienes 10 minutos para verificar… (TwoFactorController::PENDING_TIMEOUT)\n- Email sent ranks its two actions: Reenviar enlace is a text link, Volver a iniciar sesión the primary button\n- Email OTP and SMS are out: a lost authenticator is answered by one-time recovery codes, ten of them, shown once (ADR-018)\n- Email sent says the same thing whether or not the address exists, so the page cannot confirm an account (password_resets/sent.html.erb)\n- The reset window is stated from User::PASSWORD_RESET_EXPIRES_IN, never in prose\n- The codes are not downloadable: the list is select-all and the page warns they are not shown again\n- The error pages are not in I18n: their copy lives in the HTML files. Ir al inicio goes to /, which redirects to /login or onward to /dashboard\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — auth.*, two_factor.*, totp_enrollments.*. Errores: public/400.html, 404.html, 406-unsupported-browser.html, 422.html, 429.html, 500.html. Failure messages: Identity::UseCases::Login, VerifyTotpCode, ConsumeRecoveryCode.\n\n6. STATES NOT DRAWN\n- 2FA and Código de recuperación with a wrong code — the Login · Error alert above the form, reading \"Ese código no es válido.\"; TOTP · Alta reads \"Ese código no es válido. Revisa tu app de autenticación.\"\n- Login after the pending second factor timed out — a toast, not the inline alert: \"Se agotó el tiempo para verificar. Inicia sesión otra vez.\"\n- Login reached after setup already ran — the inline alert reads \"Esta instancia ya está configurada.\"\n- Reset with an invalid password — a negative box listing the model's errors above the fields\n- Login's notices after logout or an expired session — a flash, not the inline alert\n- A password field with the toggle pressed — the text shows and the icon turns primary-fg\n- Desktop for every auth-layout screen — the same one-column card Login draws\n- TOTP · Alta when already enrolled — it redirects to Ajustes, or to the wizard's summary mid-wizard, with \"La verificación en dos pasos ya está activa en esta cuenta.\"\n- Códigos reloaded after they left the session — it redirects with \"Los códigos solo se muestran una vez. Podrás generar unos nuevos desde Ajustes.\" to Ajustes, or to the summary mid-wizard\n- The QR is drawn as an icon; the code renders a real one on a white plate\n- 400 — same layout as 404, icon report: \"Solicitud inválida\" / \"El servidor no pudo entender la petición. Vuelve a intentarlo desde el inicio.\" / Ir al inicio\n- 406 (allow_browser) — icon browser_not_supported: \"Tu navegador no es compatible\" / \"Stockerly necesita un navegador moderno para funcionar. Actualiza el tuyo o abre la app en otro.\" / Ir al inicio\n- 422 — icon block: \"No se pudo procesar el cambio\" / \"El cambio que intentaste hacer fue rechazado. Suele pasar cuando la sesión ya expiró: recarga e inténtalo otra vez.\" / Recargar · Ir al inicio\n- Errores in dark mode (each file's prefers-color-scheme block) and at ≥640px, where the buttons sit in a row\n- The icon ring's small drop shadow (no token for it); the 500 bar's ends are primary at 10%, drawn primary-muted\n\n7. OPEN FINDINGS\n- The six error pages still carry the retired counterform-disc mark; Soft Candle replaced it and public/offline.html has the new one, the error pages were never regenerated\n- 500's buttons are English: Try Again and Go Home\n- The error pages' primary button paints white on primary (under AA 4.5:1; the app uses primary-fg), and the help line (#94a3b8 on white) fails AA\n\n8. HISTORY\n→ Log frame, below this brief.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -1313,7 +1313,7 @@
       "type": "frame",
       "id": "DqmID",
       "x": 480,
-      "y": 3312,
+      "y": 4416,
       "name": "[Auth] / Login · Desktop / Default",
       "clip": true,
       "width": 1280,
@@ -2855,7 +2855,7 @@
       "type": "frame",
       "id": "LZCBr",
       "x": 0,
-      "y": 2587,
+      "y": 3427,
       "name": "Log · Auth",
       "width": 360,
       "fill": "$bg-muted",
@@ -2881,7 +2881,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-21 — Mirrored to code at 809ea789: reveal toggle on every password field, 2FA window line, wordmark on the outcome cards, Email sent's primary CTA, Códigos chromeless (D148), kit 1.3.0; re-laid as bands Login, Recuperar contraseña, Second factor, Desktop.\n2026-10-14 · kit 1.2.0 · Soft Candle: the wordmark is the candle glyph plus outlined lettering at the code's h-8 size; fg-subtle light is #5E6E84; BottomNav takes five equal slots\n2026-10-14 · D152 · Login · Desktop drops the split brand panel the code deleted on 2026-09-22 and draws the single card\n2026-09-16 · D122 · TOTP · Alta and Códigos opened from the wizard leave the app shell for the wizard's frame; that frame is drawn in onboarding.pen, this file keeps the Ajustes entry\n2026-09-16 · kit 1.0.0 · ButtonPrimary and Field back to the kit's metrics; HeaderBar and BottomNav vendored\n2026-09-16 · D78 · every card mirrored to the code: 30px titles, lg fields and buttons, the wordmark at its h-8 size; 2FA and recovery take one input; Email sent carries the neutral copy, spam line and expiry; Enlace expirado and Contraseña actualizada take the h1 and lg button the code now has\n2026-09-16 · TOTP · Alta and Códigos redrawn in the app shell they render in: no download, a real warning, HeaderBar back\n2026-09-16 · desktop brand panel loses \"Tu patrimonio invertido, en una pantalla.\" — the code never rendered it\n2026-09-16 · new artboard: Login · Error\n2026-09-16 · brief rewritten into its fixed sections; the reasoning it carried lives in ADR-018, D52 and git history\n2026-09-16 · canvas · grid variables declared, bands reflowed\n2026-09-13 · Login (mobile + desktop) drops the terms line — the legal pages are gone, ADR-026 · D118\n2026-09-05 · Enlace expirado and Contraseña actualizada drawn — the reset journey's two endings, AUTH-2\n2026-09-05 · the brief stopped saying 'design-led, code is reference (D8)'; D78 retired that posture\n2026-09-05 · the brief stopped restating the kit version, which read 0.8.0 against a variable saying 0.8.1 (X4)\n2026-09-05 · this file adopted the Log frame; the brief's three dated lines moved here\n2026-08-27 · ADR-018 supersedes D23 — TOTP with recovery codes is built, and the brief had called it settled while nothing existed\n2026-08-27 · D52 · the product asks for enrollment in BOTH the first-boot wizard and Ajustes\n2026-08-27 · Panel · V1…V4 moved to _playground.pen — moved, not deleted: they are the reasoning",
+          "content": "2026-10-21 — Drew the Errores band as shipped from public/: 404, 429 and 500 (old disc mark, English buttons on 500, contrast as is); 400/406/422 listed as string-only states; Desktop band pushed down.\n2026-10-21 — Mirrored to code at 809ea789: reveal toggle on every password field, 2FA window line, wordmark on the outcome cards, Email sent's primary CTA, Códigos chromeless (D148), kit 1.3.0; re-laid as bands Login, Recuperar contraseña, Second factor, Desktop.\n2026-10-14 · kit 1.2.0 · Soft Candle: the wordmark is the candle glyph plus outlined lettering at the code's h-8 size; fg-subtle light is #5E6E84; BottomNav takes five equal slots\n2026-10-14 · D152 · Login · Desktop drops the split brand panel the code deleted on 2026-09-22 and draws the single card\n2026-09-16 · D122 · TOTP · Alta and Códigos opened from the wizard leave the app shell for the wizard's frame; that frame is drawn in onboarding.pen, this file keeps the Ajustes entry\n2026-09-16 · kit 1.0.0 · ButtonPrimary and Field back to the kit's metrics; HeaderBar and BottomNav vendored\n2026-09-16 · D78 · every card mirrored to the code: 30px titles, lg fields and buttons, the wordmark at its h-8 size; 2FA and recovery take one input; Email sent carries the neutral copy, spam line and expiry; Enlace expirado and Contraseña actualizada take the h1 and lg button the code now has\n2026-09-16 · TOTP · Alta and Códigos redrawn in the app shell they render in: no download, a real warning, HeaderBar back\n2026-09-16 · desktop brand panel loses \"Tu patrimonio invertido, en una pantalla.\" — the code never rendered it\n2026-09-16 · new artboard: Login · Error\n2026-09-16 · brief rewritten into its fixed sections; the reasoning it carried lives in ADR-018, D52 and git history\n2026-09-16 · canvas · grid variables declared, bands reflowed\n2026-09-13 · Login (mobile + desktop) drops the terms line — the legal pages are gone, ADR-026 · D118\n2026-09-05 · Enlace expirado and Contraseña actualizada drawn — the reset journey's two endings, AUTH-2\n2026-09-05 · the brief stopped saying 'design-led, code is reference (D8)'; D78 retired that posture\n2026-09-05 · the brief stopped restating the kit version, which read 0.8.0 against a variable saying 0.8.1 (X4)\n2026-09-05 · this file adopted the Log frame; the brief's three dated lines moved here\n2026-08-27 · ADR-018 supersedes D23 — TOTP with recovery codes is built, and the brief had called it settled while nothing existed\n2026-08-27 · D52 · the product asks for enrollment in BOTH the first-boot wizard and Ajustes\n2026-08-27 · Panel · V1…V4 moved to _playground.pen — moved, not deleted: they are the reasoning",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -3430,6 +3430,1039 @@
               "fontWeight": "500"
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "VsMZI",
+      "x": 480,
+      "y": 3312,
+      "name": "[Auth] / Errores / 404",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-surface",
+      "layout": "vertical",
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "j4ZN0",
+          "layoutPosition": "absolute",
+          "x": -205,
+          "y": 222,
+          "name": "BgDecoration",
+          "opacity": 0.03,
+          "width": 800,
+          "height": 400,
+          "layout": "none",
+          "children": [
+            {
+              "type": "path",
+              "id": "C8lHO",
+              "x": 0,
+              "y": 0,
+              "name": "Chart",
+              "geometry": "M0 350l18.12-8.46m18.13-8.46l18.12-8.45m18.12-8.46l18.13-8.46m18.12-8.46l18.13-8.45m18.12-8.46l5.01-2.34 13.98 3.73m19.33 5.15l19.32 5.16m19.33 5.15l19.32 5.15m19.33 5.15l19.32 5.16m19.32 5.15l0.75 0.2 12.72-14.42m13.23-15l13.24-14.99m13.23-15l13.23-15m13.23-14.99l13.24-15m13.23-15l13.23-14.99m13.23-15l13.24-15m54.95-35.61l18.57 7.43m18.57 7.43l18.57 7.42m18.57 7.43l18.57 7.43m18.57 7.43l18.57 7.42m18.57 7.43l1.44 0.58 13.94-12.08m15.11-13.1l15.12-13.1m15.11-13.1l15.11-13.09m15.12-13.1l15.11-13.1m15.12-13.1l15.11-13.1m15.11-13.1l0.04-0.03",
+              "viewBox": [
+                0,
+                0,
+                800,
+                400
+              ],
+              "width": 800,
+              "height": 400,
+              "stroke": "$fg-default",
+              "strokeWidth": 8,
+              "strokeLinecap": "round"
+            },
+            {
+              "type": "ellipse",
+              "id": "ziwVc",
+              "x": 465,
+              "y": 125,
+              "name": "Dot",
+              "fill": "$fg-default",
+              "width": 20,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "CIILa",
+          "name": "Content",
+          "width": 390,
+          "layout": "vertical",
+          "padding": 24,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "uDzP7",
+              "name": "Logo",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "sjIXX",
+                  "name": "LogoIcon",
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-sm",
+                  "padding": 6,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "tCmzN",
+                      "name": "DiscGlyph (retired)",
+                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                      "fillRule": "evenodd",
+                      "viewBox": [
+                        0,
+                        0,
+                        64,
+                        64
+                      ],
+                      "fill": "$fg-inverse",
+                      "width": 26,
+                      "height": 26
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "o6ovIo",
+                  "name": "LogoText",
+                  "fill": "$fg-default",
+                  "content": "stockerly",
+                  "fontFamily": "$font-display",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.96
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "wXez7",
+              "name": "sp48",
+              "width": 1,
+              "height": 48
+            },
+            {
+              "type": "frame",
+              "id": "gieWB",
+              "name": "Hero",
+              "width": 342,
+              "height": 120,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "RiJ2z",
+                  "name": "Number",
+                  "fill": "$border-default",
+                  "content": "404",
+                  "lineHeight": 1,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 120,
+                  "fontWeight": "700",
+                  "letterSpacing": -6
+                },
+                {
+                  "type": "frame",
+                  "id": "QtO8j",
+                  "layoutPosition": "absolute",
+                  "x": 127,
+                  "y": 16,
+                  "name": "IconRing",
+                  "width": 88,
+                  "height": 88,
+                  "fill": "$bg-surface",
+                  "cornerRadius": 999,
+                  "stroke": "$bg-muted",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "tq9Qf",
+                      "name": "Icon",
+                      "width": 56,
+                      "height": 56,
+                      "icon": "search_off",
+                      "library": "Material Symbols Outlined",
+                      "fill": "$primary"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "EmpKs",
+              "name": "sp32",
+              "width": 1,
+              "height": 32
+            },
+            {
+              "type": "text",
+              "id": "QK3ph",
+              "name": "Title",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Página no encontrada",
+              "lineHeight": 1.2,
+              "textAlign": "center",
+              "fontFamily": "$font-sans",
+              "fontSize": 30,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "OrI0h",
+              "name": "sp16",
+              "width": 1,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "b7DVt",
+              "name": "Description",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Esta página no existe o cambió de lugar.",
+              "lineHeight": 1.6,
+              "textAlign": "center",
+              "fontFamily": "$font-sans",
+              "fontSize": 18,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "XnvSV",
+              "name": "sp40",
+              "width": 1,
+              "height": 40
+            },
+            {
+              "type": "frame",
+              "id": "LXjei",
+              "name": "Actions",
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "LgncN",
+                  "name": "BtnPrimary",
+                  "width": 180,
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-sm",
+                  "padding": [
+                    12,
+                    32
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "q7AYne",
+                      "name": "Label",
+                      "fill": "$fg-inverse",
+                      "content": "Ir al panorama",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "B5OziP",
+                  "name": "BtnSecondary",
+                  "width": 180,
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$border-default",
+                  "strokeWidth": 2,
+                  "padding": [
+                    14,
+                    34
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "FZOiq",
+                      "name": "Label",
+                      "fill": "$fg-subtle",
+                      "content": "Ir al inicio",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rTcWd",
+              "name": "sp64",
+              "width": 1,
+              "height": 64
+            },
+            {
+              "type": "frame",
+              "id": "huCKB",
+              "name": "HelpText",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "qyC5K",
+                  "name": "Q",
+                  "fill": "$fg-subtle",
+                  "content": "¿Algo se ve mal?",
+                  "lineHeight": 1.43,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "fsYS5",
+                  "name": "Link",
+                  "fill": "$primary",
+                  "content": "Repórtalo en GitHub",
+                  "lineHeight": 1.43,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "W033XG",
+      "x": 990,
+      "y": 3312,
+      "name": "[Auth] / Errores / 429",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-surface",
+      "layout": "vertical",
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "x41w8",
+          "layoutPosition": "absolute",
+          "x": -205,
+          "y": 222,
+          "name": "BgDecoration",
+          "opacity": 0.03,
+          "width": 800,
+          "height": 400,
+          "layout": "none",
+          "children": [
+            {
+              "type": "path",
+              "id": "HO9xC",
+              "x": 0,
+              "y": 0,
+              "name": "Chart",
+              "geometry": "M0 350l18.12-8.46m18.13-8.46l18.12-8.45m18.12-8.46l18.13-8.46m18.12-8.46l18.13-8.45m18.12-8.46l5.01-2.34 13.98 3.73m19.33 5.15l19.32 5.16m19.33 5.15l19.32 5.15m19.33 5.15l19.32 5.16m19.32 5.15l0.75 0.2 12.72-14.42m13.23-15l13.24-14.99m13.23-15l13.23-15m13.23-14.99l13.24-15m13.23-15l13.23-14.99m13.23-15l13.24-15m54.95-35.61l18.57 7.43m18.57 7.43l18.57 7.42m18.57 7.43l18.57 7.43m18.57 7.43l18.57 7.42m18.57 7.43l1.44 0.58 13.94-12.08m15.11-13.1l15.12-13.1m15.11-13.1l15.11-13.09m15.12-13.1l15.11-13.1m15.12-13.1l15.11-13.1m15.11-13.1l0.04-0.03",
+              "viewBox": [
+                0,
+                0,
+                800,
+                400
+              ],
+              "width": 800,
+              "height": 400,
+              "stroke": "$fg-default",
+              "strokeWidth": 8,
+              "strokeLinecap": "round"
+            },
+            {
+              "type": "ellipse",
+              "id": "YlwqO",
+              "x": 465,
+              "y": 125,
+              "name": "Dot",
+              "fill": "$fg-default",
+              "width": 20,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Q9BQj",
+          "name": "Content",
+          "width": 390,
+          "layout": "vertical",
+          "padding": 24,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "cbhq1",
+              "name": "Logo",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "X6frv",
+                  "name": "LogoIcon",
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-sm",
+                  "padding": 6,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "hUnXu",
+                      "name": "DiscGlyph (retired)",
+                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                      "fillRule": "evenodd",
+                      "viewBox": [
+                        0,
+                        0,
+                        64,
+                        64
+                      ],
+                      "fill": "$fg-inverse",
+                      "width": 26,
+                      "height": 26
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "oayP0",
+                  "name": "LogoText",
+                  "fill": "$fg-default",
+                  "content": "stockerly",
+                  "fontFamily": "$font-display",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.96
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sOZTk",
+              "name": "sp48",
+              "width": 1,
+              "height": 48
+            },
+            {
+              "type": "frame",
+              "id": "TlLav",
+              "name": "Hero",
+              "width": 342,
+              "height": 120,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cr8T7",
+                  "name": "Number",
+                  "fill": "$border-default",
+                  "content": "429",
+                  "lineHeight": 1,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 120,
+                  "fontWeight": "700",
+                  "letterSpacing": -6
+                },
+                {
+                  "type": "frame",
+                  "id": "J54Wi",
+                  "layoutPosition": "absolute",
+                  "x": 127,
+                  "y": 16,
+                  "name": "IconRing",
+                  "width": 88,
+                  "height": 88,
+                  "fill": "$bg-surface",
+                  "cornerRadius": 999,
+                  "stroke": "$bg-muted",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "P3GaM",
+                      "name": "Icon",
+                      "width": 56,
+                      "height": 56,
+                      "icon": "hourglass_top",
+                      "library": "Material Symbols Outlined",
+                      "fill": "$primary"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zRTQD",
+              "name": "sp32",
+              "width": 1,
+              "height": 32
+            },
+            {
+              "type": "text",
+              "id": "b9bIST",
+              "name": "Title",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Demasiados intentos",
+              "lineHeight": 1.2,
+              "textAlign": "center",
+              "fontFamily": "$font-sans",
+              "fontSize": 30,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "DBwKJ",
+              "name": "sp16",
+              "width": 1,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "YhpxH",
+              "name": "Description",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Hiciste esa acción demasiadas veces seguidas. Espera un momento antes de volver a intentarlo.",
+              "lineHeight": 1.6,
+              "textAlign": "center",
+              "fontFamily": "$font-sans",
+              "fontSize": 18,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "EG9Kb",
+              "name": "sp40",
+              "width": 1,
+              "height": 40
+            },
+            {
+              "type": "frame",
+              "id": "wrx5l",
+              "name": "Actions",
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "M4BX5U",
+                  "name": "BtnPrimary",
+                  "width": 180,
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-sm",
+                  "padding": [
+                    12,
+                    32
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "f6Uy8",
+                      "name": "Label",
+                      "fill": "$fg-inverse",
+                      "content": "Ir al inicio",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Z2bV68",
+              "name": "sp64",
+              "width": 1,
+              "height": 64
+            },
+            {
+              "type": "frame",
+              "id": "nehqP",
+              "name": "HelpText",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "s6LGw3",
+                  "name": "Q",
+                  "fill": "$fg-subtle",
+                  "content": "¿Algo se ve mal?",
+                  "lineHeight": 1.43,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "IIqtn",
+                  "name": "Link",
+                  "fill": "$primary",
+                  "content": "Repórtalo en GitHub",
+                  "lineHeight": 1.43,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "G4eFYC",
+      "x": 1500,
+      "y": 3312,
+      "name": "[Auth] / Errores / 500",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-surface",
+      "layout": "vertical",
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "vKdQU",
+          "layoutPosition": "absolute",
+          "x": -205,
+          "y": 222,
+          "name": "BgDecoration",
+          "opacity": 0.15,
+          "width": 800,
+          "height": 400,
+          "layout": "none",
+          "children": [
+            {
+              "type": "path",
+              "id": "s7D6up",
+              "x": 0,
+              "y": 0,
+              "name": "Chart",
+              "geometry": "M0 350l150-70 150 40 150-170 100 70 100-170 70 130m20 50l60 150",
+              "viewBox": [
+                0,
+                0,
+                800,
+                400
+              ],
+              "width": 800,
+              "height": 400,
+              "stroke": "$border-default",
+              "strokeWidth": 4,
+              "strokeLinejoin": "round",
+              "strokeLinecap": "round"
+            },
+            {
+              "type": "ellipse",
+              "id": "p54ip",
+              "x": 722,
+              "y": 197,
+              "name": "Dot",
+              "fill": "$border-default",
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "fzlJI",
+          "name": "Content",
+          "width": 390,
+          "layout": "vertical",
+          "padding": 24,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "YzS2e",
+              "name": "Logo",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "RnPuE",
+                  "name": "LogoIcon",
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-sm",
+                  "padding": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "hzYWL",
+                      "name": "DiscGlyph (retired)",
+                      "geometry": "M4 32a28 28 0 1 0 56 0 28 28 0 1 0-56 0z m13-8h11v16h-11z m3.75-5h3.5v5h-3.5z m0 21h3.5v5h-3.5z m15.25-22h11v12h-11z m3.75-4h3.5v4h-3.5z m0 16h3.5v15h-3.5z",
+                      "fillRule": "evenodd",
+                      "viewBox": [
+                        0,
+                        0,
+                        64,
+                        64
+                      ],
+                      "fill": "$fg-inverse",
+                      "width": 26,
+                      "height": 26
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "aJyBu",
+                  "name": "LogoText",
+                  "fill": "$fg-default",
+                  "content": "stockerly",
+                  "fontFamily": "$font-display",
+                  "fontSize": 24,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.96
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "C7tyh",
+              "name": "sp48",
+              "width": 1,
+              "height": 48
+            },
+            {
+              "type": "frame",
+              "id": "GJJpI",
+              "name": "Hero",
+              "width": 342,
+              "height": 120,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "xoUyE",
+                  "name": "Number",
+                  "fill": "$border-default",
+                  "content": "500",
+                  "lineHeight": 1,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 120,
+                  "fontWeight": "700",
+                  "letterSpacing": -6
+                },
+                {
+                  "type": "icon",
+                  "id": "H82oLg",
+                  "layoutPosition": "absolute",
+                  "x": 139,
+                  "y": 32,
+                  "name": "HeroIcon",
+                  "opacity": 0.9,
+                  "width": 64,
+                  "height": 64,
+                  "icon": "cloud_off",
+                  "library": "Material Symbols Outlined",
+                  "fill": "$primary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "LzwNb",
+              "name": "sp32",
+              "width": 1,
+              "height": 24
+            },
+            {
+              "type": "text",
+              "id": "MZrEY",
+              "name": "Title",
+              "fill": "$fg-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Algo falló de nuestro lado",
+              "lineHeight": 1.2,
+              "textAlign": "center",
+              "fontFamily": "$font-sans",
+              "fontSize": 30,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "CwY41",
+              "name": "sp16",
+              "width": 1,
+              "height": 16
+            },
+            {
+              "type": "text",
+              "id": "ps3Hl",
+              "name": "Description",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tuvimos un problema técnico. Intenta de nuevo en un momento o vuelve al inicio.",
+              "lineHeight": 1.6,
+              "textAlign": "center",
+              "fontFamily": "$font-sans",
+              "fontSize": 18,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "e1QmL",
+              "name": "sp40",
+              "width": 1,
+              "height": 40
+            },
+            {
+              "type": "frame",
+              "id": "T5sfZ",
+              "name": "Actions",
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Zeq3j",
+                  "name": "BtnPrimary",
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-sm",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    32
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "CuSMz",
+                      "name": "Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "refresh",
+                      "library": "Material Symbols Outlined",
+                      "fill": "$fg-inverse"
+                    },
+                    {
+                      "type": "text",
+                      "id": "CHQjs",
+                      "name": "Label",
+                      "fill": "$fg-inverse",
+                      "content": "Try Again",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "RQ0Bk",
+                  "name": "BtnSecondary",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$border-default",
+                  "strokeWidth": 2,
+                  "gap": 8,
+                  "padding": [
+                    16,
+                    34
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "AjjVW",
+                      "name": "Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "home",
+                      "library": "Material Symbols Outlined",
+                      "fill": "$fg-subtle"
+                    },
+                    {
+                      "type": "text",
+                      "id": "bymK6",
+                      "name": "Label",
+                      "fill": "$fg-subtle",
+                      "content": "Go Home",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "GaVAw",
+              "name": "sp64",
+              "width": 1,
+              "height": 64
+            },
+            {
+              "type": "frame",
+              "id": "Qo5jQ",
+              "name": "StatusText",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "QKltb",
+                  "name": "Line1",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Ot3zM",
+                      "name": "L",
+                      "fill": "$fg-subtle",
+                      "content": "Código de error:",
+                      "lineHeight": 1.43,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "gw7eE",
+                      "name": "Code",
+                      "fill": "$fg-subtle",
+                      "content": "ERR_INTERNAL_SERVER_500",
+                      "lineHeight": 1.43,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ENFWY",
+                  "name": "Line2",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "uStaw",
+                      "name": "Q",
+                      "fill": "$fg-subtle",
+                      "content": "¿Sigue fallando?",
+                      "lineHeight": 1.43,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "d5Ktm",
+                      "name": "Link",
+                      "fill": "$primary",
+                      "content": "Repórtalo en GitHub",
+                      "lineHeight": 1.43,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "qb50C",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 840,
+          "name": "BottomBar",
+          "width": 390,
+          "height": 4,
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 90,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "$primary-muted",
+                "position": 0
+              },
+              {
+                "color": "$primary",
+                "position": 0.5
+              },
+              {
+                "color": "$primary-muted",
+                "position": 1
+              }
+            ]
+          }
         }
       ]
     }
