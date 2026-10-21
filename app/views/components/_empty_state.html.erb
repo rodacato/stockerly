@@ -1,9 +1,10 @@
 <%# Parameters: icon, title; description (optional), cta_text (optional),
     cta_path (optional), cta_method (optional — :post renders a button, anything
     else a link), size (optional — :block fills a screen, :inline fits a section
-    inside a column) %>
+    inside a column), tone (optional — :wash is the soft brand fill of D165) %>
 <%
   description = local_assigns[:description]
+  wash = local_assigns[:tone] == :wash
   cta =
     if local_assigns[:cta_text] && local_assigns[:cta_path]
       cta_class = button_classes(:primary, :sm, "inline-flex items-center gap-2")
@@ -26,11 +27,12 @@
     </div>
   </div>
 <% else %>
-  <div class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border-default px-4 py-16 text-center">
-    <%= icon_svg icon, class: "mb-4 text-6xl text-border-strong", "aria-hidden": "true" %>
+  <div class="<%= class_names("flex flex-col items-center justify-center rounded-2xl px-4 py-16 text-center",
+                              "bg-primary-muted": wash, "border border-dashed border-border-default": !wash) %>">
+    <%= icon_svg icon, class: "mb-4 text-6xl #{wash ? 'text-primary-fg' : 'text-border-strong'}", "aria-hidden": "true" %>
     <h3 class="mb-2 font-display text-lg font-semibold text-fg-default"><%= title %></h3>
     <% if description.present? %>
-      <p class="mb-6 max-w-[320px] text-sm text-fg-subtle"><%= description %></p>
+      <p class="<%= class_names("mb-6 max-w-[320px] text-sm", "text-fg-default": wash, "text-fg-subtle": !wash) %>"><%= description %></p>
     <% end %>
     <%= cta %>
   </div>

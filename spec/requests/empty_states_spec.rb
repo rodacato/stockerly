@@ -16,6 +16,21 @@ RSpec.describe "Empty state consistency", type: :request do
       expect(response.body).to include("Aún no tienes posiciones")
       expect(response.body).to include("account_balance_wallet")
     end
+
+    it "wears the soft brand wash that D165 gives only this empty state" do
+      create(:portfolio, user: user)
+      get assets_path
+
+      empty = response.parsed_body.css("div.bg-primary-muted").find { |box| box.text.include?("Aún no tienes posiciones") }
+      expect(empty).to be_present
+    end
+
+    it "leaves the other empty states as a dashed white card" do
+      get alerts_path
+
+      expect(response.parsed_body.css("div.bg-primary-muted").any? { |box| box.text.include?("Todavía no tienes reglas") }).to be(false)
+      expect(response.body).to include("border-dashed")
+    end
   end
 
   describe "alerts empty state uses component" do
