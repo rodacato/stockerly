@@ -907,7 +907,7 @@ es-MX:
       trade_not_found: no existe
   help:
     show:
-      subtitulo: Cómo empezar con Stockerly, qué hacer cuando algo falla, y cómo contactarnos.
+      subtitulo: Por dónde empezar y a dónde llevar un error cuando algo no funciona.
       titulo: Ayuda y soporte
   mantenimiento:
     cuerpo: Stockerly está fuera de servicio mientras se hace mantenimiento. Vuelve
@@ -1740,6 +1740,8 @@ es-MX:
     show:
       avisos_campana: Todo aviso llega a tu campana; eso no se apaga. El correo sí.
       avisos_titulo: Avisos
+      ayuda: Ayuda
+      ayuda_desc: Por dónde empezar y cómo reportar un error
       borrar_cuenta: Borrar mi cuenta y empezar de cero
       borrar_cuenta_confirmar: Esto elimina tu cuenta y todos tus datos, y cierra
         la sesión. No se puede deshacer. ¿Continuar?
