@@ -76,7 +76,7 @@
 
     <div class="grid gap-4 lg:grid-cols-2">
       <%= render "portfolios/comparison_card",
-                 label: t(".vs_cetes", term: Trading::UseCases::AssembleConsolidado::CETES_TERM),
+                 label: t(".vs_cetes", term: Trading::Domain::CetesComparison::TERM),
                  card: @vs_cetes,
                  level_label: t(".igual_cetes"),
                  empty_body: (@currency != "MXN" ? t(".cetes_solo_mxn") : nil),

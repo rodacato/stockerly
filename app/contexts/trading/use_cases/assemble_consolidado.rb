@@ -18,7 +18,6 @@ module Trading
       }.freeze
 
       DEFAULT_PERIOD = "1A"
-      CETES_TERM = "28"
 
       def call(user:, period: nil)
         portfolio = user.portfolio
@@ -44,7 +43,7 @@ module Trading
           summary: summary,
           series: fx.figure([]) { series_for(portfolio, currency, from) },
           twr: twr,
-          vs_cetes: twr && currency == "MXN" ? vs_cetes(twr, from, to) : nil,
+          vs_cetes: twr && currency == "MXN" ? Domain::CetesComparison.between(twr, from, to) : nil,
           vs_hold: twr && fx.figure { vs_hold(portfolio, currency, from, to, twr) },
           allocation: fx.figure({}) { allocation_for(portfolio, currency) },
           fx_unavailable: fx.degraded?,
@@ -90,14 +89,6 @@ module Trading
 
       def value_of(portfolio, currency, snapshot)
         portfolio.convert(snapshot.total_value, from: snapshot.currency, to: currency, at_date: snapshot.date)
-      end
-
-      def vs_cetes(mine, from, to)
-        theirs = MarketData::Queries::CetesReinvestedReturn.call(term: CETES_TERM, from: from, to: to)
-        return nil if theirs.nil?
-
-        # The card prints both returns at one decimal, so the gap is judged on those.
-        { points: (mine.round(1) - theirs.round(1)).round(1), mine: mine, benchmark: theirs, term: CETES_TERM }
       end
 
       # The counterfactual: the positions held at the start of the period,
