@@ -6,6 +6,11 @@
      [ "email_digest", t("settings.show.digest"), t("settings.show.digest_desc"), preferences&.email_digest != false ],
      [ "urgent_email", t("settings.show.urgente"), t("settings.show.urgente_desc"), preferences&.urgent_email == true ]
    ] %>
+<%# The morning summary rides the same push install as the rule alerts, so it
+    only appears where VAPID keys exist. %>
+<% if Notifications::Domain::WebPushDelivery.configured? %>
+  <% channels << [ "daily_push", t("settings.show.resumen_hoy"), t("settings.show.resumen_hoy_desc"), preferences&.daily_push == true ] %>
+<% end %>
 
 <div class="<%= card_classes("divide-y divide-border-default px-4") %>">
   <% channels.each do |field, label, description, on| %>

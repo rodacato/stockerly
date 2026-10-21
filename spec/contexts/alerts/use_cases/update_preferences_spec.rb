@@ -18,6 +18,11 @@ RSpec.describe Alerts::UseCases::UpdatePreferences do
       expect(pref.email_digest).to be true
     end
 
+    it "keeps the morning summary off until it is asked for" do
+      expect(described_class.call(user: user, params: { email_digest: true }).daily_push).to be false
+      expect(described_class.call(user: user, params: { daily_push: true }).daily_push).to be true
+    end
+
     it "ignores params not in the allowed slice (mass-assignment guard)" do
       pref = described_class.call(user: user, params: { email_digest: true, unknown_param: "hack" })
       expect(pref.email_digest).to be true

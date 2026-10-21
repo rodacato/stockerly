@@ -66,6 +66,7 @@ RSpec.describe "Push subscriptions", type: :request do
       get settings_path
 
       expect(response.body).not_to include("push-subscription")
+      expect(response.body).not_to include(I18n.t("settings.show.resumen_hoy"))
     end
 
     it "appears once the keys are configured" do
@@ -75,6 +76,14 @@ RSpec.describe "Push subscriptions", type: :request do
       get settings_path
 
       expect(response.body).to include('data-push-subscription-vapid-key-value="public-key"')
+      expect(response.body).to include(I18n.t("settings.show.resumen_hoy"))
+      expect(response.body).to include('data-toggle-field-value="daily_push"')
+    end
+
+    it "saves the morning summary through the same preference endpoint" do
+      patch update_preferences_path, params: { daily_push: true }
+
+      expect(user.reload.alert_preference.daily_push).to be(true)
     end
   end
 

@@ -77,6 +77,6 @@ class ProfilesController < AuthenticatedController
   end
 
   def preference_params
-    params.permit(:email_digest, :urgent_email, :push)
+    params.permit(:email_digest, :urgent_email, :push, :daily_push)
   end
 end
