@@ -53,11 +53,18 @@
         <div class="flex flex-wrap items-baseline justify-between gap-2">
           <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".como_repartido") %></h2>
           <span class="font-mono text-[11px] uppercase tracking-wider text-fg-subtle">
-            <%= t(".por_tipo", currency: @currency) %>
+            <%= @allocation_view == "sector" ? t(".por_sector", currency: @currency) : t(".por_tipo", currency: @currency) %>
           </span>
         </div>
+        <nav class="mt-3 flex gap-2" aria-label="<%= t(".como_repartido") %>">
+          <% { "type" => t(".toggle.tipo"), "sector" => t(".toggle.sector") }.each do |view, label| %>
+            <%= link_to label, portfolio_path(period: @period, por: (view == "sector" ? "sector" : nil)),
+                        class: "rounded-full px-3 py-1.5 text-xs font-semibold #{view == @allocation_view ? 'bg-primary-muted text-primary-fg' : 'bg-bg-muted text-fg-subtle hover:text-fg-default'}",
+                        aria: { current: (view == @allocation_view ? "true" : nil) } %>
+          <% end %>
+        </nav>
 
-        <% segments = allocation_segments(@allocation) %>
+        <% segments = @allocation_view == "sector" ? sector_segments(@allocation) : allocation_segments(@allocation) %>
         <% if segments.any? %>
           <%# The partial carries its own legend; the artboard leaves the ring's
               centre empty rather than repeating the total already on the strip. %>

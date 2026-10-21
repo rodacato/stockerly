@@ -216,6 +216,40 @@ RSpec.describe "Consolidado", type: :request do
     end
   end
 
+  describe "the allocation by sector" do
+    def hold_sector(symbol, sector)
+      held = create(:asset, :stock, symbol: symbol, currency: "MXN", current_price: 10, sector: sector)
+      create(:position, portfolio: portfolio, asset: held, shares: 10, avg_cost: 8, status: :open)
+    end
+
+    it "reads by asset type unless the sector is asked for" do
+      hold_sector("WALMEX", "Consumer Defensive")
+
+      get portfolio_path
+
+      expect(response.body).to include(I18n.t("portfolios.show.por_tipo", currency: "MXN"))
+      expect(response.body).not_to include("Consumo defensivo")
+    end
+
+    it "reads by sector when asked, in es-MX, with the toggle marking where you are" do
+      hold_sector("WALMEX", "Consumer Defensive")
+      hold_sector("FEMSA", nil)
+
+      get portfolio_path(por: "sector")
+
+      expect(response.body).to include(I18n.t("portfolios.show.por_sector", currency: "MXN"))
+      expect(response.body).to include("Consumo defensivo")
+      expect(response.body).to include(I18n.t("portfolios.show.sector.sin_sector"))
+      expect(response.body).to match(/aria-current="true"[^>]*>Sector</)
+    end
+
+    it "falls back to the asset type view for a view it does not know" do
+      get portfolio_path(por: "nope")
+
+      expect(response.body).to include(I18n.t("portfolios.show.por_tipo", currency: "MXN"))
+    end
+  end
+
   describe "the dollar exposure" do
     def hold_usd(price_updated_at: Time.current)
       usd = create(:asset, :stock, symbol: "AAPL", currency: "USD", current_price: 100, price_updated_at: price_updated_at)
