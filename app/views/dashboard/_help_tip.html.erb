@@ -1,0 +1,28 @@
+<%# The inline ? of Hoy: a button and its popover, for the caller to place inside
+    an element that carries `help_tip_data(figure)`. The copy is the catalogue at
+    `dashboard.ayuda.<figure>`; opening one is counted (help_opens).
+    Locals: figure; optional classes (placement of the button). %>
+<% title = t("dashboard.ayuda.#{figure}.titulo") %>
+<button type="button" data-action="click->metric-tooltip#toggle"
+        class="<%= local_assigns.fetch(:classes, "") %> flex size-9 shrink-0 cursor-help items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-primary"
+        aria-label="<%= t("dashboard.ayuda.explicar", titulo: title) %>">
+  <%= icon_svg "info", class: "text-base", "aria-hidden": "true" %>
+</button>
+
+<div data-metric-tooltip-target="popover"
+     class="absolute left-0 top-full z-20 mt-1 hidden w-full overflow-hidden rounded-xl border border-border-default bg-bg-surface shadow-xl">
+  <div class="flex items-center justify-between gap-2 border-b border-border-default px-4 py-3">
+    <h3 class="text-sm font-semibold text-fg-default"><%= title %></h3>
+    <button type="button" data-action="click->metric-tooltip#close"
+            class="flex size-9 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default"
+            aria-label="<%= t("dashboard.ayuda.cerrar") %>">
+      <%= icon_svg "close", class: "text-lg", "aria-hidden": "true" %>
+    </button>
+  </div>
+  <div class="flex flex-col gap-2 p-4 text-sm leading-relaxed text-fg-default">
+    <p><%= t("dashboard.ayuda.#{figure}.cuerpo") %></p>
+    <% if figure == "veredicto" %>
+      <p class="text-xs text-fg-subtle"><%= t("dashboard.ayuda.veredicto.pie") %></p>
+    <% end %>
+  </div>
+</div>

@@ -97,4 +97,10 @@ module DashboardHelper
     else t(key, date: l(item.date, format: :short))
     end
   end
+
+  # Wires an element to the shared tooltip controller and tells it which figure
+  # to count when the ? opens.
+  def help_tip_data(figure)
+    { controller: "metric-tooltip", help_url: help_opens_path(figure) }
+  end
 end

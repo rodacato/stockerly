@@ -25,6 +25,7 @@
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".aperturas") %></h2>
     <p class="text-sm text-fg-subtle"><%= t(".aperturas_ayuda") %></p>
+    <p class="font-mono text-sm text-fg-default"><%= t(".ayudas_abiertas", count: @diagnostics[:help_opens_7d]) %></p>
     <div class="<%= card_classes("grid grid-cols-7 gap-px p-3") %>">
       <% @diagnostics[:opens_per_day].each do |day, opens| %>
         <div class="flex flex-col items-center gap-1 py-1">

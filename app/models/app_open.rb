@@ -19,4 +19,10 @@ class AppOpen < ApplicationRecord
 
     (since..today).map { |day| [ day, counts.fetch(day, 0) ] }
   end
+
+  # Opens across every path that starts with `prefix` (the ? helps live under
+  # "help:<figure>"), over the last `days` days.
+  def self.total(prefix:, days: 7, today: Time.zone.today)
+    where("path LIKE ?", "#{sanitize_sql_like(prefix)}%").where(day: (today - (days - 1))..today).sum(:count)
+  end
 end
