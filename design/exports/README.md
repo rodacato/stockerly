@@ -188,8 +188,9 @@ so an export that is never renamed survives as an orphan nobody can identify.
 | `onboarding-assets.png` | `[Onboarding] / Assets / Default` |
 | `onboarding-seguridad.png` | `[Onboarding] / Seguridad / Default` — the D52 step; it offers TOTP and lets you skip |
 | `onboarding-seguridad-alta.png` | `[Onboarding] / Seguridad · Alta / Default` — enrolment opened from the wizard, in its frame (D122); the Ajustes entry is `auth-totp-alta.png` and `auth-codigos-recuperacion.png` |
-| `onboarding-seguridad-codigos.png` | `[Onboarding] / Seguridad · Códigos / Default` — the recovery codes, same frame |
+| `onboarding-seguridad-codigos.png` | `[Onboarding] / Seguridad · Códigos / Default` — the recovery codes, bare frame from both doors (D148) |
 | `onboarding-complete.png` | `[Onboarding] / Complete / Default` |
+| `onboarding-complete-sin-worker.png` | `[Onboarding] / Complete / Sin worker` — the warning when no worker attends the queue |
 | `onboarding-welcome.png` | `[Onboarding] / Welcome / Default` |
 | `onboarding-welcome-desktop.png` | `[Onboarding] / Welcome / Desktop` |
 

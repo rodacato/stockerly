@@ -1,5 +1,5 @@
 {
-  "version": "2.20",
+  "version": "2.21",
   "children": [
     {
       "type": "frame",
@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "PURPOSE\nFirst boot of a self-hosted, single-user instance: create the one account, connect data sources, pick assets, offer a second factor, launch the first sync, and hand over to the app.\n\nENTRY POINTS\nAny request while no user exists → /setup (layout auth, one centred card at every width; it opens with the notice that without outgoing mail the password cannot be recovered). The account lands on /onboarding/integrations, and the wizard (layout onboarding, no navigation) runs integraciones → activos → seguridad → listo → /welcome. Every other route sends a not-yet-onboarded reader back to step 1, which is why /welcome also uses the onboarding layout (D121).\n\nSCREENS (LEFT → RIGHT)\nMobile: Setup · Default, Setup · Error, Integrations, Assets, Seguridad, Seguridad · Alta, Seguridad · Códigos, Complete, Welcome.\nDesktop: Setup (the one-column auth card at max-w-md, D152) and Welcome (the guide's three cards side by side). The wizard steps have no lg: layout — a centred max-w-2xl column — so they draw no desktop artboard (D4).\n\nBUSINESS RULES\n• Setup carries no Stepper: it creates the account; the four numbered steps start after it (OnboardingController::STEPS = 4).\n• Integrations lists every provider, keyed ones first in alphabetical order, each with what is lost without its key (ProviderDirectory#without). Keyless sources sit in their own box.\n• Assets preselects DEFAULT_SELECTED; the highlight follows the checkbox. Omitir goes to Seguridad, never past it.\n• Seguridad OFFERS enrolment and lets the reader skip (D52). Enrolment opened from here stays in the wizard's frame under the same step header, and both its skip and its codes lead on to Complete (D122). The same screens from Ajustes live in auth.pen.\n• Complete counts keys against the providers that take one.\n• Welcome is the only writer of onboarded_at (D30). Each guide card finishes onboarding and lands on its destination; the CTA lands on Panorama (D121).\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — setup.new, onboarding.*, welcome.show, shared.welcome_body. Provider text: MarketData::Domain::ProviderDirectory and ProviderDefaults (provider_type). Asset rows: Administration::Domain::AssetCatalog. Setup errors: CreateFirstAdmin's contract, humanized field + message. Enrolment: totp_enrollments.*.\n\nSTATES NOT DRAWN\n• Integrations after setup: toast \"Cuenta creada. Ahora configura tu instancia.\"\n• Assets after saving keys: toast \"Llaves guardadas. Banxico respondió con %{count} tipo(s) de cambio.\" or \"Guardamos tus llaves, pero Banxico no respondió el tipo de cambio. Revisa el token en Integraciones.\"\n• Assets: the ACCIONES · MÉXICO group the catalog renders between ETFS and RENTA FIJA — held back while [ONB-5] is blocked.\n• Seguridad · Alta with a wrong code: the alert above the form reads \"Ese código no es válido. Revisa tu app de autenticación.\"\n• The QR is drawn as an icon; the page renders a real one on a white plate.\n• Complete · Desktop, Seguridad · Desktop, the enrolment screens on desktop, Integrations · Desktop, Assets · Desktop: the same column, wider.\n• /help (D92): Welcome with title \"Ayuda y soporte\", its own subtitle, plain links, no CTA.\n\nOPEN FINDINGS\nNone with a D number. Board drafts: provider_type in English; CoinGecko recorded as keyless; contract errors in English; icon size classes; wordmark font.\n\nHISTORY\n→ Log · Onboarding",
+          "content": "PURPOSE\nFirst boot of a self-hosted, single-user instance: create the one account, connect data sources, pick assets, offer a second factor, launch the first sync, and hand over to the app.\n\nENTRY POINTS\nAny request while no user exists → /setup (layout auth, one centred card at every width; it opens with the notice that without outgoing mail the password cannot be recovered). The account lands on /onboarding/integrations, and the wizard (layout onboarding, no navigation) runs integraciones → activos → seguridad → listo → /welcome. Every other route sends a not-yet-onboarded reader back to step 1, which is why /welcome also uses the onboarding layout (D121).\n\nSCREENS (LEFT → RIGHT, BY BAND)\nFirst boot band (mobile): Setup · Default, Setup · Error, Integrations, Assets, Seguridad, Seguridad · Alta, Seguridad · Códigos, Complete, Complete · Sin worker, Welcome. Seguridad · Códigos renders the same page as auth.pen's Códigos de recuperación (D148); each file keeps it as its journey's entry.\nDesktop band: Setup (the one-column auth card at max-w-md, D152) and Welcome (the guide's three cards side by side). The wizard steps have no lg: layout — a centred max-w-2xl column — so they draw no desktop artboard (D4).\n\nBUSINESS RULES\n• Setup carries no Stepper: it creates the account; the four numbered steps start after it (OnboardingController::STEPS = 4).\n• The Stepper counts steps behind the reader: 0% on step 1, 75% on Complete.\n• Integrations lists every provider in OnboardingController::PROVIDER_ORDER: Banxico first — the one key the step can exercise on the spot — then the keyed sources by what skipping them costs, each with what is lost without its key (ProviderDirectory#without). Keyless sources sit in their own box.\n• Assets preselects DEFAULT_SELECTED; the highlight follows the checkbox. Omitir goes to Seguridad, never past it.\n• Seguridad OFFERS enrolment and lets the reader skip (D52). Seguridad · Alta stays in the wizard's frame under the same step header (D122); Seguridad · Códigos drops the step header, as it does from Ajustes (D148). Both the skip and the codes lead on to Complete. The same screens from Ajustes live in auth.pen.\n• Complete counts keys against the six providers that take one, and warns when no worker is attending the queue (HealthMetrics.queue_attended?).\n• Welcome is the only writer of onboarded_at (D30). Each guide card finishes onboarding and lands on its destination; the CTA lands on Panorama (D121).\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — setup.new, onboarding.*, welcome.show, shared.welcome_body. Provider text: MarketData::Domain::ProviderDirectory and onboarding.integrations.tipos. Asset rows: Administration::Domain::AssetCatalog. Setup errors: CreateFirstAdmin's contract, setup.new.campos + dry_validation.errors. Enrolment: totp_enrollments.*.\n\nSTATES NOT DRAWN\n• Integrations after setup: toast \"Cuenta creada. Ahora configura tu instancia.\"\n• Integrations re-rendered when Banxico did not answer: toast \"Guardamos tus llaves, pero Banxico no respondió el tipo de cambio. Revisa el token en Integraciones.\"\n• Assets after saving a Banxico key that answered: toast \"Llaves guardadas. Banxico respondió con %{count} tipo(s) de cambio.\"; none without a Banxico key.\n• Integrations with a stored key: \"Guardada · pega otra para reemplazarla\" under the API key label.\n• Setup's password fields carry the reveal toggle; pressed, the text shows.\n• Assets: the ACCIONES · MÉXICO group the catalog renders between ETFS and RENTA FIJA — held back while [ONB-5] is blocked.\n• Seguridad · Alta with a wrong code: the alert above the form reads \"Ese código no es válido. Revisa tu app de autenticación.\"\n• The QR is drawn as an icon; the page renders a real one on a white plate.\n• Complete · Desktop, Seguridad · Desktop, the enrolment screens on desktop, Integrations · Desktop, Assets · Desktop: the same column, wider.\n• /help (D92): Welcome with title \"Ayuda y soporte\", its own subtitle, plain links, no CTA.\n\nOPEN FINDINGS\nNone with a D number. Board drafts: icon size classes; wordmark font.\n\nHISTORY\n→ Log · Onboarding",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -318,8 +318,58 @@
                     "EAmR6": {
                       "content": "Contraseña"
                     },
-                    "oVSsu": {
-                      "content": "Mínimo 8 caracteres"
+                    "WBOpv": {
+                      "type": "frame",
+                      "id": "w6Sjv",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        14
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "erC9o",
+                          "name": "Placeholder",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Mínimo 8 caracteres",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "rDkCD",
+                          "name": "Reveal",
+                          "width": 48,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "F3xIiP",
+                              "name": "i",
+                              "width": 20,
+                              "height": 20,
+                              "icon": "eye",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   }
                 },
@@ -333,8 +383,58 @@
                     "EAmR6": {
                       "content": "Confirmar contraseña"
                     },
-                    "oVSsu": {
-                      "content": "Repite tu contraseña"
+                    "WBOpv": {
+                      "type": "frame",
+                      "id": "IoL0Y",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        14
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "m8gSk",
+                          "name": "Placeholder",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Repite tu contraseña",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "GbEvr",
+                          "name": "Reveal",
+                          "width": 48,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "mOCNq",
+                              "name": "i",
+                              "width": 20,
+                              "height": 20,
+                              "icon": "eye",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   }
                 }
@@ -360,7 +460,7 @@
       "type": "frame",
       "id": "GjH9a",
       "x": 480,
-      "y": 3622,
+      "y": 2917,
       "name": "[Onboarding] / Setup / Desktop",
       "clip": true,
       "width": 1280,
@@ -556,8 +656,58 @@
                     "EAmR6": {
                       "content": "Contraseña"
                     },
-                    "oVSsu": {
-                      "content": "Mínimo 8 caracteres"
+                    "WBOpv": {
+                      "type": "frame",
+                      "id": "iqIPF",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        14
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "tkYrX",
+                          "name": "Placeholder",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Mínimo 8 caracteres",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Z6e8X",
+                          "name": "Reveal",
+                          "width": 48,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "AFA0t",
+                              "name": "i",
+                              "width": 20,
+                              "height": 20,
+                              "icon": "eye",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   }
                 },
@@ -571,8 +721,58 @@
                     "EAmR6": {
                       "content": "Confirmar contraseña"
                     },
-                    "oVSsu": {
-                      "content": "Repite tu contraseña"
+                    "WBOpv": {
+                      "type": "frame",
+                      "id": "HSf5z",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        14
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "nuckk",
+                          "name": "Placeholder",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Repite tu contraseña",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "IFgGb",
+                          "name": "Reveal",
+                          "width": 48,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "lwjGz",
+                              "name": "i",
+                              "width": 20,
+                              "height": 20,
+                              "icon": "eye",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   }
                 }
@@ -665,7 +865,7 @@
       "name": "[Onboarding] / Integrations / Default",
       "clip": true,
       "width": 390,
-      "height": 2646,
+      "height": 2657,
       "fill": "$bg-canvas",
       "layout": "vertical",
       "children": [
@@ -693,10 +893,11 @@
                   "letterSpacing": 1.2
                 },
                 "nLwuL": {
-                  "content": "25%"
+                  "content": "0%"
                 },
                 "ePQce": {
-                  "width": 90
+                  "width": 90,
+                  "enabled": false
                 }
               }
             },
@@ -744,181 +945,6 @@
               "layout": "vertical",
               "gap": "$space-3",
               "children": [
-                {
-                  "type": "frame",
-                  "id": "zQQbC",
-                  "name": "Alpaca",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-lg",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "layout": "vertical",
-                  "gap": "$space-3",
-                  "padding": 20,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "fTiOr",
-                      "name": "Hdr",
-                      "width": "fill_container",
-                      "gap": "$space-3",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "GVeOi",
-                          "name": "IconWrap",
-                          "width": 40,
-                          "height": 40,
-                          "fill": "$primary-muted",
-                          "cornerRadius": "$radius-sm",
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "gObX5",
-                              "name": "Ic",
-                              "width": 20,
-                              "height": 20,
-                              "icon": "database",
-                              "library": "lucide",
-                              "fill": "$primary"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "fmgGj",
-                          "name": "NCol",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "BRu1A",
-                              "name": "Nm",
-                              "fill": "$fg-default",
-                              "content": "Alpaca",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 16,
-                              "fontWeight": "600"
-                            },
-                            {
-                              "type": "text",
-                              "id": "V95LVs",
-                              "name": "Tp",
-                              "fill": "$fg-subtle",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "US STOCKS & CORPORATE ACTIONS",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 12,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.6
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "text",
-                      "id": "A9LIXw",
-                      "name": "Ds",
-                      "fill": "$fg-subtle",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Cierre confirmado e histórico de acciones de EE. UU., más sus dividendos y splits. La API key se guarda como ID:SECRETO.",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "NSQFP",
-                      "name": "Without",
-                      "width": "fill_container",
-                      "fill": "$bg-muted",
-                      "cornerRadius": "$radius-sm",
-                      "gap": "$space-2",
-                      "padding": [
-                        8,
-                        12
-                      ],
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "M4wYQ",
-                          "name": "Ic",
-                          "width": 16,
-                          "height": 16,
-                          "icon": "ban",
-                          "library": "lucide",
-                          "fill": "$fg-subtle"
-                        },
-                        {
-                          "type": "text",
-                          "id": "gC5cY",
-                          "name": "Tx",
-                          "fill": "$fg-subtle",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "Sin esta API key: Pierdes el cierre oficial de EE. UU. y los dividendos y splits de tus posiciones estadounidenses.",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "id": "NecqT",
-                      "type": "ref",
-                      "ref": "FBmBv",
-                      "name": "Key",
-                      "width": "fill_container",
-                      "descendants": {
-                        "EAmR6": {
-                          "content": "API key",
-                          "fontSize": 14
-                        },
-                        "oVSsu": {
-                          "content": "Pega tu API key de Alpaca",
-                          "fontSize": 14
-                        }
-                      }
-                    },
-                    {
-                      "type": "frame",
-                      "id": "aiuT0",
-                      "name": "Link",
-                      "gap": "$space-1",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "bp3dU",
-                          "name": "Tx",
-                          "fill": "$primary-fg",
-                          "content": "¿Dónde consigo la API key?",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "icon",
-                          "id": "p4A9ZO",
-                          "name": "Ic",
-                          "width": 14,
-                          "height": 14,
-                          "icon": "external-link",
-                          "library": "lucide",
-                          "fill": "$primary"
-                        }
-                      ]
-                    }
-                  ]
-                },
                 {
                   "type": "frame",
                   "id": "pa510",
@@ -987,7 +1013,7 @@
                               "fill": "$fg-subtle",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "CETES & FIXED INCOME",
+                              "content": "CETES Y RENTA FIJA",
                               "fontFamily": "$font-mono",
                               "fontSize": 12,
                               "fontWeight": "normal",
@@ -1162,7 +1188,7 @@
                               "fill": "$fg-subtle",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "CRYPTOCURRENCY",
+                              "content": "CRIPTOMONEDAS",
                               "fontFamily": "$font-mono",
                               "fontSize": 12,
                               "fontWeight": "normal",
@@ -1337,7 +1363,7 @@
                               "fill": "$fg-subtle",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "MEXICAN STOCKS (BMV/BIVA)",
+                              "content": "ACCIONES MEXICANAS (BMV/BIVA)",
                               "fontFamily": "$font-mono",
                               "fontSize": 12,
                               "fontWeight": "normal",
@@ -1446,8 +1472,8 @@
                 },
                 {
                   "type": "frame",
-                  "id": "FYUk2",
-                  "name": "ExchangeRate",
+                  "id": "zQQbC",
+                  "name": "Alpaca",
                   "width": "fill_container",
                   "fill": "$bg-surface",
                   "cornerRadius": "$radius-lg",
@@ -1459,7 +1485,7 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "cemSJ",
+                      "id": "fTiOr",
                       "name": "Hdr",
                       "width": "fill_container",
                       "gap": "$space-3",
@@ -1467,7 +1493,7 @@
                       "children": [
                         {
                           "type": "frame",
-                          "id": "MvxiV",
+                          "id": "GVeOi",
                           "name": "IconWrap",
                           "width": 40,
                           "height": 40,
@@ -1478,7 +1504,7 @@
                           "children": [
                             {
                               "type": "icon",
-                              "id": "vmfsM",
+                              "id": "gObX5",
                               "name": "Ic",
                               "width": 20,
                               "height": 20,
@@ -1490,29 +1516,29 @@
                         },
                         {
                           "type": "frame",
-                          "id": "hVkoi",
+                          "id": "fmgGj",
                           "name": "NCol",
                           "width": "fill_container",
                           "layout": "vertical",
                           "children": [
                             {
                               "type": "text",
-                              "id": "WNrpB",
+                              "id": "BRu1A",
                               "name": "Nm",
                               "fill": "$fg-default",
-                              "content": "ExchangeRate",
+                              "content": "Alpaca",
                               "fontFamily": "$font-sans",
                               "fontSize": 16,
                               "fontWeight": "600"
                             },
                             {
                               "type": "text",
-                              "id": "Vtm8w",
+                              "id": "V95LVs",
                               "name": "Tp",
                               "fill": "$fg-subtle",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "FX RATES",
+                              "content": "ACCIONES DE EE. UU. Y EVENTOS CORPORATIVOS",
                               "fontFamily": "$font-mono",
                               "fontSize": 12,
                               "fontWeight": "normal",
@@ -1524,19 +1550,19 @@
                     },
                     {
                       "type": "text",
-                      "id": "F4Pgw3",
+                      "id": "A9LIXw",
                       "name": "Ds",
                       "fill": "$fg-subtle",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Tipo de cambio del momento, para ver todo en tu moneda base. El histórico por fecha lo trae Banxico.",
+                      "content": "Cierre confirmado e histórico de acciones de EE. UU., más sus dividendos y splits. La API key se guarda como ID:SECRETO.",
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
                     },
                     {
                       "type": "frame",
-                      "id": "bXOio",
+                      "id": "NSQFP",
                       "name": "Without",
                       "width": "fill_container",
                       "fill": "$bg-muted",
@@ -1549,7 +1575,7 @@
                       "children": [
                         {
                           "type": "icon",
-                          "id": "LeqcJ",
+                          "id": "M4wYQ",
                           "name": "Ic",
                           "width": 16,
                           "height": 16,
@@ -1559,12 +1585,12 @@
                         },
                         {
                           "type": "text",
-                          "id": "Du9ri",
+                          "id": "gC5cY",
                           "name": "Tx",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Sin esta API key: Tu patrimonio se consolida con el último tipo de cambio que se haya guardado, sin actualizarse — y sin decírtelo.",
+                          "content": "Sin esta API key: Pierdes el cierre oficial de EE. UU. y los dividendos y splits de tus posiciones estadounidenses.",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -1572,7 +1598,7 @@
                       ]
                     },
                     {
-                      "id": "W59bHX",
+                      "id": "NecqT",
                       "type": "ref",
                       "ref": "FBmBv",
                       "name": "Key",
@@ -1583,21 +1609,21 @@
                           "fontSize": 14
                         },
                         "oVSsu": {
-                          "content": "Pega tu API key de ExchangeRate",
+                          "content": "Pega tu API key de Alpaca",
                           "fontSize": 14
                         }
                       }
                     },
                     {
                       "type": "frame",
-                      "id": "M7CUiW",
+                      "id": "aiuT0",
                       "name": "Link",
                       "gap": "$space-1",
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
-                          "id": "LS3hJ",
+                          "id": "bp3dU",
                           "name": "Tx",
                           "fill": "$primary-fg",
                           "content": "¿Dónde consigo la API key?",
@@ -1607,7 +1633,7 @@
                         },
                         {
                           "type": "icon",
-                          "id": "ifyJj",
+                          "id": "p4A9ZO",
                           "name": "Ic",
                           "width": 14,
                           "height": 14,
@@ -1687,7 +1713,7 @@
                               "fill": "$fg-subtle",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "STOCKS & MARKET DATA",
+                              "content": "ACCIONES Y DATOS DE MERCADO",
                               "fontFamily": "$font-mono",
                               "fontSize": 12,
                               "fontWeight": "normal",
@@ -1796,6 +1822,181 @@
                 },
                 {
                   "type": "frame",
+                  "id": "FYUk2",
+                  "name": "ExchangeRate",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": "$space-3",
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cemSJ",
+                      "name": "Hdr",
+                      "width": "fill_container",
+                      "gap": "$space-3",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "MvxiV",
+                          "name": "IconWrap",
+                          "width": 40,
+                          "height": 40,
+                          "fill": "$primary-muted",
+                          "cornerRadius": "$radius-sm",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "vmfsM",
+                              "name": "Ic",
+                              "width": 20,
+                              "height": 20,
+                              "icon": "database",
+                              "library": "lucide",
+                              "fill": "$primary"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "hVkoi",
+                          "name": "NCol",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "WNrpB",
+                              "name": "Nm",
+                              "fill": "$fg-default",
+                              "content": "ExchangeRate",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 16,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Vtm8w",
+                              "name": "Tp",
+                              "fill": "$fg-subtle",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "TIPOS DE CAMBIO",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 12,
+                              "fontWeight": "normal",
+                              "letterSpacing": 0.6
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "F4Pgw3",
+                      "name": "Ds",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Tipo de cambio del momento, para ver todo en tu moneda base. El histórico por fecha lo trae Banxico.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bXOio",
+                      "name": "Without",
+                      "width": "fill_container",
+                      "fill": "$bg-muted",
+                      "cornerRadius": "$radius-sm",
+                      "gap": "$space-2",
+                      "padding": [
+                        8,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "LeqcJ",
+                          "name": "Ic",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "ban",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Du9ri",
+                          "name": "Tx",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Sin esta API key: Tu patrimonio se consolida con el último tipo de cambio que se haya guardado, sin actualizarse — y sin decírtelo.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "W59bHX",
+                      "type": "ref",
+                      "ref": "FBmBv",
+                      "name": "Key",
+                      "width": "fill_container",
+                      "descendants": {
+                        "EAmR6": {
+                          "content": "API key",
+                          "fontSize": 14
+                        },
+                        "oVSsu": {
+                          "content": "Pega tu API key de ExchangeRate",
+                          "fontSize": 14
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "M7CUiW",
+                      "name": "Link",
+                      "gap": "$space-1",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "LS3hJ",
+                          "name": "Tx",
+                          "fill": "$primary-fg",
+                          "content": "¿Dónde consigo la API key?",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "ifyJj",
+                          "name": "Ic",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "external-link",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
                   "id": "LmSgR",
                   "name": "Public",
                   "width": "fill_container",
@@ -1815,56 +2016,6 @@
                       "fontSize": 12,
                       "fontWeight": "700",
                       "letterSpacing": 0.6
-                    },
-                    {
-                      "type": "frame",
-                      "id": "TFlhC",
-                      "name": "PRow",
-                      "width": "fill_container",
-                      "gap": "$space-3",
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "edGM8",
-                          "name": "Chk",
-                          "width": 18,
-                          "height": 18,
-                          "icon": "circle-check",
-                          "library": "lucide",
-                          "fill": "$positive"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "Tm4H6",
-                          "name": "PCol",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "qHnTs",
-                              "name": "PNm",
-                              "fill": "$fg-default",
-                              "content": "Alternative.me",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 14,
-                              "fontWeight": "600"
-                            },
-                            {
-                              "type": "text",
-                              "id": "neoUA",
-                              "name": "PDs",
-                              "fill": "$fg-subtle",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "Índice Fear & Greed de cripto (sentimiento).",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 14,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
                     },
                     {
                       "type": "frame",
@@ -1908,6 +2059,56 @@
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
                               "content": "Índices (IPC, S&P, Dow) y corporativos de la BMV. Además es el último respaldo de casi todo lo demás.",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TFlhC",
+                      "name": "PRow",
+                      "width": "fill_container",
+                      "gap": "$space-3",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "edGM8",
+                          "name": "Chk",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "circle-check",
+                          "library": "lucide",
+                          "fill": "$positive"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Tm4H6",
+                          "name": "PCol",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "qHnTs",
+                              "name": "PNm",
+                              "fill": "$fg-default",
+                              "content": "Alternative.me",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "neoUA",
+                              "name": "PDs",
+                              "fill": "$fg-subtle",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Índice Fear & Greed de cripto (sentimiento).",
                               "fontFamily": "$font-sans",
                               "fontSize": 14,
                               "fontWeight": "normal"
@@ -1991,10 +2192,10 @@
                   "letterSpacing": 1.2
                 },
                 "nLwuL": {
-                  "content": "50%"
+                  "content": "25%"
                 },
                 "ePQce": {
-                  "width": 179
+                  "width": 90
                 }
               }
             },
@@ -4394,10 +4595,10 @@
                   "letterSpacing": 1.2
                 },
                 "nLwuL": {
-                  "content": "100%"
+                  "content": "75%"
                 },
                 "ePQce": {
-                  "width": 358
+                  "width": 269
                 }
               }
             },
@@ -4512,7 +4713,7 @@
                           "id": "o1eOF",
                           "name": "Num",
                           "fill": "$fg-default",
-                          "content": "2/8",
+                          "content": "2/6",
                           "fontFamily": "$font-mono",
                           "fontSize": 20,
                           "fontWeight": "700"
@@ -4595,76 +4796,6 @@
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
                           "content": "Activos listos para seguir",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "T2BXKq",
-                  "name": "El sync arranca en segundo plano",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-lg",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "gap": "$space-4",
-                  "padding": 16,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "ZF18B",
-                      "name": "IW",
-                      "width": 48,
-                      "height": 48,
-                      "fill": "$warning-bg",
-                      "cornerRadius": "$radius-sm",
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "Q7CTx",
-                          "name": "Ic",
-                          "width": 24,
-                          "height": 24,
-                          "icon": "refresh-cw",
-                          "library": "lucide",
-                          "fill": "$warning"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "D8g8EW",
-                      "name": "TC",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 2,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "a9QI4",
-                          "name": "Num",
-                          "fill": "$fg-default",
-                          "content": "Listo",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 20,
-                          "fontWeight": "700"
-                        },
-                        {
-                          "type": "text",
-                          "id": "MYuea",
-                          "name": "Lab",
-                          "fill": "$fg-subtle",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "El sync arranca en segundo plano",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -4769,7 +4900,7 @@
     {
       "type": "frame",
       "id": "tIGri",
-      "x": 4560,
+      "x": 5070,
       "y": 0,
       "name": "[Onboarding] / Welcome / Default",
       "clip": true,
@@ -5317,7 +5448,7 @@
       "type": "frame",
       "id": "lZ8uJ",
       "x": 1880,
-      "y": 3622,
+      "y": 2917,
       "name": "[Onboarding] / Welcome / Desktop",
       "clip": true,
       "width": 1280,
@@ -5906,10 +6037,10 @@
                   "letterSpacing": 1.2
                 },
                 "nLwuL": {
-                  "content": "75%"
+                  "content": "50%"
                 },
                 "ePQce": {
-                  "width": 269
+                  "width": 179
                 }
               }
             },
@@ -6194,8 +6325,8 @@
     {
       "type": "frame",
       "id": "F1GurC",
-      "x": -480,
-      "y": 0,
+      "x": 0,
+      "y": 2427,
       "name": "Log · Onboarding",
       "width": 360,
       "fill": "$bg-muted",
@@ -6221,7 +6352,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-14 · kit 1.2.0 · Soft Candle wordmark at the code's h-8 size and the Welcome mark; fg-subtle light is #5E6E84\n2026-10-14 · D152 · Setup · Desktop drops the split brand panel the code deleted on 2026-09-22; Setup (all three) carries the mail notice and loses the open-source foot, mirroring setup/new.html.erb\n2026-09-17 · D123: Integrations loses the Alpha Vantage and FMP cards; artboard 3362 → 2646\n2026-09-16 · D122 · Seguridad · Alta and Seguridad · Códigos drawn: enrolment opened from the wizard stays in its frame instead of the app shell\n2026-09-16 · re-vendored to kit 1.0.0; ButtonPrimary, Field and Stepper back to the masters\n2026-09-16 · mirrored to the code (D78): Setup in the auth card, Integrations with all eight keyed providers, Assets with the full catalog, Seguridad as one card, Complete and Welcome resized; the brand-panel checklist retired with the artboard it lived on\n2026-09-16 · Setup · Error drawn; Integrations and Assets desktops retired (D4)\n2026-09-16 · D121 · Welcome leaves the app shell and its doors finish onboarding; with it, Complete reads step 4, Omitir stops skipping Seguridad, the key count drops keyless sources, and a failed setup keeps name and email\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections\n2026-09-05 · D92 · /help stays undrawn on purpose — it is Welcome minus the CTA, so it earns a brief note rather than a 95% copy\n2026-09-05 · D91 · the Welcome body's bug link now opens the issue tracker; /report-bug was retired as hosted-beta residue\n2026-09-05 · this file adopted the Log frame, and the brief lost its three dated lines to it\n2026-08-27 · D52 · the wizard gained a fourth step, Seguridad; the Stepper went 3 → 4 across all five instances\n2026-08-27 · VOO and CETES split into their own cards — the code had already made the call, the brief was carrying it as an open question\n2026-08-27 · 🐞 fixed — the Welcome ContextCard's Mark was 56×56 inside a 28×28 Glyph, twice its frame and spilling out. The file's one reported layout problem",
+          "content": "2026-10-21 — Mirrored to code at 809ea789: Stepper counts steps behind, providers in PROVIDER_ORDER with types in es-MX, Setup errors in es-MX, reveal toggle on Setup's passwords, Complete loses the sync card and counts /6, Códigos drops the Stepper (D148), new Complete · Sin worker, kit 1.3.0; re-laid as bands First boot, Desktop.\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark at the code's h-8 size and the Welcome mark; fg-subtle light is #5E6E84\n2026-10-14 · D152 · Setup · Desktop drops the split brand panel the code deleted on 2026-09-22; Setup (all three) carries the mail notice and loses the open-source foot, mirroring setup/new.html.erb\n2026-09-17 · D123: Integrations loses the Alpha Vantage and FMP cards; artboard 3362 → 2646\n2026-09-16 · D122 · Seguridad · Alta and Seguridad · Códigos drawn: enrolment opened from the wizard stays in its frame instead of the app shell\n2026-09-16 · re-vendored to kit 1.0.0; ButtonPrimary, Field and Stepper back to the masters\n2026-09-16 · mirrored to the code (D78): Setup in the auth card, Integrations with all eight keyed providers, Assets with the full catalog, Seguridad as one card, Complete and Welcome resized; the brand-panel checklist retired with the artboard it lived on\n2026-09-16 · Setup · Error drawn; Integrations and Assets desktops retired (D4)\n2026-09-16 · D121 · Welcome leaves the app shell and its doors finish onboarding; with it, Complete reads step 4, Omitir stops skipping Seguridad, the key count drops keyless sources, and a failed setup keeps name and email\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections\n2026-09-05 · D92 · /help stays undrawn on purpose — it is Welcome minus the CTA, so it earns a brief note rather than a 95% copy\n2026-09-05 · D91 · the Welcome body's bug link now opens the issue tracker; /report-bug was retired as hosted-beta residue\n2026-09-05 · this file adopted the Log frame, and the brief lost its three dated lines to it\n2026-08-27 · D52 · the wizard gained a fourth step, Seguridad; the Stepper went 3 → 4 across all five instances\n2026-08-27 · VOO and CETES split into their own cards — the code had already made the call, the brief was carrying it as an open question\n2026-08-27 · 🐞 fixed — the Welcome ContextCard's Mark was 56×56 inside a 28×28 Glyph, twice its frame and spilling out. The file's one reported layout problem",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -6464,7 +6595,7 @@
                           "fill": "$negative-fg",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Password size cannot be less than 8",
+                          "content": "La contraseña debe tener al menos 8 caracteres",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -6495,7 +6626,7 @@
                           "fill": "$negative-fg",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Email must be a valid email",
+                          "content": "El correo debe ser un correo válido",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -6526,7 +6657,7 @@
                           "fill": "$negative-fg",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Password confirmation must match password",
+                          "content": "La confirmación no coincide con la contraseña",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -6587,8 +6718,58 @@
                     "EAmR6": {
                       "content": "Contraseña"
                     },
-                    "oVSsu": {
-                      "content": "Mínimo 8 caracteres"
+                    "WBOpv": {
+                      "type": "frame",
+                      "id": "pFPK7",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        14
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "agC5m",
+                          "name": "Placeholder",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Mínimo 8 caracteres",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ehgqa",
+                          "name": "Reveal",
+                          "width": 48,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "u0JQC",
+                              "name": "i",
+                              "width": 20,
+                              "height": 20,
+                              "icon": "eye",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   }
                 },
@@ -6602,8 +6783,58 @@
                     "EAmR6": {
                       "content": "Confirmar contraseña"
                     },
-                    "oVSsu": {
-                      "content": "Repite tu contraseña"
+                    "WBOpv": {
+                      "type": "frame",
+                      "id": "q9ExO",
+                      "name": "Input",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        14
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "BDvOG",
+                          "name": "Placeholder",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Repite tu contraseña",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "y5IViM",
+                          "name": "Reveal",
+                          "width": 48,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "r7onX",
+                              "name": "i",
+                              "width": 20,
+                              "height": 20,
+                              "icon": "eye",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   }
                 }
@@ -6661,10 +6892,10 @@
                   "letterSpacing": 1.2
                 },
                 "nLwuL": {
-                  "content": "75%"
+                  "content": "50%"
                 },
                 "ePQce": {
-                  "width": 269
+                  "width": 179
                 }
               }
             },
@@ -6876,25 +7107,6 @@
             16
           ],
           "children": [
-            {
-              "id": "KoCLS",
-              "type": "ref",
-              "ref": "NiYWI",
-              "name": "Progress",
-              "width": "fill_container",
-              "descendants": {
-                "zm21X": {
-                  "content": "PASO 3 DE 4",
-                  "letterSpacing": 1.2
-                },
-                "nLwuL": {
-                  "content": "75%"
-                },
-                "ePQce": {
-                  "width": 269
-                }
-              }
-            },
             {
               "type": "frame",
               "id": "lnO97",
@@ -7307,6 +7519,452 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "pOc0f",
+      "x": 4560,
+      "y": 0,
+      "name": "[Onboarding] / Complete / Sin worker",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "nnRJf",
+          "name": "Col",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-6",
+          "padding": [
+            40,
+            16
+          ],
+          "children": [
+            {
+              "id": "rAXMr",
+              "type": "ref",
+              "ref": "NiYWI",
+              "name": "Progress",
+              "width": "fill_container",
+              "descendants": {
+                "zm21X": {
+                  "content": "PASO 4 DE 4",
+                  "letterSpacing": 1.2
+                },
+                "nLwuL": {
+                  "content": "75%"
+                },
+                "ePQce": {
+                  "width": 269
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "fv6EC",
+              "name": "Success",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "orP71",
+                  "name": "Ring",
+                  "width": 64,
+                  "height": 64,
+                  "fill": "$positive-bg",
+                  "cornerRadius": 32,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "idPIu",
+                      "name": "Ck",
+                      "width": 36,
+                      "height": 36,
+                      "icon": "check",
+                      "library": "lucide",
+                      "fill": "$positive"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "bkKmV",
+                  "name": "Title",
+                  "fill": "$fg-default",
+                  "content": "Todo listo",
+                  "fontFamily": "$font-display",
+                  "fontSize": 30,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "T7b06",
+                  "name": "Sub",
+                  "fill": "$fg-subtle",
+                  "content": "Este es el resumen de tu configuración.",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "atweF",
+              "name": "Summary",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "pq8GF",
+                  "name": "Integraciones con API key",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-4",
+                  "padding": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "N6YLn",
+                      "name": "IW",
+                      "width": 48,
+                      "height": 48,
+                      "fill": "$primary-muted",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "W12n9",
+                          "name": "Ic",
+                          "width": 24,
+                          "height": 24,
+                          "icon": "database",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BspOF",
+                      "name": "TC",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "tCe7R",
+                          "name": "Num",
+                          "fill": "$fg-default",
+                          "content": "2/6",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 20,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ULEsA",
+                          "name": "Lab",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Integraciones con API key",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "kMNsv",
+                  "name": "Activos listos para seguir",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-4",
+                  "padding": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "tz8mE",
+                      "name": "IW",
+                      "width": 48,
+                      "height": 48,
+                      "fill": "$positive-bg",
+                      "cornerRadius": "$radius-sm",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "LOgog",
+                          "name": "Ic",
+                          "width": 24,
+                          "height": 24,
+                          "icon": "chart-line",
+                          "library": "lucide",
+                          "fill": "$positive"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C4ooN",
+                      "name": "TC",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "utD8d",
+                          "name": "Num",
+                          "fill": "$fg-default",
+                          "content": "6",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 20,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "rcyod",
+                          "name": "Lab",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Activos listos para seguir",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "h7vSE",
+              "name": "SinWorker",
+              "width": "fill_container",
+              "fill": "$warning-bg",
+              "cornerRadius": 16,
+              "gap": "$space-3",
+              "padding": [
+                14,
+                16
+              ],
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "CqZxr",
+                  "name": "i",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "triangle-alert",
+                  "library": "lucide",
+                  "fill": "$warning-fg"
+                },
+                {
+                  "type": "frame",
+                  "id": "uHHav",
+                  "name": "Tx",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Ulb6N",
+                      "name": "Titulo",
+                      "fill": "$warning-fg",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Ningún worker está atendiendo la fila",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "fnCBr",
+                      "name": "Cuerpo",
+                      "fill": "$warning-fg",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "La sincronización quedará encolada hasta que arranques el worker. Puedes continuar: los trabajos esperan, no se pierden.",
+                      "lineHeight": 1.6,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "r3qcBR",
+                      "name": "Comando",
+                      "gap": 4,
+                      "padding": [
+                        6,
+                        0,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "f4lLmn",
+                          "name": "t",
+                          "fill": "$warning-fg",
+                          "content": "Arráncalo con",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "HfHHY",
+                          "name": "Chip",
+                          "fill": "$bg-surface",
+                          "cornerRadius": 4,
+                          "padding": [
+                            2,
+                            6
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "w7ubWB",
+                              "name": "t",
+                              "fill": "$warning-fg",
+                              "content": "bin/jobs",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "s30P5",
+              "name": "Actions",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-3",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "XQKOT",
+                  "name": "Launch",
+                  "width": "fill_container",
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": "$space-2",
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "V6rNG",
+                      "name": "LTxt",
+                      "fill": "$fg-inverse",
+                      "content": "Lanzar e ir al Panorama",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "tAYbw",
+                      "name": "LIc",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "rocket",
+                      "library": "lucide",
+                      "fill": "$fg-inverse"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "D1xquR",
+                  "name": "Alt",
+                  "fill": "$fg-subtle",
+                  "content": "Ir al Panorama sin sincronizar",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "f5WYK4",
+                  "name": "Back",
+                  "gap": "$space-1",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "JmgWM",
+                      "name": "BIc",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "arrow-left",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    },
+                    {
+                      "type": "text",
+                      "id": "KLCpz",
+                      "name": "BTxt",
+                      "fill": "$fg-subtle",
+                      "content": "Atrás",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
@@ -7318,7 +7976,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.2.0"
+      "value": "1.3.0"
     },
     "font-display": {
       "type": "string",
