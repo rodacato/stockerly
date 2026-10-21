@@ -35,4 +35,20 @@ RSpec.describe MarketData::Queries::RecentNews do
 
     expect(described_class.call(asset: asset).size).to eq(described_class::LIMIT)
   end
+
+  describe ".for_symbols" do
+    it "reads the window across several symbols, newest first, capped" do
+      a = create(:news_article, related_ticker: "AAPL", published_at: 3.hours.ago)
+      b = create(:news_article, related_ticker: "MSFT", published_at: 1.hour.ago)
+      create(:news_article, related_ticker: "TSLA", published_at: 1.hour.ago)
+      create(:news_article, related_ticker: "AAPL", published_at: (described_class::WINDOW_DAYS + 1).days.ago)
+
+      expect(described_class.for_symbols(symbols: %w[aapl MSFT]).to_a).to eq([ b, a ])
+      expect(described_class.for_symbols(symbols: %w[AAPL MSFT], limit: 1).to_a).to eq([ b ])
+    end
+
+    it "has nothing for no symbols" do
+      expect(described_class.for_symbols(symbols: [])).to be_empty
+    end
+  end
 end

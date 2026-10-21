@@ -693,6 +693,9 @@ es-MX:
       senales_vacio: No hay observaciones recientes para tus activos.
       senales_ver_mas: Ver todas
       sentimiento_watchlist: SENTIMIENTO · TU WATCHLIST
+      titulares_atribucion: Últimos %{count} días, tal como los publica cada fuente.
+        No son una lectura nuestra.
+      titulares_titulo: Titulares de lo tuyo
       titulo: Panorama
       ver_todos: Ver todos
       volatilidad: VOLATILIDAD · EE. UU. (VIX)

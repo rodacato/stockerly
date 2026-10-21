@@ -37,6 +37,7 @@ module Trading
           prices_unavailable: fx.prices_unavailable?,
           vs_cetes: vs_cetes,
           plan_status: plan_status,
+          headlines: headlines(positions, watched),
           today: today(user, positions, watched, quotes_reliable, plan_status),
           sentiment_cards: sentiment_cards(user),
           signals: signals(positions, watched),
@@ -80,6 +81,10 @@ module Trading
           Domain::ExternalFlows.new(portfolio, currency: "MXN").between(Date.current.beginning_of_month, Date.current)
         end
         Domain::PlanStatus.call(plan: plan, allocation: allocation, contributed: contributed)
+      end
+
+      def headlines(positions, watched)
+        MarketData::Queries::RecentNews.for_symbols(symbols: (positions + watched).map { |entry| entry.asset.symbol }).to_a
       end
 
       def plan_items(status)
