@@ -56,6 +56,7 @@ not by reading the tables.
 | `activos-holdings.png` | `[Activos] / Holdings / Default` |
 | `activos-watchlist.png` | `[Activos] / Watchlist / Default` |
 | `activos-holdings-vacia.png` | `[Activos] / Holdings / Vacío` |
+| `activos-holdings-vacia-lavado.png` | `[Activos] / Holdings / Vacío · lavado de marca (D165)` — the empty card on `primary-muted` |
 | `activos-watchlist-vacia.png` | `[Activos] / Watchlist / Vacía` |
 | `activos-holdings-sin-consolidar.png` | `[Activos] / Holdings / Sin consolidar` — no FX rate: rows keep their own currency |
 | `activos-holdings-sin-cotizacion.png` | `[Activos] / Holdings / Sin cotización` — a held asset has no quote, so the notice replaces the summary |
