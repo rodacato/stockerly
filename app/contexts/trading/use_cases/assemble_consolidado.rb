@@ -46,6 +46,7 @@ module Trading
           vs_cetes: twr && currency == "MXN" ? Domain::CetesComparison.between(twr, from, to) : nil,
           vs_hold: twr && fx.figure { vs_hold(portfolio, currency, from, to, twr) },
           allocation: fx.figure({}) { allocation_for(portfolio, currency) },
+          currency_exposure: currency == "MXN" ? fx.figure { currency_exposure(portfolio, summary) } : nil,
           fx_unavailable: fx.degraded?,
           prices_unavailable: fx.prices_unavailable?
         }
@@ -57,9 +58,16 @@ module Trading
         portfolio.allocation_by_asset_type(currency: currency)
       end
 
+      # Over quotes that are not current the share would be stale, so it is absent.
+      def currency_exposure(portfolio, summary)
+        return nil unless summary&.quotes_current?
+
+        Domain::CurrencyExposure.call(by_currency: portfolio.allocation_by_currency(currency: "MXN"))
+      end
+
       def empty(currency, period)
         { period: period, from: Date.current, to: Date.current, currency: currency, summary: nil, fx_unavailable: false, prices_unavailable: false,
-          series: [], twr: nil, vs_cetes: nil, vs_hold: nil, allocation: {} }
+          series: [], twr: nil, vs_cetes: nil, vs_hold: nil, allocation: {}, currency_exposure: nil }
       end
 
       def starts_on(portfolio, period)

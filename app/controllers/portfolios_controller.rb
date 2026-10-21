@@ -14,5 +14,6 @@ class PortfoliosController < AuthenticatedController
     @vs_cetes       = data[:vs_cetes]
     @vs_hold        = data[:vs_hold]
     @allocation     = data[:allocation]
+    @currency_exposure = data[:currency_exposure]
   end
 end

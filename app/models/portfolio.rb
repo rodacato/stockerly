@@ -56,6 +56,12 @@ class Portfolio < ApplicationRecord
     end
   end
 
+  def allocation_by_currency(currency: user.preferred_currency)
+    open_positions_with_assets.group_by { |p| p.asset.currency }.transform_values do |group|
+      group.sum { |p| position_market_value_in(p, currency) }
+    end
+  end
+
   def yesterday_snapshot
     snapshots.where(date: Date.yesterday).first
   end

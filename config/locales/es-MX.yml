@@ -1534,6 +1534,13 @@ es-MX:
         cambia la moneda del patrimonio a MXN.
       como_ha_ido: Cómo ha ido
       como_repartido: Cómo está repartido
+      dolar_cuerpo: "%{share}% de tu patrimonio (%{amount}) está en activos que cotizan
+        en dólares."
+      dolar_nota: Es una cuenta sobre lo que tienes hoy, no un pronóstico del tipo
+        de cambio.
+      dolar_si_baja: Si el dólar bajara %{percent}% frente al peso, ese tramo valdría
+        %{effect} menos en pesos.
+      dolar_titulo: Cuánto pesa el dólar
       en_el_periodo: "%{percent} en el periodo"
       igual_cetes: Igual que CETES
       igual_hold: Igual que comprar y mantener
