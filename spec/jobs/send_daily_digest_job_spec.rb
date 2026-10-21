@@ -14,13 +14,13 @@ RSpec.describe SendDailyDigestJob, type: :job do
 
     log = SystemLog.where(task_name: "Daily Digest").last
     expect(log.severity).to eq("success")
-    expect(log.error_message).to eq("1 digest(s) sent")
+    expect(log.error_message).to eq("1 resumen enviado")
   end
 
   it "records a quiet day as a success with nothing sent" do
     described_class.perform_now
 
-    expect(SystemLog.where(task_name: "Daily Digest").last.error_message).to eq("0 digest(s) sent")
+    expect(SystemLog.where(task_name: "Daily Digest").last.error_message).to eq("0 resúmenes enviados")
   end
 
   it "logs the failure and re-raises when the digest blows up" do
