@@ -1,10 +1,22 @@
-<%# The anchor: the current price against a reference of yours. Cost when you
-    hold it, your price threshold when you only watch it, plus the rules that
-    carry no price. The artboard draws this in Análisis; the code shipped one of
-    its three rows, in Mi posición (CKP-8, D67).
-    Locals: cost_anchor, threshold_anchor, threshold_currency, rules, currency. %>
+<%# Lo tuyo (D159): the reference of yours the price is read against — your
+    position and cost when you hold it, your price threshold when you only
+    watch it, the rules that carry no price, and the next earnings date. D67
+    chose the anchors; this puts them first, before the chart, for the holder
+    and the watcher alike. Locals: position_data, cost_anchor, threshold_anchor,
+    threshold_currency, rules, currency, next_earnings. %>
 <section class="<%= card_classes("flex flex-col gap-3 p-5") %>">
   <h3 class="font-mono text-[11px] uppercase tracking-widest text-primary-fg"><%= t(".titulo") %></h3>
+
+  <% breakdown = position_data && position_data[:breakdown] %>
+  <% if breakdown %>
+    <div class="flex items-baseline justify-between gap-3 text-sm">
+      <span class="text-fg-default"><%= t(".posicion", value: format_currency_mx(breakdown.market_value, currency: position_data[:currency], precision: 0)) %></span>
+      <span class="font-mono font-semibold <%= gain_color(breakdown.total.percent) %>"><%= signed_percent(breakdown.total.percent) %></span>
+    </div>
+  <% end %>
+  <% if position_data && position_data[:weight_percent] %>
+    <p class="text-sm text-fg-subtle"><%= t(".peso", percent: position_data[:weight_percent]) %></p>
+  <% end %>
 
   <% if cost_anchor %>
     <div class="flex items-baseline justify-between gap-3 text-sm">
@@ -34,6 +46,14 @@
                    <%= rule.active? ? "bg-positive-bg text-positive-fg" : "bg-bg-muted text-fg-subtle" %>">
         <%= rule.active? ? t(".activa") : t(".en_pausa") %>
       </span>
+    </div>
+  <% end %>
+
+  <% if next_earnings %>
+    <% days = (next_earnings.report_date - Date.current).to_i %>
+    <div class="flex items-baseline justify-between gap-3 text-sm">
+      <span class="text-fg-default"><%= t(".resultados", date: l(next_earnings.report_date, format: :short)) %></span>
+      <span class="font-mono text-fg-subtle"><%= t(".resultados_dias", count: days) %></span>
     </div>
   <% end %>
 </section>

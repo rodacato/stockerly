@@ -28,7 +28,7 @@ RSpec.describe "The asset detail's price anchor", type: :request do
 
       get market_asset_path(asset.symbol)
 
-      expect(response.body).to include(I18n.t("market.vs_plan.titulo"))
+      expect(response.body).to include(I18n.t("market.mine.titulo"))
       expect(response.body).to include("+20.0%")
     end
 
@@ -38,8 +38,8 @@ RSpec.describe "The asset detail's price anchor", type: :request do
 
       get market_asset_path(asset.symbol)
 
-      expect(response.body).to include(I18n.t("market.vs_plan.titulo"))
-      expect(response.body).to include(I18n.t("market.vs_plan.umbral_baja", percent: "16.7%"))
+      expect(response.body).to include(I18n.t("market.mine.titulo"))
+      expect(response.body).to include(I18n.t("market.mine.umbral_baja", percent: "16.7%"))
     end
 
     it "lists a rule that carries no price beside the anchor" do
@@ -67,7 +67,7 @@ RSpec.describe "The asset detail's price anchor", type: :request do
       get market_asset_path(asset.symbol)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).not_to include(I18n.t("market.vs_plan.titulo"))
+      expect(response.body).not_to include(I18n.t("market.mine.titulo"))
     end
   end
 

@@ -23,6 +23,13 @@
       <h4 class="text-sm font-semibold text-fg-default">Precio objetivo de analistas</h4>
     </div>
 
+    <% fundamental = presenter&.fundamental %>
+    <% if fundamental&.source.present? && fundamental.calculated_at %>
+      <p class="-mt-2 mb-4 text-[11px] text-fg-subtle">
+        Consenso publicado por <%= fundamental.source %> · <%= absolute_stamp(fundamental.calculated_at) %>. Es un dato de terceros, no una lectura nuestra.
+      </p>
+    <% end %>
+
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-5">
       <div>
         <p class="text-[11px] font-semibold uppercase tracking-widest text-fg-subtle mb-1">Precio actual</p>
@@ -34,7 +41,7 @@
       </div>
       <div>
         <p class="text-[11px] font-semibold uppercase tracking-widest text-fg-subtle mb-1">Diferencia</p>
-        <p class="font-mono text-xl font-medium <%= positive_diff ? 'text-positive-fg' : 'text-negative-fg' %>">
+        <p class="font-mono text-xl font-medium text-fg-default">
           <%= positive_diff ? "+" : "" %><%= diff_pct %>%
         </p>
       </div>

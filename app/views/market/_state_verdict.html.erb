@@ -4,13 +4,9 @@
 <% source = state_source %>
 <% rsi = source&.indicator_snapshot&.dig("rsi") %>
 <% stale = source && source.observed_at.to_date < Date.current %>
-<% tone = case state
-   when :stretched then "border-warning bg-warning-bg text-warning-fg"
-   when :oversold  then "border-positive bg-positive-bg text-positive-fg"
-   else "border-border-default bg-bg-surface text-fg-default"
-   end %>
 
-<section class="flex items-start gap-3 rounded-2xl border p-4 <%= tone %>">
+
+<section class="flex items-start gap-3 rounded-2xl border border-border-default bg-bg-surface p-4 text-fg-default">
   <%= icon_svg((state == :neutral ? "remove" : "info"), class: "mt-0.5 shrink-0 text-xl", "aria-hidden": "true") %>
 
   <div class="min-w-0">
