@@ -1,0 +1,12 @@
+<%# One thing of the user's worth a look today. Locals: item (TodayBrief::Item). %>
+<% asset = item.asset %>
+<%= link_to market_asset_path(asset.symbol),
+            class: "flex items-center gap-3 rounded-xl border border-border-default bg-bg-surface p-3.5 transition-colors hover:border-border-strong" do %>
+  <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-muted text-primary-fg">
+    <%= icon_svg hoy_item_icon(item.kind), class: "text-xl", "aria-hidden": "true" %>
+  </span>
+  <span class="min-w-0 flex-1">
+    <span class="block text-sm font-semibold text-fg-default"><%= t(".#{item.kind}.titulo", symbol: asset.symbol, count: item.days || 0, percent: unsigned_percent(item.gap)) %></span>
+    <span class="block font-mono text-xs text-fg-subtle"><%= hoy_item_detail(item) %></span>
+  </span>
+<% end %>

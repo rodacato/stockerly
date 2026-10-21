@@ -61,4 +61,38 @@ RSpec.describe Trading::Domain::PortfolioSummary do
       expect(hash).to have_key(:total_invested)
     end
   end
+
+  describe "#quotes_current?" do
+    it "accepts a close from a few days ago, because the market is shut overnight and at weekends" do
+      asset_usd.update!(price_updated_at: 3.days.ago)
+      asset_intl.update!(price_updated_at: 2.hours.ago)
+
+      expect(subject.quotes_current?).to be(true)
+    end
+
+    it "rejects a quote older than the window" do
+      asset_usd.update!(price_updated_at: 6.days.ago)
+
+      expect(subject.quotes_current?).to be(false)
+    end
+
+    it "rejects a quote that was never stamped" do
+      asset_usd.update!(price_updated_at: nil)
+
+      expect(subject.quotes_current?).to be(false)
+    end
+
+    it "rejects when a provider reports an error" do
+      asset_usd.update!(last_sync_error: "Todos los gateways fallaron")
+
+      expect(subject.quotes_current?).to be(false)
+    end
+
+    it "does not hold a weekly-synced CETES against the age" do
+      cetes = create(:asset, :fixed_income, symbol: "CETES28", currency: "MXN", price_updated_at: 6.days.ago)
+      create(:position, portfolio: portfolio, asset: cetes, shares: 1, avg_cost: 10, status: :open)
+
+      expect(subject.quotes_current?).to be(true)
+    end
+  end
 end

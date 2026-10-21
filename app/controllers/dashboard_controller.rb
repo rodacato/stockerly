@@ -15,6 +15,8 @@ class DashboardController < AuthenticatedController
     @tracks_anything = data[:tracks_anything]
     @sparkline_closes = data[:sparkline_closes]
     @day_changes     = data[:day_changes]
+    @today           = data[:today]
+    @vs_cetes        = data[:vs_cetes]
   end
 
   private

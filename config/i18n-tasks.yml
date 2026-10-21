@@ -26,6 +26,10 @@ ignore_unused:
   # them by design. asset_state_spec asserts every state resolves in both
   # readings, which is a stronger guarantee than the scan it replaces.
   # The offline and social assets resolve this catalogue in bin/brand-assets.
+  # The Hoy verdict and its items are keyed by the TodayBrief state and the item
+  # kind; dashboard_hoy_spec renders every state and kind.
+  - dashboard.hoy.veredicto.*
+  - dashboard.hoy_item.*
   - brand.offline.*
   - brand.social.headline
   - brand.social.headline_second

@@ -6,6 +6,8 @@ module Trading
     class AssemblePanorama < SimpleUseCase
       RADAR_LIMIT = 6
       SIGNALS_LIMIT = 3
+      EARNINGS_WINDOW_DAYS = 7
+      VS_CETES_PERIOD = 1.month
 
       SentimentCard = Data.define(:key, :value, :label_key, :delta)
       RadarEntry = Data.define(:kind, :record, :asset, :change, :maturity_days)
@@ -20,11 +22,16 @@ module Trading
         closes    = MarketData::Queries::PriceSeries.recent_closes(asset_ids_of(positions, watched))
         day_changes = MarketData::Domain::DayChange.by_asset(closes)
 
+        vs_cetes = positions.any? && currency == "MXN" ? vs_cetes(fx, portfolio, currency) : nil
+        quotes_reliable = quotes_reliable?(fx, summary, positions, watched)
+
         {
           currency: currency,
           summary: summary,
           fx_unavailable: portfolio.present? && fx.degraded?,
           prices_unavailable: fx.prices_unavailable?,
+          vs_cetes: vs_cetes,
+          today: today(user, positions, watched, quotes_reliable),
           sentiment_cards: sentiment_cards(user),
           signals: signals(positions, watched),
           signals_window_days: MarketData::Queries::NotableObservations::WINDOW_DAYS,
@@ -39,6 +46,67 @@ module Trading
 
       # Valuing here is the load-bearing part: AssembleDashboard built the
       # summary lazily, so Portfolio#convert raised in the template instead.
+
+      def quotes_reliable?(fx, summary, positions, watched)
+        return false if fx.degraded? || fx.prices_unavailable?
+        return false if positions.any? && !summary&.quotes_current?
+
+        watched.all? { |item| Domain::QuoteFreshness.current?(item.asset) }
+      end
+
+      def today(user, positions, watched, quotes_reliable)
+        Domain::TodayBrief.call(
+          tracks_anything: positions.any? || watched.any?,
+          quotes_reliable: quotes_reliable,
+          candidates: maturity_items(positions) + earnings_items(positions) + target_items(user, watched)
+        )
+      end
+
+      def maturity_items(positions)
+        positions.filter_map do |position|
+          days = Domain::MaturityWindow.days_until(position)
+          next unless days
+
+          Domain::TodayBrief::Item.new(kind: :maturity, asset: position.asset, days: days,
+                                       date: position.maturity_date, gap: nil)
+        end
+      end
+
+      def earnings_items(positions)
+        held = positions.map(&:asset_id)
+
+        MarketData::Queries::UpcomingEarnings.within(days: EARNINGS_WINDOW_DAYS)
+                                             .select { |event| held.include?(event.asset_id) }
+                                             .map do |event|
+          Domain::TodayBrief::Item.new(kind: :earnings, asset: event.asset,
+                                       days: (event.report_date.to_date - Date.current).to_i,
+                                       date: event.report_date.to_date, gap: nil)
+        end
+      end
+
+      def target_items(user, watched)
+        gaps = Domain::WatchlistProximity.gaps(user)
+
+        watched.filter_map do |item|
+          gap = gaps[item.asset.symbol]
+          next unless gap && gap <= Domain::TodayBrief::NEAR_TARGET_PERCENT
+
+          Domain::TodayBrief::Item.new(kind: :target, asset: item.asset, days: nil, date: nil, gap: gap)
+        end
+      end
+
+      # The same rule the Consolidado applies, over the last month: the
+      # return that ignores deposits, against CETES rolled into new auctions.
+      def vs_cetes(fx, portfolio, currency)
+        from = [ VS_CETES_PERIOD.ago.to_date, portfolio.inception_date || Date.current ].max
+        dates = portfolio.snapshots.where(date: from..Date.current).order(:date).pluck(:date)
+        from = dates.first || from
+        to = dates.last || Date.current
+        twr = fx.figure { Domain::TimeWeightedReturn.new(portfolio, currency: currency).between(from: from, to: to) }
+        return nil unless twr
+
+        Domain::CetesComparison.between(twr, from, to)&.merge(as_of: to)
+      end
 
       def open_positions(portfolio)
         return [] unless portfolio

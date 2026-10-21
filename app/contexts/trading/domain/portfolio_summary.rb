@@ -70,6 +70,12 @@ module Trading
         quoted_assets.any?(&:price_stale?)
       end
 
+      def quotes_current?(within: QuoteFreshness::WINDOW)
+        return false if provider_errors?
+
+        quoted_assets.all? { |asset| QuoteFreshness.current?(asset, within: within) }
+      end
+
       def provider_errors?
         quoted_assets.any? { |asset| !asset.last_sync_ok? }
       end

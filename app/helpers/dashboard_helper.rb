@@ -70,4 +70,31 @@ module DashboardHelper
 
     { arrow: delta.positive? ? "▲" : "▼", text: "#{delta.positive? ? "+" : "−"}#{delta.abs}" }
   end
+
+  # The line under the verdict: the benchmark when there is one to state, and
+  # never a comparison over quotes the view cannot vouch for.
+  def hoy_subtitle(state, vs_cetes)
+    vs = vs_cetes && t("dashboard.hoy.vas", points: signed_points(vs_cetes[:points]))
+
+    case state
+    when :items then vs && "#{vs.upcase_first}."
+    when :calm then [ t("dashboard.hoy.nada_importante"), vs ].compact.join(" · ").then { |line| vs ? "#{line}." : line }
+    when :stale then t("dashboard.hoy.solo_sin_precio")
+    when :first_run then t("dashboard.hoy.primera_vez_sub")
+    end
+  end
+
+  HOY_ITEM_ICONS = { maturity: "schedule", earnings: "event", target: "target" }.freeze
+
+  def hoy_item_icon(kind) = HOY_ITEM_ICONS.fetch(kind)
+
+  def hoy_item_detail(item)
+    key = "dashboard.hoy_item.#{item.kind}.detalle"
+
+    case item.kind
+    when :target then format_currency_mx(item.asset.current_price, currency: item.asset.currency)
+    when :earnings then t(key, count: item.days, date: l(item.date, format: :short))
+    else t(key, date: l(item.date, format: :short))
+    end
+  end
 end

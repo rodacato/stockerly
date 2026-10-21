@@ -535,6 +535,41 @@ es-MX:
       other: vence en %{count} días
       zero: vence hoy
   dashboard:
+    hoy:
+      calma: Sin resultados, vencimientos ni objetivos cerca en lo que sigues.
+      de: "%{shown} de %{total}"
+      fecha: HOY · %{date} · CDMX
+      lo_tuyo: Lo tuyo hoy
+      nada_importante: Nada importante hoy
+      primera_vez_sub: Registra tu primer movimiento y aquí verás cómo vas.
+      primera_vez_titulo: Tu cartera está vacía.
+      solo_sin_precio: Mostramos solo lo que no depende de un precio.
+      vas: vas %{points} vs CETES en 30 días
+      ver_radar: Ver radar y señales
+      veredicto:
+        calm: Todo en orden.
+        first_run: Aún no hay nada que orientar.
+        items:
+          one: Hay %{count} cosa de lo tuyo para mirar hoy.
+          other: Hay %{count} cosas de lo tuyo para mirar hoy.
+        stale: Sin cotizaciones al día.
+      vs_cetes_nota: CETES %{term}d reinvertido · al %{date}
+      vs_cetes_rotulo: VS CETES · 30 D
+    hoy_item:
+      earnings:
+        detalle:
+          one: Mañana · %{date}
+          other: En %{count} días · %{date}
+          zero: Hoy · %{date}
+        titulo: "%{symbol} reporta resultados"
+      maturity:
+        detalle: Vence el %{date}
+        titulo:
+          one: "%{symbol} vence mañana"
+          other: "%{symbol} vence en %{count} días"
+          zero: "%{symbol} vence hoy"
+      target:
+        titulo: "%{symbol} · falta %{percent} para tu objetivo"
     show:
       carrusel: Sentimiento del mercado
       destino: Cómo está repartido por tipo
