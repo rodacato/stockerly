@@ -105,6 +105,7 @@ module DashboardHelper
     when :allocation then t(key, label: plan_label(item.subject), actual: item.actual, target: item.target)
     when :contribution then t(key)
     when :macro then t(key, label: item.label, count: item.days)
+    when :earnings then t(key, symbols: symbols_sentence(item.assets), count: item.assets.size)
     else t(key, symbol: item.asset.symbol, count: item.days || 0, percent: unsigned_percent(item.gap))
     end
   end
@@ -122,11 +123,16 @@ module DashboardHelper
     end
   end
 
+  def symbols_sentence(assets)
+    assets.map(&:symbol).to_sentence(two_words_connector: " y ", last_word_connector: " y ")
+  end
+
   def hoy_item_path(item)
     case item.kind
     when :allocation then portfolio_path
     when :contribution then new_trade_path
     when :macro then discover_path
+    when :earnings then item.assets.one? ? market_asset_path(item.asset.symbol) : assets_path
     else market_asset_path(item.asset.symbol)
     end
   end

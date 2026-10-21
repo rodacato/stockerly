@@ -56,6 +56,24 @@ RSpec.describe "Hoy on the dashboard", type: :request do
     expect(response.body).to include("3 de 3")
   end
 
+  it "reads a season as one row per report day, not one per company" do
+    day = 2.days.from_now.to_date
+    %w[TSLA META].each do |symbol|
+      held = mxn_asset(symbol: symbol, current_price: 70)
+      hold(held)
+      create(:earnings_event, asset: held, report_date: day)
+    end
+    later = mxn_asset(symbol: "MSFT", current_price: 70)
+    hold(later)
+    create(:earnings_event, asset: later, report_date: 6.days.from_now.to_date)
+
+    get dashboard_path
+
+    expect(response.body).to include("META y TSLA reportan resultados")
+    expect(response.body).to include("MSFT reporta resultados")
+    expect(response.body).to include("Hay 2 cosas de lo tuyo para mirar hoy.")
+  end
+
   it "keeps the compra / vende chips of the Señales block out of Hoy" do
     walmex = mxn_asset(symbol: "WALMEX", current_price: 70)
     hold(walmex)

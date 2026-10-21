@@ -10,8 +10,8 @@ module Trading
       # What a quote has to be current for: a distance to a price, a share of the patrimonio.
       PRICE_DEPENDENT = %i[allocation target].freeze
 
-      Item = Data.define(:kind, :asset, :days, :date, :gap, :subject, :actual, :target, :label, :tentative) do
-        def initialize(kind:, asset: nil, days: nil, date: nil, gap: nil, subject: nil, actual: nil, target: nil, label: nil, tentative: false) = super
+      Item = Data.define(:kind, :asset, :assets, :days, :date, :gap, :subject, :actual, :target, :label, :tentative) do
+        def initialize(kind:, asset: nil, assets: [], days: nil, date: nil, gap: nil, subject: nil, actual: nil, target: nil, label: nil, tentative: false) = super
 
         # Nearest first; for a share off its plan, the widest gap first.
         def rank

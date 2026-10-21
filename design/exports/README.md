@@ -39,6 +39,7 @@ not by reading the tables.
 | `cockpit-senales-vacio.png` | `[Cockpit] / Señales / Vacío` |
 | `cockpit-asset-analisis.png` | `[Cockpit] / Asset · Análisis / Default` |
 | `cockpit-asset-analisis-lo-tuyo.png` | `[Cockpit] / Asset · Análisis / Lo tuyo (D159)` — a LO TUYO card under the price and above the tabs; the verdict and the analyst target lose their tones |
+| `cockpit-hoy-temporada-resultados.png` | `[Cockpit] / Hoy / Temporada de resultados` — earnings dates read one row per day, symbols joined (D160) |
 | `cockpit-asset-analisis-aviso.png` | `[Cockpit] / Asset · Análisis / Aviso TradingView` |
 | `cockpit-asset-mi-posicion.png` | `[Cockpit] / Asset · Mi posición / Default` |
 | `cockpit-asset-cetes.png` | `[Cockpit] / Asset · CETES / Default` — fixed income, no chart (D98) |
