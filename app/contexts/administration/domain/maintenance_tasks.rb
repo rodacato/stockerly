@@ -2,7 +2,9 @@ module Administration
   module Domain
     # Clean-ups the owner can run from the panel; each is idempotent, so running it twice is safe.
     module MaintenanceTasks
-      Task = Data.define(:key, :job_class, :icon)
+      Task = Data.define(:key, :job_class, :icon) do
+        def log_name = job_class::TASK
+      end
 
       ALL = [
         Task.new(key: "bmv_symbols", job_class: ResolveBmvSymbolsJob, icon: "swap_horiz"),

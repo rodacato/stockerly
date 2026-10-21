@@ -8,6 +8,7 @@ class BackfillMissingHistoriesJob < ApplicationJob
   MAX_ASSETS = 50
   STAGGER_SECONDS = 5
   MIN_HISTORIES = 200
+  TASK = "Backfill Missing Histories".freeze
 
   queue_as :default
 
@@ -18,7 +19,7 @@ class BackfillMissingHistoriesJob < ApplicationJob
       BackfillPriceHistoryJob.set(wait: index * STAGGER_SECONDS.seconds).perform_later(asset.id)
     end
 
-    log_sync_success("Backfill Missing Histories",
+    log_sync_success(TASK,
       message: "Enqueued #{assets.size} assets with < #{MIN_HISTORIES} price histories")
   end
 

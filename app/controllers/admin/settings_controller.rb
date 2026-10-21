@@ -16,6 +16,9 @@ module Admin
       @diagnostics    = build_diagnostics
       @data_sources   = DataSourceRegistry.all
       @integrations   = Integration.all.index_by(&:provider_name)
+      @sync_paused          = !SiteConfig.enabled?(PausableSync::KEY, default: true)
+      @maintenance_tasks    = Administration::Domain::MaintenanceTasks::ALL
+      @maintenance_last_run = SystemLog.where(task_name: @maintenance_tasks.map(&:log_name)).group(:task_name).maximum(:created_at)
     end
 
     def trigger_data_source

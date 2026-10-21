@@ -100,6 +100,39 @@ RSpec.describe "Admin settings", type: :request do
     end
   end
 
+  describe "the maintenance section" do
+    it "lists every task with what it does and a button" do
+      get admin_settings_path
+
+      Administration::Domain::MaintenanceTasks::ALL.each do |task|
+        expect(response.body).to include(I18n.t("admin.settings.mantenimiento.#{task.key}.nombre"))
+        expect(response.body).to include(admin_run_maintenance_path(key: task.key))
+      end
+    end
+
+    it "shows when a task last ran" do
+      create(:system_log, task_name: SeedCatalogJob::TASK, created_at: 3.days.ago)
+
+      get admin_settings_path
+
+      expect(response.body).to include(I18n.t("admin.settings.show.ultima_sync", cuando: "hace 3 d"))
+    end
+
+    it "says the history task does nothing while sync is paused" do
+      SiteConfig.set("auto_sync_enabled", false)
+
+      get admin_settings_path
+
+      expect(response.body).to include(I18n.t("admin.settings.show.limpieza_pausa"))
+    end
+
+    it "stays quiet about it while sync runs" do
+      get admin_settings_path
+
+      expect(response.body).not_to include(I18n.t("admin.settings.show.limpieza_pausa"))
+    end
+  end
+
   describe "POST /admin/run_maintenance/:key" do
     it "enqueues the task's job and says which one" do
       expect { post admin_run_maintenance_path(key: "bmv_symbols") }.to have_enqueued_job(ResolveBmvSymbolsJob)

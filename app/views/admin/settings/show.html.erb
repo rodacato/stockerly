@@ -98,6 +98,30 @@
   </section>
 
   <section class="flex flex-col gap-3">
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".limpieza") %></h2>
+    <p class="text-sm text-fg-subtle"><%= t(".limpieza_desc") %></p>
+    <div class="flex flex-col gap-4">
+      <% @maintenance_tasks.each do |task| %>
+        <div class="flex flex-col gap-1.5">
+          <%= button_to admin_run_maintenance_path(key: task.key), method: :post,
+                form_class: "inline-flex",
+                class: "inline-flex items-center gap-1.5 rounded-lg border border-border-default bg-bg-surface px-3 py-2 text-sm font-medium text-fg-default transition-colors hover:border-primary hover:text-primary-fg" do %>
+            <%= icon_svg task.icon, class: "text-base", "aria-hidden": "true" %>
+            <%= t("admin.settings.mantenimiento.#{task.key}.nombre") %>
+          <% end %>
+          <p class="text-sm text-fg-subtle"><%= t("admin.settings.mantenimiento.#{task.key}.desc") %></p>
+          <% if task.key == "price_histories" && @sync_paused %>
+            <p class="text-sm text-warning-fg" role="status"><%= t(".limpieza_pausa") %></p>
+          <% end %>
+          <p class="font-mono text-xs text-fg-subtle">
+            <%= t(".ultima_sync", cuando: relative_age(@maintenance_last_run[task.log_name], blank: t(".nunca_sync"))) %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-3">
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".cambios") %></h2>
     <% if @recent_changes.any? %>
       <ul class="flex flex-col gap-2">
