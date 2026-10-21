@@ -86,6 +86,8 @@ catalogue in the domain, keyed by a state derived deterministically from persist
 
 - **Probabilistic predictions** and **confidence-weighted forecasts**. Untouched by all three ADRs.
 - **LLM-generated or free-form copy.** A catalogue entry is written once, by a person, and reviewed.
+  *Scope (2026-10-21):* this governs what the app says on its own. The invoked assistant is outside
+  it and bound instead by [ADR-031](./0031-the-assistant-is-an-invoked-surface.md).
 - **Phrases with no persisted observation behind them**, including anything composed at render time.
 - **Portfolio-level advice** — "rebalancea", "sal de esta posición". Observations are per-asset.
 - **Numbers invented to support a phrase.** If the sentence names a level, that level is persisted.

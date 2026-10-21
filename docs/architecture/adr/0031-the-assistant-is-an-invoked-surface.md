@@ -1,7 +1,7 @@
 # ADR-031 — The assistant is an invoked surface, grounded in what it retrieved
 
-- **Status:** Proposed
-- **Date:** 2026-10-21
+- **Status:** Accepted
+- **Date:** 2026-10-21 (proposed and accepted, PR #862)
 - **Author:** Adrian Castillo
 - **Related:** [ADR-001](./0001-descriptive-not-prescriptive-language.md), [ADR-002](./0002-trading-marketdata-boundary.md), [ADR-013](./0013-action-labels-on-persisted-observations.md), [ADR-014](./0014-state-phrases-from-a-closed-catalogue.md), [ADR-019](./0019-self-contained-by-default.md), [ADR-023](./0023-a-missing-rate-absents-the-figure.md)
 
@@ -74,7 +74,7 @@ prompt, and puts the book of record within reach of a model.
 
 ## Consequences
 
-- On acceptance, ADR-014 gains a scope line pointing here; its rule is unchanged for everything the app says on
+- ADR-014 carries a scope line pointing here; its rule is unchanged for everything the app says on
   its own.
 - The registry needs plain-data, `as_of`-stamped results. Most read APIs return records today, so
   the first phase is that alignment, and it pays for itself without the assistant.
