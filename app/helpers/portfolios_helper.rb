@@ -4,12 +4,37 @@ module PortfoliosHelper
   # Allocation hash → donut segments. Extracted from the pre-2.0 sidebar, which
   # built this inline in the template it shared with the sector breakdown.
   def allocation_segments(allocation)
+    segments_for(allocation) { |asset_type| t("comun.tipo_activo.#{asset_type}", default: asset_type.to_s.titleize) }
+  end
+
+  # Largest first; what does not fit the palette is folded into "Otros" so two
+  # segments never share a colour. Yahoo's names are translated; one the table
+  # does not know shows as given.
+  def sector_segments(allocation)
+    ranked = allocation.group_by { |sector, _| sector.presence }.transform_values { |rows| rows.sum { |_, value| value } }
+                       .sort_by { |_, value| -value }
+    if ranked.size > CHART_COLORS.size
+      rest = ranked.drop(CHART_COLORS.size - 1)
+      ranked = ranked.first(CHART_COLORS.size - 1) + [ [ :otros, rest.sum { |_, value| value } ] ]
+    end
+
+    segments_for(ranked.to_h) { |sector| sector_label(sector) }
+  end
+
+  def sector_label(sector)
+    return t("portfolios.show.sector.sin_sector") if sector.nil?
+    return t("portfolios.show.sector.otros") if sector == :otros
+
+    t("comun.sector.#{sector.parameterize(separator: '_')}", default: sector)
+  end
+
+  def segments_for(allocation)
     total = allocation.values.sum.to_f
     return [] unless total.positive?
 
-    allocation.map.with_index do |(asset_type, value), index|
+    allocation.map.with_index do |(key, value), index|
       {
-        label: t("comun.tipo_activo.#{asset_type}", default: asset_type.to_s.titleize),
+        label: yield(key),
         pct: (value / total * 100).round,
         color: CHART_COLORS[index % CHART_COLORS.length],
         value: value

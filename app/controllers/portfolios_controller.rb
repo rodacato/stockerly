@@ -1,6 +1,6 @@
 class PortfoliosController < AuthenticatedController
   def show
-    data = Trading::UseCases::AssembleConsolidado.call(user: current_user, period: params[:period])
+    data = Trading::UseCases::AssembleConsolidado.call(user: current_user, period: params[:period], by: allocation_view)
 
     @period         = data[:period]
     @from           = data[:from]
@@ -15,6 +15,11 @@ class PortfoliosController < AuthenticatedController
     @vs_hold        = data[:vs_hold]
     @vs_index       = data[:vs_index]
     @allocation     = data[:allocation]
+    @allocation_view = allocation_view
     @currency_exposure = data[:currency_exposure]
   end
+
+  private
+
+  def allocation_view = params[:por] == "sector" ? "sector" : "type"
 end

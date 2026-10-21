@@ -528,6 +528,18 @@ es-MX:
     logica_senal:
       reversion: Rebote
       trend: Tendencia
+    sector:
+      basic_materials: Materiales básicos
+      communication_services: Servicios de comunicación
+      consumer_cyclical: Consumo cíclico
+      consumer_defensive: Consumo defensivo
+      energy: Energía
+      financial_services: Servicios financieros
+      healthcare: Salud
+      industrials: Industriales
+      real_estate: Bienes raíces
+      technology: Tecnología
+      utilities: Servicios públicos
     sin_tc_cuerpo: Me falta el tipo de cambio de alguna de las fechas, así que no
       puedo sumar tu patrimonio en una sola moneda. Cada posición se muestra en la
       suya.
@@ -1554,12 +1566,19 @@ es-MX:
         max: Máx
         y1: 1A
         ytd: YTD
+      por_sector: por sector · %{currency}
       por_tipo: por tipo · %{currency}
       rango_real: Del %{from} al %{to} · %{currency} · rendimiento acumulado, no anualizado
+      sector:
+        otros: Otros
+        sin_sector: Sin sector
       sin_comparacion: Aún no hay datos suficientes para comparar este periodo.
       sin_historial_cuerpo: El gráfico aparece cuando haya al menos dos días de historial.
       sin_historial_titulo: Todavía no hay curva que dibujar
       titulo: Consolidado
+      toggle:
+        sector: Sector
+        tipo: Tipo
       tu_patrimonio: TU PATRIMONIO · %{currency}
       twr_nota: Las comparaciones se calculan con rendimiento ponderado por tiempo,
         para que meter o sacar dinero no las infle.

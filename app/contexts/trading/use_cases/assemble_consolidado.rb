@@ -19,7 +19,7 @@ module Trading
 
       DEFAULT_PERIOD = "1A"
 
-      def call(user:, period: nil)
+      def call(user:, period: nil, by: nil)
         portfolio = user.portfolio
         currency  = user.preferred_currency
         period    = PERIODS.key?(period) ? period : DEFAULT_PERIOD
@@ -46,7 +46,7 @@ module Trading
           vs_cetes: twr && currency == "MXN" ? Domain::CetesComparison.between(twr, from, to) : nil,
           vs_index: twr && currency == "MXN" ? Domain::IndexComparison.between(twr, from, to) : nil,
           vs_hold: twr && fx.figure { vs_hold(portfolio, currency, from, to, twr) },
-          allocation: fx.figure({}) { allocation_for(portfolio, currency) },
+          allocation: fx.figure({}) { allocation_for(portfolio, currency, by) },
           currency_exposure: currency == "MXN" ? fx.figure { currency_exposure(portfolio, summary) } : nil,
           fx_unavailable: fx.degraded?,
           prices_unavailable: fx.prices_unavailable?
@@ -55,7 +55,9 @@ module Trading
 
       private
 
-      def allocation_for(portfolio, currency)
+      def allocation_for(portfolio, currency, by)
+        return portfolio.allocation_by_sector(currency: currency) if by == "sector"
+
         portfolio.allocation_by_asset_type(currency: currency)
       end
 
