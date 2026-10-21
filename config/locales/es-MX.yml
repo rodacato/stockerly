@@ -777,7 +777,6 @@ es-MX:
       day_month_year_upper: "%-d %^b %Y"
       default: "%d/%m/%Y"
       long: "%-d de %B de %Y"
-      month_year: "%b %y"
       short: "%-d de %b"
     month_names:
     -
@@ -954,24 +953,6 @@ es-MX:
       titulo: Historial de dividendos
       vacio_cuerpo: Este activo no ha pagado dividendos en el período disponible.
       vacio_titulo: Sin dividendos registrados
-    earnings_tab:
-      cierre: cierre
-      col_estimado: EPS estimado
-      col_fecha: Fecha del reporte
-      col_real: EPS real
-      col_resultado: Resultado
-      col_sorpresa: Sorpresa
-      estimado: Estimado
-      estimado_valor: 'Estimado: %{value}'
-      historial: Historial de EPS
-      pendiente: Pendiente
-      por_debajo: Por debajo
-      por_reportar: Por reportar
-      pre_apertura: pre-apertura
-      real_valor: 'Real: %{value}'
-      supero: Superó
-      vacio_cuerpo: Aún no tenemos histórico de reportes trimestrales para este activo.
-      vacio_titulo: Sin reportes disponibles
     estado:
       neutral:
         holding: Ni por arriba ni por abajo de su rango habitual. El RSI y las bandas

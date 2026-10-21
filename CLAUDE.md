@@ -226,7 +226,7 @@ Layouts live in `app/views/layouts/` (`application` is the base; the mailer layo
 - **Second factor (ADR-018):** `/two-factor` and `/recovery-code` are reachable only with a pending login; `/two-factor/setup` and `/two-factor/codes` are enrolment, behind a full session
 - **Admin:** `/admin/integrations`, `/admin/logs`, `/admin/errors` (ADR-020, gated by the `developer_mode` switch), `/admin/settings`, `/admin/jobs` (Mission Control)
 
-The standalone `/market` listing, `/news` and `/earnings` were deleted in the 2.0 cleanup (D31 — see the comment in `config/routes.rb`); earnings now live in a tab on each asset's own page. `/admin/assets` is gone (D9): the catalogue is managed from `/tracked`.
+The standalone `/market` listing, `/news` and `/earnings` were deleted in the 2.0 cleanup (D31 — see the comment in `config/routes.rb`); earnings now show as the next report date on the asset page's *Lo tuyo* card (`market/_mine`) and as an item in the Panorama's *Hoy* brief for assets you hold. There is no earnings-history view. `/admin/assets` is gone (D9): the catalogue is managed from `/tracked`.
 
 ## Test Structure
 

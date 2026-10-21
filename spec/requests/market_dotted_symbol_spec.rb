@@ -15,13 +15,10 @@ RSpec.describe "The asset detail for a symbol with a dot", type: :request do
     expect(response.body).to include("WALMEX.MX")
   end
 
-  it "opens the lazy tabs and the link a view builds for it" do
+  it "opens the lazy tab and the link a view builds for it" do
     expect(market_asset_path(asset.symbol)).to eq("/market/WALMEX.MX")
 
     get market_asset_statements_tab_path(asset.symbol)
-    expect(response).to have_http_status(:ok)
-
-    get market_asset_earnings_tab_path(asset.symbol)
     expect(response).to have_http_status(:ok)
   end
 end

@@ -1,9 +1,7 @@
 require "rails_helper"
 
-# Lazy tab endpoints (S10 #93). After the adaptive-tab redesign, only
-# Estados financieros is surfaced as a lazy turbo_frame on the show
-# page; Earnings is reachable via its endpoint (used elsewhere) but not
-# embedded on /market/:symbol.
+# Lazy tab endpoints (S10 #93). Estados financieros is the one tab the
+# asset detail loads as a lazy turbo_frame.
 RSpec.describe "Market lazy-loaded tabs", type: :request do
   let!(:user) { create(:user, email: "lazytabs@example.com", password: "password123") }
   let!(:asset) { create(:asset, symbol: "MSFT", name: "Microsoft Corp.", current_price: 430.0, sector: "Technology", exchange: "NASDAQ", country: "US") }
@@ -22,32 +20,6 @@ RSpec.describe "Market lazy-loaded tabs", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('id="asset_statements_tab"')
       expect(response.body).to include('loading="lazy"')
-    end
-
-    it "does NOT embed an Earnings turbo frame on the show page" do
-      get market_asset_path(asset.symbol)
-
-      expect(response.body).not_to include('id="asset_earnings_tab"')
-    end
-  end
-
-  describe "GET /market/:symbol/earnings_tab" do
-    it "renders earnings content (es-MX) inside a Turbo Frame" do
-      create(:earnings_event, asset: asset, report_date: 10.days.ago, estimated_eps: 2.50, actual_eps: 2.75)
-
-      get market_asset_earnings_tab_path(asset.symbol)
-
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("asset_earnings_tab")
-      expect(response.body).to include("Fecha del reporte")
-      expect(response.body).to include("2.75")
-    end
-
-    it "renders the es-MX empty state when no earnings data" do
-      get market_asset_earnings_tab_path(asset.symbol)
-
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Sin reportes disponibles")
     end
   end
 
