@@ -79,7 +79,7 @@ RSpec.describe "Consolidado", type: :request do
       get portfolio_path
 
       expect(response.body).not_to include("en el periodo")
-      expect(response.body.scan(I18n.t("portfolios.show.sin_comparacion")).size).to eq(2)
+      expect(response.body.scan(I18n.t("portfolios.show.sin_comparacion")).size).to eq(3)
       expect(response.body).not_to include(I18n.t("portfolios.show.twr_nota"))
     end
 
@@ -135,6 +135,26 @@ RSpec.describe "Consolidado", type: :request do
       get portfolio_path
 
       expect(response.body).to include(I18n.t("portfolios.show.sin_comparacion"))
+    end
+
+    it "compares with the IPC over the same dates, and says it is a price index" do
+      with_history
+      ipc = create(:market_index, symbol: "IPC")
+      create(:market_index_history, market_index: ipc, date: 60.days.ago.to_date, close_value: 50_000)
+      create(:market_index_history, market_index: ipc, date: 1.day.ago.to_date, close_value: 51_000)
+
+      get portfolio_path
+
+      expect(response.body).to include(I18n.t("portfolios.show.vs_ipc"))
+      expect(response.body).to include("sin dividendos")
+    end
+
+    it "says it cannot compare with the IPC when its history does not reach the period" do
+      with_history
+
+      get portfolio_path
+
+      expect(response.body).not_to include("sin dividendos")
     end
 
     it "states the time-weighted caveat whenever a card has a figure" do

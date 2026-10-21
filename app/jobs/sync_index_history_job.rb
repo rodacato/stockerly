@@ -7,7 +7,8 @@ class SyncIndexHistoryJob < ApplicationJob
 
   queue_as :default
 
-  YAHOO_INDICES = %w[^GSPC ^IXIC ^DJI].freeze
+  YAHOO_INDICES = %w[^GSPC ^IXIC ^DJI ^MXX].freeze
+  BACKFILL_DAYS = 3650
 
   def perform(days: 5)
     gateway = MarketData::Gateways::YfinanceGateway.new
@@ -18,7 +19,7 @@ class SyncIndexHistoryJob < ApplicationJob
       index = MarketIndex.find_by(symbol: internal_sym)
       next unless index
 
-      result = gateway.fetch_historical(yahoo_sym, days.days.ago.to_date, Date.current)
+      result = gateway.fetch_historical(yahoo_sym, window(index, days).days.ago.to_date, Date.current)
       next if result.failure?
 
       result.value!.each do |bar|
@@ -38,5 +39,12 @@ class SyncIndexHistoryJob < ApplicationJob
     end
 
     log_sync_success("Index History Sync", message: "#{synced} records synced")
+  end
+
+  private
+
+  # An index with no history is read back as far as the owner could have started.
+  def window(index, days)
+    index.market_index_histories.exists? ? days : BACKFILL_DAYS
   end
 end

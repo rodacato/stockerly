@@ -44,6 +44,7 @@ module Trading
           series: fx.figure([]) { series_for(portfolio, currency, from) },
           twr: twr,
           vs_cetes: twr && currency == "MXN" ? Domain::CetesComparison.between(twr, from, to) : nil,
+          vs_index: twr && currency == "MXN" ? Domain::IndexComparison.between(twr, from, to) : nil,
           vs_hold: twr && fx.figure { vs_hold(portfolio, currency, from, to, twr) },
           allocation: fx.figure({}) { allocation_for(portfolio, currency) },
           currency_exposure: currency == "MXN" ? fx.figure { currency_exposure(portfolio, summary) } : nil,
@@ -67,7 +68,7 @@ module Trading
 
       def empty(currency, period)
         { period: period, from: Date.current, to: Date.current, currency: currency, summary: nil, fx_unavailable: false, prices_unavailable: false,
-          series: [], twr: nil, vs_cetes: nil, vs_hold: nil, allocation: {}, currency_exposure: nil }
+          series: [], twr: nil, vs_cetes: nil, vs_hold: nil, vs_index: nil, allocation: {}, currency_exposure: nil }
       end
 
       def starts_on(portfolio, period)

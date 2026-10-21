@@ -1544,6 +1544,9 @@ es-MX:
       en_el_periodo: "%{percent} en el periodo"
       igual_cetes: Igual que CETES
       igual_hold: Igual que comprar y mantener
+      igual_ipc: Igual que el IPC
+      ipc_solo_mxn: El IPC está expresado en MXN. Para compararlo, cambia la moneda
+        del patrimonio a MXN.
       patrimonio_total: PATRIMONIO TOTAL · %{currency}
       periodo:
         m1: 1M
@@ -1558,7 +1561,7 @@ es-MX:
       sin_historial_titulo: Todavía no hay curva que dibujar
       titulo: Consolidado
       tu_patrimonio: TU PATRIMONIO · %{currency}
-      twr_nota: Ambas comparaciones se calculan con rendimiento ponderado por tiempo,
+      twr_nota: Las comparaciones se calculan con rendimiento ponderado por tiempo,
         para que meter o sacar dinero no las infle.
       valio_la_pena: "¿Valió la pena?"
       valor: Valor de tu patrimonio
@@ -1574,6 +1577,9 @@ es-MX:
         tendrías %{value}. Tus compras y ventas no cambiaron el resultado.
       vs_hold_cuerpo_positivo: Si no hubieras movido nada desde el %{from}, al %{to}
         tendrías %{value}. Tus compras y ventas sumaron %{points} puntos.
+      vs_ipc: VS IPC
+      vs_ipc_cuerpo: Tu %{mine} contra el %{benchmark} del IPC del %{from} al %{to}.
+        El IPC es un índice de precio, sin dividendos.
   posicion:
     cerrar: Cerrar posición
     costo_prom: Costo prom.
