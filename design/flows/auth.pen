@@ -1,5 +1,5 @@
 {
-  "version": "2.20",
+  "version": "2.21",
   "children": [
     {
       "type": "frame",
@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 1.2.0 · updated: 2026-10-14\n\n1. PURPOSE\nThe doors into a single-user instance: login, the second factor (ADR-018), password recovery, and the two TOTP screens enrolment reaches. No signup — the one account is created by the first-boot setup wizard (onboarding.pen).\n\n2. ENTRY POINTS\n- Login — / redirects to /login (sessions#new)\n- 2FA and Código de recuperación — only with a pending login, after the password step (/two-factor, /recovery-code)\n- Forgot → Email sent → Reset → Enlace expirado or Contraseña actualizada — \"¿Olvidaste tu contraseña?\" on Login (/forgot-password, /reset-password/:token)\n- TOTP · Alta and Códigos de recuperación — from Ajustes' Seguridad row (/two-factor/setup, /two-factor/codes). Opened from the wizard's Seguridad step (D52) the same screens wear the wizard's frame, drawn in onboarding.pen (D122)\n\n3. SCREENS (left → right)\n- Login · Default · Login · Error\n- 2FA · Código de recuperación\n- Forgot · Email sent · Reset · Enlace expirado · Contraseña actualizada\n- TOTP · Alta · Códigos de recuperación — these two render in the app shell, not the auth card; this file draws the Ajustes entry\n- Desktop band: Login\n\n4. BUSINESS RULES\n- Every screen from Login to Contraseña actualizada renders in layouts/auth: one centred card at every width, the wordmark inside it (D152). Login's desktop artboard shows the same card at its max-w-md and stands for all of them (D4)\n- TOTP · Alta and Códigos render in layouts/app with HeaderBar back to Ajustes once the account is onboarded; the nav lights Ajustes. Mid-wizard they render in layouts/onboarding instead, under the step header, and lead on to the summary (D122)\n- Email OTP and SMS are out: a lost authenticator is answered by one-time recovery codes, ten of them, shown once (ADR-018)\n- Email sent says the same thing whether or not the address exists, so the page cannot confirm an account (password_resets/sent.html.erb)\n- The reset window is stated from User::PASSWORD_RESET_EXPIRES_IN, never in prose\n- The codes are not downloadable: the list is select-all and the page warns they are not shown again\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — auth.*, two_factor.*, totp_enrollments.*. Failure messages: Identity::UseCases::Login, VerifyTotpCode, ConsumeRecoveryCode.\n\n6. STATES NOT DRAWN\n- 2FA and Código de recuperación with a wrong code — the Login · Error alert above the form, reading \"Ese código no es válido.\"; TOTP · Alta reads \"Ese código no es válido. Revisa tu app de autenticación.\"\n- Login after the pending second factor timed out — the alert reads \"Se agotó el tiempo para verificar. Inicia sesión otra vez.\"\n- Reset with an invalid password — a negative box listing the model's errors above the fields\n- Login's notices after logout or an expired session — a flash, not the inline alert\n- Desktop for every auth-layout screen — the same one-column card Login draws\n- TOTP · Alta when already enrolled — it redirects to Ajustes, or to the wizard's summary mid-wizard\n- Códigos reloaded after they left the session — it redirects with \"Los códigos solo se muestran una vez. Podrás generar unos nuevos desde Ajustes.\"\n- The QR is drawn as an icon; the code renders a real one on a white plate\n\n7. OPEN FINDINGS\nNone.\n\n8. HISTORY\n→ Log frame, below this brief.",
+          "content": "kit-version-source: 1.3.0 · updated: 2026-10-21\n\n1. PURPOSE\nThe doors into a single-user instance: login, the second factor (ADR-018), password recovery, and the two TOTP screens enrolment reaches. No signup — the one account is created by the first-boot setup wizard (onboarding.pen).\n\n2. ENTRY POINTS\n- Login — / redirects to /login (sessions#new)\n- 2FA and Código de recuperación — only with a pending login, after the password step (/two-factor, /recovery-code)\n- Forgot → Email sent → Reset → Enlace expirado or Contraseña actualizada — \"¿Olvidaste tu contraseña?\" on Login (/forgot-password, /reset-password/:token)\n- TOTP · Alta and Códigos de recuperación — from Ajustes' Seguridad row (/two-factor/setup, /two-factor/codes). Opened from the wizard's Seguridad step (D52), TOTP · Alta wears the wizard's frame, drawn in onboarding.pen (D122); Códigos wears the same bare frame from both doors (D148)\n\n3. SCREENS (left → right, by band)\n- Login band: Login · Default · Login · Error · 2FA · Código de recuperación\n- Recuperar contraseña band: Forgot · Email sent · Reset · Enlace expirado · Contraseña actualizada\n- Second factor band (from Ajustes): TOTP · Alta · Códigos de recuperación — neither is the auth card: Alta renders in the app shell, Códigos in a bare column with no chrome (D148); this file draws the Ajustes entry. Códigos renders the same page as onboarding.pen's Seguridad · Códigos; each file keeps it as its journey's entry\n- Desktop band: Login\n\n4. BUSINESS RULES\n- Every screen from Login to Contraseña actualizada renders in layouts/auth: one centred card at every width, the wordmark inside it, outcome screens included (D152). Login's desktop artboard shows the same card at its max-w-md and stands for all of them (D4)\n- TOTP · Alta renders in layouts/app with HeaderBar back to Ajustes once the account is onboarded; the nav lights Ajustes. Mid-wizard it renders in layouts/onboarding under the step header (D122). Códigos renders in layouts/onboarding with no HeaderBar, nav or step header from either door, because the codes are destroyed as the page paints; its one exit is Ya los guardé, continuar, to Ajustes or to the summary (D148)\n- Every password field carries a reveal toggle (Mostrar contraseña)\n- 2FA states the window it allows: Tienes 10 minutos para verificar… (TwoFactorController::PENDING_TIMEOUT)\n- Email sent ranks its two actions: Reenviar enlace is a text link, Volver a iniciar sesión the primary button\n- Email OTP and SMS are out: a lost authenticator is answered by one-time recovery codes, ten of them, shown once (ADR-018)\n- Email sent says the same thing whether or not the address exists, so the page cannot confirm an account (password_resets/sent.html.erb)\n- The reset window is stated from User::PASSWORD_RESET_EXPIRES_IN, never in prose\n- The codes are not downloadable: the list is select-all and the page warns they are not shown again\n\n5. COPY SOURCE\nconfig/locales/es-MX.yml — auth.*, two_factor.*, totp_enrollments.*. Failure messages: Identity::UseCases::Login, VerifyTotpCode, ConsumeRecoveryCode.\n\n6. STATES NOT DRAWN\n- 2FA and Código de recuperación with a wrong code — the Login · Error alert above the form, reading \"Ese código no es válido.\"; TOTP · Alta reads \"Ese código no es válido. Revisa tu app de autenticación.\"\n- Login after the pending second factor timed out — a toast, not the inline alert: \"Se agotó el tiempo para verificar. Inicia sesión otra vez.\"\n- Login reached after setup already ran — the inline alert reads \"Esta instancia ya está configurada.\"\n- Reset with an invalid password — a negative box listing the model's errors above the fields\n- Login's notices after logout or an expired session — a flash, not the inline alert\n- A password field with the toggle pressed — the text shows and the icon turns primary-fg\n- Desktop for every auth-layout screen — the same one-column card Login draws\n- TOTP · Alta when already enrolled — it redirects to Ajustes, or to the wizard's summary mid-wizard, with \"La verificación en dos pasos ya está activa en esta cuenta.\"\n- Códigos reloaded after they left the session — it redirects with \"Los códigos solo se muestran una vez. Podrás generar unos nuevos desde Ajustes.\" to Ajustes, or to the summary mid-wizard\n- The QR is drawn as an icon; the code renders a real one on a white plate\n\n7. OPEN FINDINGS\nNone.\n\n8. HISTORY\n→ Log frame, below this brief.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -271,14 +271,52 @@
                   "fontSize": 14
                 },
                 "Ry36j": {
+                  "type": "frame",
+                  "id": "sLE6s",
+                  "name": "Input",
+                  "width": "fill_container",
+                  "height": 43,
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
                   "padding": [
-                    12,
+                    0,
+                    0,
+                    0,
                     16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "aZ5rn",
+                      "name": "Value",
+                      "width": "fill_container",
+                      "height": 20
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NMqPw",
+                      "name": "Reveal",
+                      "width": 48,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "EI9Mw",
+                          "name": "i",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "eye",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
+                    }
                   ]
-                },
-                "c8Y8au": {
-                  "content": "••••••••",
-                  "fontSize": 16
                 }
               }
             },
@@ -481,6 +519,48 @@
               }
             },
             {
+              "type": "frame",
+              "id": "dNoTs",
+              "name": "Ventana",
+              "width": "fill_container",
+              "fill": "$bg-muted",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                10,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "siIoG",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "clock-3",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "text",
+                  "id": "hnRTT",
+                  "name": "t",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Tienes 10 minutos para verificar antes de volver a iniciar sesión.",
+                  "textAlign": "center",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
               "type": "text",
               "id": "vs4Gq",
               "name": "Link",
@@ -513,8 +593,8 @@
     {
       "type": "frame",
       "id": "Ez980",
-      "x": 2520,
-      "y": 0,
+      "x": 480,
+      "y": 1104,
       "name": "[Auth] / Forgot / Default",
       "clip": true,
       "width": 390,
@@ -693,8 +773,8 @@
     {
       "type": "frame",
       "id": "IGzC0",
-      "x": 3030,
-      "y": 0,
+      "x": 990,
+      "y": 1104,
       "name": "[Auth] / Email sent / Default",
       "clip": true,
       "width": 390,
@@ -722,6 +802,62 @@
           "padding": "$space-6",
           "alignItems": "center",
           "children": [
+            {
+              "type": "frame",
+              "id": "urNtt",
+              "name": "Brand",
+              "width": "fill_container",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fdJ06",
+                  "name": "Logo",
+                  "width": 139.2,
+                  "height": 32,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "JwLtk",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Mark",
+                      "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                      "viewBox": [
+                        0,
+                        0,
+                        64,
+                        64
+                      ],
+                      "width": 32,
+                      "height": 32,
+                      "stroke": "$primary",
+                      "strokeWidth": 2.5,
+                      "strokeLinejoin": "round",
+                      "strokeLinecap": "round"
+                    },
+                    {
+                      "type": "path",
+                      "id": "fabm5",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Lettering",
+                      "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                      "viewBox": [
+                        0,
+                        0,
+                        174,
+                        40
+                      ],
+                      "fill": "$fg-default",
+                      "width": 139.2,
+                      "height": 32
+                    }
+                  ]
+                }
+              ]
+            },
             {
               "type": "frame",
               "id": "yEztS",
@@ -846,17 +982,41 @@
               "fontWeight": "500"
             },
             {
-              "type": "text",
-              "id": "WRf2m",
-              "name": "Link",
-              "fill": "$primary-fg",
-              "textGrowth": "fixed-width",
+              "type": "frame",
+              "id": "nBUbw",
+              "name": "CTA",
               "width": "fill_container",
-              "content": "Volver a iniciar sesión",
-              "textAlign": "center",
-              "fontFamily": "$font-sans",
-              "fontSize": 14,
-              "fontWeight": "500"
+              "fill": "$primary",
+              "cornerRadius": "$radius-md",
+              "gap": "$space-2",
+              "padding": [
+                14,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "NkbKA",
+                  "name": "t",
+                  "fill": "$fg-inverse",
+                  "content": "Volver a iniciar sesión",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "icon",
+                  "id": "pFocG",
+                  "name": "a",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "arrow-right",
+                  "library": "lucide",
+                  "fill": "$fg-inverse"
+                }
+              ]
             }
           ]
         }
@@ -865,8 +1025,8 @@
     {
       "type": "frame",
       "id": "V8V5NU",
-      "x": 3540,
-      "y": 0,
+      "x": 1500,
+      "y": 1104,
       "name": "[Auth] / Reset / Default",
       "clip": true,
       "width": 390,
@@ -995,14 +1155,57 @@
                   "fontSize": 14
                 },
                 "Ry36j": {
+                  "type": "frame",
+                  "id": "v3lHfK",
+                  "name": "Input",
+                  "width": "fill_container",
+                  "height": 43,
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
                   "padding": [
-                    12,
+                    0,
+                    0,
+                    0,
                     16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "g2ul0E",
+                      "name": "Placeholder",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Mínimo 8 caracteres",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "pgBcK",
+                      "name": "Reveal",
+                      "width": 48,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "Gn8vS",
+                          "name": "i",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "eye",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
+                    }
                   ]
-                },
-                "c8Y8au": {
-                  "content": "Mínimo 8 caracteres",
-                  "fontSize": 16
                 }
               }
             },
@@ -1018,14 +1221,57 @@
                   "fontSize": 14
                 },
                 "Ry36j": {
+                  "type": "frame",
+                  "id": "JMf9s",
+                  "name": "Input",
+                  "width": "fill_container",
+                  "height": 43,
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
                   "padding": [
-                    12,
+                    0,
+                    0,
+                    0,
                     16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ajXZ5",
+                      "name": "Placeholder",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Repite tu contraseña",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "T28hrP",
+                      "name": "Reveal",
+                      "width": 48,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "ywI4P",
+                          "name": "i",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "eye",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
+                    }
                   ]
-                },
-                "c8Y8au": {
-                  "content": "Repite tu contraseña",
-                  "fontSize": 16
                 }
               }
             },
@@ -1067,7 +1313,7 @@
       "type": "frame",
       "id": "DqmID",
       "x": 480,
-      "y": 1104,
+      "y": 3312,
       "name": "[Auth] / Login · Desktop / Default",
       "clip": true,
       "width": 1280,
@@ -1213,14 +1459,52 @@
                   "fontSize": 14
                 },
                 "Ry36j": {
+                  "type": "frame",
+                  "id": "m1hEU",
+                  "name": "Input",
+                  "width": "fill_container",
+                  "height": 43,
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
                   "padding": [
-                    12,
+                    0,
+                    0,
+                    0,
                     16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "GnIQ3",
+                      "name": "Value",
+                      "width": "fill_container",
+                      "height": 20
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zsAP3",
+                      "name": "Reveal",
+                      "width": 48,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "BV4tc",
+                          "name": "i",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "eye",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
+                    }
                   ]
-                },
-                "c8Y8au": {
-                  "content": "••••••••",
-                  "fontSize": 16
                 }
               }
             },
@@ -1261,8 +1545,8 @@
     {
       "type": "frame",
       "id": "DhtJN",
-      "x": 5070,
-      "y": 0,
+      "x": 480,
+      "y": 2208,
       "name": "[Auth] / TOTP · Alta / Default",
       "clip": true,
       "width": 390,
@@ -1486,8 +1770,8 @@
     {
       "type": "frame",
       "id": "KRWu8",
-      "x": 5580,
-      "y": 0,
+      "x": 990,
+      "y": 2208,
       "name": "[Auth] / Códigos de recuperación / Default",
       "clip": true,
       "width": 390,
@@ -1496,47 +1780,60 @@
       "layout": "vertical",
       "children": [
         {
-          "id": "f31ilr",
-          "type": "ref",
-          "ref": "Kky2S",
-          "name": "HeaderBar",
-          "width": "fill_container",
-          "descendants": {
-            "EnIn6": {
-              "content": "Guarda tus códigos de recuperación",
-              "textGrowth": "fixed-width-height",
-              "height": 24
-            },
-            "sEkIy": {
-              "enabled": false
-            }
-          }
-        },
-        {
           "type": "frame",
           "id": "bZCzP",
           "name": "Content",
           "width": "fill_container",
           "height": "fill_container",
           "layout": "vertical",
-          "gap": "$space-5",
+          "gap": 24,
           "padding": [
-            24,
+            40,
             16
           ],
           "children": [
             {
-              "type": "text",
-              "id": "Dw9RF",
-              "name": "Subtitulo",
-              "fill": "$fg-default",
-              "textGrowth": "fixed-width",
+              "type": "frame",
+              "id": "D2zn4z",
+              "name": "Head",
               "width": "fill_container",
-              "content": "Son 10 y cada uno sirve una sola vez. Si pierdes tu app de autenticación, son la única forma de entrar a tu instancia.",
-              "lineHeight": 1.4,
-              "fontFamily": "$font-sans",
-              "fontSize": 14,
-              "fontWeight": "normal"
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                0,
+                8,
+                0
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "yoqgL",
+                  "name": "T",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Guarda tus códigos de recuperación",
+                  "lineHeight": 1.25,
+                  "fontFamily": "$font-display",
+                  "fontSize": 30,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.75
+                },
+                {
+                  "type": "text",
+                  "id": "Dw9RF",
+                  "name": "S",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Son 10 y cada uno sirve una sola vez. Si pierdes tu app de autenticación, son la única forma de entrar a tu instancia.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
             },
             {
               "type": "frame",
@@ -1913,29 +2210,6 @@
               }
             }
           ]
-        },
-        {
-          "id": "QxGRx",
-          "type": "ref",
-          "ref": "SoidK",
-          "name": "BottomNav",
-          "width": "fill_container",
-          "descendants": {
-            "s2kKau": {
-              "fill": "$fg-subtle"
-            },
-            "q3rRvG": {
-              "fill": "$fg-subtle",
-              "fontWeight": "normal"
-            },
-            "hjSGi": {
-              "fill": "$primary"
-            },
-            "E4z6Od": {
-              "fill": "$primary",
-              "fontWeight": "600"
-            }
-          }
         }
       ]
     },
@@ -2138,8 +2412,8 @@
     {
       "type": "frame",
       "id": "FShXN",
-      "x": 4050,
-      "y": 0,
+      "x": 2010,
+      "y": 1104,
       "name": "[Auth] / Enlace expirado / Default",
       "clip": true,
       "width": 390,
@@ -2167,6 +2441,62 @@
           "padding": "$space-6",
           "alignItems": "center",
           "children": [
+            {
+              "type": "frame",
+              "id": "b0P0tJ",
+              "name": "Brand",
+              "width": "fill_container",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "H1Blzi",
+                  "name": "Logo",
+                  "width": 139.2,
+                  "height": 32,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "s3lih",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Mark",
+                      "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                      "viewBox": [
+                        0,
+                        0,
+                        64,
+                        64
+                      ],
+                      "width": 32,
+                      "height": 32,
+                      "stroke": "$primary",
+                      "strokeWidth": 2.5,
+                      "strokeLinejoin": "round",
+                      "strokeLinecap": "round"
+                    },
+                    {
+                      "type": "path",
+                      "id": "GPDaX",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Lettering",
+                      "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                      "viewBox": [
+                        0,
+                        0,
+                        174,
+                        40
+                      ],
+                      "fill": "$fg-default",
+                      "width": 139.2,
+                      "height": 32
+                    }
+                  ]
+                }
+              ]
+            },
             {
               "type": "frame",
               "id": "p823y",
@@ -2318,8 +2648,8 @@
     {
       "type": "frame",
       "id": "I7IW3",
-      "x": 4560,
-      "y": 0,
+      "x": 2520,
+      "y": 1104,
       "name": "[Auth] / Contraseña actualizada / Default",
       "clip": true,
       "width": 390,
@@ -2347,6 +2677,62 @@
           "padding": "$space-6",
           "alignItems": "center",
           "children": [
+            {
+              "type": "frame",
+              "id": "nPLo2",
+              "name": "Brand",
+              "width": "fill_container",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "n4CAKm",
+                  "name": "Logo",
+                  "width": 139.2,
+                  "height": 32,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "FscUb",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Mark",
+                      "geometry": "M32 10v10h-6q-6 0-6 6v12q0 6 6 6h6v10-10h6q6 0 6-6v-12q0-6-6-6h-6",
+                      "viewBox": [
+                        0,
+                        0,
+                        64,
+                        64
+                      ],
+                      "width": 32,
+                      "height": 32,
+                      "stroke": "$primary",
+                      "strokeWidth": 2.5,
+                      "strokeLinejoin": "round",
+                      "strokeLinecap": "round"
+                    },
+                    {
+                      "type": "path",
+                      "id": "jKTVX",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Lettering",
+                      "geometry": "M54.43 27.25q-2.52 0-4.39-1.21-1.86-1.21-2.57-3.26l2.85-1.35q0.62 1.32 1.7 2.07 1.09 0.75 2.41 0.75 1.04 0 1.65-0.45 0.61-0.45 0.61-1.23 0-0.46-0.25-0.77-0.24-0.3-0.66-0.52-0.41-0.22-0.92-0.35l-2.58-0.73q-1.99-0.56-3.01-1.76-1.03-1.2-1.03-2.83 0-1.45 0.74-2.53 0.74-1.08 2.06-1.68 1.32-0.61 3.01-0.61 2.23 0 3.95 1.07 1.72 1.08 2.43 3.01l-2.88 1.35q-0.4-1.07-1.36-1.7-0.96-0.63-2.16-0.63-0.96 0-1.51 0.43-0.56 0.43-0.56 1.14 0 0.43 0.23 0.75 0.24 0.31 0.66 0.52 0.43 0.21 0.97 0.37l2.54 0.75q1.95 0.57 2.99 1.75 1.05 1.17 1.05 2.84 0 1.43-0.75 2.51-0.76 1.08-2.09 1.69-1.33 0.61-3.13 0.61z m15.38-0.18q-2.67 0-4.14-1.46-1.47-1.47-1.47-4.13v-6.97h-2.72v-3.37h0.29q1.16 0 1.8-0.62 0.63-0.62 0.63-1.78v-1.2h3.81v3.6h3.64v3.37h-3.64v6.76q0 0.8 0.27 1.35 0.28 0.55 0.88 0.84 0.59 0.28 1.51 0.28 0.21 0 0.48-0.03 0.28-0.03 0.55-0.06v3.25q-0.41 0.07-0.93 0.12-0.52 0.05-0.96 0.05z m11.76 0.18q-2.31 0-4.21-1.07-1.89-1.07-3.02-2.93-1.12-1.87-1.12-4.24 0-2.38 1.12-4.23 1.12-1.85 3.01-2.92 1.89-1.07 4.22-1.07 2.33 0 4.21 1.07 1.88 1.06 3 2.91 1.11 1.85 1.11 4.24 0 2.38-1.12 4.24-1.13 1.87-3.01 2.93-1.88 1.07-4.19 1.07z m0-3.48q1.28 0 2.26-0.61 0.98-0.61 1.55-1.69 0.56-1.08 0.56-2.46 0-1.38-0.56-2.44-0.57-1.06-1.55-1.68-0.98-0.62-2.26-0.62-1.28 0-2.27 0.62-0.99 0.62-1.56 1.68-0.57 1.06-0.57 2.44 0 1.38 0.57 2.46 0.57 1.08 1.56 1.69 0.99 0.61 2.27 0.61z m18.08 3.48q-2.36 0-4.22-1.09-1.86-1.08-2.94-2.95-1.09-1.88-1.09-4.22 0-2.34 1.08-4.2 1.07-1.86 2.94-2.93 1.87-1.07 4.23-1.07 1.69 0 3.13 0.59 1.45 0.58 2.51 1.62 1.05 1.04 1.52 2.44l-3.32 1.47q-0.45-1.2-1.48-1.92-1.02-0.72-2.36-0.72-1.24 0-2.21 0.61-0.97 0.6-1.53 1.68-0.56 1.07-0.56 2.46 0 1.38 0.56 2.45 0.56 1.08 1.53 1.69 0.97 0.61 2.21 0.61 1.36 0 2.37-0.72 1.01-0.72 1.47-1.94l3.32 1.51q-0.45 1.33-1.5 2.38-1.05 1.05-2.5 1.65-1.45 0.6-3.16 0.6z m9.3-0.35v-21.95h3.8v14.39l-1.45-0.43 7.43-7.77h4.72l-5.82 6.34 5.94 9.42h-4.35l-5.15-8.18 2.24-0.45-4.74 5.11 1.18-2.35v5.87z m23.49 0.35q-2.43 0-4.26-1.1-1.83-1.11-2.85-2.98-1.01-1.88-1.01-4.19 0-2.37 1.04-4.21 1.04-1.85 2.81-2.91 1.77-1.07 4-1.07 1.83 0 3.25 0.6 1.42 0.6 2.4 1.67 0.98 1.07 1.5 2.46 0.51 1.38 0.51 2.97 0 0.42-0.04 0.85-0.04 0.43-0.14 0.76h-12.18v-2.9h10.02l-1.8 1.35q0.28-1.34-0.12-2.38-0.39-1.04-1.28-1.65-0.89-0.61-2.12-0.61-1.21 0-2.13 0.6-0.92 0.6-1.39 1.74-0.48 1.15-0.38 2.76-0.12 1.47 0.39 2.57 0.51 1.11 1.5 1.72 1 0.61 2.33 0.61 1.3 0 2.21-0.55 0.91-0.55 1.43-1.46l3.08 1.48q-0.46 1.13-1.45 2.01-0.99 0.87-2.35 1.36-1.35 0.5-2.97 0.5z m9.54-0.35v-15.76h3.59v3.49l-0.29-0.51q0.53-1.78 1.71-2.47 1.18-0.69 2.82-0.69h0.94v3.37h-1.36q-1.62 0-2.61 0.99-1 0.99-1 2.79v8.79z m10.12 0v-21.95h3.81v21.95z m8.51 6.38q-0.64 0-1.25-0.11-0.61-0.1-1.09-0.34v-3.18q0.38 0.09 0.9 0.18 0.53 0.08 0.99 0.08 1.31 0 1.92-0.6 0.6-0.59 1.04-1.58l1.05-2.43-0.06 3.2-6.86-17.36h4.09l4.8 12.82h-1.45l4.79-12.82h4.11l-6.87 17.36q-0.59 1.5-1.47 2.58-0.87 1.08-2.02 1.64-1.15 0.56-2.62 0.56z",
+                      "viewBox": [
+                        0,
+                        0,
+                        174,
+                        40
+                      ],
+                      "fill": "$fg-default",
+                      "width": 139.2,
+                      "height": 32
+                    }
+                  ]
+                }
+              ]
+            },
             {
               "type": "frame",
               "id": "GQ7W6",
@@ -2468,8 +2854,8 @@
     {
       "type": "frame",
       "id": "LZCBr",
-      "x": -416,
-      "y": 0,
+      "x": 0,
+      "y": 2587,
       "name": "Log · Auth",
       "width": 360,
       "fill": "$bg-muted",
@@ -2495,7 +2881,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-14 · kit 1.2.0 · Soft Candle: the wordmark is the candle glyph plus outlined lettering at the code's h-8 size; fg-subtle light is #5E6E84; BottomNav takes five equal slots\n2026-10-14 · D152 · Login · Desktop drops the split brand panel the code deleted on 2026-09-22 and draws the single card\n2026-09-16 · D122 · TOTP · Alta and Códigos opened from the wizard leave the app shell for the wizard's frame; that frame is drawn in onboarding.pen, this file keeps the Ajustes entry\n2026-09-16 · kit 1.0.0 · ButtonPrimary and Field back to the kit's metrics; HeaderBar and BottomNav vendored\n2026-09-16 · D78 · every card mirrored to the code: 30px titles, lg fields and buttons, the wordmark at its h-8 size; 2FA and recovery take one input; Email sent carries the neutral copy, spam line and expiry; Enlace expirado and Contraseña actualizada take the h1 and lg button the code now has\n2026-09-16 · TOTP · Alta and Códigos redrawn in the app shell they render in: no download, a real warning, HeaderBar back\n2026-09-16 · desktop brand panel loses \"Tu patrimonio invertido, en una pantalla.\" — the code never rendered it\n2026-09-16 · new artboard: Login · Error\n2026-09-16 · brief rewritten into its fixed sections; the reasoning it carried lives in ADR-018, D52 and git history\n2026-09-16 · canvas · grid variables declared, bands reflowed\n2026-09-13 · Login (mobile + desktop) drops the terms line — the legal pages are gone, ADR-026 · D118\n2026-09-05 · Enlace expirado and Contraseña actualizada drawn — the reset journey's two endings, AUTH-2\n2026-09-05 · the brief stopped saying 'design-led, code is reference (D8)'; D78 retired that posture\n2026-09-05 · the brief stopped restating the kit version, which read 0.8.0 against a variable saying 0.8.1 (X4)\n2026-09-05 · this file adopted the Log frame; the brief's three dated lines moved here\n2026-08-27 · ADR-018 supersedes D23 — TOTP with recovery codes is built, and the brief had called it settled while nothing existed\n2026-08-27 · D52 · the product asks for enrollment in BOTH the first-boot wizard and Ajustes\n2026-08-27 · Panel · V1…V4 moved to _playground.pen — moved, not deleted: they are the reasoning",
+          "content": "2026-10-21 — Mirrored to code at 809ea789: reveal toggle on every password field, 2FA window line, wordmark on the outcome cards, Email sent's primary CTA, Códigos chromeless (D148), kit 1.3.0; re-laid as bands Login, Recuperar contraseña, Second factor, Desktop.\n2026-10-14 · kit 1.2.0 · Soft Candle: the wordmark is the candle glyph plus outlined lettering at the code's h-8 size; fg-subtle light is #5E6E84; BottomNav takes five equal slots\n2026-10-14 · D152 · Login · Desktop drops the split brand panel the code deleted on 2026-09-22 and draws the single card\n2026-09-16 · D122 · TOTP · Alta and Códigos opened from the wizard leave the app shell for the wizard's frame; that frame is drawn in onboarding.pen, this file keeps the Ajustes entry\n2026-09-16 · kit 1.0.0 · ButtonPrimary and Field back to the kit's metrics; HeaderBar and BottomNav vendored\n2026-09-16 · D78 · every card mirrored to the code: 30px titles, lg fields and buttons, the wordmark at its h-8 size; 2FA and recovery take one input; Email sent carries the neutral copy, spam line and expiry; Enlace expirado and Contraseña actualizada take the h1 and lg button the code now has\n2026-09-16 · TOTP · Alta and Códigos redrawn in the app shell they render in: no download, a real warning, HeaderBar back\n2026-09-16 · desktop brand panel loses \"Tu patrimonio invertido, en una pantalla.\" — the code never rendered it\n2026-09-16 · new artboard: Login · Error\n2026-09-16 · brief rewritten into its fixed sections; the reasoning it carried lives in ADR-018, D52 and git history\n2026-09-16 · canvas · grid variables declared, bands reflowed\n2026-09-13 · Login (mobile + desktop) drops the terms line — the legal pages are gone, ADR-026 · D118\n2026-09-05 · Enlace expirado and Contraseña actualizada drawn — the reset journey's two endings, AUTH-2\n2026-09-05 · the brief stopped saying 'design-led, code is reference (D8)'; D78 retired that posture\n2026-09-05 · the brief stopped restating the kit version, which read 0.8.0 against a variable saying 0.8.1 (X4)\n2026-09-05 · this file adopted the Log frame; the brief's three dated lines moved here\n2026-08-27 · ADR-018 supersedes D23 — TOTP with recovery codes is built, and the brief had called it settled while nothing existed\n2026-08-27 · D52 · the product asks for enrollment in BOTH the first-boot wizard and Ajustes\n2026-08-27 · Panel · V1…V4 moved to _playground.pen — moved, not deleted: they are the reasoning",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -2964,14 +3350,52 @@
                   "fontSize": 14
                 },
                 "Ry36j": {
+                  "type": "frame",
+                  "id": "r3AkS",
+                  "name": "Input",
+                  "width": "fill_container",
+                  "height": 43,
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
                   "padding": [
-                    12,
+                    0,
+                    0,
+                    0,
                     16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "VD39T",
+                      "name": "Value",
+                      "width": "fill_container",
+                      "height": 20
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zVOSR",
+                      "name": "Reveal",
+                      "width": 48,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "yODUO",
+                          "name": "i",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "eye",
+                          "library": "lucide",
+                          "fill": "$fg-subtle"
+                        }
+                      ]
+                    }
                   ]
-                },
-                "c8Y8au": {
-                  "content": "••••••••",
-                  "fontSize": 16
                 }
               }
             },
@@ -3019,7 +3443,7 @@
   "variables": {
     "kit-version-source": {
       "type": "string",
-      "value": "1.2.0"
+      "value": "1.3.0"
     },
     "font-display": {
       "type": "string",
