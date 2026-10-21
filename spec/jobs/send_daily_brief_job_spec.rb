@@ -25,7 +25,7 @@ RSpec.describe SendDailyBriefJob, type: :job do
     described_class.perform_now
 
     expect(Notifications::Domain::WebPushDelivery).to have_received(:call)
-      .with(hash_including(title: "Todo en orden.", path: "/dashboard", badge_count: 0))
+      .with(hash_including(title: "Todo en orden.", path: "/dashboard", tag: "daily-brief"))
     expect(SystemLog.where(task_name: "Daily Brief").last.error_message).to eq("1 install(s) reached")
   end
 

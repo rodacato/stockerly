@@ -7,7 +7,7 @@ module Notifications
       def call(user:, title:, body:)
         user.push_subscriptions.count do |subscription|
           Domain::WebPushDelivery.call(subscription: subscription, title: title, body: body,
-                                       path: "/dashboard", badge_count: 0)
+                                       path: "/dashboard", tag: "daily-brief")
         end
       end
     end

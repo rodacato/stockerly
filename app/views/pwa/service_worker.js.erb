@@ -56,7 +56,8 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Push: the payload is built by Notifications::Domain::WebPushDelivery.
+// Push: the payload is built by Notifications::Domain::WebPushDelivery. A
+// shared tag replaces the notification already showing, so it comes per kind.
 self.addEventListener("push", (event) => {
   const payload = event.data ? event.data.json() : {};
 
@@ -65,7 +66,7 @@ self.addEventListener("push", (event) => {
       body: payload.body,
       icon: "/icon-192.png?v=<%= v %>",
       badge: "/icon-monochrome-512.png?v=<%= v %>",
-      tag: "stockerly-alert",
+      tag: payload.tag || "stockerly",
       data: { path: payload.path || "/notifications" }
     }).then(() => {
       if (typeof payload.badge === "number" && self.navigator.setAppBadge) {

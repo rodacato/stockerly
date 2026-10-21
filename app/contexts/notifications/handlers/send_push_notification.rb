@@ -26,6 +26,7 @@ module Notifications
             title: notification.title,
             body: notification.body.presence || notification.title,
             path: "/notifications",
+            tag: "alert-#{notification.id}",
             badge_count: badge_count
           )
         end
