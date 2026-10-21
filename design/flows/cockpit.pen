@@ -23805,6 +23805,665 @@
           }
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "w1lflG",
+      "x": 1050,
+      "y": 7992,
+      "name": "[Cockpit] / Hoy / Temporada de resultados",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "ZP82Z",
+          "type": "ref",
+          "ref": "nZhpf",
+          "name": "TopBar"
+        },
+        {
+          "type": "frame",
+          "id": "GUhcV",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            24,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "UBHtr",
+              "name": "Veredicto",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "roc3t",
+                  "name": "HOY · MAR 20 OCT 2026 · ",
+                  "fill": "$fg-subtle",
+                  "content": "HOY · MAR 20 OCT 2026 · CDMX",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.5
+                },
+                {
+                  "type": "text",
+                  "id": "v9wBy",
+                  "name": "Veredicto",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Hay 3 cosas de lo tuyo para mirar hoy.",
+                  "lineHeight": 1.15,
+                  "fontFamily": "$font-display",
+                  "fontSize": 32,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "b1d9KN",
+                  "name": "Subtítulo",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "r34QLG",
+                      "name": "Vas +2.1% vs CETES en 30",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Vas +2.1% vs CETES en 30 días.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "gqghO",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wHrVI",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KfRBY",
+              "name": "Cifras",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "qGYkJ",
+                  "name": "PATRIMONIO",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "OHKQl",
+                      "name": "Rótulo",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "schm1",
+                          "name": "PATRIMONIO",
+                          "fill": "$fg-subtle",
+                          "content": "PATRIMONIO",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "oZMnu",
+                          "name": "Ayuda ?",
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 9,
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "W9Qyz",
+                              "name": "?",
+                              "fill": "$fg-subtle",
+                              "content": "?",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "X4MfM",
+                      "name": "MXN 236,800",
+                      "fill": "$fg-default",
+                      "content": "MXN 236,800",
+                      "fontFamily": "$font-display",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "JwBDp",
+                      "name": "+1.2% vs ayer",
+                      "fill": "$positive-fg",
+                      "content": "+1.2% vs ayer",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "UxUj1",
+                  "name": "VS CETES · 30 D",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "n0QFJo",
+                      "name": "Rótulo",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "G3Eic",
+                          "name": "VS CETES · 30 D",
+                          "fill": "$fg-subtle",
+                          "content": "VS CETES · 30 D",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "frame",
+                          "id": "B6i1NG",
+                          "name": "Ayuda ?",
+                          "width": 18,
+                          "height": 18,
+                          "cornerRadius": 9,
+                          "stroke": "$border-default",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "vuUQ2",
+                              "name": "?",
+                              "fill": "$fg-subtle",
+                              "content": "?",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "D3vZRk",
+                      "name": "+2.1%",
+                      "fill": "$fg-default",
+                      "content": "+2.1%",
+                      "fontFamily": "$font-display",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "P86soA",
+                      "name": "reinvertido",
+                      "fill": "$fg-subtle",
+                      "content": "reinvertido",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "l5SF6O",
+              "name": "Lo tuyo hoy",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "b1iczp",
+                  "name": "Encabezado",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "z8TkOb",
+                      "name": "Lo tuyo hoy",
+                      "fill": "$fg-default",
+                      "content": "Lo tuyo hoy",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "epQwc",
+                      "name": "3 de 3",
+                      "fill": "$fg-subtle",
+                      "content": "3 de 3",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "WywOD",
+                  "name": "CETES 28d vence en 3 días",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "JPCde",
+                      "name": "Icono",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$primary-muted",
+                      "cornerRadius": 18,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "iJXmZ",
+                          "name": "Icono schedule",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "schedule",
+                          "library": "Material Symbols Outlined",
+                          "fill": "$primary-fg"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "kcrrd",
+                      "name": "Texto",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "VfomW",
+                          "name": "CETES 28d vence en 3 día",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "CETES 28d vence en 3 días",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "D9Ay4",
+                          "name": "MXN 90,000 · 23 OCT",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "MXN 90,000 · 23 OCT",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FObTK",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "RpjTT",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "U3JQGu",
+                  "name": "NVDA, TSLA y META reportan resultados",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x5xtY",
+                      "name": "Icono",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$primary-muted",
+                      "cornerRadius": 18,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "Mj0Nv",
+                          "name": "Icono event",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "event",
+                          "library": "Material Symbols Outlined",
+                          "fill": "$primary-fg"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "N3Cb1T",
+                      "name": "Texto",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "pXYAd",
+                          "name": "NVDA reporta resultados",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "NVDA, TSLA y META reportan resultados",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Eq4VD",
+                          "name": "En 2 días · jueves 22 OC",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "En 2 días · jueves 22 OCT",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cvQLe",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "NdL26",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xYCDi",
+                  "name": "GOOG y GOOGL reportan resultados",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "UUfOS",
+                      "name": "Icono",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$primary-muted",
+                      "cornerRadius": 18,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "k8DdT",
+                          "name": "Icono event",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "event",
+                          "library": "Material Symbols Outlined",
+                          "fill": "$primary-fg"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Uh00h",
+                      "name": "Texto",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "nv9NX",
+                          "name": "AAPL · falta 3.2% para t",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "GOOG y GOOGL reportan resultados",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "zU6qd",
+                          "name": "USD 182.50 de USD 188.40",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "En 6 días · martes 27 OCT",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C062y",
+                      "name": "Ayuda ?",
+                      "width": 18,
+                      "height": 18,
+                      "cornerRadius": 9,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "mKnXa",
+                          "name": "?",
+                          "fill": "$fg-subtle",
+                          "content": "?",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "WHgVg",
+              "name": "Cotización más antigua: ",
+              "fill": "$fg-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Cotización más antigua: 12 OCT 2026 · 16:00 · CDMX · Fuentes y fechas por activo en su detalle",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "ixtjS",
+              "name": "Ver más",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "FtcFE",
+                  "name": "Ver radar y señales",
+                  "fill": "$primary-fg",
+                  "content": "Ver radar y señales",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "OUWmT",
+                  "name": "→",
+                  "fill": "$primary-fg",
+                  "content": "→",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q8Dhnk",
+          "type": "ref",
+          "ref": "Tzpmr",
+          "name": "BottomNav"
+        }
+      ]
     }
   ],
   "themes": {
