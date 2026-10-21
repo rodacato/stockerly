@@ -15,7 +15,7 @@ class SyncStatementsJob < ApplicationJob
   def perform(asset_id)
     asset = Asset.find_by(id: asset_id)
     return unless asset&.active?
-    return unless asset.asset_type_stock? || asset.asset_type_etf?
+    return unless asset.asset_type_stock?
 
     gateway = MarketData::Gateways::YfinanceGateway.new
     synced_types = []

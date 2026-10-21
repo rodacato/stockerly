@@ -25,7 +25,9 @@ class BackfillMissingHistoriesJob < ApplicationJob
   private
 
   def assets_needing_backfill
-    Asset.where(sync_status: :active)
+    # Fixed income has no bars to backfill (D98): its curve is CetesRateHistory, and
+    # asking for it logged one error per CETE every week.
+    Asset.where(sync_status: :active).where.not(asset_type: :fixed_income)
          .left_joins(:asset_price_histories)
          .group(:id)
          .having("COUNT(asset_price_histories.id) < ?", MIN_HISTORIES)

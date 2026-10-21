@@ -25,6 +25,12 @@ RSpec.describe BackfillMissingHistoriesJob, type: :job do
         .not_to have_enqueued_job(BackfillPriceHistoryJob).with(full_stock.id)
     end
 
+    it "does not enqueue for a CETE, which never has bars" do
+      cete = create(:asset, :fixed_income, symbol: "CETES_28D", sync_status: :active)
+
+      expect { described_class.perform_now }.not_to have_enqueued_job(BackfillPriceHistoryJob).with(cete.id)
+    end
+
     it "does not enqueue for disabled assets" do
       expect { described_class.perform_now }
         .not_to have_enqueued_job(BackfillPriceHistoryJob).with(disabled_stock.id)

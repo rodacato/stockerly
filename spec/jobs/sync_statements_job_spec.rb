@@ -13,6 +13,13 @@ RSpec.describe SyncStatementsJob, type: :job do
   end
 
   describe "#perform" do
+    it "does not ask Yahoo for the statements of an ETF, which has none" do
+      etf = create(:asset, :etf, symbol: "VOO", sync_status: :active)
+      expect(MarketData::Gateways::YfinanceGateway).not_to receive(:new)
+
+      expect { described_class.perform_now(etf.id) }.not_to change(SystemLog, :count)
+    end
+
     it "persists financial statements for all 3 types" do
       expect { described_class.perform_now(asset.id) }
         .to change(FinancialStatement, :count).by(12)

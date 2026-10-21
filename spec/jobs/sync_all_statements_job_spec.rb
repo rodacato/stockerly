@@ -8,9 +8,15 @@ RSpec.describe SyncAllStatementsJob, type: :job do
   let!(:disabled) { create(:asset, symbol: "DIS", asset_type: :stock, sync_status: :disabled, fundamentals_synced_at: 1.day.ago) }
 
   describe "#perform" do
-    it "enqueues SyncStatementsJob for eligible stock/etf assets with OVERVIEW data" do
+    it "enqueues SyncStatementsJob for eligible stocks with OVERVIEW data" do
       expect { described_class.perform_now }
         .to have_enqueued_job(SyncStatementsJob).exactly(2).times
+    end
+
+    it "does not enqueue for an ETF, which has no statements to fetch" do
+      etf = create(:asset, :etf, symbol: "VOO", sync_status: :active, fundamentals_synced_at: 1.day.ago)
+
+      expect { described_class.perform_now }.not_to have_enqueued_job(SyncStatementsJob).with(etf.id)
     end
 
     it "does not enqueue for crypto assets" do
