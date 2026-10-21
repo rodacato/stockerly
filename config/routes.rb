@@ -72,13 +72,16 @@ Rails.application.routes.draw do
   # D31 deleted /market's listing, /news and /earnings: all three read the
   # instance's own catalogue, which is the bubble Descubrir exists to leave.
   # The asset detail below is a different screen and stays.
-  get "market/:symbol",                to: "market#show",           as: :market_asset
-  get "market/:symbol/earnings_tab",   to: "market#earnings_tab",   as: :market_asset_earnings_tab
-  get "market/:symbol/statements_tab", to: "market#statements_tab", as: :market_asset_statements_tab
-  get "market/:symbol/tradingview",    to: "market#tradingview",    as: :market_asset_tradingview
-  # The fundamentals sync used to fire from the GET above (CKP-7). It is a
-  # write, so it asks for a verb.
-  post "market/:symbol/fundamentals",  to: "market#request_fundamentals", as: :market_asset_fundamentals
+  # A symbol may carry a dot (IVVPESO.MX); the default segment would read ".MX" as a format.
+  constraints symbol: %r{[^/]+} do
+    get "market/:symbol",                to: "market#show",           as: :market_asset
+    get "market/:symbol/earnings_tab",   to: "market#earnings_tab",   as: :market_asset_earnings_tab
+    get "market/:symbol/statements_tab", to: "market#statements_tab", as: :market_asset_statements_tab
+    get "market/:symbol/tradingview",    to: "market#tradingview",    as: :market_asset_tradingview
+    # The fundamentals sync used to fire from the GET above (CKP-7). It is a
+    # write, so it asks for a verb.
+    post "market/:symbol/fundamentals",  to: "market#request_fundamentals", as: :market_asset_fundamentals
+  end
 
   # Propshaft owns the /assets prefix. It lets the exact path /assets through to
   # the router, but swallows anything nested under it — /assets/tracked is
