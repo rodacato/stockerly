@@ -92,7 +92,7 @@ module MarketData
       def next_earnings(asset)
         return nil unless asset.asset_type_stock? || asset.asset_type_etf?
 
-        asset.earnings_events.upcoming.first
+        Queries::UpcomingEarnings.next_for(asset: asset)
       end
 
       # ADR-014: the state is derived, the phrase is selected, neither is composed downstream.
