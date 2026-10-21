@@ -221,6 +221,23 @@ so an export that is never renamed survives as an orphan nobody can identify.
 | `auth-errores-500.png` | `[Auth] / Errores / 500` — public/500.html as shipped (English buttons) |
 | `auth-login-desktop.png` | `[Auth] / Login · Desktop / Default` |
 
+**Assistant (`flows/assistant.pen`).** Design ahead of code: ADR-031 is proposed and nothing here
+ships yet (D166, D167). The Hoy, Panorama and asset-detail backdrops are the committed `cockpit-*`
+exports, so re-shoot these when those change.
+
+| File | Artboard |
+|---|---|
+| `assistant-hoy-velita-en-reposo.png` | `[Asistente] / Hoy / Velita en reposo` — the floating entry, static at rest (D166) |
+| `assistant-hoy-drawer-abierto.png` | `[Asistente] / Hoy / Drawer abierto` — the D11 drawer seeded with suggestions from Hoy |
+| `assistant-hoy-drawer-respuesta.png` | `[Asistente] / Hoy / Drawer · Respuesta` — numbered cards, then prose that cites them |
+| `assistant-panorama-desktop-panel-abierto.png` | `[Asistente] / Panorama · Desktop / Panel abierto` — the non-modal side panel |
+| `assistant-velita-formas-estados-colores.png` | `[Asistente] / Velita / Formas, estados y colores` — the character sheet (D167) |
+| `assistant-ajustes-conectada.png` | `[Asistente] / Ajustes · Asistente / Conectada` |
+| `assistant-ajustes-sin-configurar.png` | `[Asistente] / Ajustes · Asistente / Sin configurar` — off until a connection answers |
+| `assistant-ajustes-error-de-conexion.png` | `[Asistente] / Ajustes · Asistente / Error de conexión` |
+| `assistant-hoy-ayuda-preguntale.png` | `[Asistente] / Hoy / Ayuda con Pregúntale` — the ? popover's way into the drawer |
+| `assistant-detalle-drawer-con-simbolo.png` | `[Asistente] / Detalle NVDA / Drawer con el símbolo` |
+
 ## Brand (`brand.pen`)
 
 Not a flow — an identity sheet (D44), so the rows are sheets rather than `[Flow] / Screen / State`
