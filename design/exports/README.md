@@ -26,24 +26,25 @@ not by reading the tables.
 |---|---|
 | `cockpit-panorama-default.png` | `[Cockpit] / Panorama / Default` |
 | `cockpit-panorama-tranquilo.png` | `[Cockpit] / Panorama / Tranquilo` — nothing moved today |
-| `cockpit-hoy-default.png` | `[Cockpit] / Hoy / Default` — a verdict line, two figures, three items |
+| `cockpit-hoy-default.png` | `[Cockpit] / Hoy / Default` — a verdict line, the patrimonio strip and VS CETES, three items, the sin-plan row |
 | `cockpit-hoy-tranquilo.png` | `[Cockpit] / Hoy / Tranquilo` — "todo en orden", nothing to look at |
 | `cockpit-hoy-primera-vez.png` | `[Cockpit] / Hoy / Primera vez` — an empty portfolio |
 | `cockpit-hoy-sin-cotizacion.png` | `[Cockpit] / Hoy / Sin cotización` — stale quotes, never "todo en orden" |
+| `cockpit-hoy-cotizaciones-viejas.png` | `[Cockpit] / Hoy / Cotizaciones viejas` — prices exist but are old or a sync failed: the strip stays with its warning line, no VS CETES, no plan |
 | `cockpit-hoy-con-plan-dentro.png` | `[Cockpit] / Hoy / Con plan · dentro` — on plan, the plan card |
 | `cockpit-hoy-con-plan-brecha.png` | `[Cockpit] / Hoy / Con plan · brecha` — a share off its target and no contribution, as items |
-| `cockpit-hoy-sin-plan.png` | `[Cockpit] / Hoy / Sin plan` — a quiet row linking to Ajustes |
 | `cockpit-panorama-primera-vez.png` | `[Cockpit] / Panorama / Primera vez` — nothing held or watched yet |
-| `cockpit-panorama-sin-cotizacion.png` | `[Cockpit] / Panorama / Sin cotización` — a held asset has no quote, so the strip gives way to the notice |
 | `cockpit-senales.png` | `[Cockpit] / Señales / Default` |
 | `cockpit-senales-vacio.png` | `[Cockpit] / Señales / Vacío` |
 | `cockpit-asset-analisis.png` | `[Cockpit] / Asset · Análisis / Default` |
-| `cockpit-asset-analisis-lo-tuyo.png` | `[Cockpit] / Asset · Análisis / Lo tuyo (D159)` — a LO TUYO card under the price and above the tabs; the verdict and the analyst target lose their tones |
+| `cockpit-asset-analisis-watchlist.png` | `[Cockpit] / Asset · Análisis / Watchlist` — watched, not held: no toggle, LO TUYO reads threshold, rule and earnings |
 | `cockpit-hoy-temporada-resultados.png` | `[Cockpit] / Hoy / Temporada de resultados` — earnings dates read one row per day, symbols joined (D160) |
+| `cockpit-hoy-decision-tasa.png` | `[Cockpit] / Hoy / Decisión de tasa` — a Fed or Banxico date within 7 days, ranked after maturity and earnings |
 | `cockpit-asset-analisis-aviso.png` | `[Cockpit] / Asset · Análisis / Aviso TradingView` |
 | `cockpit-asset-mi-posicion.png` | `[Cockpit] / Asset · Mi posición / Default` |
 | `cockpit-asset-cetes.png` | `[Cockpit] / Asset · CETES / Default` — fixed income, no chart (D98) |
 | `cockpit-consolidado.png` | `[Cockpit] / Consolidado / Default` |
+| `cockpit-consolidado-por-sector.png` | `[Cockpit] / Consolidado / Por sector` — the split by sector (`?por=sector`) |
 | `cockpit-consolidado-sin-historial.png` | `[Cockpit] / Consolidado / Sin historial` — no curve and no comparison yet |
 | `activos-holdings.png` | `[Activos] / Holdings / Default` |
 | `activos-watchlist.png` | `[Activos] / Watchlist / Default` |
