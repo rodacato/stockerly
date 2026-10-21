@@ -92,7 +92,7 @@ RSpec.describe Alerts::Handlers::CreateAlertEventOnTrigger do
       )
       event = AlertEvent.last
       expect(event.asset_symbol).to eq("BMV")
-      expect(event.message).to include("BMV cerrado en 3 día(s): Festivo prueba.")
+      expect(event.message).to include("BMV cerrado en 3 días: Festivo prueba.")
     end
 
     it "falls back to CETES when an empty-string asset_symbol arrives for a cete_auction rule" do
@@ -106,7 +106,15 @@ RSpec.describe Alerts::Handlers::CreateAlertEventOnTrigger do
       )
       event = AlertEvent.last
       expect(event.asset_symbol).to eq("CETES")
-      expect(event.message).to include("Próxima subasta Banxico de CETES en 3 día(s).")
+      expect(event.message).to include("Próxima subasta Banxico de CETES en 3 días.")
+    end
+
+    it "says one day in the singular" do
+      mw_rule = create(:alert_rule, :marketwide, user: user, condition: :cete_auction)
+      described_class.call(alert_rule_id: mw_rule.id, user_id: user.id, asset_symbol: "",
+                           triggered_price: 1.day.from_now.to_date.to_s, context: { days_until: 1 })
+
+      expect(AlertEvent.last.message).to eq("Próxima subasta Banxico de CETES en 1 día.")
     end
   end
 end

@@ -6,7 +6,7 @@ class NotifyEarningsJob < ApplicationJob
   def perform
     sent = Trading::UseCases::NotifyApproachingEarnings.call
 
-    log_sync_success("Earnings Notifications", message: "#{sent} notifications sent")
+    log_sync_success("Earnings Notifications", message: I18n.t("notificaciones.registro.avisos_enviados", count: sent))
   rescue StandardError => e
     log_sync_failure("Earnings Notifications", e.message)
     raise

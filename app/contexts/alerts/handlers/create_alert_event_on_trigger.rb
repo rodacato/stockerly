@@ -45,10 +45,10 @@ module Alerts
         when "bmv_holiday"
           days = ctx[:days_until] || rule.window_days
           name = ctx[:holiday_name] || "festivo BMV"
-          "BMV cerrado en #{days} día(s): #{name}."
+          I18n.t("notificaciones.reglas.bmv_cerrado", count: days.to_i, name: name)
         when "cete_auction"
           days = ctx[:days_until] || rule.window_days
-          "Próxima subasta Banxico de CETES en #{days} día(s)."
+          I18n.t("notificaciones.reglas.subasta_cetes", count: days.to_i)
         else
           "#{symbol}: regla disparada."
         end

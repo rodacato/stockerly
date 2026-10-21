@@ -6,7 +6,7 @@ RSpec.describe NotifyMaturitiesJob, type: :job do
     described_class.perform_now
 
     expect(Trading::UseCases::NotifyApproachingMaturities).to have_received(:call)
-    expect(SystemLog.last.error_message).to eq("3 notifications sent")
+    expect(SystemLog.last.error_message).to eq("3 avisos enviados")
   end
 
   it "logs the failure and re-raises when notifying blows up" do

@@ -6,7 +6,7 @@ RSpec.describe NotifyEarningsJob, type: :job do
     described_class.perform_now
 
     expect(Trading::UseCases::NotifyApproachingEarnings).to have_received(:call)
-    expect(SystemLog.last.error_message).to eq("5 notifications sent")
+    expect(SystemLog.last.error_message).to eq("5 avisos enviados")
   end
 
   it "logs the failure and re-raises when notifying blows up" do

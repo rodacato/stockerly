@@ -6,7 +6,7 @@ class NotifyMaturitiesJob < ApplicationJob
   def perform
     sent = Trading::UseCases::NotifyApproachingMaturities.call
 
-    log_sync_success("Maturity Notifications", message: "#{sent} notifications sent")
+    log_sync_success("Maturity Notifications", message: I18n.t("notificaciones.registro.avisos_enviados", count: sent))
   rescue StandardError => e
     log_sync_failure("Maturity Notifications", e.message)
     raise

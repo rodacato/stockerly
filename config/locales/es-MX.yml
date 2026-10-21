@@ -1429,6 +1429,20 @@ es-MX:
     reglas: Reglas
     regresar: Regresar
   notificaciones:
+    registro:
+      avisos_enviados:
+        one: 1 aviso enviado
+        other: "%{count} avisos enviados"
+      resumenes_enviados:
+        one: 1 resumen enviado
+        other: "%{count} resúmenes enviados"
+    reglas:
+      bmv_cerrado:
+        one: 'BMV cerrado en 1 día: %{name}.'
+        other: 'BMV cerrado en %{count} días: %{name}.'
+      subasta_cetes:
+        one: Próxima subasta Banxico de CETES en 1 día.
+        other: Próxima subasta Banxico de CETES en %{count} días.
     reportes:
       cuando: Reporte %{cuando}
       en_watchlist: en tu watchlist
