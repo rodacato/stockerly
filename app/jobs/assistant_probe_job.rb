@@ -8,7 +8,7 @@ class AssistantProbeJob < ApplicationJob
 
   PROVIDERS = {
     "shellm" => -> { [ ENV.fetch("SHELLM_BASE_URL"), ENV.fetch("SHELLM_API_KEY"), ENV.fetch("PROBE_MODEL", "claude-sonnet") ] },
-    "anthropic" => -> { [ "https://api.anthropic.com", ENV.fetch("ANTHROPIC_PROBE_API_KEY"), "claude-sonnet-5-5" ] }
+    "anthropic" => -> { [ "https://api.anthropic.com", ENV.fetch("ANTHROPIC_PROBE_API_KEY"), ENV.fetch("PROBE_ANTHROPIC_MODEL", "claude-sonnet-5-5") ] }
   }.freeze
 
   def perform(provider, question)
