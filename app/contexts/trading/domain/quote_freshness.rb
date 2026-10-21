@@ -1,7 +1,7 @@
 module Trading
   module Domain
     # Whether a quote is current enough to say "nothing needs a look". The
-    # 15-minute rule behind Asset#price_stale? labels a figure live; it is too
+    # short rule behind Asset#price_stale? labels a figure live; it is too
     # strict here, since the market is shut overnight and at weekends and a close
     # is current for a few days. Fixed income syncs weekly, so it has no age to hold.
     class QuoteFreshness

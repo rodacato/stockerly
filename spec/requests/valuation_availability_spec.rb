@@ -40,12 +40,12 @@ RSpec.describe "Valuation availability", type: :request do
   it "distinguishes stale quotes from a provider error" do
     asset.update!(current_price: 100, price_updated_at: 1.hour.ago)
     get market_asset_path(asset.symbol)
-    expect(response.body).to include(I18n.t("components.asset_price.desactualizado"))
+    expect(response.body).to include(I18n.t("components.asset_price.desactualizado", minutes: Asset::STALE_AFTER.in_minutes.to_i))
 
     asset.update!(last_sync_error: "Synthetic provider failure")
     get market_asset_path(asset.symbol)
     expect(response.body).to include(I18n.t("components.asset_price.error_proveedor"))
-    expect(response.body).not_to include(I18n.t("components.asset_price.desactualizado"))
+    expect(response.body).not_to include(I18n.t("components.asset_price.desactualizado", minutes: Asset::STALE_AFTER.in_minutes.to_i))
   end
 
   it "distinguishes a real zero value from an unknown quote" do

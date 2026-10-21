@@ -1,5 +1,7 @@
 class Asset < ApplicationRecord
   SUPPORTED_CURRENCIES = %w[USD MXN].freeze
+  # Past this a figure stops reading as live. The low-priority sync runs every 30 minutes.
+  STALE_AFTER = 30.minutes
 
   enum :asset_type, { stock: 0, crypto: 1, index: 2, etf: 3, fixed_income: 4 }, prefix: true
   # Binary and user-controlled: active = synced automatically, disabled = paused
@@ -80,7 +82,7 @@ class Asset < ApplicationRecord
   end
 
   def price_stale?
-    price_updated_at.nil? || price_updated_at < 15.minutes.ago
+    price_updated_at.nil? || price_updated_at < STALE_AFTER.ago
   end
 
   def last_sync_ok?

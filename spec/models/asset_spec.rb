@@ -274,9 +274,14 @@ RSpec.describe Asset, type: :model do
       expect(asset.price_stale?).to be true
     end
 
-    it "returns true when price is older than 15 minutes" do
-      asset.price_updated_at = 20.minutes.ago
+    it "returns true when price is older than the window" do
+      asset.price_updated_at = Asset::STALE_AFTER.ago - 1.minute
       expect(asset.price_stale?).to be true
+    end
+
+    it "does not call a low-priority sync stale between its runs" do
+      asset.price_updated_at = 25.minutes.ago
+      expect(asset.price_stale?).to be false
     end
 
     it "returns false when price is recent" do
