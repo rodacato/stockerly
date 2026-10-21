@@ -684,3 +684,27 @@ re-vendors** (#821 landed the code; this mirrors it).
 
 The 2 px `primary-fg` focus ring and the reduced-motion rule have no kit node: the kit draws no
 focus variants yet, and motion tokens are ui-motion's decision.
+
+---
+
+## 1.3.0 — search in both bars, and the holding line
+
+Minor: three components gain a child, no token changes. **Additive — flows re-vendor when next
+opened**; an instance that does not opt in renders as before.
+
+- **`TopBar`** — the bell moves into an `Acciones` row (gap 4) behind a 44 × 44 `search` button in
+  the bell's icon size and colour, linking to `/search` with `nav.buscar` (`components/_top_bar.html.erb`).
+- **`TopBarDesktop`** — a 320-wide search field before the bell, styled as `field_classes(:md)`
+  (`radius-sm`, 18 px `search` icon, 14 px placeholder `assets.tracked.buscar_placeholder`), from
+  `components/_top_bar_desktop.html.erb`. The placeholder is clipped at the field's edge, as the
+  input clips it. `Sub` stays in the master; it renders only where a screen sets
+  `content_for(:page_subtitle)`, so instances without one set it `enabled: false`.
+- **`AssetRow`** — an optional `Holding` block under `Name`, `enabled: false` by default: the
+  share of the total (`assets.index.del_patrimonio`) and the unrealised gain in mono 12, the gain in
+  `$positive-fg` / `$negative-fg` (`components/_asset_row.html.erb`). Drawn on two lines because
+  that is where a 390-wide row wraps it; a wider row may set the block horizontal.
+
+### Not mirrored, on purpose
+
+`TopBarDesktop`'s `Sub` is still sans 12 in the kit; the code renders it mono 11 uppercase with
+wide tracking. A style change to an existing child, so it waits for its own bump.

@@ -1,5 +1,5 @@
 {
-  "version": "2.20",
+  "version": "2.21",
   "children": [
     {
       "type": "frame",
@@ -40,7 +40,7 @@
               "id": "AXODh",
               "name": "Kit",
               "fill": "$fg-subtle",
-              "content": "Stockerly · ui-kit v0.1.0",
+              "content": "Stockerly · ui-kit v1.3.0",
               "fontFamily": "$font-mono",
               "fontSize": 12,
               "fontWeight": "normal"
@@ -1093,34 +1093,65 @@
         },
         {
           "type": "frame",
-          "id": "PkokQ",
-          "name": "BellWrap",
-          "width": 44,
-          "height": 44,
-          "cornerRadius": "$radius-md",
-          "justifyContent": "center",
+          "id": "U6ohWa",
+          "name": "Acciones",
+          "gap": "$space-1",
           "alignItems": "center",
           "children": [
             {
-              "type": "icon",
-              "id": "BqS0q",
-              "name": "Bell",
-              "width": 20,
-              "height": 20,
-              "icon": "bell",
-              "library": "lucide",
-              "fill": "$fg-subtle"
+              "type": "frame",
+              "id": "e1WHZG",
+              "name": "SearchWrap",
+              "width": 44,
+              "height": 44,
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "TfsES",
+                  "name": "Search",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                }
+              ]
             },
             {
-              "type": "ellipse",
-              "id": "lIZuj",
-              "layoutPosition": "absolute",
-              "x": 26,
-              "y": 10,
-              "name": "UnreadDot",
-              "fill": "$negative",
-              "width": 8,
-              "height": 8
+              "type": "frame",
+              "id": "PkokQ",
+              "name": "BellWrap",
+              "width": 44,
+              "height": 44,
+              "cornerRadius": "$radius-md",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "BqS0q",
+                  "name": "Bell",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "ellipse",
+                  "id": "lIZuj",
+                  "layoutPosition": "absolute",
+                  "x": 26,
+                  "y": 10,
+                  "name": "UnreadDot",
+                  "fill": "$negative",
+                  "width": 8,
+                  "height": 8
+                }
+              ]
             }
           ]
         }
@@ -1352,6 +1383,56 @@
               "fontFamily": "$font-sans",
               "fontSize": 12,
               "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "G4xDD",
+              "x": 0,
+              "y": 36,
+              "name": "Holding",
+              "context": "Optional (components/_asset_row holding:). Drawn wrapped as the 390-wide row wraps it: the share on one line, the gain on the next. A wider row may set layout horizontal.",
+              "enabled": false,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "UrKIu",
+                  "name": "Share",
+                  "fill": "$fg-subtle",
+                  "content": "27.3% del patrimonio",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "mIw2D",
+                  "name": "GainLine",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "roZUn",
+                      "name": "Sep",
+                      "fill": "$fg-subtle",
+                      "content": "· ",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "S5P70J",
+                      "name": "Gain",
+                      "fill": "$positive-fg",
+                      "content": "+8.4%",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -2215,6 +2296,45 @@
           "children": [
             {
               "type": "frame",
+              "id": "CfYA8",
+              "name": "Search",
+              "clip": true,
+              "width": 320,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "bWBJL",
+                  "name": "SearchIcon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$fg-subtle"
+                },
+                {
+                  "type": "text",
+                  "id": "U867E",
+                  "name": "Placeholder",
+                  "fill": "$fg-subtle",
+                  "content": "Símbolo o nombre — AAPL, Apple, Bitcoin…",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
               "id": "n3lsBQ",
               "name": "BellWrap",
               "width": 44,
@@ -2607,7 +2727,7 @@
       "name": "KitLabel",
       "context": "Mirrors the kit-version variable and must be updated with it. It has drifted three times (read 0.5.0 and 0.8.0 while the variable said 0.7.0 and 0.9.0). Binding it with content: \"$kit-version\" does NOT work — a text node renders the reference literally.",
       "fill": "$fg-subtle",
-      "content": "COMPONENTES · v1.0.0",
+      "content": "COMPONENTES · v1.3.0",
       "fontFamily": "$font-mono",
       "fontSize": 12,
       "fontWeight": "normal",
@@ -2623,7 +2743,7 @@
   "variables": {
     "kit-version": {
       "type": "string",
-      "value": "1.2.0"
+      "value": "1.3.0"
     },
     "font-display": {
       "type": "string",
