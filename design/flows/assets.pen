@@ -22579,6 +22579,278 @@
           }
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "imoyR",
+      "x": 990,
+      "y": 12237,
+      "name": "[Activos] / Holdings / Vacío · lavado de marca (D165)",
+      "clip": true,
+      "width": 390,
+      "fill": "$bg-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "eNPl6",
+          "type": "ref",
+          "ref": "NBrwg",
+          "name": "TopBar",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "J2Vhv",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            16,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "Wpkdk",
+              "name": "Registrar",
+              "width": "fill_container",
+              "fill": "$primary-fg",
+              "cornerRadius": "$radius-sm",
+              "gap": "$space-2",
+              "padding": [
+                12,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "lUN4b",
+                  "name": "i",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "plus",
+                  "library": "lucide",
+                  "fill": "$fg-inverse"
+                },
+                {
+                  "type": "text",
+                  "id": "RYI5U",
+                  "name": "t",
+                  "fill": "$fg-inverse",
+                  "content": "Registrar movimiento",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "id": "FvpTi",
+              "type": "ref",
+              "ref": "wuIvL",
+              "name": "Segmented",
+              "width": "fill_container",
+              "descendants": {
+                "WBLya": {
+                  "content": "Holdings"
+                },
+                "sBvk9": {
+                  "content": "Watchlist"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "j9Tqy",
+              "name": "EmptyState",
+              "width": "fill_container",
+              "fill": "$primary-muted",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$primary-muted",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "padding": [
+                64,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "On3K5",
+                  "name": "Icon",
+                  "width": 60,
+                  "height": 60,
+                  "icon": "wallet",
+                  "library": "lucide",
+                  "fill": "$primary-fg"
+                },
+                {
+                  "type": "frame",
+                  "id": "QBdeu",
+                  "name": "Gap",
+                  "width": 1,
+                  "height": 16
+                },
+                {
+                  "type": "text",
+                  "id": "s0kdgC",
+                  "name": "Title",
+                  "fill": "$fg-default",
+                  "content": "Aún no tienes posiciones",
+                  "textAlign": "center",
+                  "fontFamily": "$font-display",
+                  "fontSize": 18,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "gr6Xn",
+                  "name": "Gap",
+                  "width": 1,
+                  "height": 8
+                },
+                {
+                  "type": "text",
+                  "id": "o0t0X",
+                  "name": "Body",
+                  "fill": "$fg-default",
+                  "textGrowth": "fixed-width",
+                  "width": 300,
+                  "content": "Registra tu primer movimiento y tu patrimonio empieza a contarse solo.",
+                  "lineHeight": 1.4,
+                  "textAlign": "center",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "l1uKI",
+                  "name": "Gap",
+                  "width": 1,
+                  "height": 24
+                },
+                {
+                  "type": "frame",
+                  "id": "f079ym",
+                  "name": "CTA",
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-sm",
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "l3JaPW",
+                      "name": "t",
+                      "fill": "$fg-inverse",
+                      "content": "Importar movimientos",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "m8dOmx",
+              "type": "ref",
+              "ref": "mAarI",
+              "name": "Historial",
+              "width": "fill_container",
+              "descendants": {
+                "oYFom": {
+                  "icon": "receipt"
+                },
+                "JlIU1": {
+                  "content": "Historial"
+                },
+                "R3qJ4": {
+                  "content": "Movimientos, dividendos cobrados y posiciones cerradas"
+                },
+                "bYSwp": {
+                  "enabled": false
+                }
+              }
+            },
+            {
+              "id": "K0Vtf",
+              "type": "ref",
+              "ref": "mAarI",
+              "name": "Importar movimientos",
+              "width": "fill_container",
+              "descendants": {
+                "oYFom": {
+                  "icon": "file-up"
+                },
+                "JlIU1": {
+                  "content": "Importar movimientos"
+                },
+                "R3qJ4": {
+                  "content": "Carga movimientos en el formato de Stockerly, de archivo o pegados."
+                },
+                "bYSwp": {
+                  "enabled": false
+                }
+              }
+            },
+            {
+              "id": "xzBLw",
+              "type": "ref",
+              "ref": "mAarI",
+              "name": "Tracked",
+              "width": "fill_container",
+              "descendants": {
+                "oYFom": {
+                  "icon": "radar"
+                },
+                "JlIU1": {
+                  "content": "Tracked"
+                },
+                "R3qJ4": {
+                  "content": "Lo que tu instancia sincroniza y cuánto presupuesto queda"
+                },
+                "bYSwp": {
+                  "enabled": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "aSJMC",
+          "type": "ref",
+          "ref": "A887Ra",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "descendants": {
+            "rVxMx": {
+              "fill": "$fg-subtle"
+            },
+            "OhmuG": {
+              "fill": "$fg-subtle",
+              "fontWeight": "normal"
+            },
+            "ehfXk": {
+              "fill": "$primary"
+            },
+            "l4LYK": {
+              "fill": "$primary",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
     }
   ],
   "themes": {
