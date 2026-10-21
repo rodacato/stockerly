@@ -34,7 +34,7 @@
 
 - Knows how to code, values clean architecture, but is fed up with his own over-engineering.
 
-**Jobs to be Done:** the seven JTBDs, with statements, surfaces and metrics, are in [`jobs-to-be-done.md`](./jobs-to-be-done.md).
+**Jobs to be Done:** the eight JTBDs, with statements, surfaces and metrics, are in [`jobs-to-be-done.md`](./jobs-to-be-done.md).
 
 ### Consult as `el-usuario`
 

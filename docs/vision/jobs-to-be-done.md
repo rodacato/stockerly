@@ -1,6 +1,6 @@
 # Jobs to be Done — Stockerly
 
-> The 7 JTBDs that justify Stockerly's existence. Six were written 2026-05-14; **reviewed against the
+> The 8 JTBDs that justify Stockerly's existence. Six were written 2026-05-14; **reviewed against the
 > 2026-08-20 pivot** ([ADR-0010](../architecture/adr/0010-pivot-to-self-hosted-single-user-tracker.md)),
 > which changed the audience and not these six — JTBD #5 (fast capture) and #6 (readable
 > indicators) were promoted to central, since data-entry friction and indicator illiteracy are two
@@ -9,6 +9,7 @@
 > A new feature in the backlog must map to one of these (or propose a new JTBD via an edit to this file).
 > **JTBD #7 was added 2026-08-29** by the per-symbol news block (#427), which is the first feature since
 > the pivot that mapped to none of the six.
+> **JTBD #8 was added 2026-10-21** for the assistant (ADR-031): understanding a term in place.
 
 ---
 
@@ -240,6 +241,53 @@ the point of the metric: this is the JTBD most likely to decay into noise.
 are attributed; [ADR-001](../architecture/adr/0001-descriptive-not-prescriptive-language.md) governs
 our copy, and a third party's headline is quoted material. No summarisation and no sentiment scoring
 over headline text — that would make it our sentence.
+
+---
+
+## JTBD #8 — Understand what a term or a figure is telling me
+
+**Trigger (Adrian, recorded 2026-10-21 — recurring, not a single date):**
+
+> *"Como me falta educación y experiencia, hay muchos términos muy parecidos que tengo que investigar
+> qué son y la diferencia, sobre todo en reportes financieros, los términos de deuda que no parecen
+> deuda, o cuando los veo en una gráfica se me olvida qué me dice cada uno, como MA, SMA."*
+> What is missing is *"la diferencia, pero no el concepto o la definición: coloquialmente qué es,
+> para qué sirve o cómo se interpreta"*. Today he takes a screenshot to an outside AI and asks there.
+
+**Statement:** *When a term or a figure in Stockerly stops me — a statement line that is debt
+without looking like it, MA versus SMA on a chart — I want it explained in plain words, read
+against the numbers I am looking at, so I understand what the screen is telling me without leaving
+it for a generic answer.*
+
+**Why this is not JTBD #6.** #6 is the app *noticing* a technical zone and describing it. This is
+the reader *asking* about any term, whether or not anything was noticed, and it reaches the
+financial statements, which #6 does not. #6's metric — opening a detail from an observation —
+cannot measure it.
+
+**What it is not.** Researching outward is a different job, deliberately left out: why the market
+fell today, which ETFs follow memory or crypto, a listed proxy for a private company. Those need
+fresh outside data, and *why did it fall* is where a model invents causes. They stay candidates
+until they earn their own trigger.
+
+**Required data:**
+- What the screen already shows: indicator readings, fundamentals and statement lines, prices
+- A glossary of the terms the screens use — partly exists as the help catalogue
+  (`dashboard.ayuda.*`) and Ayuda; not yet for indicators or statement lines
+- An LLM provider the instance owner configures (ADR-031: optional, provider-agnostic)
+
+**App surface:** the assistant drawer from any screen, and the asset detail with the symbol already
+in context (`design/flows/assistant.pen`, D166). Off by default; the instance works without it.
+
+**Triggers:** none. It is invoked, never pushed (ADR-031).
+
+**Usage metric:** Adrian asks ≥1 question per week through the assistant. Supporting signal: the
+`help:*` opens already counted in `/admin/settings`. If after 90 days the questions still go to an
+outside AI first, the assistant is retired with its provider settings — the deletion clause #7
+carries, for the same reason.
+
+**Blocked by:** the assistant is not built. Phase 1 (one question end to end) waits on this entry.
+
+**Current status:** not delivered. The `?` help on Hoy covers a handful of figures in fixed copy.
 
 ---
 
