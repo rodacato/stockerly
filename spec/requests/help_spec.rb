@@ -18,6 +18,23 @@ RSpec.describe "Help", type: :request do
     # from whatever instance rendered it, and ADR-0010 dropped that audience.
     # A bug goes to the public tracker now, which the owner of any instance
     # can actually read.
+    it "renders inside the app's one main landmark, titled once per breakpoint" do
+      login_as(user)
+      get help_path
+
+      page = response.parsed_body
+      expect(page.css("main").size).to eq(1)
+      expect(page.css("h1").map { |h| h.text.strip }).to eq([ "Ayuda y soporte", "Ayuda y soporte" ])
+      expect(page.at_css("header a[href='#{settings_path}']")).to be_present
+    end
+
+    it "is reachable from the Ajustes hub" do
+      login_as(user)
+      get settings_path
+
+      expect(response.parsed_body.at_css("a[href='#{help_path}']")).to be_present
+    end
+
     it "sends a bug to the issue tracker rather than to somebody else's inbox" do
       login_as(user)
       get help_path

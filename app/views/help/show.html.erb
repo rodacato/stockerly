@@ -1,14 +1,11 @@
 <% content_for(:title, t(".titulo")) %>
+<% content_for :page_title, t(".titulo") %>
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: settings_path %>
+<% end %>
 
-<main class="flex-1 flex flex-col items-center py-12 px-4">
-  <div class="w-full max-w-[900px] space-y-8">
-    <%# Header %>
-    <div>
-      <h1 class="font-display text-3xl font-bold text-fg-default tracking-tight"><%= t(".titulo") %></h1>
-      <p class="text-sm text-fg-subtle mt-2"><%= t(".subtitulo") %></p>
-    </div>
+<div class="mx-auto flex w-full max-w-[900px] flex-col gap-8">
+  <p class="text-sm text-fg-subtle"><%= t(".subtitulo") %></p>
 
-    <%# Same body as /welcome, no CTA %>
-    <%= render "shared/welcome_body" %>
-  </div>
-</main>
+  <%= render "shared/welcome_body" %>
+</div>

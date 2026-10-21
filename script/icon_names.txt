@@ -47,6 +47,7 @@ expand_more
 explore
 gpp_maybe
 grid_view
+help
 history
 hourglass_top
 hub
