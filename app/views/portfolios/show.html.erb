@@ -71,6 +71,23 @@
     </section>
   </div>
 
+  <% if @currency_exposure %>
+    <section class="<%= card_classes("flex flex-col gap-2 p-5") %>">
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".dolar_titulo") %></h2>
+      <p class="text-sm text-fg-default">
+        <%= t(".dolar_cuerpo", share: @currency_exposure.usd_share,
+              amount: format_currency_mx(@currency_exposure.usd_value, currency: "MXN", precision: 0)) %>
+      </p>
+      <% if @currency_exposure.usd_value.positive? %>
+        <p class="text-sm text-fg-subtle">
+          <%= t(".dolar_si_baja", percent: Trading::Domain::CurrencyExposure::MOVE_PERCENT,
+                effect: format_currency_mx(@currency_exposure.effect_of(Trading::Domain::CurrencyExposure::MOVE_PERCENT), currency: "MXN", precision: 0)) %>
+        </p>
+      <% end %>
+      <p class="text-xs text-fg-subtle"><%= t(".dolar_nota") %></p>
+    </section>
+  <% end %>
+
   <section class="flex flex-col gap-4">
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".valio_la_pena") %></h2>
 

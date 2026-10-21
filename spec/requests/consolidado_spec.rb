@@ -196,6 +196,42 @@ RSpec.describe "Consolidado", type: :request do
     end
   end
 
+  describe "the dollar exposure" do
+    def hold_usd(price_updated_at: Time.current)
+      usd = create(:asset, :stock, symbol: "AAPL", currency: "USD", current_price: 100, price_updated_at: price_updated_at)
+      create(:position, portfolio: portfolio, asset: usd, shares: 10, avg_cost: 80, status: :open)
+      create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 20)
+    end
+
+    it "states the share held in dollars and what a 5% drop would do, in pesos" do
+      hold_usd
+      create(:position, portfolio: portfolio, asset: asset, shares: 100, avg_cost: 10, status: :open)
+
+      get portfolio_path
+
+      expect(response.body).to include(I18n.t("portfolios.show.dolar_titulo"))
+      expect(response.body).to include("94% de tu patrimonio")
+      expect(response.body).to include("MXN 1,000 menos")
+    end
+
+    it "drops the block over a quote that is too old" do
+      hold_usd(price_updated_at: 6.days.ago)
+
+      get portfolio_path
+
+      expect(response.body).not_to include(I18n.t("portfolios.show.dolar_titulo"))
+    end
+
+    it "drops the block when the patrimonio is not read in pesos" do
+      user.update!(preferred_currency: "USD")
+      hold_usd
+
+      get portfolio_path
+
+      expect(response.body).not_to include(I18n.t("portfolios.show.dolar_titulo"))
+    end
+  end
+
   describe "the lists the Consolidado does not carry" do
     it "keeps all four tabs reachable at /positions" do
       with_history
