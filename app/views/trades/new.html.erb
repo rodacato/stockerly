@@ -18,8 +18,8 @@
       <div class="flex flex-col gap-4 overflow-y-auto px-1 pb-4">
         <h2 class="font-display text-2xl font-bold text-fg-default"><%= t("trades.new.titulo") %></h2>
 
-        <%# The flash lives behind the dialog, so a sheet that stays open has to
-            confirm inside itself or the save looks like nothing happened. %>
+        <%# A sheet that stays open confirms inside itself, next to the form it
+            just emptied, or the save looks like nothing happened. %>
         <% if @saved_notice %>
           <p class="rounded-lg bg-positive-bg px-3 py-2.5 text-sm text-positive-fg" role="status">
             <%= t("trades.new.guardado_otro") %>

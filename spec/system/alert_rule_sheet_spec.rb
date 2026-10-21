@@ -51,6 +51,8 @@ RSpec.describe "Rule sheet after submit", type: :system, js: true do
     click_button "Crear regla"
 
     expect(page).to have_css("dialog[open]")
+    expect(page).to have_css("#flash_messages:popover-open", text: "no está en tu catálogo")
+    expect(page).to have_field("alert[asset_symbol]", with: "NOEXISTE")
     expect(AlertRule.where(user: user)).to be_empty
   end
 end

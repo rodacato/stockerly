@@ -39,7 +39,7 @@ class AlertsController < AuthenticatedController
         format.html { redirect_to alerts_path, notice: t("alerts.flash.creada") }
       end
     in Dry::Monads::Failure[ :validation, errors ]
-      redirect_to alerts_path, alert: errors.values.flatten.first
+      refuse(errors.values.flatten.first)
     end
   end
 
@@ -55,7 +55,7 @@ class AlertsController < AuthenticatedController
     in Dry::Monads::Failure[ :not_found, _message ]
       redirect_to alerts_path, alert: t("alerts.flash.no_encontrada")
     in Dry::Monads::Failure[ :validation, errors ]
-      redirect_to alerts_path, alert: errors.values.flatten.first
+      refuse(errors.values.flatten.first)
     end
   end
 
@@ -80,6 +80,19 @@ class AlertsController < AuthenticatedController
   end
 
   private
+
+  # The sheet submits inside its frame, where a redirect to the list swaps in
+  # the list's empty frame and drops the alert; a stream keeps the form filled.
+  def refuse(message)
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.prepend("flash_messages", partial: "shared/flash_message",
+                                                                    locals: { type: "alert", message: message }),
+               status: :unprocessable_content
+      end
+      format.html { redirect_to alerts_path, alert: message }
+    end
+  end
 
   def alert_params
     params.expect(alert: [ :asset_symbol, :condition, :threshold_value, :window_days, :cooldown_minutes ])
