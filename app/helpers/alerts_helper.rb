@@ -185,7 +185,7 @@ module AlertsHelper
 
     t("alerts.index.sugerencias.contexto",
       count: suggestion.shares.to_i,
-      amount: format_threshold(suggestion.shares))
+      amount: number_with_delimiter(format_threshold(suggestion.shares)))
   end
 
   def suggested_percent(suggestion)

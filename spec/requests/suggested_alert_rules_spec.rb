@@ -52,6 +52,24 @@ RSpec.describe "Suggested alert rules on the empty state", type: :request do
     end
   end
 
+  context "with a holding in the thousands" do
+    it "groups the thousands of a whole holding" do
+      create(:position, portfolio: portfolio, asset: aapl, shares: 3000, status: :open)
+
+      get alerts_path
+
+      expect(response.body).to include("Tienes 3,000 títulos")
+    end
+
+    it "groups the thousands of a fractional holding without rounding its decimals" do
+      create(:position, portfolio: portfolio, asset: aapl, shares: BigDecimal("1234.56789"), status: :open)
+
+      get alerts_path
+
+      expect(response.body).to include("Tienes 1,234.56789 títulos")
+    end
+  end
+
   context "when there is nothing to suggest from" do
     it "still renders the empty state, without a suggestions block" do
       get alerts_path
