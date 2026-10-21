@@ -11,7 +11,9 @@ module Trading
       POLICY_CURRENCY = { "Fed" => "USD", "Banxico" => "MXN" }.freeze
       VS_CETES_PERIOD = 1.month
 
-      SentimentCard = Data.define(:key, :value, :label_key, :delta)
+      SentimentCard = Data.define(:key, :value, :label_key, :delta, :as_of) do
+        def initialize(key:, value:, label_key:, delta: nil, as_of: nil) = super
+      end
       RadarEntry = Data.define(:kind, :record, :asset, :change, :maturity_days)
 
       def call(user:)
@@ -162,6 +164,7 @@ module Trading
 
         [
           fear_greed_card(:crypto, fear_greed[:crypto], fear_greed[:crypto_history]),
+          volatility_card,
           watchlist_card(user)
         ].compact
       end
@@ -187,6 +190,13 @@ module Trading
 
         current_day = rows.last.first.to_date
         rows.reject { |fetched_at, _| fetched_at.to_date == current_day }.last&.last
+      end
+
+      def volatility_card
+        reading = MarketData::Queries::CurrentVolatility.call
+        return nil unless reading
+
+        SentimentCard.new(key: :volatility, value: reading.value, label_key: reading.level, as_of: reading.as_of)
       end
 
       def watchlist_card(user)

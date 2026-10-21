@@ -3,16 +3,19 @@
      crypto: { title: t("dashboard.show.fear_greed_crypto"),
                low: t("comun.clasificacion.extreme_fear"),
                high: t("comun.clasificacion.extreme_greed") },
+     volatility: { title: t("dashboard.show.volatilidad"),
+                   low: t("dashboard.show.volatilidad_baja"),
+                   high: t("dashboard.show.volatilidad_alta") },
      watchlist: { title: t("dashboard.show.sentimiento_watchlist"),
                   low: t("comun.clasificacion.very_bearish"),
                   high: t("comun.clasificacion.very_bullish") }
    }[card.key] %>
 <% delta = sentiment_delta(card.delta) %>
-<article class="<%= card_classes("w-[85%] shrink-0 snap-center p-5 lg:w-full") %>">
+<%= tag.article class: card_classes("relative w-[85%] shrink-0 snap-center p-5 lg:w-full"), data: (card.key == :volatility ? help_tip_data("volatilidad") : {}) do %>
   <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= copy[:title] %></p>
 
   <div class="mt-2 flex items-center justify-between gap-3">
-    <p class="font-display text-4xl font-bold tracking-tight text-fg-default"><%= card.value %></p>
+    <p class="font-display text-4xl font-bold tracking-tight text-fg-default"><%= card.key == :volatility ? number_with_precision(card.value, precision: 1) : card.value %></p>
     <span class="rounded-full bg-bg-muted px-3 py-1.5 text-xs font-semibold text-fg-default">
       <%= sentiment_label(card.label_key) %>
     </span>
@@ -20,14 +23,21 @@
 
   <div class="mt-4">
     <%= render "components/track",
-               position: sentiment_offset(card.value),
+               position: card.key == :volatility ? volatility_offset(card.value) : sentiment_offset(card.value),
                low_label: copy[:low],
                high_label: copy[:high] %>
   </div>
+
+  <% if card.as_of %>
+    <p class="mt-3 font-mono text-xs text-fg-subtle"><%= t("dashboard.show.volatilidad_al", date: l(card.as_of, format: :short)) %></p>
+  <% end %>
 
   <% if delta %>
     <p class="mt-3 font-mono text-xs text-fg-subtle">
       <%= delta[:arrow] %> <%= t("dashboard.show.vs_ayer", delta: delta[:text]) %>
     </p>
   <% end %>
-</article>
+  <% if card.key == :volatility %>
+    <%= render "dashboard/help_tip", figure: "volatilidad", classes: "absolute right-1 top-1" %>
+  <% end %>
+<% end %>

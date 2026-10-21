@@ -517,11 +517,15 @@ es-MX:
     clasificacion:
       bearish: Pesimista
       bullish: Optimista
+      calm: Calma
+      elevated: Elevada
       extreme_fear: Miedo extremo
       extreme_greed: Codicia extrema
       fear: Miedo
       greed: Codicia
+      high: Alta
       neutral: Neutral
+      normal: Normal
       very_bearish: Muy pesimista
       very_bullish: Muy optimista
     guardar: Guardar
@@ -597,6 +601,12 @@ es-MX:
           que pusiste. «Todo en orden» solo aparece con cotizaciones al día.
         pie: Es una lectura de tus datos, no una recomendación.
         titulo: Cómo se arma esta frase
+      volatilidad:
+        cuerpo: El VIX es la estimación del propio mercado de cuánto se moverá el
+          S&P 500 en los próximos 30 días. Menos de 15 se lee como calma; de 15 a
+          25, normal; de 25 a 35, elevada; más de 35, alta. Los cortes son una convención,
+          no una regla. Describe el mercado de EE. UU., no tu cartera.
+        titulo: Volatilidad
       vs_cetes:
         cuerpo: Tu rendimiento del último mes, sin contar lo que depositaste o retiraste,
           menos lo que habrían rendido CETES a 28 días reinvertidos. Se dice en puntos,
@@ -685,6 +695,11 @@ es-MX:
       sentimiento_watchlist: SENTIMIENTO · TU WATCHLIST
       titulo: Panorama
       ver_todos: Ver todos
+      volatilidad: VOLATILIDAD · EE. UU. (VIX)
+      volatilidad_al: Lectura del %{date}. Mide el mercado de acciones de EE. UU.;
+        no dice nada del IPC.
+      volatilidad_alta: Alta
+      volatilidad_baja: Calma
       vs_ayer: "%{delta} vs ayer"
     signal_row:
       cerrar: Cerrar
