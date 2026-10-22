@@ -51,6 +51,17 @@ RSpec.describe "Velita", type: :request do
       expect(response.body).to include(%(href="#{CGI.escapeHTML(assistant_path(from: "activos", symbol: "NVDA"))}"))
     end
 
+    it "says Señales is where she was opened, not its tab" do
+      connect
+      get signals_path
+
+      expect(response.body).to include(CGI.escapeHTML(assistant_path(from: "senales")))
+
+      get assistant_path(from: "senales"), headers: { "Turbo-Frame" => "assistant_sheet" }
+      expect(response.body).to include(I18n.t("assistant.questions.new.desde", pantalla: "Señales", posiciones: I18n.t("assistant.questions.new.no_ve_tus_posiciones")))
+      expect(response.body).to include(CGI.escapeHTML(I18n.t("assistant.questions.new.sugerencias.senales.semana")))
+    end
+
     it "offers Hoy's ? popovers a way into the drawer with the term written" do
       connect
       get dashboard_path

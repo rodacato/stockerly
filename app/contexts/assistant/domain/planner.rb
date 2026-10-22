@@ -20,17 +20,20 @@ module Assistant
         financial term the question asks about. If the question names no symbol and a screen symbol is
         given, the question is about that symbol, unless it asks about the user's own holdings as a
         whole. A question about what the user holds, owns or has gained uses the portfolio reads when
-        they are listed. Earlier questions, when given, only say what a short follow-up refers to. If
+        they are listed. A question about what is on the user's screen without naming it ("these",
+        "here", "which ones") uses the reads that show that screen. Earlier questions, when given, only
+        say what a short follow-up refers to. If
         nothing below holds what it needs, reply [].
       TEXT
 
-      def self.system(symbol, holdings: false)
+      def self.system(symbol, screen: nil, holdings: false)
         lines = Capabilities::Registry.available(holdings: holdings).values.map do |capability|
           inputs = (capability.required + capability.optional).map { |input| INPUTS.fetch(input) }
           "- #{capability.name_in_registry}: #{capability.description} Inputs: #{inputs.join('; ').presence || 'none'}."
         end
-        screen = symbol.present? ? "\nScreen symbol: #{symbol}." : ""
-        "#{INSTRUCTIONS}\nToday: #{Date.current.iso8601}.\nAvailable reads:\n#{lines.join("\n")}#{screen}"
+        where = Screens.described(screen)&.then { |text| "\nUser's screen: #{text}" }
+        on_symbol = symbol.present? ? "\nScreen symbol: #{symbol}." : ""
+        "#{INSTRUCTIONS}\nToday: #{Date.current.iso8601}.\nAvailable reads:\n#{lines.join("\n")}#{where}#{on_symbol}"
       end
 
       # Anything but a JSON array of objects is no plan; the caller falls back.

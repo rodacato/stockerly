@@ -78,4 +78,9 @@ RSpec.describe Assistant::Domain::Planner do
 
     expect(steps).to eq([ [ "fx.rate", { date: "2026-05-03" } ], [ "asset.quote", { symbol: "NVDA" } ] ])
   end
+
+  it "tells the model what the user's screen shows, and nothing for an unknown one" do
+    expect(described_class.system(nil, screen: "senales")).to include("User's screen: Señales:")
+    expect(described_class.system(nil, screen: "nope")).not_to include("User's screen")
+  end
 end

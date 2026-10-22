@@ -41,4 +41,13 @@ RSpec.describe MarketData::Queries::NotableObservations do
 
     expect(described_class.call(asset_ids: [])).to be_empty
   end
+
+  it "reads the same rows as plain data, in the Señales row's phrase" do
+    observe(aapl, "rsi_oversold_entered")
+
+    reading = described_class.readings(asset_ids: [ aapl.id ]).sole
+
+    expect(reading).to include(symbol: "AAPL", type: "rsi_oversold_entered", rsi: 28,
+                               reading: MarketData::Domain::ObservationPhrases.for("rsi_oversold_entered"))
+  end
 end

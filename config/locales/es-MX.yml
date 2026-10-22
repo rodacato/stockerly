@@ -469,6 +469,7 @@ es-MX:
       ganancia: Ganancia %{amount} (%{percent})
       glosario: Glosario de Stockerly
       hoy: Hoy %{amount} (%{percent})
+      la_tienes: "(la tienes)"
       lectura_del: lectura del %{date}
       lo_tuyo_proximo: Lo tuyo en los próximos %{days} días
       mercado: Contexto de mercado
@@ -483,6 +484,9 @@ es-MX:
       rango: Rango de 52 semanas · %{symbol}
       rango_cuerpo: mínimo %{low}, máximo %{high}
       resultados: Resultados de %{symbol}
+      senales:
+        one: Señales del último día
+        other: Señales de los últimos %{count} días
       tipo_de_cambio: Tipo de cambio USD/MXN
       tipo_de_cambio_del: vigente el %{date}
       titulares: Titulares de %{symbol}, citados tal cual
@@ -509,6 +513,9 @@ es-MX:
     launcher:
       abrir: Pregúntale a Velita
       con_la_frase: Abre con esta frase ya escrita
+    pantallas:
+      consolidado: Consolidado
+      senales: Señales
     questions:
       answer:
         buscando: Buscando…
@@ -543,6 +550,8 @@ es-MX:
             cetes: "¿Qué es un CETE a 28 días?"
             resultados: "¿Qué es un reporte de resultados?"
             vs_cetes: "¿Qué significa «vs CETES»?"
+          senales:
+            semana: "¿Qué dicen las señales de esta semana?"
         titulo: Pregunta
       retry:
         preguntar_de_nuevo: Preguntar de nuevo

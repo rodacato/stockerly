@@ -4,7 +4,7 @@
 <% end %>
 <% holdings = @reads_holdings ? t(".lee_tus_posiciones") : t(".no_ve_tus_posiciones") %>
 <% subtitle = if @symbol then t(".sobre", symbol: @symbol, posiciones: holdings)
-              elsif @from then t(".desde", pantalla: t("nav.#{@from}"), posiciones: holdings)
+              elsif @from then t(".desde", pantalla: assistant_screen_label(@from), posiciones: holdings)
               else "#{holdings.upcase_first}." end %>
 <% suggestions = assistant_suggestions(from: @from, symbol: @symbol, seen: @seen) %>
 

@@ -21,7 +21,7 @@ module Assistant
       MINE = /\b(mi|mis|mio|mia|mios|mias|tengo|llevo|portafolio|cartera|posicion|posiciones|gane|ganado|perdido)\b/
       COMING = /\b(vence|vencen|vencimientos?|proxim[oa]s?|viene|vienen)\b/
 
-      def self.call(question:, symbol: nil, holdings: false)
+      def self.call(question:, symbol: nil, holdings: false, screen: nil)
         run = Capabilities::Registry.new(holdings: holdings).method(:cards)
 
         entries = Glossary.matching(question)
@@ -29,7 +29,10 @@ module Assistant
         cards = run.call(entries.map { |entry| [ "glossary.define", { term: entry.key } ] })
         market_cards = run.call(MARKET_ASKS.filter_map { |name, ask| [ name, {} ] if text.match?(ask) })
         mine_cards = holdings ? run.call(mine_plan(text, symbol)) : []
-        return cards + market_cards + mine_cards if symbol.blank?
+        if symbol.blank?
+          found = cards + market_cards + mine_cards
+          return found.presence || run.call(Screens.reads(screen))
+        end
 
         asset_cards = run.call(asset_plan(text, symbol, entries.map(&:key)))
         asset_cards = run.call([ [ "asset.quote", { symbol: symbol } ] ]) if (asset_cards + market_cards + mine_cards).empty?
