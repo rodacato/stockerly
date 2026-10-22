@@ -28,7 +28,17 @@
           <% else %>
             <tr class="<%= "border-b-2 border-border-default" if item[:bold] && item[:margin_key] %>">
               <td class="sticky left-0 bg-bg-surface px-6 py-3.5 text-sm <%= item[:bold] ? "font-bold text-fg-default" : "font-medium text-fg-subtle" %> <%= "pl-10" if item[:indent] %>">
-                <%= item[:label] %>
+                <% term = "market.glosario.#{item[:key]}" %>
+                <% popover_id = "glosario-#{statement_type}-#{item[:key]}" %>
+                <span class="inline-flex items-center gap-1.5">
+                  <%= item[:label] %>
+                  <button type="button" popovertarget="<%= popover_id %>"
+                          class="shrink-0 cursor-help text-fg-subtle transition-colors hover:text-primary"
+                          aria-label="<%= t("market.metricas_detalle", metric: item[:label]) %>">
+                    <%= icon_svg "info", class: "text-sm", "aria-hidden": "true" %>
+                  </button>
+                </span>
+                <%= render "market/glossary_popover", id: popover_id, name: t("#{term}.nombre"), desc: t("#{term}.desc"), guide: t("#{term}.guia") %>
                 <% if item[:margin_key] %>
                   <div class="mt-0.5 text-[10px] font-normal text-fg-subtle"><%= t("market.statement_table.margen") %></div>
                 <% end %>

@@ -1046,6 +1046,90 @@ es-MX:
           no un aviso de lo que sigue. Bandas angostas describen un periodo de poca
           variación.
         nombre: Bandas de Bollinger (20, 2σ)
+      capital_expenditures:
+        desc: Efectivo gastado en plantas, equipo y sistemas. La fuente lo reporta
+          negativo.
+        guia: 'Flujo operativo más CAPEX (ya negativo) es el flujo libre: lo que queda
+          para dividendos, recompras o pagar deuda.'
+        nombre: Inversión en activos fijos (CAPEX)
+      cash_and_cash_equivalents:
+        desc: Dinero en caja e instrumentos que vencen en 90 días o menos. No incluye
+          las inversiones de corto plazo, que van en su propia línea.
+        guia: Para el "efectivo total" súmale la línea de inversiones de corto plazo.
+          Es el colchón inmediato.
+        nombre: Efectivo y equivalentes
+      change_in_working_capital:
+        desc: 'Efectivo que entra o se queda atorado por cambios en cuentas por cobrar,
+          inventarios y proveedores. Negativo: se quedó atorado.'
+        guia: Uno negativo grande en un año puede ser crecimiento; varios seguidos,
+          cobrar cada vez más tarde.
+        nombre: Cambio en capital de trabajo
+      changes_in_cash:
+        desc: Operación más inversión más financiamiento. No incluye el efecto del
+          tipo de cambio.
+        guia: Por eso puede no cuadrar exacto con el cambio de efectivo del balance
+          en empresas con operaciones en otras monedas.
+        nombre: Cambio neto en efectivo
+      cost_of_revenue:
+        desc: Lo que costó directamente producir o comprar lo que se vendió.
+        guia: Cada empresa decide qué mete aquí, así que compararlo entre empresas
+          distintas es engañoso; dentro de la misma empresa año contra año sí sirve.
+        nombre: Costo de ventas
+      depreciation_and_amortization:
+        desc: El desgaste de activos registrado como gasto. No sale efectivo, por
+          eso se suma de regreso.
+        guia: Contra el CAPEX dice si la empresa repone lo que se desgasta.
+        nombre: Depreciación y amortización
+      diluted_eps:
+        desc: Utilidad neta por acción, contando las acciones que existirían si se
+          ejercieran opciones y convertibles.
+        guia: Puede crecer aunque la utilidad no crezca, si la empresa recompra acciones.
+        nombre: UPA diluida
+      dividend_payout:
+        desc: Efectivo pagado a los accionistas comunes. Aparece negativo porque sale
+          de la empresa.
+        guia: Contra el flujo libre dice si el dividendo se paga con lo que genera
+          o con deuda.
+        nombre: Dividendos pagados
+      ebitda:
+        desc: 'Utilidad de operación más depreciación y amortización. No es una cifra
+          contable oficial: aquí la calcula la fuente, no es el "EBITDA ajustado"
+          que anuncia la empresa.'
+        guia: Aproxima el efectivo que genera la operación, pero ignora que las máquinas
+          se desgastan y hay que reponerlas.
+        nombre: EBITDA
+      financing_cash_flow:
+        desc: Deuda contratada y pagada, dividendos, recompras y emisión de acciones.
+        guia: 'Positivo: entró dinero de bancos o inversionistas. Negativo: la empresa
+          les devolvió dinero.'
+        nombre: Flujo de financiamiento
+      goodwill:
+        desc: Lo que pagó en adquisiciones por encima del valor de lo que compró.
+          No se puede vender por separado.
+        guia: Es una cifra contable, no algo tangible. Si la compra resulta peor de
+          lo esperado se registra un "deterioro" y baja de golpe, junto con la utilidad.
+        nombre: Crédito mercantil
+      gross_profit:
+        desc: Ingresos menos costo de ventas.
+        guia: Su margen dice cuánto queda de cada peso vendido antes de pagar la operación.
+          Un margen alto y estable describe poder de precio.
+        nombre: Utilidad bruta
+      inventory:
+        desc: Materias primas, producción en proceso y producto terminado sin vender.
+        guia: Dinero detenido en el almacén. Que suba más que las ventas puede describir
+          producto que no está saliendo.
+        nombre: Inventarios
+      investing_cash_flow:
+        desc: 'Lo que se gastó o recuperó en activos: CAPEX, adquisiciones, compra
+          y venta de inversiones. Normalmente negativo.'
+        guia: Negativo es lo común en una empresa que invierte; positivo puede ser
+          venta de activos.
+        nombre: Flujo de inversión
+      long_term_debt:
+        desc: Préstamos y bonos que vencen después de 12 meses. Tampoco incluye arrendamientos.
+        guia: Junto con la de corto plazo es la deuda financiera. Se compara contra
+          el capital contable o contra la utilidad que la empresa genera para pagarla.
+        nombre: Deuda de largo plazo
       moving_average:
         desc: 'El precio de cierre promedio de las últimas 50 y 200 sesiones. Cada
           día entra el cierre nuevo y sale el más viejo, por eso "se mueve". Aquí
@@ -1058,6 +1142,82 @@ es-MX:
           unos diez. Cuando la de 50 cruza la de 200 se lee como un cambio de tendencia,
           pero llega tarde: es un promedio de lo que ya pasó.'
         nombre: Media móvil (MA50 y MA200)
+      net_income:
+        desc: Lo que queda para los accionistas después de todo.
+        guia: 'Es la ganancia contable, no el efectivo. Contrástala con el flujo de
+          efectivo operativo: si la utilidad sube y el flujo no, la ganancia no se
+          está cobrando.'
+        nombre: Utilidad neta
+      net_income_from_continuing_operations:
+        desc: 'El punto de partida del flujo. Puede no coincidir con la utilidad neta
+          del estado de resultados: aquí excluye operaciones discontinuadas e incluye
+          la parte de socios minoritarios.'
+        guia: Si difiere de la otra, es por esas dos razones, no por un error.
+        nombre: Utilidad neta
+      net_ppe:
+        desc: Terrenos, edificios, maquinaria y equipo, ya restada la depreciación
+          acumulada.
+        guia: Lo que la empresa necesita para operar. Crece cuando invierte (CAPEX)
+          y baja con la depreciación.
+        nombre: Propiedad, planta y equipo
+      operating_cashflow:
+        desc: 'El efectivo que dejó la operación: la utilidad neta ajustada por lo
+          que no es efectivo y por cambios en lo que se cobra y se paga.'
+        guia: Es la prueba de la utilidad. Positivo y creciente describe un negocio
+          que se paga solo.
+        nombre: Flujo de efectivo operativo
+      operating_expense:
+        desc: 'Lo que cuesta operar además de producir: ventas, administración, investigación
+          y otros.'
+        guia: Si crecen más rápido que los ingresos, la empresa gasta más por cada
+          venta.
+        nombre: Gastos operativos
+      operating_income:
+        desc: Lo que gana la operación antes de intereses e impuestos.
+        guia: Dice si el negocio en sí deja dinero, sin importar cómo se financia.
+          La fuente puede clasificar partidas extraordinarias distinto a como lo hace
+          la empresa.
+        nombre: Utilidad de operación
+      ordinary_shares_number:
+        desc: Cuántas acciones existen en manos de inversionistas a la fecha del balance,
+          sin contar las que la empresa recompró y conserva.
+        guia: Si baja con los años, la empresa está recomprando; si sube, está emitiendo
+          y cada acción representa una parte menor.
+        nombre: Acciones en circulación
+      other_short_term_investments:
+        desc: Valores que se pueden vender rápido y se planean tener menos de un año.
+        guia: Casi tan líquidas como el efectivo; juntas dicen con cuánto dinero disponible
+          cuenta la empresa.
+        nombre: Inversiones de corto plazo
+      pretax_income:
+        desc: Utilidad de operación menos intereses y más o menos otras partidas no
+          operativas.
+        guia: La diferencia contra la utilidad de operación describe cuánto pesa la
+          deuda (intereses).
+        nombre: Utilidad antes de impuestos
+      receivables:
+        desc: Lo que los clientes le deben por ventas ya hechas, descontando lo que
+          se estima que no pagarán.
+        guia: Si crece más rápido que los ingresos, la empresa está vendiendo a crédito
+          y cobrando más tarde.
+        nombre: Cuentas por cobrar
+      repurchase_of_capital_stock:
+        desc: Efectivo gastado en comprar sus propias acciones. Negativo. No resta
+          las acciones que emite para empleados, que van en otra línea.
+        guia: Reduce las acciones en circulación y sube la UPA; para ver la recompra
+          neta, compárala con la emisión.
+        nombre: Recompra de acciones
+      research_and_development:
+        desc: Investigación y desarrollo registrado como gasto en el periodo.
+        guia: Es inversión en el futuro que se resta hoy. Una tecnológica que lo recorta
+          mejora su utilidad a corto plazo.
+        nombre: Gastos de I+D
+      retained_earnings:
+        desc: La suma de todas las utilidades de la historia de la empresa menos los
+          dividendos que ha pagado.
+        guia: 'No es dinero guardado: ya se reinvirtió en la operación. Puede ser
+          negativa si la empresa acumula pérdidas o repartió más de lo que ganó.'
+        nombre: Utilidades retenidas
       rsi:
         desc: El índice de fuerza relativa. Compara cuánto subió el precio en los
           días de alza contra cuánto bajó en los de baja durante las últimas 14 sesiones,
@@ -1067,6 +1227,66 @@ es-MX:
           vaya a voltearse; en una tendencia fuerte puede quedarse ahí semanas. Mide
           la velocidad del movimiento, no si el precio es caro o barato.'
         nombre: RSI (14)
+      selling_general_and_administration:
+        desc: Publicidad, comisiones, sueldos de oficina, rentas corporativas.
+        guia: El costo de la estructura. Se mira como porcentaje de los ingresos.
+        nombre: Gastos generales, de venta y administración
+      short_term_debt:
+        desc: Préstamos y bonos que se pagan dentro de 12 meses, incluida la parte
+          del año de la deuda larga. No incluye rentas (arrendamientos), que la fuente
+          reporta aparte.
+        guia: Es lo que hay que pagar o refinanciar pronto. Si una empresa renta mucho
+          (tiendas, aviones), su compromiso real a un año es mayor que esta cifra.
+        nombre: Deuda de corto plazo
+      tax_provision:
+        desc: El impuesto registrado como gasto del periodo, no necesariamente el
+          que se pagó en efectivo. Puede ser negativo.
+        guia: Contra la utilidad antes de impuestos da la tasa efectiva. Una tasa
+          muy baja o negativa suele venir de beneficios fiscales de un solo año.
+        nombre: Impuestos sobre la renta
+      total_assets:
+        desc: 'Todo lo que la empresa tiene o controla: efectivo, inventarios, plantas,
+          inversiones, marcas compradas.'
+        guia: 'Por sí solo dice el tamaño, no la salud. Importa contra los pasivos:
+          lo que queda después es el capital contable.'
+        nombre: Activos totales
+      total_current_assets:
+        desc: 'Lo que se espera convertir en efectivo en los próximos 12 meses: efectivo,
+          inversiones cortas, cuentas por cobrar e inventarios.'
+        guia: 'Se compara contra el pasivo circulante: si es menor, la empresa debe
+          más a un año de lo que espera cobrar en ese plazo.'
+        nombre: Activo circulante
+      total_current_liabilities:
+        desc: 'Todo lo que vence en los próximos 12 meses: proveedores, gastos por
+          pagar, cobros anticipados, rentas del año y la parte de deuda que vence
+          en el año.'
+        guia: 'No es lo mismo que deuda de corto plazo: incluye obligaciones que no
+          son préstamos. Se compara contra el activo circulante.'
+        nombre: Pasivo circulante
+      total_liabilities_net_minority_interest:
+        desc: 'Todo lo que la empresa debe, no solo deuda: proveedores, impuestos
+          por pagar, cobros anticipados a clientes, pensiones, rentas comprometidas
+          y la deuda financiera.'
+        guia: Es más que "deuda". Para la deuda con bancos y bonistas mira las líneas
+          de deuda de corto y largo plazo, que son solo una parte de este total.
+        nombre: Pasivos totales
+      total_non_current_assets:
+        desc: 'Lo que se usa a largo plazo: plantas, equipo, crédito mercantil, intangibles,
+          inversiones largas y derechos de uso de lo que renta.'
+        guia: No se convierte en efectivo pronto. Que sea grande es normal en industrias
+          con fábricas o redes.
+        nombre: Activo no circulante
+      total_revenue:
+        desc: Lo que la empresa vendió en el periodo, ya descontadas devoluciones
+          y descuentos. En bancos la fuente mezcla intereses y comisiones.
+        guia: Es la línea de arriba; todo lo demás se resta de aquí. Importa más su
+          tendencia que el número de un año.
+        nombre: Ingresos
+      total_shareholder_equity:
+        desc: 'Lo que queda para los accionistas: activos totales menos pasivos totales.'
+        guia: Puede ser negativo, por ejemplo después de muchas recompras de acciones
+          o pérdidas acumuladas. Negativo no siempre describe una empresa en problemas.
+        nombre: Capital contable
     header:
       agregar_watchlist: Agregar a watchlist
       quitar_watchlist: Quitar de watchlist

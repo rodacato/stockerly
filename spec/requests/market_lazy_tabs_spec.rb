@@ -109,4 +109,40 @@ RSpec.describe "Market lazy-loaded tabs", type: :request do
       end
     end
   end
+
+  # JTBD #8: every line the three statements render opens what it is and how to
+  # read it. The keys are built from the line, so this is the guarantee that
+  # each one has a full entry whose name matches the label in the table.
+  describe "the glossary behind each statement line" do
+    include StatementsHelper
+
+    before do
+      %w[income_statement balance_sheet cash_flow].each do |type|
+        create(:financial_statement, asset: asset, statement_type: type, period_type: :annual,
+               data: { "total_revenue" => "391035000000" })
+      end
+    end
+
+    it "explains every line, under the name the table gives it" do
+      get market_asset_statements_tab_path(asset.symbol)
+
+      %w[income_statement balance_sheet cash_flow].each do |type|
+        line_items_for(type).select { |item| item[:key] }.each do |item|
+          entry = I18n.t("market.glosario.#{item[:key]}", raise: true)
+
+          expect(entry[:nombre]).to eq(item[:label])
+          expect(response.body).to include(%(popovertarget="glosario-#{type}-#{item[:key]}"))
+          expect(response.body).to include(CGI.escapeHTML(entry[:desc]))
+        end
+      end
+    end
+
+    it "explains nothing when there are no statements" do
+      FinancialStatement.delete_all
+
+      get market_asset_statements_tab_path(asset.symbol)
+
+      expect(response.body).not_to include("popovertarget=")
+    end
+  end
 end

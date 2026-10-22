@@ -1,13 +1,19 @@
-<%# What a term measures and how to read it, opened by a metric-tooltip
-    controller on the element that renders it. Locals: name, desc, guide. %>
-<div data-metric-tooltip-target="popover"
-     class="absolute left-0 top-full z-20 mt-1 hidden w-full overflow-hidden rounded-xl border border-border-default bg-bg-surface shadow-xl">
+<%# What a term measures and how to read it. Locals: name, desc, guide; optional id.
+    Without an id it is opened by a metric-tooltip controller on the element that
+    renders it. With one it is a native popover, for a term inside a scrolling
+    container that would clip an absolutely placed box. %>
+<% native = local_assigns[:id].present? %>
+<%= tag.div id: local_assigns[:id], popover: (native ? "" : nil),
+            data: (native ? {} : { metric_tooltip_target: "popover" }),
+            class: [ "overflow-hidden rounded-xl border border-border-default bg-bg-surface text-left font-normal shadow-xl",
+                     native ? "m-auto w-[min(28rem,calc(100vw-2rem))] backdrop:bg-black/30" : "absolute left-0 top-full z-20 mt-1 hidden w-full" ] do %>
   <div class="flex items-center justify-between gap-2 border-b border-border-default px-4 py-3">
     <h3 class="flex items-center gap-2 text-sm font-semibold text-fg-default">
       <%= icon_svg "school", class: "text-lg text-primary", "aria-hidden": "true" %>
       <%= name %>
     </h3>
-    <button type="button" data-action="click->metric-tooltip#close"
+    <button type="button"
+            <% if native %>popovertarget="<%= local_assigns[:id] %>" popovertargetaction="hide"<% else %>data-action="click->metric-tooltip#close"<% end %>
             class="text-fg-subtle transition-colors hover:text-fg-default"
             aria-label="<%= t("market.metricas_cerrar") %>">
       <%= icon_svg "close", class: "text-lg", "aria-hidden": "true" %>
@@ -28,4 +34,4 @@
   <p class="border-t border-border-default bg-bg-muted px-4 py-2 text-center text-[10px] italic text-fg-subtle">
     <%= t("market.metricas_referencial") %>
   </p>
-</div>
+<% end %>
