@@ -7,7 +7,7 @@ module MarketData
     #
     # Every row states a fact the reading contains. RSI is the one that names a
     # condition, because 70/30 is the canonical threshold this codebase already
-    # writes down in MarketHelper::OBSERVATION_PHRASES (D36: a chip is allowed
+    # writes down in ObservationPhrases (D36: a chip is allowed
     # only where the threshold can be written down and defended).
     module IndicatorSignals
       OVERBOUGHT = 70
