@@ -1,16 +1,17 @@
 module Assistant
-  # /assistant: one conversation per visit, keyed by a token the page subscribes
-  # to before the first question, so no streamed word is broadcast to nobody.
+  # /assistant: a conversation keyed by a token the page subscribes to before the
+  # first question, so no streamed word is broadcast to nobody. `c` reopens one.
   class QuestionsController < AuthenticatedController
     SCREENS = NavigationHelper::MAIN_NAV.pluck(:key).freeze
 
     rate_limit to: 20, within: 1.minute, only: :create
 
     def new
-      @token = SecureRandom.urlsafe_base64(16)
-      query = params.permit(:symbol, :from, :q, :seen)
-      @symbol = query[:symbol].presence&.upcase
-      @from = query[:from].presence_in(SCREENS)
+      query = params.permit(:symbol, :from, :q, :seen, :c)
+      @conversation = Assistant::Queries::Conversations.find(query[:c]) if query[:c].present?
+      @token = @conversation&.token || SecureRandom.urlsafe_base64(16)
+      @symbol = @conversation ? @conversation.symbol : query[:symbol].presence&.upcase
+      @from = (@conversation&.screen || query[:from]).presence_in(SCREENS)
       @seen = query[:seen].to_s.split(",")
       @question = query[:q].to_s.squish.first(AssistantMessage::MAX_QUESTION)
       @connected = Administration::Queries::AssistantConnection.call&.dig(:status) == :connected

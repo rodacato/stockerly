@@ -29,6 +29,10 @@ module Assistant
       def money(value) = ActiveSupport::NumberHelper.number_to_delimited(format("%.2f", value))
 
       def long_date(time) = I18n.l(time.to_date, format: :long)
+
+      # The page's own label for a provider ("Banxico", not its series id), so
+      # the prose never repeats an internal code.
+      def source_label(source) = ApplicationController.helpers.source_label(source)&.upcase_first
     end
   end
 end

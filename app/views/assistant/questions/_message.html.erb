@@ -1,30 +1,10 @@
-<%# One question: its cards once the job has chosen them, then its prose (ADR-031). Locals: message. %>
-<% cards = message.cards %>
-<article id="assistant_message_<%= message.id %>" data-controller="scroll-into-view" class="flex scroll-mt-2 flex-col gap-3">
-  <div class="flex flex-col gap-1">
-    <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t("assistant.questions.message.tu_pregunta") %></p>
-    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= message.question %></h2>
+<%# One turn: the reader's question, Velita's answer under it, and what she read folded below (D171). Locals: message. %>
+<article id="assistant_message_<%= message.id %>" data-controller="scroll-into-view assistant-sources" class="flex scroll-mt-2 flex-col gap-3">
+  <div class="flex flex-col items-end gap-1">
+    <p class="max-w-[85%] rounded-2xl rounded-br-md bg-primary-muted px-4 py-2.5 text-[15px] leading-snug text-fg-default"><%= message.question %></p>
+    <%= time_tag message.created_at, assistant_asked_at(message.created_at), class: "font-mono text-[11px] text-fg-subtle" %>
   </div>
 
-  <% cards.each_with_index do |card, index| %>
-    <section class="<%= card_classes("flex flex-col gap-2 p-4") %>">
-      <div class="flex items-baseline justify-between gap-3">
-        <h3 class="flex items-center gap-2.5 text-sm font-semibold text-fg-default">
-          <span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-bg-muted font-mono text-xs text-fg-subtle"><%= index + 1 %></span>
-          <%= card["title"] %>
-        </h3>
-        <% if card["figure"].present? %>
-          <span class="shrink-0 font-mono text-sm font-semibold tabular-nums text-fg-default"><%= card["figure"] %></span>
-        <% end %>
-      </div>
-      <% if card["body"].present? %>
-        <p class="text-sm leading-relaxed text-fg-default"><%= card["body"] %></p>
-      <% end %>
-      <% if card["source"].present? %>
-        <p class="text-xs text-fg-subtle"><%= card["source"] %></p>
-      <% end %>
-    </section>
-  <% end %>
-
   <%= render "assistant/questions/answer", message: message %>
+  <%= render "assistant/questions/sources", message: message %>
 </article>

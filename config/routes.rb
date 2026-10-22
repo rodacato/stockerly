@@ -144,6 +144,7 @@ Rails.application.routes.draw do
   # and the drawer only its presentation.
   get  "assistant",           to: "assistant/questions#new",    as: :assistant
   post "assistant/questions", to: "assistant/questions#create", as: :assistant_questions
+  get  "assistant/conversations", to: "assistant/conversations#index", as: :assistant_conversations
   resource :profile,   only: [ :update ]
   patch  "profile/password",    to: "profiles#change_password",    as: :change_password
   patch  "profile/preferences", to: "profiles#update_preferences", as: :update_preferences

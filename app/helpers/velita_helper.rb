@@ -32,6 +32,26 @@ module VelitaHelper
     end
   end
 
+  # Today's questions say only the hour; older ones, the day too.
+  def assistant_asked_at(time)
+    time.to_date == Date.current ? l(time, format: "%H:%M") : l(time, format: "%-d %b · %H:%M")
+  end
+
+  # The prose with each [n] turned into a link to the card it cites; a number
+  # with no card stays plain text.
+  def assistant_answer_with_citations(message)
+    cards = message.cards.size
+    parts = message.answer.to_s.split(/(\[\d+\])/).map do |part|
+      number = part[/\A\[(\d+)\]\z/, 1]&.to_i
+      next part unless number&.between?(1, cards)
+
+      link_to(part, "#assistant_card_#{message.id}_#{number}",
+              data: { action: "assistant-sources#reveal" }, class: "font-mono text-sm text-primary-fg hover:underline",
+              aria: { label: t("assistant.cita", number: number, title: message.cards[number - 1]["title"]) })
+    end
+    safe_join(parts)
+  end
+
   # Asked from a ? popover: the drawer opens with the term already written.
   def velita_question_path(term)
     assistant_path(from: velita_screen, q: term)

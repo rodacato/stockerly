@@ -471,6 +471,15 @@ es-MX:
       ultimo_reporte: 'Último reporte (%{date}): UPA %{actual}'
       ultimo_reporte_vs: 'Último reporte (%{date}): UPA %{actual} contra %{estimated}
         estimada'
+    cita: 'Fuente %{number}: %{title}'
+    conversations:
+      index:
+        preguntas:
+          one: 1 pregunta
+          other: "%{count} preguntas"
+        subtitulo: Abre una para seguirla donde la dejaste.
+        titulo: Conversaciones anteriores
+        vacio: Todavía no le has preguntado nada a Velita.
     launcher:
       abrir: Pregúntale a Velita
       con_la_frase: Abre con esta frase ya escrita
@@ -478,7 +487,7 @@ es-MX:
       answer:
         buscando: Buscando…
         descartada: La respuesta usaba una cifra que no está en estos datos, así que
-          la descarté. Los datos de arriba sí son de Stockerly.
+          la descarté. Los datos que leí sí son de Stockerly.
         escribiendo: Escribiendo…
         fallo: El modelo no respondió. Revisa la conexión en Ajustes · Asistente.
         no_es_recomendacion: Es una lectura de datos, no una recomendación.
@@ -490,8 +499,6 @@ es-MX:
         otra: Pregunta otra cosa
         pregunta: Pregunta sobre un término
         sobre: Pregunta sobre %{symbol}
-      message:
-        tu_pregunta: Tu pregunta
       new:
         cerrar: Cerrar
         conectar: Conectar un modelo
@@ -510,6 +517,11 @@ es-MX:
             resultados: "¿Qué es un reporte de resultados?"
             vs_cetes: "¿Qué significa «vs CETES»?"
         titulo: Pregunta
+      sources:
+        lo_que_lei: Lo que leí
+    sheet_header:
+      anteriores: Conversaciones anteriores
+      nueva: Nueva conversación
   auth:
     contrasena: Contraseña
     correo: Correo electrónico

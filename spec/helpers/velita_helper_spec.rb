@@ -3,6 +3,8 @@ require "rails_helper"
 # A suggestion is a promise: tapping it must bring the card it names, or the
 # drawer opens on an answer with nothing to stand on (D166, ADR-031 §2).
 RSpec.describe VelitaHelper, type: :helper do
+  include ActiveSupport::Testing::TimeHelpers
+
   def kinds(question, symbol: nil) = Assistant::Domain::ContextSelector.call(question: question, symbol: symbol).map { |card| [ card.kind, card.title ] }
 
   it "keeps every Hoy suggestion answerable from the glossary" do
@@ -33,5 +35,30 @@ RSpec.describe VelitaHelper, type: :helper do
 
   it "suggests nothing on a screen with no drawn suggestions" do
     expect(helper.assistant_suggestions(from: "reglas", symbol: nil)).to be_empty
+  end
+  describe "an answer's citations (D171)" do
+    let(:message) do
+      AssistantMessage.new(id: 7, answer: "Sube <b>0.6</b> [1] y cae [3].",
+                           cards: [ { "kind" => "market", "title" => "Contexto de mercado" } ])
+    end
+
+    it "links a citation to its card and leaves one with no card as text" do
+      html = Nokogiri::HTML.fragment(helper.assistant_answer_with_citations(message))
+
+      expect(html.css("a").map { |link| [ link.text, link["href"], link["aria-label"] ] })
+        .to eq([ [ "[1]", "#assistant_card_7_1", "Fuente 1: Contexto de mercado" ] ])
+      expect(html.text).to include("[3]")
+    end
+
+    it "escapes the prose around the links" do
+      expect(helper.assistant_answer_with_citations(message)).to include("&lt;b&gt;0.6&lt;/b&gt;")
+    end
+  end
+
+  it "says only the hour of a question asked today, and the day of an older one" do
+    travel_to Time.zone.local(2026, 10, 22, 18, 30) do
+      expect(helper.assistant_asked_at(Time.zone.local(2026, 10, 22, 9, 5))).to eq("09:05")
+      expect(helper.assistant_asked_at(Time.zone.local(2026, 10, 20, 9, 5))).to eq("20 oct · 09:05")
+    end
   end
 end

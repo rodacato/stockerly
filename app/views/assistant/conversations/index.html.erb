@@ -1,0 +1,41 @@
+<% content_for :page_title, t(".titulo") %>
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: assistant_path(**@context) %>
+<% end %>
+
+<%# Same frame as the drawer (D11): the list replaces the conversation inside it. %>
+<%= turbo_frame_tag "assistant_sheet" do %>
+  <div class="mx-auto flex min-h-0 w-full max-w-xl flex-1 flex-col gap-5 <%= "p-5" if turbo_frame_request? %>">
+    <% if turbo_frame_request? %>
+      <span class="mx-auto -mt-2 h-1 w-10 shrink-0 rounded-full bg-border-strong lg:hidden" aria-hidden="true"></span>
+    <% end %>
+    <%= render "assistant/sheet_header", title: t(".titulo"), subtitle: t(".subtitulo"), history: false, context: @context %>
+
+    <% if @conversations.empty? %>
+      <p class="text-sm text-fg-subtle"><%= t(".vacio") %></p>
+    <% else %>
+      <ul class="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
+        <% @conversations.each do |conversation| %>
+          <% first, last = conversation.messages.first, conversation.messages.last %>
+          <li>
+            <%= link_to assistant_path(c: conversation.token), data: { turbo_action: "replace" },
+                        class: card_classes("flex items-center gap-3 p-4 transition-colors hover:bg-bg-muted") do %>
+              <div class="flex min-w-0 flex-1 flex-col gap-1">
+                <p class="truncate text-sm font-semibold text-fg-default"><%= first.question %></p>
+                <% if last != first %>
+                  <p class="truncate text-sm text-fg-default"><%= last.question %></p>
+                <% end %>
+                <p class="text-xs text-fg-subtle">
+                  <%= time_tag last.created_at, assistant_asked_at(last.created_at), class: "font-mono" %>
+                  · <%= t(".preguntas", count: conversation.messages.size) %>
+                  <% if conversation.symbol %> · <%= conversation.symbol %><% end %>
+                </p>
+              </div>
+              <%= icon_svg "chevron_right", class: "text-lg text-fg-subtle", "aria-hidden": "true" %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+<% end %>

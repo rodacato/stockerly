@@ -87,7 +87,7 @@ RSpec.describe Assistant::Capabilities::Registry do
 
       card = registry.call("fx.rate", date: "2026-05-03").cards.sole
 
-      expect(card).to have_attributes(figure: "17.1234", source: "Banxico/SF43718",
+      expect(card).to have_attributes(figure: "17.1234", source: "Banxico",
                                       body: "vigente el #{I18n.l(Date.new(2026, 5, 1), format: :long)}")
     end
 

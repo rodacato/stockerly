@@ -13,26 +13,14 @@
   <div class="mx-auto flex min-h-0 w-full max-w-xl flex-1 flex-col gap-5 <%= "p-5" if turbo_frame_request? %>">
     <% if turbo_frame_request? %>
       <span class="mx-auto -mt-2 h-1 w-10 shrink-0 rounded-full bg-border-strong lg:hidden" aria-hidden="true"></span>
-      <div class="flex items-center gap-3">
-        <%= render "assistant/velita", classes: "size-12 shrink-0 text-primary" %>
-        <div class="min-w-0 flex-1">
-          <h2 class="font-display text-xl font-bold tracking-tight text-fg-default"><%= t(".titulo") %></h2>
-          <p class="text-sm text-fg-subtle"><%= subtitle %></p>
-        </div>
-        <%# autofocus: the dialog focuses this, not the field, so a phone keeps its keyboard down. %>
-        <button type="button" data-action="sheet#close" aria-label="<%= t(".cerrar") %>" autofocus
-                class="flex size-11 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default">
-          <%= icon_svg "close", class: "text-xl", "aria-hidden": "true" %>
-        </button>
-      </div>
-    <% else %>
-      <p class="text-sm text-fg-subtle"><%= subtitle %></p>
     <% end %>
+    <%= render "assistant/sheet_header", title: t(".titulo"), subtitle: subtitle, history: true, context: { from: @from, symbol: @symbol }.compact %>
 
     <% if @connected %>
       <%= turbo_stream_from "assistant", @token %>
       <div class="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto">
-        <% if suggestions.any? && @question.blank? %>
+        <% messages = @conversation&.messages.to_a %>
+        <% if suggestions.any? && @question.blank? && messages.blank? %>
           <section id="assistant_suggestions" class="flex flex-col items-start gap-2.5">
             <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".de_lo_que_ves") %></p>
             <% suggestions.each do |suggestion| %>
@@ -47,9 +35,11 @@
             <% end %>
           </section>
         <% end %>
-        <div id="assistant_messages" class="flex flex-col gap-6"></div>
+        <div id="assistant_messages" class="flex flex-col gap-6">
+          <%= render partial: "assistant/questions/message", collection: messages, as: :message %>
+        </div>
       </div>
-      <%= render "assistant/questions/form", token: @token, symbol: @symbol, screen: @from, asked: false, value: @question.presence,
+      <%= render "assistant/questions/form", token: @token, symbol: @symbol, screen: @from, asked: messages.present?, value: @question.presence,
                  autofocus: !turbo_frame_request? || @question.present? %>
     <% else %>
       <%= render "components/empty_state", size: :inline, icon: "psychology",

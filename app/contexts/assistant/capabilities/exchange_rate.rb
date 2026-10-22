@@ -13,7 +13,7 @@ module Assistant
         return [] unless quote
 
         [ card(kind: "fx", title: I18n.t("assistant.cards.tipo_de_cambio"), figure: format("%.4f", quote[:rate]),
-               body: I18n.t("assistant.cards.tipo_de_cambio_del", date: long_date(quote[:rate_date])), source: quote[:source]) ]
+               body: I18n.t("assistant.cards.tipo_de_cambio_del", date: long_date(quote[:rate_date])), source: source_label(quote[:source])) ]
       rescue Date::Error
         []
       end

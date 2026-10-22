@@ -1,0 +1,30 @@
+<%# The drawer's head (D11): who answers, from where, and the way to her other conversations. On its own page the header bar carries the title. Locals: title, subtitle, history (bool), context (from, symbol). %>
+<div class="flex items-center gap-3">
+  <% if turbo_frame_request? %>
+    <%= render "assistant/velita", classes: "size-12 shrink-0 text-primary" %>
+  <% end %>
+  <div class="min-w-0 flex-1">
+    <% if turbo_frame_request? %>
+      <h2 class="font-display text-xl font-bold tracking-tight text-fg-default"><%= title %></h2>
+    <% end %>
+    <p class="text-sm text-fg-subtle"><%= subtitle %></p>
+  </div>
+  <% if history %>
+    <%= link_to assistant_conversations_path(**context), data: { turbo_action: "replace" }, aria: { label: t("assistant.sheet_header.anteriores") },
+                class: "flex size-11 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default" do %>
+      <%= icon_svg "history", class: "text-xl", "aria-hidden": "true" %>
+    <% end %>
+  <% else %>
+    <%= link_to assistant_path(**context), data: { turbo_action: "replace" }, aria: { label: t("assistant.sheet_header.nueva") },
+                class: "flex size-11 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default" do %>
+      <%= icon_svg "add", class: "text-xl", "aria-hidden": "true" %>
+    <% end %>
+  <% end %>
+  <% if turbo_frame_request? %>
+    <%# autofocus: the dialog focuses this, not the field, so a phone keeps its keyboard down. %>
+    <button type="button" data-action="sheet#close" aria-label="<%= t("assistant.questions.new.cerrar") %>" autofocus
+            class="flex size-11 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default">
+      <%= icon_svg "close", class: "text-xl", "aria-hidden": "true" %>
+    </button>
+  <% end %>
+</div>
