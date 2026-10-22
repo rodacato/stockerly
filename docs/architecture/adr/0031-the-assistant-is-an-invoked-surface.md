@@ -79,4 +79,12 @@ prompt, and puts the book of record within reach of a model.
 - The registry needs plain-data, `as_of`-stamped results. Most read APIs return records today, so
   the first phase is that alignment, and it pays for itself without the assistant.
 - The numbers rule is the one claim a test can fail, and it is built first.
-- Files, migrations and checks are listed here when the first phase merges.
+- Shipped in phase 1 (#872): the context `app/contexts/assistant/`, the
+  `assistant_conversations` / `assistant_messages` tables
+  (`db/migrate/20261022120000_create_assistant_conversations.rb`), `AssistantComposeJob`, and the
+  doors the isolation check allows (`Assistant::QuestionsController`, `Settings::AssistantsController`,
+  routes, `config/initializers/event_subscriptions.rb`). Checks: `assistant-isolation`
+  (`script/checks/assistant_isolation.rb`, §4) and the assistant's row in `boundaries`. The
+  numbers rule is `Assistant::Domain::NumbersGate`, run on every streamed flush.
+- The registry of §2 is `Assistant::Capabilities::Registry` (#880): a closed list, each read
+  returning cards or a stated failure.
