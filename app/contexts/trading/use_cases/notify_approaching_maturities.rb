@@ -63,7 +63,7 @@ module Trading
       end
 
       def title_for(position, days)
-        "#{position.asset.symbol} vence #{when_phrase(days)}"
+        "#{InstrumentLabel.short(position.asset.symbol)} vence #{when_phrase(days)}"
       end
 
       def body_for(position, _days)

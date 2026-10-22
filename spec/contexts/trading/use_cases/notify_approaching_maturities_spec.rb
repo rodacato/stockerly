@@ -29,7 +29,7 @@ RSpec.describe Trading::UseCases::NotifyApproachingMaturities do
       use_case.call
 
       expect(received.size).to eq(1)
-      expect(received.first.title).to include("CETES_28D")
+      expect(received.first.title).to include("CETES 28d")
     end
 
     [ 7, 3, 1 ].each do |days|
@@ -42,7 +42,7 @@ RSpec.describe Trading::UseCases::NotifyApproachingMaturities do
         expect(notification.notification_type).to eq("maturity_reminder")
         expect(notification.notifiable).to eq(position)
         expect(notification.user).to eq(user)
-        expect(notification.title).to include("CETES_28D")
+        expect(notification.title).to include("CETES 28d")
         expect(notification.body).to eq("Vence el #{I18n.l(days.days.from_now.to_date, format: :day_month)} · MXN 985")
       end
     end
@@ -50,13 +50,13 @@ RSpec.describe Trading::UseCases::NotifyApproachingMaturities do
     it "uses 'mañana' for the 1-day threshold (descriptive copy per ADR-001)" do
       maturing_in(1)
       use_case.call
-      expect(Notification.last.title).to eq("CETES_28D vence mañana")
+      expect(Notification.last.title).to eq("CETES 28d vence mañana")
     end
 
     it "uses 'en N días' for the 7-day threshold" do
       maturing_in(7)
       use_case.call
-      expect(Notification.last.title).to eq("CETES_28D vence en 7 días")
+      expect(Notification.last.title).to eq("CETES 28d vence en 7 días")
     end
 
     it "returns the count of notifications sent" do
@@ -139,7 +139,7 @@ RSpec.describe Trading::UseCases::NotifyApproachingMaturities do
         position.update!(maturity_date: 3.days.from_now.to_date)
 
         expect { use_case.call }.to change(Notification, :count).by(1)
-        expect(Notification.last.title).to eq("CETES_28D vence en 3 días")
+        expect(Notification.last.title).to eq("CETES 28d vence en 3 días")
       end
     end
   end

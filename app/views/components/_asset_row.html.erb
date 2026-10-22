@@ -31,11 +31,11 @@
 <%= link_to market_asset_path(asset.symbol),
             class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
   <div class="min-w-0 flex-1 break-words">
-    <p class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></p>
+    <p class="font-mono text-sm font-bold text-fg-default"><%= asset_label(asset) %></p>
     <%# Wraps rather than truncates: the subtitle carries a state phrase, not a
         date, and a clipped explanation is worse than a taller row (D46). %>
     <p class="text-xs text-fg-subtle">
-      <%= asset.name %> · <%= t("assets.index.titulos", count: format_shares(position.shares)) %><% if radar %> · <%= value_text %><% end %>
+      <%= asset_display_name(asset) %> · <%= t("assets.index.titulos", count: format_shares(position.shares)) %><% if radar %> · <%= value_text %><% end %>
     </p>
     <% if holding %>
       <p class="font-mono text-xs text-fg-subtle">
