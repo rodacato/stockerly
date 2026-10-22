@@ -19,7 +19,8 @@
         <%= render "shared/flash" %>
       </div>
 
-      <main class="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
+      <%# Velita floats over the last row; the padding keeps it reachable (D166). %>
+      <main class="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8 <%= "pb-24" if velita_visible? %>">
         <%# The mobile bar carries no title, so the page needs an h1 from
             somewhere. A screen whose artboard heads it with its own name sets
             :own_heading and renders that h1 itself; the rest get this one, and
@@ -34,6 +35,7 @@
 
       <%= render "components/bottom_nav" %>
       <%= render "shared/pwa_update" %>
+      <%= render "assistant/launcher" if velita_visible? %>
     </div>
   </div>
 <% end %>

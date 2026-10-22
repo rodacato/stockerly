@@ -6,6 +6,7 @@ import { Controller } from "@hotwired/stimulus"
 // which is the worst failure on a mobile browser.
 export default class SheetController extends Controller {
   static targets = ["dialog", "frame"]
+  static values = { panelFrom: Number }
 
   connect() {
     this.onViewportChange = this.onViewportChange.bind(this)
@@ -27,7 +28,13 @@ export default class SheetController extends Controller {
   onFrameLoad() {
     if (this.dialogTarget.open) return
 
-    this.dialogTarget.showModal()
+    // From panelFrom up the sheet is a side panel that leaves the page usable,
+    // so the figure being asked about stays readable (D166).
+    if (this.hasPanelFromValue && window.innerWidth >= this.panelFromValue) {
+      this.dialogTarget.show()
+    } else {
+      this.dialogTarget.showModal()
+    }
     this.opened = true
     this.trackViewport()
   }

@@ -8,7 +8,7 @@ RSpec.describe Assistant::Domain::ContextSelector do
   describe "the glossary" do
     it "finds a term under its own name, accents and case aside" do
       expect(titles("¿qué es el rsi?")).to eq([ "RSI (14)" ])
-      expect(titles("¿Qué significa «vs CETES»?")).to eq([ "Contra CETES" ])
+      expect(titles("¿Qué significa «vs CETES»?")).to contain_exactly("Contra CETES", "CETES a 28 días")
     end
 
     it "finds a term under the name a reader uses for it" do

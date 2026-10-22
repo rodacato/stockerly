@@ -2,18 +2,57 @@
 <% content_for :header_bar do %>
   <%= render "components/header_bar", title: t(".titulo"), back_path: (@symbol ? market_asset_path(@symbol) : dashboard_path) %>
 <% end %>
+<% subtitle = if @symbol then t(".sobre", symbol: @symbol)
+              elsif @from then t(".desde", pantalla: t("nav.#{@from}"))
+              else t(".desde_aqui") end %>
+<% suggestions = assistant_suggestions(from: @from, symbol: @symbol) %>
 
-<div class="mx-auto flex w-full max-w-xl flex-col gap-5">
-  <p class="text-sm text-fg-subtle">
-    <%= @symbol ? t(".sobre", symbol: @symbol) : t(".desde_aqui") %>
-  </p>
+<%# The same route is a page on its own and the drawer's content (D11): Turbo
+    takes this frame out of the response when Velita opened it. %>
+<%= turbo_frame_tag "assistant_sheet" do %>
+  <div class="mx-auto flex min-h-0 w-full max-w-xl flex-1 flex-col gap-5 <%= "p-5" if turbo_frame_request? %>">
+    <% if turbo_frame_request? %>
+      <span class="mx-auto -mt-2 h-1 w-10 shrink-0 rounded-full bg-border-strong lg:hidden" aria-hidden="true"></span>
+      <div class="flex items-center gap-3">
+        <%= render "assistant/velita", classes: "size-12 shrink-0 text-primary" %>
+        <div class="min-w-0 flex-1">
+          <h2 class="font-display text-xl font-bold tracking-tight text-fg-default"><%= t(".titulo") %></h2>
+          <p class="text-sm text-fg-subtle"><%= subtitle %></p>
+        </div>
+        <button type="button" data-action="sheet#close" aria-label="<%= t(".cerrar") %>"
+                class="flex size-11 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default">
+          <%= icon_svg "close", class: "text-xl", "aria-hidden": "true" %>
+        </button>
+      </div>
+    <% else %>
+      <p class="text-sm text-fg-subtle"><%= subtitle %></p>
+    <% end %>
 
-  <% if @connected %>
-    <%= turbo_stream_from "assistant", @token %>
-    <div id="assistant_messages" class="flex flex-col gap-6"></div>
-    <%= render "assistant/questions/form", token: @token, symbol: @symbol, asked: false %>
-  <% else %>
-    <%= render "components/empty_state", size: :inline, icon: "psychology",
-               title: t(".sin_conexion"), cta_text: t(".conectar"), cta_path: settings_assistant_path %>
-  <% end %>
-</div>
+    <% if @connected %>
+      <%= turbo_stream_from "assistant", @token %>
+      <div class="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto">
+        <% if suggestions.any? && @question.blank? %>
+          <section id="assistant_suggestions" class="flex flex-col items-start gap-2.5">
+            <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".de_lo_que_ves") %></p>
+            <% suggestions.each do |suggestion| %>
+              <%= form_with scope: :question, url: assistant_questions_path do |f| %>
+                <%= f.hidden_field :token, value: @token %>
+                <%= f.hidden_field :symbol, value: @symbol %>
+                <%= f.hidden_field :screen, value: @from %>
+                <%= f.hidden_field :question, value: suggestion %>
+                <%= f.button suggestion, type: "submit",
+                             class: "cursor-pointer rounded-full bg-primary-muted px-4 py-2 text-left text-sm font-semibold text-primary-fg transition-colors hover:bg-primary hover:text-fg-inverse" %>
+              <% end %>
+            <% end %>
+          </section>
+        <% end %>
+        <div id="assistant_messages" class="flex flex-col gap-6"></div>
+      </div>
+      <%= render "assistant/questions/form", token: @token, symbol: @symbol, screen: @from, asked: false, value: @question.presence,
+                 autofocus: !turbo_frame_request? || @question.present? %>
+    <% else %>
+      <%= render "components/empty_state", size: :inline, icon: "psychology",
+                 title: t(".sin_conexion"), cta_text: t(".conectar"), cta_path: settings_assistant_path %>
+    <% end %>
+  </div>
+<% end %>

@@ -11,6 +11,7 @@ module Assistant
         "moving_average" => [ "ma", "sma", "ema", "media movil", "promedio movil", "ma50", "ma200" ],
         "bollinger" => [ "bandas" ],
         "vs_cetes" => [ "vs cetes", "contra cetes" ],
+        "cetes_28" => [ "cete", "cetes", "cetes 28d", "cete a 28 dias" ],
         "total_liabilities_net_minority_interest" => [ "pasivos", "pasivo total" ],
         "pe_ratio" => [ "p/e", "per" ]
       }.freeze

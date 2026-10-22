@@ -137,6 +137,7 @@ Rails.application.routes.draw do
     delete "account",      to: "settings#destroy_account",      as: :account
     resource :assistant, only: [ :show, :update ], controller: "settings/assistants" do
       patch :verify
+      patch :velita
     end
   end
   # ADR-031: the assistant is invoked, never pushed; D11 makes the route first
