@@ -54,6 +54,21 @@ RSpec.describe StatementsHelper, type: :helper do
       expect(helper.format_statement_value(394_328_000_000, currency: "USD")).to eq("USD 394.3B")
     end
 
+    it "keeps large-currency format for a line that declares no format" do
+      revenue = helper.line_items_for(:income_statement).find { |i| i[:key] == "total_revenue" }
+
+      expect(helper.format_statement_value(394_328_000_000, currency: "USD", format: revenue[:format])).to eq("USD 394.3B")
+    end
+
+    it "formats the share count as a compact count without a currency" do
+      shares = helper.line_items_for(:balance_sheet).find { |i| i[:key] == "ordinary_shares_number" }
+      formatted = helper.format_statement_value(15_200_000_000, currency: "USD", format: shares[:format])
+
+      expect(formatted).to eq("15.2B")
+      expect(formatted).not_to include("USD")
+      expect(formatted).not_to include("$")
+    end
+
     it "returns em dash for nil values" do
       expect(helper.format_statement_value(nil, currency: "USD")).to eq("—")
     end
