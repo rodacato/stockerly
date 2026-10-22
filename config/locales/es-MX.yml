@@ -1028,6 +1028,45 @@ es-MX:
     fundamentals_block:
       titulo: Fundamentales
       ver_todos: Ver todos los fundamentales
+    glosario:
+      atr:
+        desc: 'El rango verdadero promedio: cuánto recorre el precio en un día típico,
+          de mínimo a máximo, contando el salto desde el cierre anterior, promediado
+          en 14 sesiones. Aquí se muestra como porcentaje del cierre.'
+        guia: 'Mide volatilidad, no dirección. Un ATR de 3% dice que un día normal
+          se mueve alrededor de 3%: en ese activo, 1% es ruido y 8% es fuera de lo
+          común. Sirve para comparar qué tan nervioso es un activo contra otro.'
+        nombre: ATR (14)
+      bollinger:
+        desc: Una media de 20 sesiones con una banda arriba y otra abajo, a dos desviaciones
+          estándar. Las bandas se abren cuando el precio se mueve mucho y se cierran
+          cuando está tranquilo.
+        guia: Casi siempre el precio queda entre las dos. Salirse por arriba o por
+          abajo describe un movimiento fuera de lo habitual para las últimas 20 sesiones,
+          no un aviso de lo que sigue. Bandas angostas describen un periodo de poca
+          variación.
+        nombre: Bandas de Bollinger (20, 2σ)
+      moving_average:
+        desc: 'El precio de cierre promedio de las últimas 50 y 200 sesiones. Cada
+          día entra el cierre nuevo y sale el más viejo, por eso "se mueve". Aquí
+          es una media simple (SMA): todos los días pesan igual. La exponencial (EMA),
+          que usan otras apps, le da más peso a los días recientes y reacciona más
+          rápido.'
+        guia: 'Suaviza el ruido diario para ver la dirección. Precio arriba de su
+          media: hoy está por encima de lo que promedió en ese periodo; abajo, lo
+          contrario. La de 50 abarca unos dos meses y medio de mercado; la de 200,
+          unos diez. Cuando la de 50 cruza la de 200 se lee como un cambio de tendencia,
+          pero llega tarde: es un promedio de lo que ya pasó.'
+        nombre: Media móvil (MA50 y MA200)
+      rsi:
+        desc: El índice de fuerza relativa. Compara cuánto subió el precio en los
+          días de alza contra cuánto bajó en los de baja durante las últimas 14 sesiones,
+          y lo resume en una escala de 0 a 100.
+        guia: 'Arriba de 70 se llama sobrecompra: subió mucho y muy rápido para lo
+          que acostumbra. Abajo de 30, sobreventa: bajó igual de rápido. No dice que
+          vaya a voltearse; en una tendencia fuerte puede quedarse ahí semanas. Mide
+          la velocidad del movimiento, no si el precio es caro o barato.'
+        nombre: RSI (14)
     header:
       agregar_watchlist: Agregar a watchlist
       quitar_watchlist: Quitar de watchlist

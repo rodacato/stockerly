@@ -1,0 +1,31 @@
+<%# What a term measures and how to read it, opened by a metric-tooltip
+    controller on the element that renders it. Locals: name, desc, guide. %>
+<div data-metric-tooltip-target="popover"
+     class="absolute left-0 top-full z-20 mt-1 hidden w-full overflow-hidden rounded-xl border border-border-default bg-bg-surface shadow-xl">
+  <div class="flex items-center justify-between gap-2 border-b border-border-default px-4 py-3">
+    <h3 class="flex items-center gap-2 text-sm font-semibold text-fg-default">
+      <%= icon_svg "school", class: "text-lg text-primary", "aria-hidden": "true" %>
+      <%= name %>
+    </h3>
+    <button type="button" data-action="click->metric-tooltip#close"
+            class="text-fg-subtle transition-colors hover:text-fg-default"
+            aria-label="<%= t("market.metricas_cerrar") %>">
+      <%= icon_svg "close", class: "text-lg", "aria-hidden": "true" %>
+    </button>
+  </div>
+
+  <div class="flex flex-col gap-3 p-4">
+    <div class="flex flex-col gap-1">
+      <h4 class="font-mono text-[10.5px] uppercase tracking-widest text-fg-subtle"><%= t("market.metricas_que_mide") %></h4>
+      <p class="text-sm leading-relaxed text-fg-default"><%= desc %></p>
+    </div>
+    <div class="flex flex-col gap-1">
+      <h4 class="font-mono text-[10.5px] uppercase tracking-widest text-fg-subtle"><%= t("market.metricas_como_leerlo") %></h4>
+      <p class="text-sm leading-relaxed text-fg-default"><%= guide %></p>
+    </div>
+  </div>
+
+  <p class="border-t border-border-default bg-bg-muted px-4 py-2 text-center text-[10px] italic text-fg-subtle">
+    <%= t("market.metricas_referencial") %>
+  </p>
+</div>

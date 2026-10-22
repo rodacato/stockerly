@@ -11,13 +11,22 @@
       <%# The figure sits beside the phrase only where there is room for both.
           At 390px "MA50 145.00 · MA200 130.00" squeezed the sentence beside it
           into five lines, so below `sm` the figure takes a line of its own. %>
-      <li class="flex flex-col gap-1.5 px-5 py-3.5 sm:grid sm:grid-cols-[140px_1fr_auto] sm:items-center sm:gap-3.5">
+      <% term = "market.glosario.#{signal[:indicator]}" %>
+      <li class="relative flex flex-col gap-1.5 px-5 py-3.5 sm:grid sm:grid-cols-[140px_1fr_auto] sm:items-center sm:gap-3.5"
+          data-controller="metric-tooltip">
         <span class="hidden sm:block font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
           <%= t(".etiquetas.#{signal[:indicator]}") %>
         </span>
-        <p class="text-sm text-fg-default leading-snug">
-          <%= t(".#{signal[:indicator]}.#{signal[:state]}") %>
-        </p>
+        <div class="flex items-start gap-1.5">
+          <p class="text-sm text-fg-default leading-snug">
+            <%= t(".#{signal[:indicator]}.#{signal[:state]}") %>
+          </p>
+          <button type="button" data-action="click->metric-tooltip#toggle"
+                  class="shrink-0 cursor-help text-fg-subtle transition-colors hover:text-primary"
+                  aria-label="<%= t("market.metricas_detalle", metric: t("#{term}.nombre")) %>">
+            <%= icon_svg "info", class: "text-sm", "aria-hidden": "true" %>
+          </button>
+        </div>
         <%# D110: the figure carries the accent, because the figure is what the
             reader could not place — the phrase beside it already reads. A row
             with no single side takes no pill and stays subtle. %>
@@ -25,6 +34,7 @@
         <span class="self-start font-mono text-xs sm:self-auto sm:text-right <%= accent ? "rounded-full px-2 py-0.5 font-semibold #{accent}" : "text-fg-subtle" %>">
           <%= signal_value(signal) %>
         </span>
+        <%= render "market/glossary_popover", name: t("#{term}.nombre"), desc: t("#{term}.desc"), guide: t("#{term}.guia") %>
       </li>
     <% end %>
   </ul>

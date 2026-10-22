@@ -37,6 +37,9 @@ ignore_unused:
   - brand.social.detail
   - brand.social.packaging
   - market.estado.*
+  # The Señales rows build this key from the indicator they render;
+  # market_signals_spec asserts every indicator resolves to a full entry.
+  - market.glosario.*
   - onboarding.integrations.tipos.*
   # Same shape: CheckSyncHealthJob builds this key from the watch it is
   # reporting on, so the scanner cannot see them. check_sync_health_job_spec
