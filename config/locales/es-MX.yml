@@ -448,6 +448,37 @@ es-MX:
       tier_tracked: Tracked
       titulo: Tracked
       vacio: Tu instancia aún no rastrea ningún activo.
+  assistant:
+    cards:
+      cambio_del_dia: cambio del día %{change}
+      glosario: Glosario de Stockerly
+      lectura_del: lectura del %{date}
+      rango: Rango de 52 semanas · %{symbol}
+      rango_cuerpo: mínimo %{low}, máximo %{high}
+      titulares: Titulares de %{symbol}, citados tal cual
+    questions:
+      answer:
+        descartada: La respuesta usaba una cifra que no está en estos datos, así que
+          la descarté. Los datos de arriba sí son de Stockerly.
+        escribiendo: Escribiendo…
+        fallo: El modelo no respondió. Revisa la conexión en Ajustes · Asistente.
+        no_es_recomendacion: Es una lectura de datos, no una recomendación.
+      create:
+        sin_conexion: Primero conecta un modelo que responda.
+      form:
+        enviar: Preguntar
+        etiqueta: Tu pregunta
+        otra: Pregunta otra cosa
+        pregunta: Pregunta sobre un término
+        sobre: Pregunta sobre %{symbol}
+      message:
+        tu_pregunta: Tu pregunta
+      new:
+        conectar: Conectar un modelo
+        desde_aqui: No ve tus posiciones.
+        sin_conexion: Para preguntar, primero conecta un modelo que responda.
+        sobre: Sobre %{symbol} · no ve tus posiciones
+        titulo: Pregunta
   auth:
     contrasena: Contraseña
     correo: Correo electrónico

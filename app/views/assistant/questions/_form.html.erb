@@ -1,0 +1,14 @@
+<%# Locals: token, symbol, asked. %>
+<%= form_with scope: :question, url: assistant_questions_path, id: "assistant_form",
+              class: "relative flex items-center" do |f| %>
+  <%= f.hidden_field :token, value: token %>
+  <%= f.hidden_field :symbol, value: symbol %>
+  <%= f.text_field :question, required: true, maxlength: 500, autocomplete: "off", autofocus: true,
+                   placeholder: asked ? t("assistant.questions.form.otra") : (symbol ? t("assistant.questions.form.sobre", symbol: symbol) : t("assistant.questions.form.pregunta")),
+                   aria: { label: t("assistant.questions.form.etiqueta") },
+                   class: field_classes(:md, "w-full rounded-xl pr-12") %>
+  <%= f.button type: "submit", class: "absolute right-2 flex size-9 items-center justify-center rounded-lg text-primary transition-colors hover:bg-bg-muted",
+               aria: { label: t("assistant.questions.form.enviar") } do %>
+    <%= icon_svg "arrow_upward", class: "text-lg", "aria-hidden": "true" %>
+  <% end %>
+<% end %>
