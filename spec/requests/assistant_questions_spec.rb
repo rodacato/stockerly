@@ -91,6 +91,25 @@ RSpec.describe "Assistant questions", type: :request do
       expect(response.body).not_to include("assistant_suggestions")
     end
 
+    it "offers to ask again after an answer it could not keep, in the same conversation" do
+      older.messages.create!(question: "¿Llegará a 200?", status: :discarded)
+
+      get assistant_path(c: "old")
+
+      retry_form = response.parsed_body.css("form").find { |form| form.text.include?(I18n.t("assistant.questions.retry.preguntar_de_nuevo")) }
+      expect(retry_form.css("input").to_h { [ _1["name"], _1["value"] ] })
+        .to include("question[question]" => "¿Llegará a 200?", "question[token]" => "old", "question[symbol]" => "NVDA")
+    end
+
+    it "says once per thread that it reads data, not once per answer" do
+      older.messages.create!(question: "¿Y el MACD?", status: :answered, answer: "Sigue el impulso.")
+
+      get assistant_path(c: "old")
+
+      expect(response.body.scan(I18n.t("assistant.questions.new.no_es_recomendacion")).size).to eq(1)
+      expect(response.body).not_to include(I18n.t("assistant.questions.retry.preguntar_de_nuevo"))
+    end
+
     it "starts a fresh conversation for a token it does not know" do
       get assistant_path(c: "nope")
 

@@ -43,6 +43,7 @@ RSpec.describe "Velita's drawer", type: :system, js: true do
     expect(page).to have_css("dialog.assistant-sheet[open]")
     expect(page).to have_text(I18n.t("assistant.questions.new.sobre", symbol: "NVDA"))
     expect(page).to have_css("turbo-cable-stream-source[connected]", visible: :all)
+    expect(page).to have_no_text(I18n.t("assistant.questions.new.no_es_recomendacion"))
 
     click_button I18n.t("assistant.questions.new.sugerencias.activo.rsi", symbol: "NVDA")
 
@@ -55,7 +56,7 @@ RSpec.describe "Velita's drawer", type: :system, js: true do
 
     within("dialog.assistant-sheet") do
       expect(page).to have_text("El RSI de NVDA está en 72.4 [2].")
-      expect(page).to have_text(I18n.t("assistant.questions.answer.no_es_recomendacion"))
+      expect(page).to have_text(I18n.t("assistant.questions.new.no_es_recomendacion"))
       expect(page).to have_css("summary", text: "RSI (14) · NVDA")
       expect(page).to have_no_css("section[id$='_2']", text: "72.4")
 
