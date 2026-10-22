@@ -14,9 +14,15 @@ RSpec.describe MarketData::Queries::MarketPulse do
   end
 
   it "leaves out an index that has never been quoted" do
-    create(:market_index, symbol: "NDX", value: nil)
+    create(:market_index, symbol: "NDX", value: nil, change_percent: nil)
 
     expect(described_class.call[:indices]).to be_empty
+  end
+
+  it "keeps the IPC read through NAFTRAC, which has a day change and no level" do
+    create(:market_index, symbol: "IPC", name: "NAFTRAC · sigue al IPC", value: nil, change_percent: 0.4)
+
+    expect(described_class.call[:indices].sole).to include(symbol: "IPC", value: nil, change_percent: 0.4)
   end
 
   it "reads the crypto sentiment with its classification as a key" do

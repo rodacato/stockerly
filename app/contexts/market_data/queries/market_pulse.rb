@@ -2,6 +2,8 @@ module MarketData
   module Queries
     # ADR-031: the major indices and the crypto sentiment as plain data. A
     # sentiment reading past its freshness window is not today's, so it is nil.
+    # The IPC read through NAFTRAC has a day change and no level (see
+    # DataBursatilGateway::INDEX_PROXIES), so an index needs only one of them.
     class MarketPulse
       # @api public
       def self.call
@@ -9,7 +11,7 @@ module MarketData
       end
 
       def self.indices
-        MarketIndex.major.where.not(value: nil).map do |index|
+        MarketIndex.major.where.not(value: nil).or(MarketIndex.major.where.not(change_percent: nil)).map do |index|
           { symbol: index.symbol, name: index.name, value: index.value, change_percent: index.change_percent,
             open: index.is_open, as_of: index.updated_at }.freeze
         end.freeze

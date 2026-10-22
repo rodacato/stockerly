@@ -76,6 +76,12 @@ RSpec.describe Assistant::Capabilities::Registry do
       expect(cards.map(&:source)).to all(include(I18n.l(Date.current, format: :long)))
     end
 
+    it "prints the IPC's proxy by its day change alone, never a level it does not have" do
+      create(:market_index, symbol: "IPC", name: "NAFTRAC · sigue al IPC", value: nil, change_percent: 0.4, is_open: true)
+
+      expect(registry.call("market.pulse").cards.first.body).to eq("NAFTRAC · sigue al IPC +0.4% (abierto)")
+    end
+
     it "says there is no market data rather than serving a stale reading" do
       create(:fear_greed_reading, :stale)
 

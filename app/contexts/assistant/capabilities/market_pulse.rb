@@ -18,7 +18,7 @@ module Assistant
         lines = indices.map do |index|
           change = index[:change_percent] && format("%+.1f%%", index[:change_percent])
           state = I18n.t(index[:open] ? "market.market_context.abierto" : "market.market_context.cerrado")
-          "#{index[:name]} #{money(index[:value])} #{change} (#{state})".squish
+          "#{index[:name]} #{index[:value] && money(index[:value])} #{change} (#{state})".squish
         end
         card(kind: "market", title: I18n.t("assistant.cards.mercado"), body: lines.join(" · "),
              source: long_date(indices.filter_map { |index| index[:as_of] }.max))
