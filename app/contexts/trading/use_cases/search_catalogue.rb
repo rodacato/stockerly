@@ -39,7 +39,12 @@ module Trading
 
       def rank(result, query)
         exact = result[:asset].symbol.casecmp?(query) ? 0 : 1
-        [ exact, TIER_ORDER.fetch(result[:tier]), result[:asset].symbol ]
+        [ exact, TIER_ORDER.fetch(result[:tier]), natural(result[:asset].symbol) ]
+      end
+
+      # Digits compare as numbers, so CETES_28D comes before CETES_182D.
+      def natural(symbol)
+        symbol.scan(/\d+|\D+/).map { |part| part.match?(/\A\d/) ? [ 0, part.to_i ] : [ 1, part ] }
       end
     end
   end

@@ -70,4 +70,9 @@ RSpec.describe Trading::UseCases::SearchCatalogue do
 
     expect(search("ab").size).to eq(8)
   end
+  it "orders CETES by their term as a number, not as text" do
+    %w[182 28 364 91].each { |term| create(:asset, symbol: "CETES_#{term}D", name: "CETES #{term} Days", asset_type: :fixed_income) }
+
+    expect(search("cetes").map { _1[:asset].symbol }).to eq(%w[CETES_28D CETES_91D CETES_182D CETES_364D])
+  end
 end
