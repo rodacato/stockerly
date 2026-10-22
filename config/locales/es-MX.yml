@@ -454,13 +454,31 @@ es-MX:
       cambio_del_dia: cambio del día %{change}
       cetes: CETES · última subasta de cada plazo
       cetes_plazo: "%{dias} días %{rate}% (%{date})"
+      costo: Costo %{amount}
+      del_portafolio: "%{percent} de tu portafolio"
       despues_del_cierre: después del cierre
+      en_dias:
+        one: en 1 día
+        other: en %{count} días
+        zero: hoy
+      evento:
+        earnings: "%{label} reporta resultados el %{date} (%{days})"
+        maturity: "%{label} vence el %{date} (%{days})"
       fear_greed_cripto: Fear & Greed · cripto
       fundamentales: Fundamentales de %{symbol}
+      ganancia: Ganancia %{amount} (%{percent})
       glosario: Glosario de Stockerly
+      hoy: Hoy %{amount} (%{percent})
       lectura_del: lectura del %{date}
+      lo_tuyo_proximo: Lo tuyo en los próximos %{days} días
       mercado: Contexto de mercado
       observaciones: Lo que hicieron los indicadores de %{symbol}
+      por_el_activo: Por el activo %{amount}
+      por_el_tipo_de_cambio: Por el tipo de cambio %{amount}
+      posiciones:
+        one: 1 posición abierta
+        other: "%{count} posiciones abiertas"
+      precios_al: Precios al %{date}
       proximo_reporte: 'Próximo reporte: %{date}, %{timing}'
       rango: Rango de 52 semanas · %{symbol}
       rango_cuerpo: mínimo %{low}, máximo %{high}
@@ -468,9 +486,17 @@ es-MX:
       tipo_de_cambio: Tipo de cambio USD/MXN
       tipo_de_cambio_del: vigente el %{date}
       titulares: Titulares de %{symbol}, citados tal cual
+      titulos: "%{shares} títulos"
+      tu_portafolio: Tu portafolio
+      tu_posicion: Tu posición en %{label}
+      tus_posiciones: Tus posiciones
       ultimo_reporte: 'Último reporte (%{date}): UPA %{actual}'
       ultimo_reporte_vs: 'Último reporte (%{date}): UPA %{actual} contra %{estimated}
         estimada'
+      vence: Vence el %{date}
+      y_mas:
+        one: y 1 más
+        other: y %{count} más
     cita: 'Fuente %{number}: %{title}'
     conversations:
       index:
@@ -502,11 +528,12 @@ es-MX:
         cerrar: Cerrar
         conectar: Conectar un modelo
         de_lo_que_ves: De lo que estás viendo
-        desde: Desde %{pantalla} · no ve tus posiciones
-        desde_aqui: No ve tus posiciones.
+        desde: Desde %{pantalla} · %{posiciones}
+        lee_tus_posiciones: lee tus posiciones
         no_es_recomendacion: Es una lectura de datos, no una recomendación.
+        no_ve_tus_posiciones: no ve tus posiciones
         sin_conexion: Para preguntar, primero conecta un modelo que responda.
-        sobre: Sobre %{symbol} · no ve tus posiciones
+        sobre: Sobre %{symbol} · %{posiciones}
         sugerencias:
           activo:
             rango: "¿Dónde está frente a su rango del año?"
@@ -2092,6 +2119,9 @@ es-MX:
           model: Para redactar
           planner_model: Para planear
         conexion: Conexión
+        conexion_con_posiciones: A qué modelo le pregunta. Tu pregunta, los datos
+          de mercado que consulta y, cuando la pregunta las necesita, tus posiciones
+          se envían a este host.
         conexion_desc: A qué modelo le pregunta. Tu pregunta y los datos de mercado
           que consulta se envían a este host; tus posiciones no.
         estado:
@@ -2108,6 +2138,10 @@ es-MX:
           unreachable: No se pudo llegar al host. Revisa la dirección.
         guardar: Guardar
         modelos_hint: Un mismo modelo puede hacer las dos cosas.
+        posiciones: Puede leer tus posiciones
+        posiciones_desc: Cuando una pregunta lo necesita, tus posiciones (símbolo,
+          títulos, valor y ganancia) se envían a %{host}. Apagado, Velita no las ve.
+        posiciones_sin_conexion: Para encenderlo, primero conecta un modelo abajo.
         sin_conexion: Sin conexión
         titulo: Asistente
         velita: Mostrar a Velita

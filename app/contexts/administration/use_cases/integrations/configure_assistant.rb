@@ -27,9 +27,12 @@ module Administration
           Success(row.id)
         end
 
-        # No planner model means the composing model plans too.
+        # No planner model means the composing model plans too. Sharing the
+        # holdings was agreed for one host, so a new host starts without it.
         def settings_for(row, attrs)
-          settings = row.settings.to_h.merge("base_url" => attrs[:base_url].chomp("/"), "model" => attrs[:model])
+          base_url = attrs[:base_url].chomp("/")
+          settings = row.settings.to_h.merge("base_url" => base_url, "model" => attrs[:model])
+          settings = settings.except("read_holdings") if row.setting("base_url") != base_url
           planner = attrs[:planner_model].to_s.squish
           planner.empty? ? settings.except("planner_model") : settings.merge("planner_model" => planner)
         end

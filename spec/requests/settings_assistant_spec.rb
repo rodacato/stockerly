@@ -83,6 +83,18 @@ RSpec.describe "Ajustes · Asistente", type: :request do
     expect(connection.setting("base_url")).to eq("https://api.anthropic.com")
   end
 
+  # Sharing the holdings was agreed for one host; a new one has to be agreed again.
+  it "turns the holdings off when the host changes, and keeps them for the same host" do
+    patch settings_assistant_path, params: { assistant: valid }
+    connection.update!(settings: connection.settings.merge("read_holdings" => true))
+
+    patch settings_assistant_path, params: { assistant: valid.merge(model: "claude-sonnet-5-5") }
+    expect(connection.setting("read_holdings")).to be(true)
+
+    patch settings_assistant_path, params: { assistant: valid.merge(base_url: "https://elsewhere.example.com", api_key: "sk-other") }
+    expect(connection.setting("read_holdings")).to be_nil
+  end
+
   it "refuses plain http to a public host, where the key would travel in the clear" do
     patch settings_assistant_path, params: { assistant: valid.merge(base_url: "http://example.com") }
 

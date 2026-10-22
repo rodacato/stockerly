@@ -124,4 +124,54 @@ RSpec.describe Assistant::Capabilities::Registry do
       expect(registry.call("asset.earnings", symbol: "NVDA").reason).to eq(:no_data)
     end
   end
+
+  # ADR-031's 2026-10-22 amendment: the owner's holdings, only behind the switch.
+  describe "the owner's holdings" do
+    let(:user) { create(:user, preferred_currency: "MXN", onboarded_at: Time.current) }
+    let(:portfolio) { user.portfolio || create(:portfolio, user: user) }
+
+    before do
+      create(:fx_rate, base_currency: "USD", quote_currency: "MXN", rate: 20.0)
+      position = create(:position, portfolio: portfolio, asset: asset, shares: 10, avg_cost: 100, status: :open)
+      create(:trade, portfolio: portfolio, position: position, asset: asset, side: :buy, shares: 10, price_per_share: 100,
+                     currency: "USD", fx_rate_at_execution: 17.0, executed_at: 30.days.ago)
+      asset.update!(currency: "USD", current_price: 120)
+    end
+
+    it "does not list them while the switch is off" do
+      expect(registry.call("portfolio.positions").reason).to eq(:unknown)
+      expect(registry.call("portfolio.events").reason).to eq(:unknown)
+    end
+
+    context "with the switch on" do
+      subject(:registry) { described_class.new(holdings: true) }
+
+      it "states the portfolio as Activos does, in the owner's currency" do
+        total, list = registry.call("portfolio.positions").cards
+
+        expect(total.figure).to eq("MXN 24,000.00")
+        expect(total.body).to include("Costo MXN 17,000.00", "Ganancia +MXN 7,000.00 (+41.2%)", "1 posición abierta")
+        expect(list.body).to eq("NVDA MXN 24,000.00 (100.0%) +41.2%")
+      end
+
+      it "states one position with what the asset and the exchange rate each did" do
+        card = registry.call("portfolio.positions", symbol: "NVDA").cards.sole
+
+        expect(card.title).to eq("Tu posición en NVIDIA")
+        expect(card.body).to include("10 títulos", "Por el activo +MXN 4,000.00", "Por el tipo de cambio +MXN 3,000.00")
+      end
+
+      it "says there is no data for a symbol the owner does not hold" do
+        expect(registry.call("portfolio.positions", symbol: "AMZN").reason).to eq(:no_data)
+      end
+
+      it "names what is coming for the holdings, by date" do
+        create(:earnings_event, asset: asset, report_date: 3.days.from_now.to_date)
+
+        card = registry.call("portfolio.events").cards.sole
+
+        expect(card.body).to eq("NVDA reporta resultados el #{I18n.l(3.days.from_now.to_date, format: :long)} (en 3 días)")
+      end
+    end
+  end
 end

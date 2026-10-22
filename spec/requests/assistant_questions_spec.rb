@@ -24,7 +24,7 @@ RSpec.describe "Assistant questions", type: :request do
     get assistant_path(symbol: "nvda")
 
     expect(response.body).to include("turbo-cable-stream-source")
-    expect(response.body).to include(I18n.t("assistant.questions.new.sobre", symbol: "NVDA"))
+    expect(response.body).to include(I18n.t("assistant.questions.new.sobre", symbol: "NVDA", posiciones: I18n.t("assistant.questions.new.no_ve_tus_posiciones")))
   end
 
   it "shows the question at once and leaves choosing the cards and the prose to the job" do
@@ -86,7 +86,7 @@ RSpec.describe "Assistant questions", type: :request do
     it "reopens one where it stopped, under its own token, screen and symbol" do
       get assistant_path(c: "old")
 
-      expect(response.body).to include("¿Qué es el RSI?", "Mide el impulso", I18n.t("assistant.questions.new.sobre", symbol: "NVDA"))
+      expect(response.body).to include("¿Qué es el RSI?", "Mide el impulso", I18n.t("assistant.questions.new.sobre", symbol: "NVDA", posiciones: I18n.t("assistant.questions.new.no_ve_tus_posiciones")))
       expect(response.body).to include('value="old"')
       expect(response.body).not_to include("assistant_suggestions")
     end

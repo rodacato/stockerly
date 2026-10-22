@@ -14,7 +14,9 @@ module Assistant
       @from = (@conversation&.screen || query[:from]).presence_in(SCREENS)
       @seen = query[:seen].to_s.split(",")
       @question = query[:q].to_s.squish.first(AssistantMessage::MAX_QUESTION)
-      @connected = Administration::Queries::AssistantConnection.call&.dig(:status) == :connected
+      connection = Administration::Queries::AssistantConnection.call
+      @connected = connection&.dig(:status) == :connected
+      @reads_holdings = @connected && connection[:read_holdings]
     end
 
     def create

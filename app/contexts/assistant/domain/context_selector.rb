@@ -18,19 +18,30 @@ module Assistant
         "cetes.curve" => /\bcetes?\b/
       }.freeze
 
-      def self.call(question:, symbol: nil)
-        registry = Capabilities::Registry.new
-        run = registry.method(:cards)
+      MINE = /\b(mi|mis|mio|mia|mios|mias|tengo|llevo|portafolio|cartera|posicion|posiciones|gane|ganado|perdido)\b/
+      COMING = /\b(vence|vencen|vencimientos?|proxim[oa]s?|viene|vienen)\b/
+
+      def self.call(question:, symbol: nil, holdings: false)
+        run = Capabilities::Registry.new(holdings: holdings).method(:cards)
 
         entries = Glossary.matching(question)
         text = Glossary.normalise(question)
         cards = run.call(entries.map { |entry| [ "glossary.define", { term: entry.key } ] })
         market_cards = run.call(MARKET_ASKS.filter_map { |name, ask| [ name, {} ] if text.match?(ask) })
-        return cards + market_cards if symbol.blank?
+        mine_cards = holdings ? run.call(mine_plan(text, symbol)) : []
+        return cards + market_cards + mine_cards if symbol.blank?
 
         asset_cards = run.call(asset_plan(text, symbol, entries.map(&:key)))
-        asset_cards = run.call([ [ "asset.quote", { symbol: symbol } ] ]) if asset_cards.empty? && market_cards.empty?
-        cards + market_cards + asset_cards
+        asset_cards = run.call([ [ "asset.quote", { symbol: symbol } ] ]) if (asset_cards + market_cards + mine_cards).empty?
+        cards + market_cards + mine_cards + asset_cards
+      end
+
+      # On an asset's screen "lo mío" is that position; anywhere else, the portfolio.
+      def self.mine_plan(text, symbol)
+        steps = []
+        steps << [ "portfolio.positions", symbol.present? ? { symbol: symbol } : {} ] if text.match?(MINE)
+        steps << [ "portfolio.events", {} ] if text.match?(COMING) || (text.match?(MINE) && text.match?(ASKS[:earnings]))
+        steps
       end
 
       def self.asset_plan(text, symbol, glossary_keys)
@@ -52,7 +63,7 @@ module Assistant
         [ name, { symbol: symbol, only: glossary_keys } ] if glossary_keys.any?
       end
 
-      private_class_method :asset_plan, :named_or_all
+      private_class_method :mine_plan, :asset_plan, :named_or_all
     end
   end
 end

@@ -96,13 +96,72 @@ RSpec.describe "Velita", type: :request do
     end
   end
 
+  # ADR-031's 2026-10-22 amendment.
+  describe "the holdings switch" do
+    it "starts off, naming the host the holdings would go to" do
+      connect
+      get settings_assistant_path
+
+      expect(response.body).to include(I18n.t("settings.assistants.show.posiciones_desc", host: "Anthropic"))
+      expect(response.body).to match(/role="switch" aria-checked="false" aria-label="#{I18n.t("settings.assistants.show.posiciones")}"/)
+      expect(Integration.find_by(provider_name: "Asistente").setting("read_holdings")).to be_nil
+    end
+
+    it "is saved on Administration's row and changes nothing else" do
+      connect
+
+      patch holdings_settings_assistant_path, params: { read_holdings: true }, as: :json
+
+      expect(response).to have_http_status(:ok)
+      row = Integration.find_by(provider_name: "Asistente")
+      expect(row.setting("read_holdings")).to be(true)
+      expect(row.setting("show_velita")).to be(true)
+      expect(Administration::Queries::AssistantConnection.call[:read_holdings]).to be(true)
+    end
+
+    it "reads anything but true as off" do
+      connect
+
+      patch holdings_settings_assistant_path, params: { read_holdings: "true" }, as: :json
+
+      expect(Administration::Queries::AssistantConnection.call[:read_holdings]).to be(false)
+    end
+
+    it "tells the drawer and the connection what is sent while it is on" do
+      connect
+      row = Integration.find_by(provider_name: "Asistente")
+      row.update!(settings: row.settings.merge("read_holdings" => true))
+
+      get assistant_path(symbol: "NVDA")
+      expect(response.body).to include(I18n.t("assistant.questions.new.sobre", symbol: "NVDA", posiciones: I18n.t("assistant.questions.new.lee_tus_posiciones")))
+
+      get settings_assistant_path
+      expect(response.body).to include(I18n.t("settings.assistants.show.conexion_con_posiciones"))
+      expect(response.body).not_to include(I18n.t("settings.assistants.show.conexion_desc"))
+    end
+
+    it "has nothing to switch before a connection is configured" do
+      patch holdings_settings_assistant_path, params: { read_holdings: true }, as: :json
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "cannot be turned on from the screen until the connection answers" do
+      connect(status: :disconnected)
+      get settings_assistant_path
+
+      expect(response.body).to include(I18n.t("settings.assistants.show.posiciones_sin_conexion"))
+      expect(response.body).to match(/aria-label="#{I18n.t("settings.assistants.show.posiciones")}"\s+disabled/)
+    end
+  end
+
   describe "the drawer" do
     before { connect }
 
     it "opens on Hoy's suggestions for the figures Hoy showed" do
       get assistant_path(from: "panorama", seen: "veredicto,vs_cetes"), headers: { "Turbo-Frame" => "assistant_sheet" }
 
-      expect(response.body).to include(I18n.t("assistant.questions.new.desde", pantalla: I18n.t("nav.panorama")))
+      expect(response.body).to include(I18n.t("assistant.questions.new.desde", pantalla: I18n.t("nav.panorama"), posiciones: I18n.t("assistant.questions.new.no_ve_tus_posiciones")))
       expect(response.body).to include(CGI.escapeHTML(I18n.t("assistant.questions.new.sugerencias.panorama.cetes")))
       expect(response.body).not_to include(CGI.escapeHTML(I18n.t("assistant.questions.new.sugerencias.panorama.resultados")))
     end
