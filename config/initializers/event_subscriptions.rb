@@ -68,6 +68,7 @@ Rails.application.config.after_initialize do
 
   # Integrations
   EventBus.subscribe(Administration::Events::IntegrationConnected, Administration::Handlers::LogIntegrationConnected)
+  EventBus.subscribe(Assistant::Events::ConnectionVerified, Administration::Handlers::RecordAssistantVerification)
   EventBus.subscribe(Administration::Events::IntegrationUpdated, Administration::Handlers::LogIntegrationUpdated)
   EventBus.subscribe(Administration::Events::IntegrationDeleted, Administration::Handlers::LogIntegrationDeleted)
 end

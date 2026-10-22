@@ -5,6 +5,19 @@ RSpec.describe "Ajustes", type: :request do
 
   before { login_as(user) }
 
+  # The assistant's connection is an Integration row, but Integraciones lists
+  # where prices come from; the badge counts only those.
+  it "leaves the assistant's connection out of the Integraciones count" do
+    create(:integration, provider_name: "Finnhub", provider_type: "Stocks & Market Data")
+    create(:integration, provider_name: "Banxico", provider_type: "FX Rates")
+    create(:integration, provider_name: "Asistente", provider_type: "Assistant")
+
+    get settings_path
+    row = response.parsed_body.css("a").find { |link| link.text.include?(I18n.t("settings.show.integraciones")) }
+
+    expect(row.css("span.font-mono").text.strip).to eq("2")
+  end
+
   it "gathers the sections that used to be split between profile and admin" do
     get settings_path
 

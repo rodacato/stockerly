@@ -1,0 +1,59 @@
+<% content_for :page_title, t(".titulo") %>
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: settings_path %>
+<% end %>
+<% state = assistant_connection_state(@connection) %>
+<% defaults = Administration::Queries::AssistantConnection %>
+
+<div class="mx-auto flex w-full max-w-xl flex-col gap-5">
+  <section class="flex flex-col gap-2">
+    <h2 class="font-display text-xl font-bold tracking-tight text-fg-default"><%= t(".conexion") %></h2>
+    <p class="text-sm text-fg-subtle"><%= t(".conexion_desc") %></p>
+  </section>
+
+  <section class="<%= card_classes("flex flex-col gap-4 p-5") %>">
+    <div class="flex items-center justify-between gap-3">
+      <p class="flex items-center gap-2 font-semibold text-fg-default">
+        <span class="size-2 rounded-full <%= { conectada: "bg-positive", no_responde: "bg-negative" }.fetch(state, "bg-fg-subtle") %>" aria-hidden="true"></span>
+        <%= state == :sin_configurar ? t(".sin_conexion") : assistant_host_label(@connection) %>
+      </p>
+      <span class="font-mono text-xs uppercase tracking-widest <%= { conectada: "text-positive-fg", no_responde: "text-negative-fg" }.fetch(state, "text-fg-subtle") %>">
+        <%= t(".estado.#{state}") %>
+      </span>
+    </div>
+
+    <% if state == :no_responde %>
+      <p role="alert" class="flex items-start gap-2 rounded-lg bg-negative-bg px-3 py-2.5 text-sm text-negative-fg">
+        <%= icon_svg "error", class: "mt-0.5 text-base", "aria-hidden": "true" %>
+        <%= t(".fallas.#{@connection[:failure_tag]}", default: t(".fallas.failed")) %>
+      </p>
+    <% end %>
+
+    <%= form_with scope: :assistant, url: settings_assistant_path, method: :patch, class: "flex flex-col gap-4" do |f| %>
+      <label class="flex flex-col gap-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t(".campos.base_url") %></span>
+        <%= f.url_field :base_url, value: @connection&.dig(:base_url) || defaults::DEFAULT_BASE_URL, required: true,
+                        class: field_classes(:md, "w-full font-mono") %>
+      </label>
+
+      <label class="flex flex-col gap-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t(".campos.api_key") %></span>
+        <%= f.password_field :api_key, autocomplete: "off",
+                             placeholder: @connection&.dig(:masked_api_key) || t(".api_key_placeholder"),
+                             class: field_classes(:md, "w-full font-mono") %>
+      </label>
+
+      <label class="flex flex-col gap-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t(".campos.model") %></span>
+        <%= f.text_field :model, value: @connection&.dig(:model) || defaults::DEFAULT_MODEL, required: true,
+                         class: field_classes(:md, "w-full font-mono") %>
+      </label>
+
+      <div class="flex flex-wrap gap-3">
+        <%= f.button t(".verificar"), formaction: verify_settings_assistant_path,
+                     class: button_classes(:secondary, :md, "cursor-pointer") %>
+        <%= f.submit t(".guardar"), class: button_classes(:primary, :md, "cursor-pointer") %>
+      </div>
+    <% end %>
+  </section>
+</div>
