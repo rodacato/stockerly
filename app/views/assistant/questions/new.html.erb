@@ -5,7 +5,7 @@
 <% subtitle = if @symbol then t(".sobre", symbol: @symbol)
               elsif @from then t(".desde", pantalla: t("nav.#{@from}"))
               else t(".desde_aqui") end %>
-<% suggestions = assistant_suggestions(from: @from, symbol: @symbol) %>
+<% suggestions = assistant_suggestions(from: @from, symbol: @symbol, seen: @seen) %>
 
 <%# The same route is a page on its own and the drawer's content (D11): Turbo
     takes this frame out of the response when Velita opened it. %>
@@ -19,7 +19,8 @@
           <h2 class="font-display text-xl font-bold tracking-tight text-fg-default"><%= t(".titulo") %></h2>
           <p class="text-sm text-fg-subtle"><%= subtitle %></p>
         </div>
-        <button type="button" data-action="sheet#close" aria-label="<%= t(".cerrar") %>"
+        <%# autofocus: the dialog focuses this, not the field, so a phone keeps its keyboard down. %>
+        <button type="button" data-action="sheet#close" aria-label="<%= t(".cerrar") %>" autofocus
                 class="flex size-11 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:text-fg-default">
           <%= icon_svg "close", class: "text-xl", "aria-hidden": "true" %>
         </button>
@@ -35,7 +36,7 @@
           <section id="assistant_suggestions" class="flex flex-col items-start gap-2.5">
             <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t(".de_lo_que_ves") %></p>
             <% suggestions.each do |suggestion| %>
-              <%= form_with scope: :question, url: assistant_questions_path do |f| %>
+              <%= form_with scope: :question, url: assistant_questions_path, data: { turbo_frame: "_top" } do |f| %>
                 <%= f.hidden_field :token, value: @token %>
                 <%= f.hidden_field :symbol, value: @symbol %>
                 <%= f.hidden_field :screen, value: @from %>
@@ -52,7 +53,7 @@
                  autofocus: !turbo_frame_request? || @question.present? %>
     <% else %>
       <%= render "components/empty_state", size: :inline, icon: "psychology",
-                 title: t(".sin_conexion"), cta_text: t(".conectar"), cta_path: settings_assistant_path %>
+                 title: t(".sin_conexion"), cta_text: t(".conectar"), cta_path: settings_assistant_path, cta_frame: "_top" %>
     <% end %>
   </div>
 <% end %>

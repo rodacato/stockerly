@@ -68,10 +68,33 @@ RSpec.describe "Velita's drawer", type: :system, js: true do
     expect(page.evaluate_script("document.querySelector('dialog.assistant-sheet').matches(':modal')")).to be(false)
   end
 
+  it "closes the desktop panel on Esc, which a non-modal dialog does not do by itself" do
+    page.current_window.resize_to(1280, 900)
+    visit dashboard_path
+    open_velita
+    expect(page).to have_css("dialog.assistant-sheet[open]")
+
+    find("dialog.assistant-sheet").send_keys(:escape)
+
+    expect(page).to have_no_css("dialog.assistant-sheet[open]")
+  end
+
+  it "leaves the drawer for Ajustes when the connection dropped while it was open" do
+    visit market_asset_path("NVDA")
+    open_velita
+    expect(page).to have_css("dialog.assistant-sheet[open]")
+    Integration.find_by(provider_name: "Asistente").update!(connection_status: :disconnected)
+
+    click_button I18n.t("assistant.questions.new.sugerencias.activo.rsi", symbol: "NVDA")
+
+    expect(page).to have_current_path(settings_assistant_path)
+    expect(page).to have_text(I18n.t("assistant.questions.create.sin_conexion"))
+  end
+
   it "closes on its X and takes the URL back with it" do
     visit dashboard_path
     open_velita
-    expect(page).to have_current_path(assistant_path(from: "panorama"))
+    expect(page).to have_current_path(%r{\A/assistant\?from=panorama})
 
     find("button[aria-label='#{I18n.t("assistant.questions.new.cerrar")}']").click
 

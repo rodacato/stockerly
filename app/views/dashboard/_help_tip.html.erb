@@ -3,6 +3,7 @@
     `dashboard.ayuda.<figure>`; opening one is counted (help_opens).
     Locals: figure; optional classes (placement of the button), inverse (on the brand surface). %>
 <% title = t("dashboard.ayuda.#{figure}.titulo") %>
+<% content_for :assistant_terms, "#{figure} " %>
 <button type="button" data-action="click->metric-tooltip#toggle"
         class="<%= local_assigns.fetch(:classes, "") %> flex size-9 shrink-0 cursor-help items-center justify-center rounded-lg transition-colors <%= local_assigns[:inverse] ? "text-fg-inverse hover:opacity-80 dark:text-fg-subtle dark:hover:text-primary" : "text-fg-subtle hover:text-primary" %>"
         aria-label="<%= t("dashboard.ayuda.explicar", titulo: title) %>">

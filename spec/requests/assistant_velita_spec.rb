@@ -39,7 +39,7 @@ RSpec.describe "Velita", type: :request do
       get dashboard_path
 
       expect(response.body).to include(launcher)
-      expect(response.body).to include(%(href="#{assistant_path(from: "panorama")}"))
+      expect(response.body).to match(%r{href="/assistant\?from=panorama[^"]*"})
       expect(response.body).to include('data-turbo-frame="assistant_sheet"')
     end
 
@@ -99,11 +99,25 @@ RSpec.describe "Velita", type: :request do
   describe "the drawer" do
     before { connect }
 
-    it "opens on Hoy's suggestions" do
-      get assistant_path(from: "panorama"), headers: { "Turbo-Frame" => "assistant_sheet" }
+    it "opens on Hoy's suggestions for the figures Hoy showed" do
+      get assistant_path(from: "panorama", seen: "veredicto,vs_cetes"), headers: { "Turbo-Frame" => "assistant_sheet" }
 
       expect(response.body).to include(I18n.t("assistant.questions.new.desde", pantalla: I18n.t("nav.panorama")))
       expect(response.body).to include(CGI.escapeHTML(I18n.t("assistant.questions.new.sugerencias.panorama.cetes")))
+      expect(response.body).not_to include(CGI.escapeHTML(I18n.t("assistant.questions.new.sugerencias.panorama.resultados")))
+    end
+
+    it "suggests nothing it cannot point at on an empty Hoy" do
+      get assistant_path(from: "panorama", seen: "veredicto"), headers: { "Turbo-Frame" => "assistant_sheet" }
+
+      expect(response.body).not_to include('id="assistant_suggestions"')
+      expect(response.body).not_to include(I18n.t("assistant.questions.new.de_lo_que_ves"))
+    end
+
+    it "tells Velita which of Hoy's figures were on screen" do
+      get dashboard_path
+
+      expect(response.body).to include(CGI.escapeHTML(assistant_path(from: "panorama", seen: "veredicto")))
     end
 
     it "opens with the question already written instead of suggestions" do
