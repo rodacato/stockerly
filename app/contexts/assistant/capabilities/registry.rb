@@ -4,7 +4,8 @@ module Assistant
     # listed cannot run, whoever asks for it — the planner included. One per
     # question: it remembers each asset's brief so capabilities share one read.
     class Registry
-      CAPABILITIES = [ GlossaryDefine, AssetQuote, AssetRange, AssetIndicators, AssetFundamentals, AssetObservations, AssetNews ]
+      CAPABILITIES = [ GlossaryDefine, AssetQuote, AssetRange, AssetIndicators, AssetFundamentals, AssetObservations, AssetNews,
+                       AssetEarnings, MarketPulse, ExchangeRate, CetesCurve ]
                        .index_by(&:name_in_registry).freeze
 
       def self.names = CAPABILITIES.keys

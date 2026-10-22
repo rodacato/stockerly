@@ -90,4 +90,30 @@ RSpec.describe Assistant::Domain::ContextSelector do
 
     expect(card.line).not_to include("</datos>")
   end
+  describe "market context" do
+    before do
+      create(:market_index, symbol: "IPC", name: "IPC Mexico", value: 54_000)
+      FxRateHistory.record(base: "USD", quote: "MXN", date: Date.current, rate: 18.2, source: "Banxico/SF43718")
+      CetesRateHistory.record(term: "28", date: Date.current - 3, rate: 7.25)
+    end
+
+    it "reads the market, the dollar and the CETES curve on any screen" do
+      expect(titles("¿Cómo están los índices?")).to eq([ "Contexto de mercado" ])
+      expect(titles("¿A cuánto está el dólar?")).to eq([ "Tipo de cambio USD/MXN" ])
+      expect(titles("¿Cuánto pagan los cetes?")).to include("CETES · última subasta de cada plazo")
+    end
+
+    it "does not pad a market question with the screen's quote" do
+      create(:asset, symbol: "NVDA", name: "NVIDIA", current_price: 187.42, price_updated_at: Time.current)
+
+      expect(titles("¿A cuánto está el dólar?", symbol: "NVDA")).to eq([ "Tipo de cambio USD/MXN" ])
+    end
+
+    it "reads the screen asset's earnings when the question asks for its report" do
+      asset = create(:asset, symbol: "NVDA", name: "NVIDIA", current_price: 187.42, price_updated_at: Time.current)
+      create(:earnings_event, asset: asset, report_date: Date.current + 30)
+
+      expect(titles("¿Cuándo reporta?", symbol: "NVDA")).to eq([ "Resultados de NVDA" ])
+    end
+  end
 end

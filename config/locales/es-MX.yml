@@ -450,14 +450,27 @@ es-MX:
       vacio: Tu instancia aún no rastrea ningún activo.
   assistant:
     cards:
+      antes_de_la_apertura: antes de la apertura
       cambio_del_dia: cambio del día %{change}
+      cetes: CETES · última subasta de cada plazo
+      cetes_plazo: "%{dias} días %{rate}% (%{date})"
+      despues_del_cierre: después del cierre
+      fear_greed_cripto: Fear & Greed · cripto
       fundamentales: Fundamentales de %{symbol}
       glosario: Glosario de Stockerly
       lectura_del: lectura del %{date}
+      mercado: Contexto de mercado
       observaciones: Lo que hicieron los indicadores de %{symbol}
+      proximo_reporte: 'Próximo reporte: %{date}, %{timing}'
       rango: Rango de 52 semanas · %{symbol}
       rango_cuerpo: mínimo %{low}, máximo %{high}
+      resultados: Resultados de %{symbol}
+      tipo_de_cambio: Tipo de cambio USD/MXN
+      tipo_de_cambio_del: vigente el %{date}
       titulares: Titulares de %{symbol}, citados tal cual
+      ultimo_reporte: 'Último reporte (%{date}): UPA %{actual}'
+      ultimo_reporte_vs: 'Último reporte (%{date}): UPA %{actual} contra %{estimated}
+        estimada'
     launcher:
       abrir: Pregúntale a Velita
       con_la_frase: Abre con esta frase ya escrita

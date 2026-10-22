@@ -64,4 +64,58 @@ RSpec.describe Assistant::Capabilities::Registry do
 
     expect(MarketData::Queries::AssetBrief).to have_received(:call).once
   end
+  describe "market context" do
+    it "reads the indices and a fresh crypto sentiment, each card with its date" do
+      create(:market_index, symbol: "IPC", name: "IPC Mexico", value: 54_000, change_percent: 0.6, is_open: false)
+      create(:fear_greed_reading, :extreme_fear)
+
+      cards = registry.call("market.pulse").cards
+
+      expect(cards.first.body).to eq("IPC Mexico 54,000.00 +0.6% (cerrado)")
+      expect(cards.last).to have_attributes(figure: "15", body: "Miedo extremo")
+      expect(cards.map(&:source)).to all(include(I18n.l(Date.current, format: :long)))
+    end
+
+    it "says there is no market data rather than serving a stale reading" do
+      create(:fear_greed_reading, :stale)
+
+      expect(registry.call("market.pulse").reason).to eq(:no_data)
+    end
+
+    it "reads USD/MXN on a date, naming the day the rate is for" do
+      FxRateHistory.record(base: "USD", quote: "MXN", date: Date.new(2026, 5, 1), rate: 17.1234, source: "Banxico/SF43718")
+
+      card = registry.call("fx.rate", date: "2026-05-03").cards.sole
+
+      expect(card).to have_attributes(figure: "17.1234", source: "Banxico/SF43718",
+                                      body: "vigente el #{I18n.l(Date.new(2026, 5, 1), format: :long)}")
+    end
+
+    it "reads no rate for a future or malformed date" do
+      FxRateHistory.record(base: "USD", quote: "MXN", date: Date.current, rate: 18.2, source: "Banxico/SF43718")
+
+      expect(registry.call("fx.rate").cards.sole.figure).to eq("18.2000")
+      expect(registry.call("fx.rate", date: (Date.current + 1).iso8601).reason).to eq(:no_data)
+      expect(registry.call("fx.rate", date: "el 3 de mayo").reason).to eq(:no_data)
+    end
+
+    it "reads the CETES curve term by term" do
+      CetesRateHistory.record(term: "28", date: Date.new(2026, 10, 15), rate: 7.25)
+
+      expect(registry.call("cetes.curve").cards.sole.body).to eq("28 días 7.25% (#{I18n.l(Date.new(2026, 10, 15), format: :long)})")
+    end
+
+    it "reads the next report and the last surprise of an asset" do
+      create(:earnings_event, asset: asset, report_date: Date.current + 30, timing: :after_market_close)
+      create(:earnings_event, asset: asset, report_date: Date.current - 60, estimated_eps: 0.64, actual_eps: 0.68)
+
+      body = registry.call("asset.earnings", symbol: "NVDA").cards.sole.body
+
+      expect(body).to include("después del cierre", "UPA 0.68 contra 0.64 estimada")
+    end
+
+    it "has no earnings card for an asset with no dates" do
+      expect(registry.call("asset.earnings", symbol: "NVDA").reason).to eq(:no_data)
+    end
+  end
 end

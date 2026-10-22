@@ -54,4 +54,16 @@ RSpec.describe Assistant::Domain::Planner do
     expect(described_class.system("NVDA")).to end_with("Screen symbol: NVDA.")
     expect(described_class.system(nil)).not_to include("Screen symbol")
   end
+  it "tells the model today's date and which reads take no input" do
+    system = described_class.system(nil)
+
+    expect(system).to include("Today: #{Date.current.iso8601}.")
+    expect(system).to match(/- market\.pulse: .* Inputs: none\./)
+  end
+
+  it "passes a date only to a read that declares one" do
+    steps = described_class.steps(reply({ read: "fx.rate", date: "2026-05-03" }, { read: "asset.quote", symbol: "NVDA", date: "2026-05-03" }))
+
+    expect(steps).to eq([ [ "fx.rate", { date: "2026-05-03" } ], [ "asset.quote", { symbol: "NVDA" } ] ])
+  end
 end
