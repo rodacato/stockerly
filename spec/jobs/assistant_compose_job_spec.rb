@@ -60,7 +60,7 @@ RSpec.describe AssistantComposeJob do
 
     shown = broadcasts("assistant:#{conversation.token}")
     expect(shown).not_to be_empty
-    expect(shown.join).not_to include("80")
+    expect(shown.join).not_to include("Llegará a 80")
     expect(message.reload).to be_discarded
   end
 
@@ -149,5 +149,30 @@ RSpec.describe AssistantComposeJob do
 
       expect(planner.with(body: hash_including("model" => "claude-haiku-5-5"))).to have_been_requested
     end
+  end
+  # D172: a follow-up carries the earlier questions, never their answers or
+  # cards, so a figure from an earlier turn cannot reach this one.
+  it "sends the earlier questions of the conversation, and nothing they answered" do
+    conversation.messages.create!(question: "¿Cómo está el mercado?", answer: "El IPC sube 0.6 [1].", status: :answered,
+                                  created_at: 2.minutes.ago, cards: [ { kind: "market", title: "Contexto de mercado", body: "IPC 0.6" } ])
+    stream("El RSI de NVDA está en 72.4 [1].")
+
+    described_class.perform_now(message.id)
+
+    sent = ->(request) { JSON.parse(request.body) }
+    expect(a_request(:post, url).with do |request|
+      content = sent.call(request)["messages"].sole["content"]
+      content.include?("- ¿Cómo está el mercado?") && content.include?("Pregunta: ¿Qué significa el RSI?") &&
+        content.exclude?("0.6") && sent.call(request)["system"].exclude?("Contexto de mercado")
+    end).to have_been_made
+  end
+
+  it "asks the first question of a conversation as it was written" do
+    stream("El RSI de NVDA está en 72.4 [1].")
+
+    described_class.perform_now(message.id)
+
+    expect(a_request(:post, url).with { |request| JSON.parse(request.body)["messages"] == [ { "role" => "user", "content" => "¿Qué significa el RSI?" } ] })
+      .to have_been_made
   end
 end

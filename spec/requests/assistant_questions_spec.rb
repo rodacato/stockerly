@@ -65,4 +65,44 @@ RSpec.describe "Assistant questions", type: :request do
     expect(response).to redirect_to(settings_assistant_path)
     expect(AssistantMessage.count).to eq(0)
   end
+  describe "earlier conversations (D172)" do
+    let!(:older) { AssistantConversation.create!(token: "old", symbol: "NVDA", screen: "activos") }
+    let!(:newer) { AssistantConversation.create!(token: "new") }
+
+    before do
+      connect
+      older.messages.create!(question: "¿Qué es el RSI?", created_at: 2.days.ago, status: :answered, answer: "Mide el impulso [1].",
+                             cards: [ { "kind" => "glossary", "title" => "RSI (14)", "body" => "Mide el impulso", "figure" => nil, "source" => nil } ])
+      newer.messages.create!(question: "¿Cómo está el mercado?", created_at: 1.hour.ago)
+    end
+
+    it "lists them, the one asked last first" do
+      get assistant_conversations_path
+
+      expect(response.body.index("¿Cómo está el mercado?")).to be < response.body.index("¿Qué es el RSI?")
+      expect(response.body).to include(assistant_path(c: "old"))
+    end
+
+    it "reopens one where it stopped, under its own token, screen and symbol" do
+      get assistant_path(c: "old")
+
+      expect(response.body).to include("¿Qué es el RSI?", "Mide el impulso", I18n.t("assistant.questions.new.sobre", symbol: "NVDA"))
+      expect(response.body).to include('value="old"')
+      expect(response.body).not_to include("assistant_suggestions")
+    end
+
+    it "starts a fresh conversation for a token it does not know" do
+      get assistant_path(c: "nope")
+
+      expect(response.body).not_to include('value="nope"', "¿Qué es el RSI?")
+    end
+
+    it "lists nothing when nothing was asked" do
+      AssistantConversation.destroy_all
+
+      get assistant_conversations_path
+
+      expect(response.body).to include(I18n.t("assistant.conversations.index.vacio"))
+    end
+  end
 end

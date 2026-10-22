@@ -54,9 +54,29 @@ RSpec.describe "Velita's drawer", type: :system, js: true do
     perform_enqueued_jobs
 
     within("dialog.assistant-sheet") do
-      expect(page).to have_text("RSI (14) · NVDA")
       expect(page).to have_text("El RSI de NVDA está en 72.4 [2].")
       expect(page).to have_text(I18n.t("assistant.questions.answer.no_es_recomendacion"))
+      expect(page).to have_css("summary", text: "RSI (14) · NVDA")
+      expect(page).to have_no_css("section[id$='_2']", text: "72.4")
+
+      click_link "[2]"
+
+      expect(page).to have_css("section[id$='_2']", text: "72.4")
+    end
+  end
+
+  it "reopens an earlier conversation from its history" do
+    AssistantConversation.create!(token: "ayer", screen: "panorama")
+                         .messages.create!(question: "¿Qué es el VIX?", status: :answered, answer: "Mide la volatilidad.", created_at: 1.day.ago)
+    visit dashboard_path
+    open_velita
+
+    within("dialog.assistant-sheet") do
+      find("a[aria-label='#{I18n.t("assistant.sheet_header.anteriores")}']").click
+      click_link "¿Qué es el VIX?"
+
+      expect(page).to have_text("Mide la volatilidad.")
+      expect(page).to have_css("input[name='question[token]'][value='ayer']", visible: :all)
     end
   end
 

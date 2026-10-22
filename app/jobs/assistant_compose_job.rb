@@ -36,11 +36,18 @@ class AssistantComposeJob < ApplicationJob
   def plan(message, connection, symbol)
     gateway = Assistant::Gateways::AnthropicMessages.new(base_url: connection[:base_url], api_key: connection[:api_key].to_s,
                                                          model: connection[:planner_model] || connection[:model])
-    reply = gateway.complete(system: Assistant::Domain::Planner.system(symbol), messages: [ { role: "user", content: message.question } ])
+    reply = gateway.complete(system: Assistant::Domain::Planner.system(symbol), messages: [ { role: "user", content: asked(message) } ])
     Assistant::Domain::Planner.steps(reply)
   rescue Assistant::Gateways::AnthropicMessages::Error => e
     Rails.logger.info("[assistant] planner failed, using the selector: #{e.message}")
     []
+  end
+
+  # Earlier questions only, never their answers or cards: a follow-up resolves,
+  # and the numbers gate still sees only this turn's reads (D172).
+  def asked(message)
+    earlier = message.conversation.messages.where(created_at: ...message.created_at).last(Assistant::Domain::Prompt::EARLIER)
+    Assistant::Domain::Prompt.question(message.question, earlier: earlier.map(&:question))
   end
 
   def stream(message, connection, cards)
@@ -48,7 +55,7 @@ class AssistantComposeJob < ApplicationJob
                                                          model: connection[:model])
     answer = +""
     flushed_at = 0.0
-    gateway.stream(system: Assistant::Domain::Prompt.system(cards), messages: [ { role: "user", content: message.question } ]) do |text|
+    gateway.stream(system: Assistant::Domain::Prompt.system(cards), messages: [ { role: "user", content: asked(message) } ]) do |text|
       answer << text
       now = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       next if now - flushed_at < FLUSH_EVERY

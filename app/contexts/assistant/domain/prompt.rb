@@ -30,6 +30,17 @@ module Assistant
       end
 
       def self.context_text(cards) = cards.map(&:line).join("\n")
+
+      EARLIER = 3
+
+      # The question as the models receive it: with the conversation's earlier
+      # questions ahead of it, so "¿y el IPC?" knows what it follows.
+      def self.question(text, earlier: [])
+        return text if earlier.empty?
+
+        "Preguntas anteriores de esta conversación, solo para entender a qué se refiere:\n" \
+          "#{earlier.map { |asked| "- #{asked}" }.join("\n")}\n\nPregunta: #{text}"
+      end
     end
   end
 end

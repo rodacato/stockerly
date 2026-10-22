@@ -18,7 +18,8 @@ module Assistant
         Never answer the question. Reply with only a JSON array, no prose and no code fence, where each
         element is {"read": "<name>", ...inputs}. Prefer fewer reads. Use glossary.define for each
         financial term the question asks about. If the question names no symbol and a screen symbol is
-        given, the question is about that symbol. If nothing below holds what it needs, reply [].
+        given, the question is about that symbol. Earlier questions, when given, only say what a short
+        follow-up refers to. If nothing below holds what it needs, reply [].
       TEXT
 
       def self.system(symbol)

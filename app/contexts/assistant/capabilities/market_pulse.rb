@@ -29,7 +29,7 @@ module Assistant
 
         card(kind: "sentiment", title: I18n.t("assistant.cards.fear_greed_cripto"), figure: reading[:value].to_s,
              body: I18n.t("comun.clasificacion.#{reading[:classification]}", default: nil),
-             source: "#{reading[:source]} · #{long_date(reading[:as_of])}")
+             source: "#{source_label(reading[:source])} · #{long_date(reading[:as_of])}")
       end
     end
   end
