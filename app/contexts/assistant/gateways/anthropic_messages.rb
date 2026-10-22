@@ -5,7 +5,10 @@ module Assistant
     class AnthropicMessages
       class Error < StandardError; end
 
+      Verification = Data.define(:status, :detail)
+
       API_VERSION = "2023-06-01"
+      VERIFY_STATUSES = { 401 => :unauthorized, 403 => :unauthorized, 404 => :not_found }.freeze
 
       def initialize(base_url:, api_key:, model:, timeout: 90)
         @base_url = base_url
@@ -18,8 +21,7 @@ module Assistant
         parser = EventStream.new
         failed = +""
         connection.post("/v1/messages") do |req|
-          req.headers.update("x-api-key" => @api_key, "anthropic-version" => API_VERSION,
-                             "content-type" => "application/json")
+          req.headers.update(headers)
           req.body = JSON.generate(model: @model, max_tokens:, stream: true, system:, messages:)
           req.options.on_data = proc do |chunk, _bytes, env|
             next failed << chunk if env&.status.to_i >= 400
@@ -32,7 +34,46 @@ module Assistant
         raise Error, e.message
       end
 
+      def verify
+        response = verify_connection.post("/v1/messages") do |req|
+          req.headers.update(headers)
+          req.body = JSON.generate(model: @model, max_tokens: 1, messages: [ { role: "user", content: "ping" } ])
+        end
+        verification_for(response)
+      rescue Faraday::TimeoutError => e
+        Verification.new(status: :timeout, detail: redact(e.message))
+      rescue Faraday::ConnectionFailed => e
+        status = e.wrapped_exception.is_a?(Timeout::Error) ? :timeout : :unreachable
+        Verification.new(status:, detail: redact(e.message))
+      rescue Faraday::Error => e
+        Verification.new(status: :unreachable, detail: redact(e.message))
+      end
+
       private
+
+      def headers
+        { "x-api-key" => @api_key, "anthropic-version" => API_VERSION, "content-type" => "application/json" }
+      end
+
+      def verification_for(response)
+        return Verification.new(status: :ok, detail: nil) if response.status < 400
+
+        status = VERIFY_STATUSES.fetch(response.status, :failed)
+        Verification.new(status:, detail: redact(provider_message(response)))
+      end
+
+      def provider_message(response)
+        body = JSON.parse(response.body.to_s)
+        message = body.dig("error", "message") if body.is_a?(Hash) && body["error"].is_a?(Hash)
+        message.presence || response.status.to_s
+      rescue JSON::ParserError
+        response.status.to_s
+      end
+
+      # A provider or a proxy may echo the request back; the key must never reach the UI.
+      def redact(text)
+        @api_key.present? ? text.to_s.gsub(@api_key, "[redacted]") : text.to_s
+      end
 
       def handle(event)
         case event["type"]
@@ -47,6 +88,13 @@ module Assistant
         @connection ||= Faraday.new(url: @base_url) do |f|
           f.options.timeout = @timeout
           f.options.open_timeout = 10
+        end
+      end
+
+      def verify_connection
+        Faraday.new(url: @base_url) do |f|
+          f.options.timeout = 10
+          f.options.open_timeout = 5
         end
       end
 
