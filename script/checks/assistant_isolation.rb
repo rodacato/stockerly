@@ -19,6 +19,7 @@ module Checks
       "app/views/settings/assistants/**",
       "app/views/assistant/**",
       "config/routes.rb",
+      "config/initializers/event_subscriptions.rb",
       "spec/**"
     ].freeze
 

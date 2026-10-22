@@ -135,6 +135,9 @@ Rails.application.routes.draw do
     get    "password",     to: "settings#password",             as: :edit_password
     delete "trading-data", to: "settings#destroy_trading_data", as: :trading_data
     delete "account",      to: "settings#destroy_account",      as: :account
+    resource :assistant, only: [ :show, :update ], controller: "settings/assistants" do
+      patch :verify
+    end
   end
   resource :profile,   only: [ :update ]
   patch  "profile/password",    to: "profiles#change_password",    as: :change_password

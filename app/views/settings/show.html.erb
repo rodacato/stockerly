@@ -72,6 +72,8 @@
                title: t(".integraciones"), description: t(".integraciones_desc"), badge: @integrations_count %>
     <%= render "components/nav_row", icon: "description", path: admin_logs_path,
                title: t(".registros"), description: t(".registros_desc") %>
+    <%= render "components/nav_row", icon: "psychology", path: settings_assistant_path,
+               title: t(".asistente"), description: t(".asistente_desc") %>
     <%= render "components/nav_row", icon: "monitor_heart", path: admin_settings_path,
                title: t(".estado"), description: t(".estado_desc") %>
     <%# No failed-jobs badge: it lives in another database, and counting it on

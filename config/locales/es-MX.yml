@@ -899,6 +899,7 @@ es-MX:
         arg:
           default: 'debe ser uno de: %{list}'
           range: debe estar entre %{list_left} y %{list_right}
+      insecure_host: debe usar https, o http solo dentro de tu red
       int?: debe ser un número entero
       invalid_country_code: debe ser un código ISO de dos letras
       invalid_date: Esa fecha no es válida.
@@ -1992,6 +1993,34 @@ es-MX:
       guardar: Guardar cambios
       nombre: Nombre
       titulo: Nombre y correo
+    assistants:
+      show:
+        api_key_placeholder: Pega tu API key
+        campos:
+          api_key: API key
+          base_url: Host
+          model: Modelo
+        conexion: Conexión
+        conexion_desc: A qué modelo le pregunta. Tu pregunta y los datos de mercado
+          que consulta se envían a este host; tus posiciones no.
+        estado:
+          conectada: Conectada
+          no_responde: No responde
+          sin_configurar: Sin configurar
+          sin_verificar: Sin verificar
+        fallas:
+          failed: El host respondió con un error. Vuelve a verificar en un momento.
+          not_found: El host no reconoce el modelo o la dirección. Revisa los dos.
+          timeout: El host no respondió en 10 s. Revisa la dirección y que el servicio
+            esté corriendo en tu red.
+          unauthorized: El host rechazó la API key.
+          unreachable: No se pudo llegar al host. Revisa la dirección.
+        guardar: Guardar
+        sin_conexion: Sin conexión
+        titulo: Asistente
+        verificar: Verificar conexión
+      update:
+        guardada: Conexión guardada. Verifícala para saber si responde.
     destroy_account:
       listo: Tu cuenta y tus datos se borraron.
     destroy_trading_data:
@@ -2004,6 +2033,8 @@ es-MX:
       password_confirmation: Confirmar nueva contraseña
       titulo: Contraseña
     show:
+      asistente: Asistente
+      asistente_desc: A qué modelo le pregunta, y si responde
       avisos_campana: Todo aviso llega a tu campana; eso no se apaga. El correo sí.
       avisos_titulo: Avisos
       ayuda: Ayuda
