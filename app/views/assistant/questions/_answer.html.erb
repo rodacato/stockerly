@@ -4,14 +4,13 @@
   <div class="flex min-w-0 flex-1 flex-col gap-1.5 pt-1.5">
     <% if message.answered? || (message.streaming? && message.answer.present?) %>
       <p class="text-[15px] leading-relaxed text-fg-default"><%= assistant_answer_with_citations(message) %></p>
-      <% if message.answered? %>
-        <p class="text-xs text-fg-subtle"><%= t("assistant.questions.answer.no_es_recomendacion") %></p>
-      <% end %>
     <% elsif message.discarded? %>
       <p class="text-sm text-fg-subtle"><%= t("assistant.questions.answer.descartada") %></p>
+      <%= render "assistant/questions/retry", message: message %>
     <% elsif message.failed? %>
       <%= link_to t("assistant.questions.answer.fallo"), settings_assistant_path, data: { turbo_frame: "_top" },
                   class: "text-sm text-negative-fg underline-offset-2 hover:underline" %>
+      <%= render "assistant/questions/retry", message: message %>
     <% elsif message.pending? %>
       <p class="text-sm text-fg-subtle"><%= t("assistant.questions.answer.buscando") %></p>
     <% else %>

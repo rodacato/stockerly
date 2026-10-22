@@ -490,7 +490,6 @@ es-MX:
           la descarté. Los datos que leí sí son de Stockerly.
         escribiendo: Escribiendo…
         fallo: El modelo no respondió. Revisa la conexión en Ajustes · Asistente.
-        no_es_recomendacion: Es una lectura de datos, no una recomendación.
       create:
         sin_conexion: Primero conecta un modelo que responda.
       form:
@@ -505,6 +504,7 @@ es-MX:
         de_lo_que_ves: De lo que estás viendo
         desde: Desde %{pantalla} · no ve tus posiciones
         desde_aqui: No ve tus posiciones.
+        no_es_recomendacion: Es una lectura de datos, no una recomendación.
         sin_conexion: Para preguntar, primero conecta un modelo que responda.
         sobre: Sobre %{symbol} · no ve tus posiciones
         sugerencias:
@@ -517,6 +517,8 @@ es-MX:
             resultados: "¿Qué es un reporte de resultados?"
             vs_cetes: "¿Qué significa «vs CETES»?"
         titulo: Pregunta
+      retry:
+        preguntar_de_nuevo: Preguntar de nuevo
       sources:
         lo_que_lei: Lo que leí
     sheet_header:

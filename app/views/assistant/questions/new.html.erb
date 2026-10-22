@@ -35,9 +35,9 @@
             <% end %>
           </section>
         <% end %>
-        <div id="assistant_messages" class="flex flex-col gap-6">
-          <%= render partial: "assistant/questions/message", collection: messages, as: :message %>
-        </div>
+        <%# One line for the whole thread, not one per answer; hidden until something was asked. %>
+        <div id="assistant_messages" class="peer flex flex-col gap-6"><%= render partial: "assistant/questions/message", collection: messages, as: :message %></div>
+        <p class="hidden text-xs text-fg-subtle peer-has-[article]:block"><%= t(".no_es_recomendacion") %></p>
       </div>
       <%= render "assistant/questions/form", token: @token, symbol: @symbol, screen: @from, asked: messages.present?, value: @question.presence,
                  autofocus: !turbo_frame_request? || @question.present? %>
