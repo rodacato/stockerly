@@ -11,6 +11,8 @@
       <p class="text-sm text-fg-subtle"><%= t("assistant.questions.answer.descartada") %></p>
     <% elsif message.failed? %>
       <p class="text-sm text-negative-fg"><%= t("assistant.questions.answer.fallo") %></p>
+    <% elsif message.pending? %>
+      <p class="text-sm text-fg-subtle"><%= t("assistant.questions.answer.buscando") %></p>
     <% else %>
       <p class="text-sm text-fg-subtle"><%= t("assistant.questions.answer.escribiendo") %></p>
     <% end %>

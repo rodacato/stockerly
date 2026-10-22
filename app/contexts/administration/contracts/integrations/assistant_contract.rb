@@ -8,6 +8,7 @@ module Administration
           required(:base_url).filled(:string)
           required(:model).filled(:string)
           optional(:api_key).maybe(:string)
+          optional(:planner_model).maybe(:string)
         end
 
         # The key travels in a header, so plain http is allowed only where it

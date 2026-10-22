@@ -48,7 +48,7 @@ module Settings
     end
 
     def assistant_params
-      params.expect(assistant: [ :base_url, :api_key, :model ])
+      params.expect(assistant: [ :base_url, :api_key, :planner_model, :model ])
     end
   end
 end

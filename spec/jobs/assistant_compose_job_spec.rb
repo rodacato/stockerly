@@ -79,4 +79,75 @@ RSpec.describe AssistantComposeJob do
 
     expect(a_request(:post, url)).not_to have_been_made
   end
+
+  describe "choosing the cards" do
+    let!(:asset) { create(:asset, symbol: "NVDA", name: "NVIDIA", current_price: 110, price_updated_at: Time.current) }
+    let(:conversation) { AssistantConversation.create!(token: "t2", symbol: "NVDA") }
+    let(:message) { conversation.messages.create!(question: "¿Cómo va la empresa?", model: "claude-haiku-5-5") }
+
+    before do
+      create(:technical_reading, asset: asset, readings: { "close" => 110.0, "rsi" => 72.4 })
+      create(:asset_fundamental, asset: asset)
+      stub_request(:post, url).with(body: hash_including("stream" => true))
+                              .to_return(status: 200, headers: { "Content-Type" => "text/event-stream" }, body: "")
+    end
+
+    def planner_answers(*reads, status: 200)
+      text = reads.map { |name, input| { read: name, **input } }.to_json
+      stub_request(:post, url).with { |request| !JSON.parse(request.body).key?("stream") }
+                              .to_return(status: status, body: { content: [ { type: "text", text: text } ] }.to_json)
+    end
+
+    def kinds = message.reload.cards.pluck("kind")
+
+    it "reads what the planner chose, from the registry" do
+      planner_answers([ "asset.fundamentals", { symbol: "nvda" } ])
+
+      described_class.perform_now(message.id)
+
+      expect(kinds).to eq(%w[fundamentals])
+    end
+
+    it "shows the cards before the prose, in their own broadcast" do
+      planner_answers([ "asset.fundamentals", { symbol: "NVDA" } ])
+
+      described_class.perform_now(message.id)
+
+      expect(broadcasts("assistant:#{conversation.token}").first).to include("assistant_message_#{message.id}")
+    end
+
+    it "ignores a name outside the registry and falls back to the selector" do
+      planner_answers([ "portfolio.positions", { symbol: "NVDA" } ])
+
+      described_class.perform_now(message.id)
+
+      expect(kinds).to eq(%w[quote fundamentals])
+    end
+
+    it "falls back to the selector when the provider cannot plan" do
+      planner_answers(status: 400)
+
+      described_class.perform_now(message.id)
+
+      expect(kinds).to eq(%w[quote fundamentals])
+      expect(message).not_to be_failed
+    end
+
+    it "falls back when the planner reads nothing" do
+      planner_answers
+
+      described_class.perform_now(message.id)
+
+      expect(kinds).to eq(%w[quote fundamentals])
+    end
+
+    it "asks the planner with the planner model when one is set" do
+      Integration.find_by(provider_name: "Asistente").update!(settings: { "base_url" => "https://api.anthropic.com", "model" => "claude-sonnet-5-5", "planner_model" => "claude-haiku-5-5" })
+      planner = planner_answers([ "asset.fundamentals", { symbol: "NVDA" } ])
+
+      described_class.perform_now(message.id)
+
+      expect(planner.with(body: hash_including("model" => "claude-haiku-5-5"))).to have_been_requested
+    end
+  end
 end

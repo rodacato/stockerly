@@ -45,6 +45,31 @@ RSpec.describe "Ajustes · Asistente", type: :request do
     expect(connection.setting("model")).to eq("claude-sonnet-5-5")
   end
 
+  it "labels the two models, planning first" do
+    get settings_assistant_path
+
+    planner = response.body.index(I18n.t("settings.assistants.show.campos.planner_model"))
+    composer = response.body.index(I18n.t("settings.assistants.show.campos.model"))
+    expect(planner).to be < composer
+    expect(response.body).to include(I18n.t("settings.assistants.show.modelos_hint"))
+  end
+
+  it "saves a separate planner model" do
+    patch settings_assistant_path, params: { assistant: valid.merge(planner_model: " claude-haiku-5-5 ", model: "claude-sonnet-5-5") }
+
+    expect(connection.setting("planner_model")).to eq("claude-haiku-5-5")
+    expect(Administration::Queries::AssistantConnection.call)
+      .to include(planner_model: "claude-haiku-5-5", model: "claude-sonnet-5-5")
+  end
+
+  it "plans with the composing model when the planner field is left blank" do
+    patch settings_assistant_path, params: { assistant: valid.merge(planner_model: "claude-haiku-5-5") }
+    patch settings_assistant_path, params: { assistant: valid.merge(planner_model: "  ", model: "claude-sonnet-5-5") }
+
+    expect(connection.settings).not_to have_key("planner_model")
+    expect(Administration::Queries::AssistantConnection.call[:planner_model]).to eq("claude-sonnet-5-5")
+  end
+
   # Security review S1: the stored key must not follow a changed host unasked.
   it "asks for the key again before it goes to a new host" do
     patch settings_assistant_path, params: { assistant: valid }
