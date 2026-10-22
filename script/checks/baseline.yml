@@ -29,3 +29,8 @@ use-cases:
 # handler resolves no MarketData row. Keep the key so a new finding lands under
 # a heading that already reads as debt.
 boundaries:
+
+# Empty on purpose: ADR-031 §4 landed before any assistant code, so there is no
+# debt to record. Keep the key so a new finding lands under a heading that
+# already reads as debt.
+assistant-isolation:
