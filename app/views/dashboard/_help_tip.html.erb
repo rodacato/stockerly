@@ -25,4 +25,16 @@
       <p class="text-xs text-fg-subtle"><%= t("dashboard.ayuda.veredicto.pie") %></p>
     <% end %>
   </div>
+  <% if velita_visible? %>
+    <%= link_to velita_question_path(title),
+                data: { turbo_frame: "assistant_sheet", turbo_action: "advance" },
+                class: "flex items-center gap-3 bg-primary-muted px-4 py-3 transition-colors hover:bg-primary-muted/70" do %>
+      <%= render "assistant/velita", classes: "size-9 shrink-0 text-primary" %>
+      <span class="min-w-0 flex-1">
+        <span class="block text-sm font-semibold text-primary-fg"><%= t("assistant.launcher.abrir") %></span>
+        <span class="block text-xs text-fg-subtle"><%= t("assistant.launcher.con_la_frase") %></span>
+      </span>
+      <%= icon_svg "arrow_forward", class: "text-lg text-primary-fg", "aria-hidden": "true" %>
+    <% end %>
+  <% end %>
 </div>

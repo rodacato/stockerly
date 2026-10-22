@@ -27,6 +27,13 @@ module Settings
       end
     end
 
+    def velita
+      Administration::UseCases::Integrations::ShowVelita.call(visible: params[:show_velita] == true)
+      head :ok
+    rescue ActiveRecord::RecordNotFound
+      head :not_found
+    end
+
     private
 
     def configure

@@ -456,6 +456,9 @@ es-MX:
       rango: Rango de 52 semanas · %{symbol}
       rango_cuerpo: mínimo %{low}, máximo %{high}
       titulares: Titulares de %{symbol}, citados tal cual
+    launcher:
+      abrir: Pregúntale a Velita
+      con_la_frase: Abre con esta frase ya escrita
     questions:
       answer:
         descartada: La respuesta usaba una cifra que no está en estos datos, así que
@@ -474,10 +477,22 @@ es-MX:
       message:
         tu_pregunta: Tu pregunta
       new:
+        cerrar: Cerrar
         conectar: Conectar un modelo
+        de_lo_que_ves: De lo que estás viendo
+        desde: Desde %{pantalla} · no ve tus posiciones
         desde_aqui: No ve tus posiciones.
         sin_conexion: Para preguntar, primero conecta un modelo que responda.
         sobre: Sobre %{symbol} · no ve tus posiciones
+        sugerencias:
+          activo:
+            rango: "¿Dónde está frente a su rango del año?"
+            rsi: "¿Qué significa el RSI de %{symbol}?"
+            titulares: "¿Qué titulares hay de %{symbol}?"
+          panorama:
+            cetes: "¿Qué es un CETE a 28 días?"
+            resultados: "¿Qué es un reporte de resultados?"
+            vs_cetes: "¿Qué significa «vs CETES»?"
         titulo: Pregunta
   auth:
     contrasena: Contraseña
@@ -1092,6 +1107,16 @@ es-MX:
         guia: Para el "efectivo total" súmale la línea de inversiones de corto plazo.
           Es el colchón inmediato.
         nombre: Efectivo y equivalentes
+      cetes_28:
+        desc: 'Certificados de la Tesorería de la Federación: le prestas dinero al
+          gobierno federal por 28 días. Cada título vale 10 pesos al vencer y lo compras
+          con descuento; lo que ganas es esa diferencia. Banxico los subasta cada
+          semana a nombre de Hacienda.'
+        guia: La tasa se dice anual aunque el plazo sea de 28 días, así que no es
+          lo que ganas en un mes. En México es la referencia de dinero casi sin riesgo,
+          por eso Stockerly compara tu rendimiento contra ella. Al vencer puedes reinvertirlos
+          al mismo plazo.
+        nombre: CETES a 28 días
       change_in_working_capital:
         desc: 'Efectivo que entra o se queda atorado por cambios en cuentas por cobrar,
           inventarios y proveedores. Negativo: se quedó atorado.'
@@ -2051,6 +2076,11 @@ es-MX:
         guardar: Guardar
         sin_conexion: Sin conexión
         titulo: Asistente
+        velita: Mostrar a Velita
+        velita_desc: Aparece en cada pantalla y responde con los datos de Stockerly.
+          Apagada, la app queda como antes.
+        velita_sin_conexion: Para encenderla, primero conecta un modelo abajo. Apagada,
+          la app queda como antes.
         verificar: Verificar conexión
       update:
         guardada: Conexión guardada. Verifícala para saber si responde.

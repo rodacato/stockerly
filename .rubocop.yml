@@ -97,6 +97,7 @@ Lint/DuplicateBranch:
 Rails/HelperInstanceVariable:
   Exclude:
     - 'app/helpers/alerts_helper.rb'
+    - 'app/helpers/velita_helper.rb'
 
 # Hoisting a literal out of a loop buys nothing in an example that runs once.
 Performance/CollectionLiteralInLoop:

@@ -15,7 +15,8 @@ module Administration
 
         { base_url: row.setting("base_url"), model: row.setting("model"), api_key: row.active_api_key,
           masked_api_key: row.masked_api_key, status: row.connection_status.to_sym,
-          failure_tag: row.last_failure_tag, checked_at: row.last_sync_at }
+          failure_tag: row.last_failure_tag, checked_at: row.last_sync_at,
+          show_velita: row.setting("show_velita") == true }
       end
     end
   end
