@@ -182,7 +182,7 @@ module AlertsHelper
   # three phrases are assembled here against one key per condition.
   def suggested_rule_title(suggestion)
     t("alerts.index.sugerencias.#{suggestion.condition}.titulo",
-      symbol: suggestion.asset_symbol,
+      symbol: InstrumentLabel.short(suggestion.asset_symbol),
       percent: suggested_percent(suggestion))
   end
 

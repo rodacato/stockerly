@@ -71,7 +71,7 @@
           <% position = entry[:position] %>
           <li class="<%= card_classes("flex items-center gap-3 px-4 py-3") %>">
             <div class="min-w-0 flex-1">
-              <p class="font-mono text-sm font-bold text-fg-default"><%= position.asset.symbol %></p>
+              <p class="font-mono text-sm font-bold text-fg-default"><%= asset_label(position.asset) %></p>
               <p class="text-xs text-fg-subtle">
                 <%= t(".cerrada_linea",
                        fecha: l((position.closed_at || position.updated_at).to_date, format: :short),

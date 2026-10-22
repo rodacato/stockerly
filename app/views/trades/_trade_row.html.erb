@@ -4,7 +4,7 @@
 <% is_buy = trade.buy? %>
 <li id="<%= dom_id(trade) %>" class="<%= card_classes("group flex items-center gap-3 px-4 py-3") %>">
   <div class="min-w-0 flex-1">
-    <p class="font-mono text-sm font-bold text-fg-default"><%= trade.asset.symbol %></p>
+    <p class="font-mono text-sm font-bold text-fg-default"><%= asset_label(trade.asset) %></p>
     <p class="text-xs text-fg-subtle">
       <%= t("positions.index.movimiento_linea",
              fecha: l(trade.executed_at.to_date, format: :short),

@@ -106,7 +106,7 @@ RSpec.describe "Asset detail (adaptive by type)", type: :system do
     it "renders the yield card instead of tabs (MXN throughout)" do
       visit market_asset_path(cete.symbol)
 
-      expect(page).to have_content("CETES_28D")
+      expect(page).to have_content("CETES 28d")
       expect(page).to have_content("CETE")
       expect(page).to have_content("Detalle de la emisión")
       expect(page).to have_content("Avance al vencimiento")

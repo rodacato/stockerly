@@ -132,4 +132,11 @@ RSpec.describe AlertsHelper, type: :helper do
       expect(helper.alert_condition_summary(rule)).to eq("cruza 200 al alza")
     end
   end
+  describe "#suggested_rule_title" do
+    def suggestion(symbol) = Alerts::Domain::RuleSuggestions::Suggestion.new(condition: "cete_auction", asset_symbol: symbol, window_days: 3)
+
+    it "names a CETE by its term, not by its symbol" do
+      expect(helper.send(:suggested_rule_title, suggestion("CETES_28D"))).to eq("Tus CETES 28d están por vencer")
+    end
+  end
 end

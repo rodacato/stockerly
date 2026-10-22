@@ -7,7 +7,7 @@
   <div class="flex items-center gap-3">
     <div class="min-w-0 flex-1">
       <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <p class="font-mono text-sm font-bold text-fg-default"><%= asset.symbol %></p>
+        <p class="font-mono text-sm font-bold text-fg-default"><%= asset_label(asset) %></p>
         <span class="rounded-full bg-bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-fg-subtle">
           <%= t("assets.tracked.tier_#{tier}") %>
         </span>
@@ -18,7 +18,7 @@
       <%# Wraps rather than truncates: the state phrase is longer than a date,
           and a clipped explanation is worse than a taller row. %>
       <p class="text-xs <%= unnamed ? "text-warning" : "text-fg-subtle" %>">
-        <%= asset.name %> · <%= asset_type_label_es(asset.asset_type) %><%= " · #{t('assets.tracked.sin_fuente')}" if unnamed %>
+        <%= asset_display_name(asset) %> · <%= asset_type_label_es(asset.asset_type) %><%= " · #{t('assets.tracked.sin_fuente')}" if unnamed %>
       </p>
     </div>
 

@@ -997,6 +997,8 @@ es-MX:
     show:
       subtitulo: Por dónde empezar y a dónde llevar un error cuando algo no funciona.
       titulo: Ayuda y soporte
+  instrumentos:
+    cetes: CETES a %{dias} días
   mantenimiento:
     cuerpo: Stockerly está fuera de servicio mientras se hace mantenimiento. Vuelve
       en un rato.

@@ -29,7 +29,7 @@ RSpec.describe "CETES detail page", type: :system do
   it "displays the yield card with annualized rate" do
     visit market_asset_path(cetes.symbol)
 
-    expect(page).to have_content("CETES 28 días")
+    expect(page).to have_content("CETES a 28 días")
     expect(page).to have_content("CETE")
     expect(page).to have_content("Detalle de la emisión")
     expect(page).to have_content("11.15")

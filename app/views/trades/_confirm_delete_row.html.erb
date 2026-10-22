@@ -6,7 +6,7 @@
   <div class="min-w-0 flex-1">
     <p class="text-sm font-semibold text-negative-fg"><%= t("positions.index.confirmar_borrado") %></p>
     <p class="mt-0.5 text-xs text-negative-fg">
-      <span class="font-mono font-semibold"><%= trade.asset.symbol %></span> ·
+      <span class="font-mono font-semibold"><%= asset_label(trade.asset) %></span> ·
       <%= t("positions.index.movimiento_linea",
              fecha: l(trade.executed_at.to_date, format: :short),
              lado: t("positions.index.lado_#{trade.side}"),
