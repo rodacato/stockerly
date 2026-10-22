@@ -30,7 +30,9 @@ configured**. Invocation is the distinction, and it is the only one: nothing the
 may be rendered anywhere else (a screen, a notification, the daily brief).
 
 **2. It composes only over what it retrieved.** The model never computes, never answers from its
-own training, and never states a figure the app did not give it.
+own training, and never states a figure the app did not give it. (Concepts may come from the
+model's knowledge since the [second amendment of 2026-10-22](#amendment-2026-10-22-b--concepts-from-the-models-knowledge-figures-only-from-the-app);
+facts and figures may not.)
 
 - It reads the product only through a registry of capabilities wrapping existing read APIs. Each
   result carries its source and its `as_of`. No database grant, no generated SQL.
@@ -137,3 +139,44 @@ names the host so the owner knows which case applies. Nothing is persisted outsi
 - `CLAUDE.md`'s list of customer/supplier pairs gains Assistant → Trading.
 - The registry gains holdings capabilities. They return no data while the switch is off.
 - MCP (the plan's P2) stays after this, local only, against a registry that has stopped moving.
+
+## Amendment, 2026-10-22 (b) — concepts from the model's knowledge, figures only from the app
+
+**Context.** §2 says the model "never answers from its own training". In use, that makes the
+assistant an index: a question the glossary does not hold gets *"eso no está en el glosario"*, and
+a question the glossary does hold gets the glossary's sentence back. The owner wants an expert in
+the subjects he invests in — US and Mexican equities, crypto, CETES, USD/MXN — not a lookup:
+
+> *"quiero que el chatbot se sienta como un experto en los temas financieros que me interesan,
+> incluso sobre mis posiciones esta bien"*
+
+**Decision.** §2 splits what the model may say into two kinds.
+
+1. **Concepts may come from its knowledge.** What something is, how it is read, why it matters:
+   what an RSI measures, how a CETES auction works, why a split does not change a cost basis.
+2. **Facts and figures may not.** Anything about a specific asset, the market or the owner's
+   holdings comes only from what the registry read: prices, changes, dates, events, headlines,
+   amounts. **The numbers gate is unchanged.** A numeral absent from the cards still discards the
+   answer, so a concept is explained without figures of its own.
+3. **The glossary wins where it speaks.** When the cards carry a glossary entry, the explanation
+   follows it rather than a definition of the model's own, so the app and the assistant agree.
+4. **Citations mark the line.** A claim from the cards cites its block. What comes from knowledge
+   carries no citation, so the reader can see which is which.
+
+§3 holds in full: explaining a concept is description, never a recommendation.
+
+**Alternatives.**
+- *Keep §2 strict.* Rejected: it is the verdict above. An assistant limited to the glossary is a
+  slower glossary.
+- *Allow figures from knowledge too*, such as typical thresholds or historical levels. Rejected:
+  a figure the app did not produce cannot be checked against anything, and the gate is the one
+  claim of §2 a test can fail.
+
+**Consequences.**
+- The prompt's rules say this split. The gate, the registry and the planner do not change.
+- The cost is that a conceptual sentence has no source the reader can open. The missing citation
+  is the disclosure.
+- A good explanation that needs a number ("over 70 is overbought") is discarded unless the cards
+  hold that number. The glossary entries that carry such thresholds are the way to make one
+  available.
+
