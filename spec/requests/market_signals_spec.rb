@@ -28,6 +28,30 @@ RSpec.describe "Market Asset Detail — Señales", type: :request do
     expect(response.body).to include(I18n.t("market.signals.bollinger.inside"))
   end
 
+  # JTBD #8: each row opens what its indicator measures and how to read it.
+  # The keys are built from the row's indicator, so this is also the guarantee
+  # that every indicator the catalogue can emit has an entry (i18n-tasks cannot
+  # see dynamic keys).
+  it "explains every indicator it shows" do
+    create(:technical_reading, asset: asset,
+           readings: { "close" => 150.0, "rsi" => 50.0, "sma_50" => 145.0, "sma_200" => 130.0,
+                       "bb_upper" => 160.0, "bb_lower" => 136.0, "atr" => 3.0 })
+
+    get market_asset_path(asset.symbol)
+
+    %w[moving_average rsi bollinger atr].each do |indicator|
+      %w[nombre desc guia].each do |part|
+        expect(response.body).to include(CGI.escapeHTML(I18n.t("market.glosario.#{indicator}.#{part}", raise: true)))
+      end
+    end
+  end
+
+  it "explains nothing when there is no reading to explain" do
+    get market_asset_path(asset.symbol)
+
+    expect(response.body).not_to include(CGI.escapeHTML(I18n.t("market.glosario.rsi.guia")))
+  end
+
   it "omits the block when nothing has been computed for the asset" do
     get market_asset_path(asset.symbol)
 
