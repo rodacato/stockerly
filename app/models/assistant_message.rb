@@ -7,5 +7,7 @@ class AssistantMessage < ApplicationRecord
   enum :status, { pending: "pending", streaming: "streaming", answered: "answered", discarded: "discarded", failed: "failed" },
        default: :pending
 
-  validates :question, presence: true, length: { maximum: 500 }
+  MAX_QUESTION = 500
+
+  validates :question, presence: true, length: { maximum: MAX_QUESTION }
 end

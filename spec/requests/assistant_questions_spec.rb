@@ -47,6 +47,15 @@ RSpec.describe "Assistant questions", type: :request do
     expect(AssistantConversation.where(token: "abc").sole.messages.count).to eq(2)
   end
 
+  it "refuses an oversized question before choosing any card" do
+    connect
+
+    post assistant_questions_path, params: { question: { question: "RSI " * 200, token: "abc" } }, as: :turbo_stream
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(AssistantConversation.count).to eq(0)
+  end
+
   it "asks nothing of a connection that never answered" do
     connect(status: :disconnected)
 

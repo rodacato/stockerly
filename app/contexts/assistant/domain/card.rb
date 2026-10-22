@@ -5,7 +5,8 @@ module Assistant
     Card = Data.define(:kind, :title, :body, :figure, :source) do
       def self.from_h(hash) = new(**hash.symbolize_keys.slice(*members))
 
-      def line = [ title, body, figure, source ].compact_blank.join(" · ")
+      # Angle brackets go so third-party text (a headline) cannot close <datos>.
+      def line = [ title, body, figure, source ].compact_blank.join(" · ").delete("<>")
     end
   end
 end
