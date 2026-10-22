@@ -116,4 +116,36 @@ RSpec.describe Assistant::Domain::ContextSelector do
       expect(titles("¿Cuándo reporta?", symbol: "NVDA")).to eq([ "Resultados de NVDA" ])
     end
   end
+
+  describe "the owner's holdings" do
+    let(:user) { create(:user, preferred_currency: "USD", onboarded_at: Time.current) }
+    let!(:asset) { create(:asset, symbol: "NVDA", name: "NVIDIA", current_price: 120, price_updated_at: Time.current) }
+
+    before do
+      portfolio = user.portfolio || create(:portfolio, user: user)
+      position = create(:position, portfolio: portfolio, asset: asset, shares: 10, avg_cost: 100, status: :open)
+      create(:trade, portfolio: portfolio, position: position, asset: asset, side: :buy, shares: 10, price_per_share: 100,
+                     currency: "USD", fx_rate_at_execution: 1.0, executed_at: 30.days.ago)
+    end
+
+    def kinds(question, symbol: nil, holdings: true) = described_class.call(question: question, symbol: symbol, holdings: holdings).map(&:kind)
+
+    it "reads the portfolio when the question is about what the owner holds" do
+      expect(kinds("¿Cómo va lo mío?")).to eq(%w[portfolio positions])
+    end
+
+    it "reads that position on its asset's screen, beside what the question asks of the asset" do
+      expect(kinds("¿Cuánto llevo ganado y a cuánto cotiza?", symbol: "NVDA")).to eq(%w[position quote])
+    end
+
+    it "reads what is coming when the question asks" do
+      create(:earnings_event, asset: asset, report_date: 3.days.from_now.to_date)
+
+      expect(kinds("¿Qué viene para mis posiciones?")).to include("events")
+    end
+
+    it "reads nothing of the holdings with the switch off" do
+      expect(kinds("¿Cómo va lo mío?", holdings: false)).to be_empty
+    end
+  end
 end

@@ -41,7 +41,7 @@ RSpec.describe "Velita's drawer", type: :system, js: true do
     open_velita
 
     expect(page).to have_css("dialog.assistant-sheet[open]")
-    expect(page).to have_text(I18n.t("assistant.questions.new.sobre", symbol: "NVDA"))
+    expect(page).to have_text(I18n.t("assistant.questions.new.sobre", symbol: "NVDA", posiciones: I18n.t("assistant.questions.new.no_ve_tus_posiciones")))
     expect(page).to have_css("turbo-cable-stream-source[connected]", visible: :all)
     expect(page).to have_no_text(I18n.t("assistant.questions.new.no_es_recomendacion"))
 

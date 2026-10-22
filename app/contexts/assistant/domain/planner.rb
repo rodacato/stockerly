@@ -18,12 +18,14 @@ module Assistant
         Never answer the question. Reply with only a JSON array, no prose and no code fence, where each
         element is {"read": "<name>", ...inputs}. Prefer fewer reads. Use glossary.define for each
         financial term the question asks about. If the question names no symbol and a screen symbol is
-        given, the question is about that symbol. Earlier questions, when given, only say what a short
-        follow-up refers to. If nothing below holds what it needs, reply [].
+        given, the question is about that symbol, unless it asks about the user's own holdings as a
+        whole. A question about what the user holds, owns or has gained uses the portfolio reads when
+        they are listed. Earlier questions, when given, only say what a short follow-up refers to. If
+        nothing below holds what it needs, reply [].
       TEXT
 
-      def self.system(symbol)
-        lines = Capabilities::Registry::CAPABILITIES.values.map do |capability|
+      def self.system(symbol, holdings: false)
+        lines = Capabilities::Registry.available(holdings: holdings).values.map do |capability|
           inputs = (capability.required + capability.optional).map { |input| INPUTS.fetch(input) }
           "- #{capability.name_in_registry}: #{capability.description} Inputs: #{inputs.join('; ').presence || 'none'}."
         end
@@ -32,12 +34,12 @@ module Assistant
       end
 
       # Anything but a JSON array of objects is no plan; the caller falls back.
-      def self.steps(reply)
-        reads = parse(reply)
-        known, unknown = reads.partition { |read| Capabilities::Registry::CAPABILITIES.key?(read["read"]) }
+      def self.steps(reply, holdings: false)
+        listed = Capabilities::Registry.available(holdings: holdings)
+        known, unknown = parse(reply).partition { |read| listed.key?(read["read"]) }
         Rails.logger.info("[assistant] planner named outside the registry: #{unknown.pluck("read").inspect}") if unknown.any?
 
-        known.map { |read| [ read["read"], input(read) ] }.uniq.first(MAX_STEPS)
+        known.map { |read| [ read["read"], input(listed.fetch(read["read"]), read) ] }.uniq.first(MAX_STEPS)
       end
 
       def self.parse(reply)
@@ -49,8 +51,7 @@ module Assistant
         []
       end
 
-      def self.input(read)
-        capability = Capabilities::Registry::CAPABILITIES.fetch(read["read"])
+      def self.input(capability, read)
         read.slice(*(capability.required + capability.optional).map(&:to_s)).to_h do |key, value|
           value = key == "only" ? Array(value).map { |item| item.to_s.first(40) }.first(10) : value.to_s.strip.first(MAX_INPUT)
           [ key.to_sym, key == "symbol" ? value.upcase : value ]

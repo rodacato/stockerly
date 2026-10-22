@@ -5,13 +5,18 @@ module Assistant
     # question: it remembers each asset's brief so capabilities share one read.
     class Registry
       CAPABILITIES = [ GlossaryDefine, AssetQuote, AssetRange, AssetIndicators, AssetFundamentals, AssetObservations, AssetNews,
-                       AssetEarnings, MarketPulse, ExchangeRate, CetesCurve ]
+                       AssetEarnings, MarketPulse, ExchangeRate, CetesCurve, PortfolioPositions, PortfolioEvents ]
                        .index_by(&:name_in_registry).freeze
 
       def self.names = CAPABILITIES.keys
 
+      # With the switch off a holdings read is not listed, so it reads as unknown to everyone.
+      def self.available(holdings:) = holdings ? CAPABILITIES : CAPABILITIES.reject { |_, capability| capability.holdings? }
+
+      def initialize(holdings: false) = @capabilities = self.class.available(holdings: holdings)
+
       def call(name, **input)
-        capability = CAPABILITIES[name.to_s]
+        capability = @capabilities[name.to_s]
         return Result.failed(name, :unknown) unless capability
         return Result.failed(name, :invalid_input) unless capability.accepts?(input)
 

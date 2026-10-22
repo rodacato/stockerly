@@ -29,15 +29,17 @@ class AssistantComposeJob < ApplicationJob
   # it picked holds no data, the deterministic selector answers instead.
   def choose_cards(message, connection)
     symbol = message.conversation.symbol
-    planned = Assistant::Capabilities::Registry.new.cards(plan(message, connection, symbol))
-    planned.presence || Assistant::Domain::ContextSelector.call(question: message.question, symbol: symbol)
+    holdings = connection[:read_holdings] == true
+    planned = Assistant::Capabilities::Registry.new(holdings: holdings).cards(plan(message, connection, symbol, holdings))
+    planned.presence || Assistant::Domain::ContextSelector.call(question: message.question, symbol: symbol, holdings: holdings)
   end
 
-  def plan(message, connection, symbol)
+  def plan(message, connection, symbol, holdings)
     gateway = Assistant::Gateways::AnthropicMessages.new(base_url: connection[:base_url], api_key: connection[:api_key].to_s,
                                                          model: connection[:planner_model] || connection[:model])
-    reply = gateway.complete(system: Assistant::Domain::Planner.system(symbol), messages: [ { role: "user", content: asked(message) } ])
-    Assistant::Domain::Planner.steps(reply)
+    reply = gateway.complete(system: Assistant::Domain::Planner.system(symbol, holdings: holdings),
+                             messages: [ { role: "user", content: asked(message) } ])
+    Assistant::Domain::Planner.steps(reply, holdings: holdings)
   rescue Assistant::Gateways::AnthropicMessages::Error => e
     Rails.logger.info("[assistant] planner failed, using the selector: #{e.message}")
     []

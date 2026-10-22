@@ -27,9 +27,30 @@
     </button>
   </section>
 
+  <% sharing = connected && @connection[:read_holdings] %>
+  <section class="<%= card_classes("flex items-center gap-4 p-5") %>"
+           data-controller="toggle"
+           data-toggle-url-value="<%= holdings_settings_assistant_path %>"
+           data-toggle-field-value="read_holdings"
+           data-toggle-reload-value="true">
+    <div class="min-w-0 flex-1">
+      <p class="font-semibold text-fg-default"><%= t(".posiciones") %></p>
+      <p class="text-sm text-fg-subtle">
+        <%= connected ? t(".posiciones_desc", host: assistant_host_label(@connection)) : t(".posiciones_sin_conexion") %>
+      </p>
+    </div>
+    <button type="button" data-action="click->toggle#toggle" data-toggle-target="switch"
+            role="switch" aria-checked="<%= sharing %>" aria-label="<%= t(".posiciones") %>"
+            <%= "disabled" unless connected %>
+            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors disabled:cursor-not-allowed disabled:opacity-50">
+      <span data-toggle-target="track" class="pointer-events-none inline-block h-5 w-11 rounded-full transition-colors <%= sharing ? "bg-primary" : "bg-bg-muted" %>"></span>
+      <span data-toggle-target="knob" class="pointer-events-none absolute left-0 inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform <%= sharing ? "translate-x-5" : "translate-x-0" %>"></span>
+    </button>
+  </section>
+
   <section class="flex flex-col gap-2">
     <h2 class="font-display text-xl font-bold tracking-tight text-fg-default"><%= t(".conexion") %></h2>
-    <p class="text-sm text-fg-subtle"><%= t(".conexion_desc") %></p>
+    <p class="text-sm text-fg-subtle"><%= sharing ? t(".conexion_con_posiciones") : t(".conexion_desc") %></p>
   </section>
 
   <section class="<%= card_classes("flex flex-col gap-4 p-5") %>">

@@ -138,6 +138,7 @@ Rails.application.routes.draw do
     resource :assistant, only: [ :show, :update ], controller: "settings/assistants" do
       patch :verify
       patch :velita
+      patch :holdings
     end
   end
   # ADR-031: the assistant is invoked, never pushed; D11 makes the route first

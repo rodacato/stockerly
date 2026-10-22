@@ -116,7 +116,19 @@ RSpec.describe AssistantComposeJob do
       expect(broadcasts("assistant:#{conversation.token}").first).to include("assistant_message_#{message.id}")
     end
 
-    it "ignores a name outside the registry and falls back to the selector" do
+    it "reads the owner's holdings the planner chose, with the switch on" do
+      row = Integration.find_by(provider_name: "Asistente")
+      row.update!(settings: row.settings.merge("read_holdings" => true))
+      portfolio = create(:portfolio, user: create(:user, onboarded_at: Time.current))
+      create(:position, portfolio: portfolio, asset: asset, shares: 10, avg_cost: 100, status: :open)
+      planner_answers([ "portfolio.positions", { symbol: "NVDA" } ])
+
+      described_class.perform_now(message.id)
+
+      expect(kinds).to eq(%w[position])
+    end
+
+    it "ignores a holdings read while the switch is off, and falls back to the selector" do
       planner_answers([ "portfolio.positions", { symbol: "NVDA" } ])
 
       described_class.perform_now(message.id)

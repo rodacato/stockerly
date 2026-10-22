@@ -8,8 +8,20 @@ RSpec.describe Assistant::Domain::Planner do
   it "describes exactly the registry to the model, with each read's inputs" do
     system = described_class.system(nil)
 
-    Assistant::Capabilities::Registry.names.each { |name| expect(system).to include("- #{name}:") }
+    Assistant::Capabilities::Registry.available(holdings: false).each_key { |name| expect(system).to include("- #{name}:") }
     expect(system).to include("symbol: the ticker")
+  end
+
+  it "lists the holdings reads only with the owner's switch on" do
+    expect(described_class.system(nil)).not_to include("- portfolio.")
+    expect(described_class.system(nil, holdings: true)).to include("- portfolio.positions:", "- portfolio.events:")
+  end
+
+  it "keeps a holdings read only with the switch on" do
+    reply = reply({ read: "portfolio.positions" }, { read: "portfolio.events" })
+
+    expect(described_class.steps(reply)).to eq([])
+    expect(described_class.steps(reply, holdings: true)).to eq([ [ "portfolio.positions", {} ], [ "portfolio.events", {} ] ])
   end
 
   it "turns the reply into registry steps" do

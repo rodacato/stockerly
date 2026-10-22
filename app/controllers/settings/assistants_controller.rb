@@ -34,6 +34,13 @@ module Settings
       head :not_found
     end
 
+    def holdings
+      Administration::UseCases::Integrations::ShareHoldings.call(allowed: params[:read_holdings] == true)
+      head :ok
+    rescue ActiveRecord::RecordNotFound
+      head :not_found
+    end
+
     private
 
     def configure
