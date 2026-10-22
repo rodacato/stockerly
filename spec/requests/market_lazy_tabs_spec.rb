@@ -57,7 +57,8 @@ RSpec.describe "Market lazy-loaded tabs", type: :request do
           data: {
             "total_assets" => "411000000000",
             "total_liabilities_net_minority_interest" => "243000000000",
-            "total_shareholder_equity" => "168000000000"
+            "total_shareholder_equity" => "168000000000",
+            "ordinary_shares_number" => "15200000000"
           })
         create(:financial_statement, asset: asset,
           statement_type: :cash_flow, period_type: :annual,
@@ -92,6 +93,13 @@ RSpec.describe "Market lazy-loaded tabs", type: :request do
         expect(response.body).to include("Flujo de efectivo operativo")
         expect(response.body).to include("CAPEX")
         expect(response.body).to include("Cambio neto en efectivo")
+      end
+
+      it "renders the share count as a count, not money" do
+        get market_asset_statements_tab_path(asset.symbol)
+
+        expect(response.body).to include(">15.2B<")
+        expect(response.body).not_to include("#{asset.currency} 15.2B")
       end
 
       it "renders the es-MX 'Concepto' column header instead of 'Line Item'" do

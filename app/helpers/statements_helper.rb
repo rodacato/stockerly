@@ -52,7 +52,7 @@ module StatementsHelper
     { section: "Capital" },
     { key: "total_shareholder_equity", label: "Capital contable", bold: true },
     { key: "retained_earnings", label: "Utilidades retenidas", indent: true },
-    { key: "ordinary_shares_number", label: "Acciones en circulación" }
+    { key: "ordinary_shares_number", label: "Acciones en circulación", format: :count }
   ].freeze
 
   CASH_FLOW_LINE_ITEMS = [
@@ -81,8 +81,10 @@ module StatementsHelper
     end
   end
 
-  def format_statement_value(value, currency:)
+  def format_statement_value(value, currency:, format: nil)
     return "—" if value.nil? || value.to_s == "None"
+
+    return format_compact_count(value) if format == :count
 
     format_large_currency(value.to_f, currency: currency)
   end
