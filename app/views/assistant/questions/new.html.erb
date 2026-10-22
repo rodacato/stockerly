@@ -1,0 +1,19 @@
+<% content_for :page_title, t(".titulo") %>
+<% content_for :header_bar do %>
+  <%= render "components/header_bar", title: t(".titulo"), back_path: (@symbol ? market_asset_path(@symbol) : dashboard_path) %>
+<% end %>
+
+<div class="mx-auto flex w-full max-w-xl flex-col gap-5">
+  <p class="text-sm text-fg-subtle">
+    <%= @symbol ? t(".sobre", symbol: @symbol) : t(".desde_aqui") %>
+  </p>
+
+  <% if @connected %>
+    <%= turbo_stream_from "assistant", @token %>
+    <div id="assistant_messages" class="flex flex-col gap-6"></div>
+    <%= render "assistant/questions/form", token: @token, symbol: @symbol, asked: false %>
+  <% else %>
+    <%= render "components/empty_state", size: :inline, icon: "psychology",
+               title: t(".sin_conexion"), cta_text: t(".conectar"), cta_path: settings_assistant_path %>
+  <% end %>
+</div>

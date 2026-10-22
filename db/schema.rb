@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_035000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -134,6 +134,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_035000) do
     t.index ["sector"], name: "index_assets_on_sector"
     t.index ["symbol"], name: "index_assets_on_symbol", unique: true
     t.index ["sync_status"], name: "index_assets_on_sync_status"
+  end
+
+  create_table "assistant_conversations", force: :cascade do |t|
+    t.string "token", null: false
+    t.string "symbol"
+    t.string "screen", default: "hoy", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token"], name: "index_assistant_conversations_on_token", unique: true
+  end
+
+  create_table "assistant_messages", force: :cascade do |t|
+    t.bigint "assistant_conversation_id", null: false
+    t.string "question", null: false
+    t.jsonb "cards", default: [], null: false
+    t.text "answer"
+    t.string "status", default: "pending", null: false
+    t.string "failure_tag"
+    t.string "model"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assistant_conversation_id"], name: "index_assistant_messages_on_assistant_conversation_id"
   end
 
   create_table "audit_logs", force: :cascade do |t|
@@ -587,6 +609,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_035000) do
   add_foreign_key "alert_rules", "users"
   add_foreign_key "asset_fundamentals", "assets"
   add_foreign_key "asset_price_histories", "assets"
+  add_foreign_key "assistant_messages", "assistant_conversations", on_delete: :cascade
   add_foreign_key "audit_logs", "users"
   add_foreign_key "dividend_payments", "dividends"
   add_foreign_key "dividend_payments", "portfolios"

@@ -24,6 +24,7 @@ module Checks
     OWNERS = {
       "administration" => %w[AppOpen ErrorEvent Integration SiteConfig SiteConfigChange],
       "alerts"         => %w[AlertEvent AlertPreference AlertRule],
+      "assistant"      => %w[AssistantConversation AssistantMessage],
       "identity"       => %w[OtpRecoveryCode],
       "market_data"    => %w[
         AssetFundamental AssetPriceHistory CetesRateHistory Dividend EarningsEvent

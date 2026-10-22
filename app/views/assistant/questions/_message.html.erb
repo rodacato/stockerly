@@ -1,0 +1,30 @@
+<%# One question: the cards chosen before the model, then its prose (ADR-031). Locals: message. %>
+<% cards = message.cards %>
+<article class="flex flex-col gap-3">
+  <div class="flex flex-col gap-1">
+    <p class="font-mono text-[11px] uppercase tracking-widest text-fg-subtle"><%= t("assistant.questions.message.tu_pregunta") %></p>
+    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= message.question %></h2>
+  </div>
+
+  <% cards.each_with_index do |card, index| %>
+    <section class="<%= card_classes("flex flex-col gap-2 p-4") %>">
+      <div class="flex items-baseline justify-between gap-3">
+        <h3 class="flex items-center gap-2.5 text-sm font-semibold text-fg-default">
+          <span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-bg-muted font-mono text-xs text-fg-subtle"><%= index + 1 %></span>
+          <%= card["title"] %>
+        </h3>
+        <% if card["figure"].present? %>
+          <span class="shrink-0 font-mono text-sm font-semibold tabular-nums text-fg-default"><%= card["figure"] %></span>
+        <% end %>
+      </div>
+      <% if card["body"].present? %>
+        <p class="text-sm leading-relaxed text-fg-default"><%= card["body"] %></p>
+      <% end %>
+      <% if card["source"].present? %>
+        <p class="text-xs text-fg-subtle"><%= card["source"] %></p>
+      <% end %>
+    </section>
+  <% end %>
+
+  <%= render "assistant/questions/answer", message: message %>
+</article>

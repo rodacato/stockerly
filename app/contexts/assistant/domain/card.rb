@@ -1,0 +1,11 @@
+module Assistant
+  module Domain
+    # One piece of retrieved data, shown to the reader before the model writes
+    # and handed to the model as its only source. `line` is what the model sees.
+    Card = Data.define(:kind, :title, :body, :figure, :source) do
+      def self.from_h(hash) = new(**hash.symbolize_keys.slice(*members))
+
+      def line = [ title, body, figure, source ].compact_blank.join(" · ")
+    end
+  end
+end
