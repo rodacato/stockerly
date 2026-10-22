@@ -5,6 +5,7 @@ class AssistantComposeJob < ApplicationJob
   queue_as :default
 
   FLUSH_EVERY = 0.3
+  MAX_ANSWER = 4_000
 
   def perform(message_id)
     message = AssistantMessage.find_by(id: message_id)
@@ -35,10 +36,22 @@ class AssistantComposeJob < ApplicationJob
       next if now - flushed_at < FLUSH_EVERY
 
       flushed_at = now
-      message.answer = answer
-      broadcast(message)
+      raise Assistant::Gateways::AnthropicMessages::Error, "answer too long" if answer.length > MAX_ANSWER
+
+      message.answer = shown(answer, cards)
+      broadcast(message) if message.answer
     end
     answer
+  end
+
+  # What the reader may see mid-stream: the gate runs on every flush, so a
+  # figure the cards do not hold never reaches the screen. The last word is
+  # held back, since a number may still be arriving.
+  def shown(answer, cards)
+    @held ||= false
+    settled = answer.sub(/\S*\z/, "")
+    @held ||= !Assistant::Domain::NumbersGate.call(answer: settled, context: Assistant::Domain::Prompt.context_text(cards)).ok?
+    @held ? nil : settled
   end
 
   def finish(message, answer, cards)

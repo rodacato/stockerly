@@ -99,15 +99,31 @@ module Assistant
       end
 
       # Server-sent events arrive in arbitrary chunks; an event ends at a blank line.
+      # A malformed or oversized stream is the provider failing, not a crash.
       class EventStream
+        MAX_BUFFER = 1_000_000
+
         def initialize = @buffer = +""
 
         def feed(chunk)
           @buffer << chunk
+          raise Error, "stream buffer exceeded" if @buffer.bytesize > MAX_BUFFER
+
           while (boundary = @buffer.index("\n\n"))
             data = @buffer.slice!(0, boundary + 2)[/^data: (.+)$/, 1]
-            yield JSON.parse(data) if data
+            yield parse(data) if data
           end
+        end
+
+        private
+
+        def parse(data)
+          event = JSON.parse(data)
+          raise Error, "malformed stream event" unless event.is_a?(Hash)
+
+          event
+        rescue JSON::ParserError
+          raise Error, "malformed stream event"
         end
       end
     end

@@ -3,6 +3,8 @@ require "rails_helper"
 # The provider is the one boundary stubbed; its SSE stream is replayed as the
 # Messages API sends it.
 RSpec.describe AssistantComposeJob do
+  include ActionCable::TestHelper
+
   let(:url) { "https://api.anthropic.com/v1/messages" }
   let(:conversation) { AssistantConversation.create!(token: "t1") }
   let(:message) do
@@ -48,6 +50,26 @@ RSpec.describe AssistantComposeJob do
 
     expect(message.reload).to be_failed
     expect(message.failure_tag).to eq("provider_error")
+  end
+
+  # Security review: the gate runs on every flush, not only at the end, so an
+  # invented figure is never on screen even while the answer streams.
+  it "never shows a figure the cards do not hold, even mid-stream" do
+    stream("Llegará a 80 pronto ", "según nadie.")
+    described_class.perform_now(message.id)
+
+    shown = broadcasts("assistant:#{conversation.token}")
+    expect(shown).not_to be_empty
+    expect(shown.join).not_to include("80")
+    expect(message.reload).to be_discarded
+  end
+
+  it "treats a malformed stream as the provider failing, not a stuck answer" do
+    stub_request(:post, url).to_return(status: 200, body: "event: content_block_delta\ndata: {not json\n\n")
+
+    described_class.perform_now(message.id)
+
+    expect(message.reload).to be_failed
   end
 
   it "does nothing to a message already answered" do
