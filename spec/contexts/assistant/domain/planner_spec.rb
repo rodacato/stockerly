@@ -45,7 +45,7 @@ RSpec.describe Assistant::Domain::Planner do
   end
 
   it "reads anything but a JSON array of objects as no plan" do
-    [ "No sé.", "{\"read\": \"asset.quote\"}", "[1, 2]", "[{\"read\": " ].each do |text|
+    [ "No sé.", "{\"read\": \"asset.quote\"}", "[1, 2]", "[{\"read\": ", "] [", "[" * 50_000 ].each do |text|
       expect(described_class.steps(text)).to eq([])
     end
   end

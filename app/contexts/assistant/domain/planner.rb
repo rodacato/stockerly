@@ -39,8 +39,9 @@ module Assistant
       end
 
       def self.parse(reply)
-        array = reply.to_s[/\[.*\]/m]
-        reads = array && JSON.parse(array)
+        text = reply.to_s
+        first, last = text.index("["), text.rindex("]")
+        reads = JSON.parse(text[first..last]) if first && last && first < last
         reads.is_a?(Array) ? reads.grep(Hash) : []
       rescue JSON::ParserError
         []
