@@ -1487,7 +1487,7 @@
               "fill": "$fg-default",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "The assistant (ADR-031, proposed): ask about what is on screen, get the retrieved data as numbered cards, then a short paragraph written only over them. Serves J7 — learning to read the numbers while using the app. Not built yet: every screen here is design ahead of code, with a build-or-retire verdict pending on P1's signal (D78).",
+              "content": "The assistant (ADR-031): ask about what is on screen, get a short answer written only over the data it read, with that data folded under it. Serves J7 — learning to read the numbers while using the app. Shipped (#872, #880, #884, #890): these artboards mirror the code (D78).",
               "lineHeight": 1.5,
               "fontFamily": "$font-sans",
               "fontSize": 12,
@@ -1561,7 +1561,7 @@
               "fill": "$fg-default",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Hoy: Velita en reposo → Drawer abierto → Drawer · Respuesta. Panorama · Desktop: Panel abierto. Ajustes · Asistente: Conectada → Sin configurar → Error de conexión. Entradas: Hoy · Ayuda con Pregúntale → Detalle NVDA · Drawer con el símbolo. Velita sheet above the kit row.",
+              "content": "Hoy: Velita en reposo → Drawer abierto → Drawer · Respuesta → Drawer · Fuentes abiertas → Conversaciones anteriores → Drawer · Descartada. Panorama · Desktop: Panel abierto. Ajustes · Asistente: Conectada → Sin configurar → Error de conexión. Entradas: Hoy · Ayuda con Pregúntale → Detalle NVDA · Drawer con el símbolo. Velita sheet above the kit row.",
               "lineHeight": 1.5,
               "fontFamily": "$font-sans",
               "fontSize": 12,
@@ -1598,7 +1598,7 @@
               "fill": "$fg-default",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Velita is static at rest — it moves only while the drawer is open and work is running (seen on every screen, every day). Content leaves bottom padding so it never covers the last row. Cards render from capability results before any prose, each with source and date; prose may only cite numbers present in the cards, else it is discarded and the cards stay (ADR-031 §2). [n] points to a card. Velita never reacts to a gain, loss or market direction (§7). v0 reads no holdings (§5): it explains a figure, never reads yours. One question in flight.",
+              "content": "Velita is static at rest — it moves only while the drawer is open and work is running (seen on every screen, every day). Content leaves bottom padding so it never covers the last row. A turn is the reader's question with its time, then the answer, then what it read folded under «Lo que leí» (D171); [n] opens its card. Prose may only cite numbers present in the cards, else it is discarded and «Preguntar de nuevo» is offered (ADR-031 §2). The disclaimer shows once per thread. Earlier conversations reopen from the history; a follow-up carries the last three questions, never their answers (D172). Velita never reacts to a gain, loss or market direction (§7). It reads no holdings (§5).",
               "lineHeight": 1.5,
               "fontFamily": "$font-sans",
               "fontSize": 12,
@@ -1672,7 +1672,7 @@
               "fill": "$fg-default",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Velita motion (ui-motion) · Sin dato (G6) · prose discarded by the numbers gate · provider down mid-answer (cards only, Velita «Sin conexión») · drawer streaming states (reuse band 0) · new conversation · the hub row that leads to Ajustes · Asistente · desktop settings (one column, reflows).",
+              "content": "Velita motion (ui-motion) · Sin dato (G6) · provider down mid-answer (failed: link to Ajustes plus «Preguntar de nuevo», same layout as Descartada) · drawer streaming states (Buscando… / Escribiendo…, string swaps) · history empty («Todavía no le has preguntado nada a Velita.») · the hub row that leads to Ajustes · Asistente · desktop settings (one column, reflows).",
               "lineHeight": 1.5,
               "fontFamily": "$font-sans",
               "fontSize": 12,
@@ -1794,6 +1794,19 @@
           "textGrowth": "fixed-width",
           "width": "fill_container",
           "content": "2026-10-21 — Moved from _playground.pen into its own flow. The rejected option A (Buscar → page, D166) was removed; its record is D166.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "s6ijz",
+          "name": "e",
+          "fill": "$fg-default",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-22 — Mirrored D171/D172 (D78): the question as the reader's bubble with its time, the answer first, reads folded under «Lo que leí», the disclaimer once per thread, a history button in every drawer header. New: Fuentes abiertas, Conversaciones anteriores, Descartada with «Preguntar de nuevo». Desktop panel amended the same way.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
@@ -1959,10 +1972,33 @@
                       "id": "yQeMG",
                       "name": "ctx",
                       "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
                       "content": "Desde Hoy · no ve tus posiciones",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
                       "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "V5qRwl",
+                  "name": "Historial",
+                  "width": 44,
+                  "height": 44,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "CWDEN",
+                      "name": "h",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "history",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
                     }
                   ]
                 },
@@ -2233,10 +2269,33 @@
                       "id": "Sx2ON",
                       "name": "ctx",
                       "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
                       "content": "Desde Hoy · no ve tus posiciones",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
                       "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ACFcM",
+                  "name": "Historial",
+                  "width": 44,
+                  "height": 44,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "VZtMZ",
+                      "name": "h",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "history",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
                     }
                   ]
                 },
@@ -2269,313 +2328,46 @@
               "name": "Pregunta",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": 2,
+              "gap": 4,
+              "alignItems": "end",
               "children": [
                 {
+                  "type": "frame",
+                  "id": "K9E1ZB",
+                  "name": "Burbuja",
+                  "fill": "$primary-muted",
+                  "cornerRadius": [
+                    16,
+                    16,
+                    6,
+                    16
+                  ],
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DbMkP",
+                      "name": "Texto",
+                      "fill": "$fg-default",
+                      "content": "¿Qué significa «vs CETES»?",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "id": "dkUU6",
-                  "name": "Etiqueta",
+                  "id": "W6qfE",
+                  "name": "Hora",
                   "fill": "$fg-subtle",
-                  "content": "TU PREGUNTA",
+                  "content": "09:41",
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1
-                },
-                {
-                  "type": "text",
-                  "id": "JE9sV",
-                  "name": "Texto",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "¿Qué significa «vs CETES»?",
-                  "fontFamily": "$font-display",
-                  "fontSize": 18,
-                  "fontWeight": "700"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "kMDUI",
-              "name": "Plan",
-              "gap": "$space-2",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "NOwSl",
-                  "name": "Paso",
-                  "fill": "$bg-surface",
-                  "cornerRadius": 999,
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "gap": 6,
-                  "padding": [
-                    6,
-                    10
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "rtNKV",
-                      "name": "Hecho",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "check",
-                      "library": "lucide",
-                      "fill": "$positive-fg"
-                    },
-                    {
-                      "type": "text",
-                      "id": "ikh10",
-                      "name": "t",
-                      "fill": "$fg-default",
-                      "content": "Qué es «Contra CETES»",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "NJGQf",
-                  "name": "Paso",
-                  "fill": "$bg-surface",
-                  "cornerRadius": 999,
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "gap": 6,
-                  "padding": [
-                    6,
-                    10
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "W0Wqm",
-                      "name": "Hecho",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "check",
-                      "library": "lucide",
-                      "fill": "$positive-fg"
-                    },
-                    {
-                      "type": "text",
-                      "id": "Vp2eB",
-                      "name": "t",
-                      "fill": "$fg-default",
-                      "content": "Tasa de CETES 28d",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "ese7i",
-              "name": "Card · Contra CETES",
-              "width": "fill_container",
-              "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
-              "stroke": "$border-default",
-              "strokeWidth": 1,
-              "layout": "vertical",
-              "gap": "$space-2",
-              "padding": 16,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "r65Rm",
-                  "name": "Cabecera",
-                  "width": "fill_container",
-                  "gap": "$space-3",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "k0NfkT",
-                      "name": "Fuente 1",
-                      "width": 20,
-                      "height": 20,
-                      "fill": "$bg-muted",
-                      "cornerRadius": 999,
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "HbgoL",
-                          "name": "n",
-                          "fill": "$fg-subtle",
-                          "content": "1",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "700"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "text",
-                      "id": "NzZPQ",
-                      "name": "Título",
-                      "fill": "$fg-default",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Contra CETES",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "i030pj",
-                  "name": "Cuerpo",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Tu rendimiento del último mes, sin contar lo que depositaste o retiraste, menos lo que habrían rendido CETES a 28 días reinvertidos. Se dice en puntos, porque es la diferencia entre dos rendimientos.",
-                  "lineHeight": 1.5,
-                  "fontFamily": "$font-sans",
-                  "fontSize": 13,
                   "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "VGx1O",
-                  "name": "Fuente",
-                  "gap": 6,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "Yx3a3",
-                      "name": "i",
-                      "width": 12,
-                      "height": 12,
-                      "icon": "book-open",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
-                    },
-                    {
-                      "type": "text",
-                      "id": "j6ecVJ",
-                      "name": "t",
-                      "fill": "$fg-subtle",
-                      "content": "Glosario de Stockerly",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "Xyb2j",
-              "name": "Card · CETES 28d · tasa anual",
-              "width": "fill_container",
-              "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
-              "stroke": "$border-default",
-              "strokeWidth": 1,
-              "layout": "vertical",
-              "gap": "$space-2",
-              "padding": 16,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "fXG1u",
-                  "name": "Cabecera",
-                  "width": "fill_container",
-                  "gap": "$space-3",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "VU1X9",
-                      "name": "Fuente 2",
-                      "width": 20,
-                      "height": 20,
-                      "fill": "$bg-muted",
-                      "cornerRadius": 999,
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "m6Ux5",
-                          "name": "n",
-                          "fill": "$fg-subtle",
-                          "content": "2",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "700"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "text",
-                      "id": "jH6eq",
-                      "name": "Título",
-                      "fill": "$fg-default",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "CETES 28d · tasa anual",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "EG4NV",
-                      "name": "Valor",
-                      "fill": "$fg-default",
-                      "content": "7.25%",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 16,
-                      "fontWeight": "700"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "UUWRb",
-                  "name": "Fuente",
-                  "gap": 6,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "f3IHs",
-                      "name": "i",
-                      "width": 12,
-                      "height": 12,
-                      "icon": "calendar",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
-                    },
-                    {
-                      "type": "text",
-                      "id": "Q1C4R5",
-                      "name": "t",
-                      "fill": "$fg-subtle",
-                      "content": "Subasta del 20 oct · Banxico",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
                 }
               ]
             },
@@ -2612,22 +2404,153 @@
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "vqRtt",
-                      "name": "Pie",
-                      "fill": "$fg-subtle",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Es una lectura de datos, no una recomendación.",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
                     }
                   ]
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "kMDUI",
+              "name": "Lo que leí",
+              "layout": "vertical",
+              "gap": 6,
+              "padding": [
+                0,
+                0,
+                0,
+                60
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "dTux3",
+                  "name": "Fila 1",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "cDZk3",
+                      "name": "Etiqueta",
+                      "fill": "$fg-subtle",
+                      "content": "LO QUE LEÍ",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NOwSl",
+                      "name": "Paso",
+                      "fill": "$bg-muted",
+                      "cornerRadius": 999,
+                      "stroke": "$border-default",
+                      "gap": 6,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "rtNKV",
+                          "name": "Hecho",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ikh10",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "Qué es «Contra CETES»",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "I5Oex",
+                  "name": "Fila 2",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "NJGQf",
+                      "name": "Paso",
+                      "fill": "$bg-muted",
+                      "cornerRadius": 999,
+                      "stroke": "$border-default",
+                      "gap": 6,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "W0Wqm",
+                          "name": "Hecho",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Vp2eB",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "Tasa de CETES 28d",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "uiAQI",
+                      "name": "Abrir",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "chevron-down",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "dJbje",
+              "name": "Aviso",
+              "fill": "$fg-subtle",
+              "content": "Es una lectura de datos, no una recomendación.",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "tWY35",
+              "name": "Espacio",
+              "width": "fill_container",
+              "height": "fill_container"
             },
             {
               "type": "frame",
@@ -2759,10 +2682,33 @@
                       "id": "KJCJI",
                       "name": "ctx",
                       "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
                       "content": "Desde Panorama · no ve tus posiciones",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
                       "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Z9ehV",
+                  "name": "Historial",
+                  "width": 44,
+                  "height": 44,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "E7Xscs",
+                      "name": "h",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "history",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
                     }
                   ]
                 },
@@ -2795,313 +2741,46 @@
               "name": "Pregunta",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": 2,
+              "gap": 4,
+              "alignItems": "end",
               "children": [
                 {
+                  "type": "frame",
+                  "id": "DiRDv",
+                  "name": "Burbuja",
+                  "fill": "$primary-muted",
+                  "cornerRadius": [
+                    16,
+                    16,
+                    6,
+                    16
+                  ],
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ObJaP",
+                      "name": "Texto",
+                      "fill": "$fg-default",
+                      "content": "¿Qué significa «vs CETES»?",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "id": "iqiVD",
-                  "name": "Etiqueta",
+                  "id": "p5uAA",
+                  "name": "Hora",
                   "fill": "$fg-subtle",
-                  "content": "TU PREGUNTA",
+                  "content": "09:41",
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 1
-                },
-                {
-                  "type": "text",
-                  "id": "uRpEW",
-                  "name": "Texto",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "¿Qué significa «vs CETES»?",
-                  "fontFamily": "$font-display",
-                  "fontSize": 18,
-                  "fontWeight": "700"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "vvK45",
-              "name": "Plan",
-              "gap": "$space-2",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "JpOCI",
-                  "name": "Paso",
-                  "fill": "$bg-surface",
-                  "cornerRadius": 999,
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "gap": 6,
-                  "padding": [
-                    6,
-                    10
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "Yx0p8",
-                      "name": "Hecho",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "check",
-                      "library": "lucide",
-                      "fill": "$positive-fg"
-                    },
-                    {
-                      "type": "text",
-                      "id": "jJa4u",
-                      "name": "t",
-                      "fill": "$fg-default",
-                      "content": "Qué es «Contra CETES»",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "m054i",
-                  "name": "Paso",
-                  "fill": "$bg-surface",
-                  "cornerRadius": 999,
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "gap": 6,
-                  "padding": [
-                    6,
-                    10
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "um1BW",
-                      "name": "Hecho",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "check",
-                      "library": "lucide",
-                      "fill": "$positive-fg"
-                    },
-                    {
-                      "type": "text",
-                      "id": "Y3hemT",
-                      "name": "t",
-                      "fill": "$fg-default",
-                      "content": "Tasa de CETES 28d",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "qGjfr",
-              "name": "Card · Contra CETES",
-              "width": "fill_container",
-              "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
-              "stroke": "$border-default",
-              "strokeWidth": 1,
-              "layout": "vertical",
-              "gap": "$space-2",
-              "padding": 16,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "nGHob",
-                  "name": "Cabecera",
-                  "width": "fill_container",
-                  "gap": "$space-3",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "iRfqO",
-                      "name": "Fuente 1",
-                      "width": 20,
-                      "height": 20,
-                      "fill": "$bg-muted",
-                      "cornerRadius": 999,
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "agdIW",
-                          "name": "n",
-                          "fill": "$fg-subtle",
-                          "content": "1",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "700"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "text",
-                      "id": "DLaKx",
-                      "name": "Título",
-                      "fill": "$fg-default",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Contra CETES",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "wHRFm",
-                  "name": "Cuerpo",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Tu rendimiento del último mes, sin contar lo que depositaste o retiraste, menos lo que habrían rendido CETES a 28 días reinvertidos. Se dice en puntos, porque es la diferencia entre dos rendimientos.",
-                  "lineHeight": 1.5,
-                  "fontFamily": "$font-sans",
-                  "fontSize": 13,
                   "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "twAaD",
-                  "name": "Fuente",
-                  "gap": 6,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "fOHZK",
-                      "name": "i",
-                      "width": 12,
-                      "height": 12,
-                      "icon": "book-open",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
-                    },
-                    {
-                      "type": "text",
-                      "id": "X4n7c",
-                      "name": "t",
-                      "fill": "$fg-subtle",
-                      "content": "Glosario de Stockerly",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "j8SP0F",
-              "name": "Card · CETES 28d · tasa anual",
-              "width": "fill_container",
-              "fill": "$bg-surface",
-              "cornerRadius": "$radius-card",
-              "stroke": "$border-default",
-              "strokeWidth": 1,
-              "layout": "vertical",
-              "gap": "$space-2",
-              "padding": 16,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "g2jyee",
-                  "name": "Cabecera",
-                  "width": "fill_container",
-                  "gap": "$space-3",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "OC9iC",
-                      "name": "Fuente 2",
-                      "width": 20,
-                      "height": 20,
-                      "fill": "$bg-muted",
-                      "cornerRadius": 999,
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "tvrm2",
-                          "name": "n",
-                          "fill": "$fg-subtle",
-                          "content": "2",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "700"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "text",
-                      "id": "hoNm8",
-                      "name": "Título",
-                      "fill": "$fg-default",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "CETES 28d · tasa anual",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "oDUQL",
-                      "name": "Valor",
-                      "fill": "$fg-default",
-                      "content": "7.25%",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 16,
-                      "fontWeight": "700"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "h2Sg9x",
-                  "name": "Fuente",
-                  "gap": 6,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "vZN6x",
-                      "name": "i",
-                      "width": 12,
-                      "height": 12,
-                      "icon": "calendar",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
-                    },
-                    {
-                      "type": "text",
-                      "id": "q3Srb",
-                      "name": "t",
-                      "fill": "$fg-subtle",
-                      "content": "Subasta del 20 oct · Banxico",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
                 }
               ]
             },
@@ -3138,22 +2817,146 @@
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "tD2Sq",
-                      "name": "Pie",
-                      "fill": "$fg-subtle",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Es una lectura de datos, no una recomendación.",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
                     }
                   ]
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "vvK45",
+              "name": "Lo que leí",
+              "layout": "vertical",
+              "gap": 6,
+              "padding": [
+                0,
+                0,
+                0,
+                60
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "SDz5x",
+                  "name": "Fila 1",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "l9jaTr",
+                      "name": "Etiqueta",
+                      "fill": "$fg-subtle",
+                      "content": "LO QUE LEÍ",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "JpOCI",
+                      "name": "Paso",
+                      "fill": "$bg-muted",
+                      "cornerRadius": 999,
+                      "stroke": "$border-default",
+                      "gap": 6,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "Yx0p8",
+                          "name": "Hecho",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "jJa4u",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "Qué es «Contra CETES»",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "GEw6K",
+                  "name": "Fila 2",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "m054i",
+                      "name": "Paso",
+                      "fill": "$bg-muted",
+                      "cornerRadius": 999,
+                      "stroke": "$border-default",
+                      "gap": 6,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "um1BW",
+                          "name": "Hecho",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Y3hemT",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "Tasa de CETES 28d",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "TswxE",
+                      "name": "Abrir",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "chevron-down",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "hWe1W",
+              "name": "Aviso",
+              "fill": "$fg-subtle",
+              "content": "Es una lectura de datos, no una recomendación.",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -8080,10 +7883,33 @@
                       "id": "uqoIV",
                       "name": "ctx",
                       "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
                       "content": "Sobre NVDA · no ve tus posiciones",
                       "fontFamily": "$font-sans",
                       "fontSize": 12,
                       "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "n2TOyV",
+                  "name": "Historial",
+                  "width": 44,
+                  "height": 44,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "IWYcu",
+                      "name": "h",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "history",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
                     }
                   ]
                 },
@@ -8235,6 +8061,1429 @@
                 {
                   "type": "icon",
                   "id": "u6bTyl",
+                  "name": "Enviar",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "arrow-up",
+                  "library": "lucide",
+                  "fill": "$primary"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "fE6BD",
+      "x": 2010,
+      "y": 0,
+      "name": "[Asistente] / Hoy / Drawer · Fuentes abiertas",
+      "clip": true,
+      "width": 390,
+      "height": 1066,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/cockpit-hoy-default.png",
+        "mode": "cover"
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "id": "TFI8U",
+          "x": 0,
+          "y": 0,
+          "name": "Scrim",
+          "fill": "$scrim",
+          "width": 390,
+          "height": 1066
+        },
+        {
+          "type": "frame",
+          "id": "n4jgl",
+          "x": 0,
+          "y": 276,
+          "name": "Drawer",
+          "width": 390,
+          "height": 790,
+          "fill": "$bg-canvas",
+          "cornerRadius": [
+            20,
+            20,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            10,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "Bd6VV",
+              "name": "Asa",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 999,
+                  "id": "x34zIN",
+                  "name": "Handle",
+                  "fill": "$border-strong",
+                  "width": 36,
+                  "height": 4
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "vPFic",
+              "name": "Cabecera",
+              "width": "fill_container",
+              "gap": "$space-3",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "W4KUF",
+                  "type": "ref",
+                  "ref": "ySrMk",
+                  "name": "Velita"
+                },
+                {
+                  "type": "frame",
+                  "id": "j2AFvK",
+                  "name": "Título",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "hnMIt",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Pregunta",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "fKbo5",
+                      "name": "ctx",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Desde Hoy · no ve tus posiciones",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "yBlx8",
+                  "name": "Historial",
+                  "width": 44,
+                  "height": 44,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "G7pk4b",
+                      "name": "h",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "history",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "fsVol",
+                  "name": "Cerrar",
+                  "width": 44,
+                  "height": 44,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "im5kp",
+                      "name": "x",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "x",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "NpYJt",
+              "name": "Respuesta",
+              "width": "fill_container",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "id": "g4HgEc",
+                  "type": "ref",
+                  "ref": "ySrMk",
+                  "name": "Velita"
+                },
+                {
+                  "type": "frame",
+                  "id": "BXOwK",
+                  "name": "Texto",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "W7uMhf",
+                      "name": "Prosa",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Compara lo que rindió tu dinero en el último mes con lo que habría rendido en CETES a 28 días, reinvirtiendo [1]. Hoy esos CETES pagan 7.25% anual [2]. Tu cifra de Hoy no la veo: esta versión no lee tus posiciones.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "q29KNt",
+              "name": "Lo que leí",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "padding": [
+                0,
+                0,
+                0,
+                60
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Z1yFWV",
+                  "name": "Fila 1",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "uVjPU",
+                      "name": "Etiqueta",
+                      "fill": "$fg-subtle",
+                      "content": "LO QUE LEÍ",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aderU",
+                      "name": "Paso",
+                      "fill": "$bg-muted",
+                      "cornerRadius": 999,
+                      "stroke": "$border-default",
+                      "gap": 6,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "gjV3D",
+                          "name": "Hecho",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "KcnqK",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "Qué es «Contra CETES»",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "pnrlX",
+                  "name": "Fila 2",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "K6txX",
+                      "name": "Paso",
+                      "fill": "$bg-muted",
+                      "cornerRadius": 999,
+                      "stroke": "$border-default",
+                      "gap": 6,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "Yu2u2",
+                          "name": "Hecho",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "obLS3",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "Tasa de CETES 28d",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "YRUF4",
+                      "name": "Abrir",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "chevron-up",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "FqURi",
+                  "name": "Tarjetas",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Y4vXdp",
+                      "name": "Card · Contra CETES",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-card",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "layout": "vertical",
+                      "gap": "$space-2",
+                      "padding": 16,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "oQoft",
+                          "name": "Cabecera",
+                          "width": "fill_container",
+                          "gap": "$space-3",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "rofXo",
+                              "name": "Fuente 1",
+                              "width": 20,
+                              "height": 20,
+                              "fill": "$bg-muted",
+                              "cornerRadius": 999,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "HhOii",
+                                  "name": "n",
+                                  "fill": "$fg-subtle",
+                                  "content": "1",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "QUzk0",
+                              "name": "Título",
+                              "fill": "$fg-default",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Contra CETES",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "uCZoF",
+                          "name": "Cuerpo",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Tu rendimiento del último mes, sin contar lo que depositaste o retiraste, menos lo que habrían rendido CETES a 28 días reinvertidos. Se dice en puntos, porque es la diferencia entre dos rendimientos.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "FRTse",
+                          "name": "Fuente",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "Ckfjg",
+                              "name": "i",
+                              "width": 12,
+                              "height": 12,
+                              "icon": "book-open",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
+                            },
+                            {
+                              "type": "text",
+                              "id": "K0FyM",
+                              "name": "t",
+                              "fill": "$fg-subtle",
+                              "content": "Glosario de Stockerly",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dD3fY",
+                      "name": "Card · CETES 28d · tasa anual",
+                      "width": "fill_container",
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-card",
+                      "stroke": "$primary",
+                      "strokeWidth": 2,
+                      "layout": "vertical",
+                      "gap": "$space-2",
+                      "padding": 16,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "flup3",
+                          "name": "Cabecera",
+                          "width": "fill_container",
+                          "gap": "$space-3",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "zGwyv",
+                              "name": "Fuente 2",
+                              "width": 20,
+                              "height": 20,
+                              "fill": "$bg-muted",
+                              "cornerRadius": 999,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "OvzIt",
+                                  "name": "n",
+                                  "fill": "$fg-subtle",
+                                  "content": "2",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "oR7zV",
+                              "name": "Título",
+                              "fill": "$fg-default",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "CETES 28d · tasa anual",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "F0IAV8",
+                              "name": "Valor",
+                              "fill": "$fg-default",
+                              "content": "7.25%",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 16,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ypuJ8",
+                          "name": "Fuente",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "z6a8n3",
+                              "name": "i",
+                              "width": 12,
+                              "height": 12,
+                              "icon": "calendar",
+                              "library": "lucide",
+                              "fill": "$fg-subtle"
+                            },
+                            {
+                              "type": "text",
+                              "id": "sE7rv",
+                              "name": "t",
+                              "fill": "$fg-subtle",
+                              "content": "Subasta del 20 oct · Banxico",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "grw4E",
+              "name": "Aviso",
+              "fill": "$fg-subtle",
+              "content": "Es una lectura de datos, no una recomendación.",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "sLQme",
+              "name": "Espacio",
+              "width": "fill_container",
+              "height": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "WuJe6",
+              "name": "Campo",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-2",
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "r4gBP",
+                  "name": "ph",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Pregunta otra cosa",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "FfkFz",
+                  "name": "Enviar",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "arrow-up",
+                  "library": "lucide",
+                  "fill": "$primary"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "XYIfG",
+      "x": 2520,
+      "y": 0,
+      "name": "[Asistente] / Hoy / Conversaciones anteriores",
+      "clip": true,
+      "width": 390,
+      "height": 1066,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/cockpit-hoy-default.png",
+        "mode": "cover"
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "id": "GvTTO",
+          "x": 0,
+          "y": 0,
+          "name": "Scrim",
+          "fill": "$scrim",
+          "width": 390,
+          "height": 1066
+        },
+        {
+          "type": "frame",
+          "id": "ZUYmA",
+          "x": 0,
+          "y": 276,
+          "name": "Drawer",
+          "width": 390,
+          "height": 790,
+          "fill": "$bg-canvas",
+          "cornerRadius": [
+            20,
+            20,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            10,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "kVGU3",
+              "name": "Asa",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 999,
+                  "id": "xL9GR",
+                  "name": "Handle",
+                  "fill": "$border-strong",
+                  "width": 36,
+                  "height": 4
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "BlddT",
+              "name": "Cabecera",
+              "width": "fill_container",
+              "gap": "$space-3",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "wIDPF",
+                  "type": "ref",
+                  "ref": "ySrMk",
+                  "name": "Velita"
+                },
+                {
+                  "type": "frame",
+                  "id": "W6WbQ",
+                  "name": "Título",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "GvmBf",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Conversaciones anteriores",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zum0u",
+                      "name": "ctx",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Abre una para seguirla donde la dejaste.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "jvLPy",
+                  "name": "Nueva",
+                  "width": 44,
+                  "height": 44,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "GG3aR",
+                      "name": "h",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "plus",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "QJ6bD",
+                  "name": "Cerrar",
+                  "width": 44,
+                  "height": 44,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "m7UZ2",
+                      "name": "x",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "x",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "i15nk",
+              "name": "Lista",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$space-2",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ohwMP",
+                  "name": "Conversación",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-card",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ydxTO",
+                      "name": "Texto",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "d5EZTH",
+                          "name": "Primera",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "¿Qué significa «vs CETES»?",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "M7GEI",
+                          "name": "Última",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "¿Y los CETES a 91 días?",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "yFifb",
+                          "name": "Meta",
+                          "fill": "$fg-subtle",
+                          "content": "09:41 · 2 preguntas",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "C7GRT",
+                      "name": "Ir",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "RLRCw",
+                  "name": "Conversación",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-card",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cmiJa",
+                      "name": "Texto",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "BNqn5",
+                          "name": "Primera",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "¿Cómo está el mercado?",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "oAMuW",
+                          "name": "Última",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "¿y el dólar?",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "z5TbP",
+                          "name": "Meta",
+                          "fill": "$fg-subtle",
+                          "content": "21 oct · 18:05 · 2 preguntas",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "gsXeT",
+                      "name": "Ir",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "iZIAM",
+                  "name": "Conversación",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-card",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "gap": "$space-3",
+                  "padding": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "BPhZQ",
+                      "name": "Texto",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "A3Hjo",
+                          "name": "Primera",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "¿Qué dicen los indicadores?",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Y3MAb",
+                          "name": "Meta",
+                          "fill": "$fg-subtle",
+                          "content": "20 oct · 10:12 · 1 pregunta · NVDA",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "Ch7rp",
+                      "name": "Ir",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "aqBUN",
+              "name": "Espacio",
+              "width": "fill_container",
+              "height": "fill_container"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "hyrs8",
+      "x": 3030,
+      "y": 0,
+      "name": "[Asistente] / Hoy / Drawer · Descartada",
+      "clip": true,
+      "width": 390,
+      "height": 1066,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/cockpit-hoy-default.png",
+        "mode": "cover"
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "id": "k2nQID",
+          "x": 0,
+          "y": 0,
+          "name": "Scrim",
+          "fill": "$scrim",
+          "width": 390,
+          "height": 1066
+        },
+        {
+          "type": "frame",
+          "id": "qcfmq",
+          "x": 0,
+          "y": 276,
+          "name": "Drawer",
+          "width": 390,
+          "height": 790,
+          "fill": "$bg-canvas",
+          "cornerRadius": [
+            20,
+            20,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": "$space-4",
+          "padding": [
+            10,
+            24,
+            24,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "UjDRW",
+              "name": "Asa",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 999,
+                  "id": "Dx03Z",
+                  "name": "Handle",
+                  "fill": "$border-strong",
+                  "width": 36,
+                  "height": 4
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "QciCE",
+              "name": "Cabecera",
+              "width": "fill_container",
+              "gap": "$space-3",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "Bg3fF",
+                  "type": "ref",
+                  "ref": "ySrMk",
+                  "name": "Velita"
+                },
+                {
+                  "type": "frame",
+                  "id": "NT2W9",
+                  "name": "Título",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "B7TRCS",
+                      "name": "t",
+                      "fill": "$fg-default",
+                      "content": "Pregunta",
+                      "fontFamily": "$font-display",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "BsWE7",
+                      "name": "ctx",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Desde Hoy · no ve tus posiciones",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "jNpPU",
+                  "name": "Historial",
+                  "width": 44,
+                  "height": 44,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "hlY1p",
+                      "name": "h",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "history",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "s8duC",
+                  "name": "Cerrar",
+                  "width": 44,
+                  "height": 44,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "fD4tP",
+                      "name": "x",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "x",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "GOffn",
+              "name": "Pregunta",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "QjNv2",
+                  "name": "Burbuja",
+                  "fill": "$primary-muted",
+                  "cornerRadius": [
+                    16,
+                    16,
+                    6,
+                    16
+                  ],
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "IDixC",
+                      "name": "Texto",
+                      "fill": "$fg-default",
+                      "content": "¿Qué significa «vs CETES»?",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "ZT1Sn",
+                  "name": "Hora",
+                  "fill": "$fg-subtle",
+                  "content": "09:41",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "GLPjJ",
+              "name": "Respuesta",
+              "width": "fill_container",
+              "gap": "$space-3",
+              "children": [
+                {
+                  "id": "x50fK",
+                  "type": "ref",
+                  "ref": "ySrMk",
+                  "name": "Velita"
+                },
+                {
+                  "type": "frame",
+                  "id": "yOMKu",
+                  "name": "Texto",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$space-2",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "J3x5cO",
+                      "name": "Prosa",
+                      "fill": "$fg-subtle",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "La respuesta usaba una cifra que no está en estos datos, así que la descarté. Los datos que leí sí son de Stockerly.",
+                      "lineHeight": 1.45,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "MGFtC",
+                      "name": "Preguntar de nuevo",
+                      "fill": "$primary-muted",
+                      "cornerRadius": 999,
+                      "padding": [
+                        6,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "OncaB",
+                          "name": "l",
+                          "fill": "$primary-fg",
+                          "content": "Preguntar de nuevo",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "oPJZV",
+              "name": "Lo que leí",
+              "layout": "vertical",
+              "gap": 6,
+              "padding": [
+                0,
+                0,
+                0,
+                60
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "yDaBU",
+                  "name": "Fila 1",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "IWS3X",
+                      "name": "Etiqueta",
+                      "fill": "$fg-subtle",
+                      "content": "LO QUE LEÍ",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "mnNTx",
+                      "name": "Paso",
+                      "fill": "$bg-muted",
+                      "cornerRadius": 999,
+                      "stroke": "$border-default",
+                      "gap": 6,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "kt2O7",
+                          "name": "Hecho",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "W6S0T",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "Qué es «Contra CETES»",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "FoRxZ",
+                  "name": "Fila 2",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "X4EM8Z",
+                      "name": "Paso",
+                      "fill": "$bg-muted",
+                      "cornerRadius": 999,
+                      "stroke": "$border-default",
+                      "gap": 6,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "mtyOV",
+                          "name": "Hecho",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "nuJow",
+                          "name": "t",
+                          "fill": "$fg-default",
+                          "content": "Tasa de CETES 28d",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "vm8mn",
+                      "name": "Abrir",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "chevron-down",
+                      "library": "lucide",
+                      "fill": "$fg-subtle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "EZIbq",
+              "name": "Aviso",
+              "fill": "$fg-subtle",
+              "content": "Es una lectura de datos, no una recomendación.",
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "x1KI5",
+              "name": "Espacio",
+              "width": "fill_container",
+              "height": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "ySkmk",
+              "name": "Campo",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "gap": "$space-2",
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ZT4Fs",
+                  "name": "ph",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Pregunta otra cosa",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "gFFtk",
                   "name": "Enviar",
                   "width": 18,
                   "height": 18,

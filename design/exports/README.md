@@ -221,15 +221,17 @@ so an export that is never renamed survives as an orphan nobody can identify.
 | `auth-errores-500.png` | `[Auth] / Errores / 500` — public/500.html as shipped (English buttons) |
 | `auth-login-desktop.png` | `[Auth] / Login · Desktop / Default` |
 
-**Assistant (`flows/assistant.pen`).** Design ahead of code: ADR-031 is proposed and nothing here
-ships yet (D166, D167). The Hoy, Panorama and asset-detail backdrops are the committed `cockpit-*`
+**Assistant (`flows/assistant.pen`).** Mirrors the assistant as shipped (ADR-031; D166–D172). The Hoy, Panorama and asset-detail backdrops are the committed `cockpit-*`
 exports, so re-shoot these when those change.
 
 | File | Artboard |
 |---|---|
 | `assistant-hoy-velita-en-reposo.png` | `[Asistente] / Hoy / Velita en reposo` — the floating entry, static at rest (D166) |
 | `assistant-hoy-drawer-abierto.png` | `[Asistente] / Hoy / Drawer abierto` — the D11 drawer seeded with suggestions from Hoy |
-| `assistant-hoy-drawer-respuesta.png` | `[Asistente] / Hoy / Drawer · Respuesta` — numbered cards, then prose that cites them |
+| `assistant-hoy-drawer-respuesta.png` | `[Asistente] / Hoy / Drawer · Respuesta` — the reader's question with its time, the answer, and its reads folded under «Lo que leí» (D171) |
+| `assistant-hoy-drawer-fuentes-abiertas.png` | `[Asistente] / Hoy / Drawer · Fuentes abiertas` — after a citation: the reads open, the cited card ringed |
+| `assistant-hoy-conversaciones-anteriores.png` | `[Asistente] / Hoy / Conversaciones anteriores` — the history, each thread by its first and last question (D172) |
+| `assistant-hoy-drawer-descartada.png` | `[Asistente] / Hoy / Drawer · Descartada` — an answer the numbers gate discarded, with «Preguntar de nuevo» |
 | `assistant-panorama-desktop-panel-abierto.png` | `[Asistente] / Panorama · Desktop / Panel abierto` — the non-modal side panel |
 | `assistant-velita-formas-estados-colores.png` | `[Asistente] / Velita / Formas, estados y colores` — the character sheet (D167) |
 | `assistant-ajustes-conectada.png` | `[Asistente] / Ajustes · Asistente / Conectada` |
