@@ -9,7 +9,8 @@ module Assistant
       INPUTS = {
         symbol: "symbol: the ticker as Stockerly lists it (NVDA, AMX, BTC)",
         term: "term: the term to define, as the user wrote it",
-        only: "only: optional list of indicator or metric keys to narrow to"
+        only: "only: optional list of indicator or metric keys to narrow to",
+        date: "date: optional day the question asks about, as YYYY-MM-DD"
       }.freeze
 
       INSTRUCTIONS = <<~TEXT.freeze
@@ -23,10 +24,10 @@ module Assistant
       def self.system(symbol)
         lines = Capabilities::Registry::CAPABILITIES.values.map do |capability|
           inputs = (capability.required + capability.optional).map { |input| INPUTS.fetch(input) }
-          "- #{capability.name_in_registry}: #{capability.description} Inputs: #{inputs.join('; ')}."
+          "- #{capability.name_in_registry}: #{capability.description} Inputs: #{inputs.join('; ').presence || 'none'}."
         end
         screen = symbol.present? ? "\nScreen symbol: #{symbol}." : ""
-        "#{INSTRUCTIONS}\nAvailable reads:\n#{lines.join("\n")}#{screen}"
+        "#{INSTRUCTIONS}\nToday: #{Date.current.iso8601}.\nAvailable reads:\n#{lines.join("\n")}#{screen}"
       end
 
       # Anything but a JSON array of objects is no plan; the caller falls back.
@@ -48,7 +49,8 @@ module Assistant
       end
 
       def self.input(read)
-        read.slice("symbol", "term", "only").to_h do |key, value|
+        capability = Capabilities::Registry::CAPABILITIES.fetch(read["read"])
+        read.slice(*(capability.required + capability.optional).map(&:to_s)).to_h do |key, value|
           value = key == "only" ? Array(value).map { |item| item.to_s.first(40) }.first(10) : value.to_s.strip.first(MAX_INPUT)
           [ key.to_sym, key == "symbol" ? value.upcase : value ]
         end
