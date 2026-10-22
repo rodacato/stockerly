@@ -451,8 +451,10 @@ es-MX:
   assistant:
     cards:
       cambio_del_dia: cambio del día %{change}
+      fundamentales: Fundamentales de %{symbol}
       glosario: Glosario de Stockerly
       lectura_del: lectura del %{date}
+      observaciones: Lo que hicieron los indicadores de %{symbol}
       rango: Rango de 52 semanas · %{symbol}
       rango_cuerpo: mínimo %{low}, máximo %{high}
       titulares: Titulares de %{symbol}, citados tal cual

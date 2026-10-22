@@ -7,6 +7,8 @@ module Assistant
 
       # Angle brackets go so third-party text (a headline) cannot close <datos>.
       def line = [ title, body, figure, source ].compact_blank.join(" · ").delete("<>")
+
+      def within(max_chars) = body.to_s.length > max_chars ? with(body: body.truncate(max_chars, separator: " ")) : self
     end
   end
 end

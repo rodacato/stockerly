@@ -45,6 +45,39 @@ RSpec.describe Assistant::Domain::ContextSelector do
       expect(cards.first.figure).to eq("#{asset.currency} 187.42")
     end
 
+    it "reads the whole technical reading when the question asks for the indicators" do
+      kinds = described_class.call(question: "¿Qué dicen los indicadores de NVDA?", symbol: "NVDA").map(&:kind)
+
+      expect(kinds.count("reading")).to be > 1
+    end
+
+    it "reads the fundamentals as the asset page prints them" do
+      create(:asset_fundamental, asset: asset)
+
+      card = described_class.call(question: "¿Qué tan sana está la empresa financieramente?", symbol: "NVDA").sole
+
+      expect(card.kind).to eq("fundamentals")
+      expect(card.body).to include("#{I18n.t("market.metricas.net_margin.nombre")} 24.6%")
+    end
+
+    it "narrows the fundamentals to the metric the question named" do
+      create(:asset_fundamental, asset: asset)
+
+      cards = described_class.call(question: "¿Qué es el P/U de NVDA?", symbol: "NVDA")
+      fundamentals = cards.find { |card| card.kind == "fundamentals" }
+
+      expect(fundamentals.body).to start_with(I18n.t("market.metricas.pe_ratio.nombre"))
+      expect(fundamentals.body).not_to include(I18n.t("market.metricas.net_margin.nombre"))
+    end
+
+    it "reads what the indicators did recently, in the page's phrases" do
+      create(:technical_observation, asset: asset, observation_type: "ma50_crossed_above", observed_at: 2.days.ago)
+
+      card = described_class.call(question: "¿Qué ha pasado con NVDA esta semana?", symbol: "NVDA").find { |c| c.kind == "observations" }
+
+      expect(card.body).to include(MarketData::Domain::ObservationPhrases.for("ma50_crossed_above"))
+    end
+
     it "falls back to the quote when nothing else matched, and to nothing for an unknown symbol" do
       expect(described_class.call(question: "¿Y esto?", symbol: "NVDA").map(&:kind)).to eq(%w[quote])
       expect(described_class.call(question: "¿Y esto?", symbol: "NOPE")).to be_empty
