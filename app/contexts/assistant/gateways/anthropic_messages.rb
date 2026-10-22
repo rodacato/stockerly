@@ -29,9 +29,9 @@ module Assistant
             parser.feed(chunk) { |event| handle(event, &on_text) }
           end
         end
-        raise Error, failed unless failed.empty?
+        raise Error, redact(failed) unless failed.empty?
       rescue Faraday::Error => e
-        raise Error, e.message
+        raise Error, redact(e.message)
       end
 
       def verify
@@ -80,7 +80,7 @@ module Assistant
         when "content_block_delta"
           yield event.dig("delta", "text") if event.dig("delta", "type") == "text_delta"
         when "error"
-          raise Error, event.dig("error", "message").to_s
+          raise Error, redact(event.dig("error", "message"))
         end
       end
 

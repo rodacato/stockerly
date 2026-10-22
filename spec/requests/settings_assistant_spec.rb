@@ -45,6 +45,19 @@ RSpec.describe "Ajustes · Asistente", type: :request do
     expect(connection.setting("model")).to eq("claude-sonnet-5-5")
   end
 
+  # Security review S1: the stored key must not follow a changed host unasked.
+  it "asks for the key again before it goes to a new host" do
+    patch settings_assistant_path, params: { assistant: valid }
+    stub = stub_request(:post, "https://elsewhere.example.com/v1/messages")
+
+    patch verify_settings_assistant_path, params: { assistant: valid.merge(base_url: "https://elsewhere.example.com", api_key: "") }
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(response.body).to include("cambiaste el host")
+    expect(stub).not_to have_been_requested
+    expect(connection.setting("base_url")).to eq("https://api.anthropic.com")
+  end
+
   it "refuses plain http to a public host, where the key would travel in the clear" do
     patch settings_assistant_path, params: { assistant: valid.merge(base_url: "http://example.com") }
 
@@ -97,7 +110,7 @@ RSpec.describe "Ajustes · Asistente", type: :request do
       stub_request(:post, messages_url).to_return(status: 200, body: { content: [] }.to_json)
       patch verify_settings_assistant_path, params: { assistant: valid }
 
-      patch settings_assistant_path, params: { assistant: valid.merge(base_url: "https://shellm.example.com") }
+      patch settings_assistant_path, params: { assistant: valid.merge(base_url: "https://shellm.example.com", api_key: "sk-other-c3d4") }
 
       expect(connection).to be_disconnected
     end

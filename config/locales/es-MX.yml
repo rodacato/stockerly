@@ -907,6 +907,8 @@ es-MX:
       invalid_https_url: debe ser una URL https
       invalid_symbol_format: debe tener de 1 a 20 caracteres, en mayúsculas o dígitos
       key?: falta
+      key_for_new_host: vuelve a escribirla; cambiaste el host y no se envía a uno
+        nuevo sin que la confirmes
       lteq?: debe ser menor o igual a %{num}
       maturity_must_be_future: debe ser una fecha futura
       min_one_minute: debe ser al menos 1 minuto
