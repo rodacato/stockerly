@@ -4,7 +4,7 @@ import { Controller } from "@hotwired/stimulus"
 // Optional persistence: add data-toggle-url-value and data-toggle-field-value
 export default class ToggleController extends Controller {
   static targets = ["knob", "track", "switch"]
-  static values = { url: String, field: String }
+  static values = { url: String, field: String, reload: Boolean }
 
   toggle() {
     const isActive = this.switchTarget.getAttribute("aria-checked") === "true"
@@ -14,7 +14,9 @@ export default class ToggleController extends Controller {
       // A rejected write must not stay flipped: the switch is the only place
       // the setting is visible, so leaving it on would report a state the
       // instance does not have. Same contract as `choice`.
-      this.persist(!isActive).catch(() => this.render(isActive))
+      this.persist(!isActive)
+        .then(() => { if (this.reloadValue) window.Turbo.visit(window.location.href, { action: "replace" }) })
+        .catch(() => this.render(isActive))
     }
   }
 

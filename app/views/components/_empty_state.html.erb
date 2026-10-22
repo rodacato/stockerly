@@ -1,6 +1,7 @@
 <%# Parameters: icon, title; description (optional), cta_text (optional),
     cta_path (optional), cta_method (optional — :post renders a button, anything
-    else a link), size (optional — :block fills a screen, :inline fits a section
+    else a link), cta_frame (optional — a frame for the link to target, "_top"
+    to leave the one it sits in), size (optional — :block fills a screen, :inline fits a section
     inside a column), tone (optional — :wash is the soft brand fill of D165) %>
 <%
   description = local_assigns[:description]
@@ -11,7 +12,7 @@
       if local_assigns[:cta_method] == :post
         button_to(cta_text, cta_path, class: cta_class)
       else
-        link_to(cta_text, cta_path, class: cta_class)
+        link_to(cta_text, cta_path, class: cta_class, data: { turbo_frame: local_assigns[:cta_frame] }.compact)
       end
     end
 %>

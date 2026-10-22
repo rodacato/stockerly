@@ -8,7 +8,7 @@ RSpec.describe VelitaHelper, type: :helper do
   it "keeps every Hoy suggestion answerable from the glossary" do
     expected = [ "Contra CETES", "CETES a 28 días", I18n.t("dashboard.ayuda.earnings.titulo") ]
 
-    helper.assistant_suggestions(from: "panorama", symbol: nil).zip(expected).each do |suggestion, title|
+    helper.assistant_suggestions(from: "panorama", symbol: nil, seen: %w[vs_cetes earnings]).zip(expected).each do |suggestion, title|
       expect(kinds(suggestion)).to include([ "glossary", title ]), "«#{suggestion}» did not retrieve «#{title}»"
     end
   end

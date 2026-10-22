@@ -1,7 +1,9 @@
 <%# Locals: token, symbol, screen, asked; value optional (a ? popover's term);
     autofocus optional, off in the drawer so a phone's keyboard does not cover
     the suggestions. %>
-<%= form_with scope: :question, url: assistant_questions_path, id: "assistant_form",
+<%# _top: a refusal redirects to Ajustes, which must leave the drawer; a
+    Turbo Stream answer is applied all the same. %>
+<%= form_with scope: :question, url: assistant_questions_path, id: "assistant_form", data: { turbo_frame: "_top" },
               class: "relative flex items-center" do |f| %>
   <%= f.hidden_field :token, value: token %>
   <%= f.hidden_field :symbol, value: symbol %>

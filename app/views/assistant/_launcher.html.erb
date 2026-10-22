@@ -2,15 +2,15 @@
     popovers can target the same frame. The route is real (D11): the URL
     changes, and the back button closes the drawer. %>
 <div data-controller="sheet" data-sheet-panel-from-value="1024">
-  <%= link_to assistant_path(from: velita_screen, symbol: content_for(:assistant_symbol).presence),
+  <%= link_to assistant_path(from: velita_screen, symbol: content_for(:assistant_symbol).presence, seen: velita_seen_terms.presence),
               data: { turbo_frame: "assistant_sheet", turbo_action: "advance" },
               aria: { label: t("assistant.launcher.abrir") },
-              class: "fixed bottom-20 right-4 z-40 flex size-14 items-center justify-center rounded-full border border-border-default bg-bg-surface shadow-lg transition-colors hover:bg-bg-muted lg:bottom-6 lg:right-6" do %>
+              class: "fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-40 flex size-14 items-center justify-center rounded-full border border-border-default bg-bg-surface shadow-lg transition-colors hover:bg-bg-muted lg:bottom-6 lg:right-6" do %>
     <%= render "assistant/velita", classes: "size-11 text-primary" %>
   <% end %>
 
   <dialog data-sheet-target="dialog"
-          data-action="click->sheet#onDialogClick close->sheet#onClose"
+          data-action="click->sheet#onDialogClick close->sheet#onClose keydown.esc->sheet#close"
           class="assistant-sheet"
           aria-label="<%= t("assistant.questions.new.titulo") %>">
     <%= turbo_frame_tag "assistant_sheet",
