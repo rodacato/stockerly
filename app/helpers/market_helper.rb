@@ -258,23 +258,6 @@ module MarketHelper
     t("market.signals.figuras.#{key}", value: number_with_precision(value, precision: 2, delimiter: ","))
   end
 
-  # Descriptive es-MX label for a technical observation, per ADR-001 —
-  # purely observational, no action verbs. The asset symbol is rendered by
-  # the caller so the phrase stays asset-agnostic. English keys remain the
-  # canonical persisted observation_type; only the user-facing copy is es-MX.
-  OBSERVATION_PHRASES = {
-    "rsi_oversold_entered"   => "entró en zona de sobreventa (RSI(14) por debajo de 30)",
-    "rsi_overbought_entered" => "entró en zona de sobrecompra (RSI(14) por encima de 70)",
-    "rsi_oversold_exited"    => "salió de la zona de sobreventa",
-    "rsi_overbought_exited"  => "salió de la zona de sobrecompra",
-    "ma200_crossed_above"    => "cruzó al alza su MA200",
-    "ma200_crossed_below"    => "cruzó a la baja su MA200",
-    "ma50_crossed_above"     => "cruzó al alza su MA50",
-    "ma50_crossed_below"     => "cruzó a la baja su MA50",
-    "bb_upper_breached"      => "rompió la banda de Bollinger superior",
-    "bb_lower_breached"      => "rompió la banda de Bollinger inferior"
-  }.freeze
-
   # Short uppercase es-MX tag rendered next to the phrase in the asset
   # detail "Observaciones recientes" panel (S10 #93). One per indicator family.
   RSI_TAG = "RSI"
@@ -310,8 +293,7 @@ module MarketHelper
   }.freeze
 
   def observation_phrase(observation)
-    type = observation.observation_type
-    OBSERVATION_PHRASES.fetch(type, type.humanize)
+    MarketData::Domain::ObservationPhrases.for(observation.observation_type)
   end
 
   def observation_tag(observation)

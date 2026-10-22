@@ -39,6 +39,13 @@ module MarketData
         @definitions.values
       end
 
+      # What the asset page can show for this asset: crypto drops the company's
+      # categories, an equity drops the coin's, and identity is never a metric row.
+      def shown_for(asset)
+        excluded = asset.asset_type_crypto? ? %i[identity dividends] : %i[identity crypto_market]
+        all.reject { |definition| excluded.include?(definition.category) }
+      end
+
       def clear!
         @definitions = {}
       end

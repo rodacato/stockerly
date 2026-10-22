@@ -85,6 +85,11 @@ module MarketData
       nil
     end
 
+    # A computed metric (pe_ratio, pb_ratio, …) first, the stored one otherwise.
+    def value(key)
+      respond_to?(key) ? public_send(key) : metric(key.to_s)
+    end
+
     # Delegate unknown methods to stored metrics, aliases included.
     def method_missing(name, *args)
       value = metric(name)

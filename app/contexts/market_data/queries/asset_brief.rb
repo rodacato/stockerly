@@ -7,7 +7,7 @@ module MarketData
 
       # @api public
       def self.call(symbol:)
-        asset = find_asset(symbol)
+        asset = AssetLookup.by_symbol(symbol)
         return nil unless asset
 
         {
@@ -20,15 +20,6 @@ module MarketData
           headlines: headlines(asset)
         }.freeze
       end
-
-      def self.find_asset(symbol)
-        symbol = symbol.to_s.strip.upcase
-        return nil if symbol.empty?
-
-        Asset.find_by(symbol: symbol) ||
-          Asset.find_by("former_symbols && ARRAY[?]::varchar[]", [ symbol ])
-      end
-      private_class_method :find_asset
 
       def self.quote(asset)
         return nil if asset.current_price.nil?
