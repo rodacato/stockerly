@@ -28,16 +28,18 @@ class AssistantComposeJob < ApplicationJob
   # The planner picks from the registry; when it fails, picks nothing, or what
   # it picked holds no data, the deterministic selector answers instead.
   def choose_cards(message, connection)
-    symbol = message.conversation.symbol
+    conversation = message.conversation
     holdings = connection[:read_holdings] == true
-    planned = Assistant::Capabilities::Registry.new(holdings: holdings).cards(plan(message, connection, symbol, holdings))
-    planned.presence || Assistant::Domain::ContextSelector.call(question: message.question, symbol: symbol, holdings: holdings)
+    planned = Assistant::Capabilities::Registry.new(holdings: holdings).cards(plan(message, connection, holdings))
+    planned.presence || Assistant::Domain::ContextSelector.call(question: message.question, symbol: conversation.symbol,
+                                                                holdings: holdings, screen: conversation.screen)
   end
 
-  def plan(message, connection, symbol, holdings)
+  def plan(message, connection, holdings)
     gateway = Assistant::Gateways::AnthropicMessages.new(base_url: connection[:base_url], api_key: connection[:api_key].to_s,
                                                          model: connection[:planner_model] || connection[:model])
-    reply = gateway.complete(system: Assistant::Domain::Planner.system(symbol, holdings: holdings),
+    conversation = message.conversation
+    reply = gateway.complete(system: Assistant::Domain::Planner.system(conversation.symbol, screen: conversation.screen, holdings: holdings),
                              messages: [ { role: "user", content: asked(message) } ])
     Assistant::Domain::Planner.steps(reply, holdings: holdings)
   rescue Assistant::Gateways::AnthropicMessages::Error => e

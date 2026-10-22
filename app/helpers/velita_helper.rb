@@ -8,7 +8,12 @@ module VelitaHelper
     @velita_visible = connection.present? && connection[:status] == :connected && connection[:show_velita]
   end
 
-  def velita_screen = main_nav_items.find { |item| item[:active] }&.dig(:key)
+  # A page that answers its own question gets its own key; the rest go by their tab.
+  PAGES = { "signals" => "senales", "portfolios" => "consolidado" }.freeze
+
+  def velita_screen = PAGES[controller_path] || main_nav_items.find { |item| item[:active] }&.dig(:key)
+
+  def assistant_screen_label(key) = t("assistant.pantallas.#{key}", default: :"nav.#{key}")
 
   # The figures Hoy's ? popovers explained on this page, so the drawer only
   # suggests what the screen is actually showing.
@@ -27,6 +32,8 @@ module VelitaHelper
         "earnings" => [ t("assistant.questions.new.sugerencias.panorama.resultados") ]
       }
       by_figure.select { |figure, _| seen.include?(figure) }.values.flatten
+    elsif from == "senales"
+      [ t("assistant.questions.new.sugerencias.senales.semana") ]
     else
       []
     end

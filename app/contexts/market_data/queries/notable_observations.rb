@@ -17,6 +17,14 @@ module MarketData
           .includes(:asset)
           .limit(limit)
       end
+
+      # ADR-031: the same rows as plain data, phrased as the Señales row phrases them.
+      def self.readings(asset_ids:, limit: 3, window_days: WINDOW_DAYS)
+        call(asset_ids: asset_ids, limit: limit, window_days: window_days).map do |row|
+          { symbol: row.asset.symbol, type: row.observation_type, observed_at: row.observed_at,
+            reading: Domain::ObservationPhrases.for(row.observation_type), rsi: row.indicator_snapshot["rsi"]&.to_f&.round }
+        end
+      end
     end
   end
 end

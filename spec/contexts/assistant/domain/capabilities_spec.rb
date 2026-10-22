@@ -174,4 +174,34 @@ RSpec.describe Assistant::Capabilities::Registry do
       end
     end
   end
+
+  describe "the Señales list" do
+    include ActiveSupport::Testing::TimeHelpers
+
+    let(:user) { create(:user, onboarded_at: Time.current) }
+
+    before do
+      portfolio = user.portfolio || create(:portfolio, user: user)
+      create(:position, portfolio: portfolio, asset: asset, shares: 10, status: :open)
+      watched = create(:asset, symbol: "ASML")
+      create(:watchlist_item, user: user, asset: watched)
+      create(:technical_observation, :ma200_crossed_below, asset: watched, observed_at: Time.zone.local(2026, 10, 20, 12))
+      create(:technical_observation, asset: asset, observed_at: Time.zone.local(2026, 10, 21, 12))
+    end
+
+    around { |example| travel_to(Time.zone.local(2026, 10, 22, 12)) { example.run } }
+
+    it "reads what is watched in the screen's phrases, and nothing held while the switch is off" do
+      card = registry.call("signals.recent").cards.sole
+
+      expect(card.title).to eq("Señales de los últimos 7 días")
+      expect(card.body).to eq("ASML (20 de oct): #{MarketData::Domain::ObservationPhrases.for('ma200_crossed_below')}")
+    end
+
+    it "reads what is held too, marked, with the switch on" do
+      card = described_class.new(holdings: true).call("signals.recent").cards.sole
+
+      expect(card.body).to start_with("NVDA (la tienes) (21 de oct): #{MarketData::Domain::ObservationPhrases.for('rsi_oversold_entered')} · RSI 28")
+    end
+  end
 end

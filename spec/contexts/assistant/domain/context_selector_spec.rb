@@ -148,4 +148,21 @@ RSpec.describe Assistant::Domain::ContextSelector do
       expect(kinds("¿Cómo va lo mío?", holdings: false)).to be_empty
     end
   end
+
+  describe "the screen it was asked on" do
+    before do
+      user = create(:user, onboarded_at: Time.current)
+      watched = create(:asset, symbol: "ASML")
+      create(:watchlist_item, user: user, asset: watched)
+      create(:technical_observation, asset: watched)
+    end
+
+    it "reads what the screen shows when the question does not say what it is about" do
+      expect(described_class.call(question: "¿Cuáles son interesantes?", screen: "senales").map(&:kind)).to eq(%w[signals])
+    end
+
+    it "keeps to what the question asks when it does say" do
+      expect(described_class.call(question: "¿Qué es el RSI?", screen: "senales").map(&:kind)).to eq(%w[glossary])
+    end
+  end
 end

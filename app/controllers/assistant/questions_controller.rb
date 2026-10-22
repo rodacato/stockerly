@@ -2,7 +2,7 @@ module Assistant
   # /assistant: a conversation keyed by a token the page subscribes to before the
   # first question, so no streamed word is broadcast to nobody. `c` reopens one.
   class QuestionsController < AuthenticatedController
-    SCREENS = NavigationHelper::MAIN_NAV.pluck(:key).freeze
+    SCREENS = (NavigationHelper::MAIN_NAV.pluck(:key) + VelitaHelper::PAGES.values).freeze
 
     rate_limit to: 20, within: 1.minute, only: :create
 
