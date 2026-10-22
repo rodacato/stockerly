@@ -47,7 +47,8 @@ sense of ADR-002. Two checks enforce it: nothing outside the context references 
 nothing but its own conversation record. Deleting the context leaves the product whole.
 
 **5. Version one reads no holdings.** Market data, the asset detail and the glossary only. Sending
-the owner's positions to a provider needs its own amendment, with a data review.
+the owner's positions to a provider needs its own amendment, with a data review. (Lifted by
+switch in the [amendment of 2026-10-22](#amendment-2026-10-22--the-assistant-may-read-the-owners-holdings-by-switch).)
 
 **6. It is provider-agnostic by port.** One port, wire dialects as adapters, model ids as
 configuration, no vendor SDK (ADR-019). A self-hoster brings a provider or none; no provider is
@@ -88,3 +89,51 @@ prompt, and puts the book of record within reach of a model.
   numbers rule is `Assistant::Domain::NumbersGate`, run on every streamed flush.
 - The registry of §2 is `Assistant::Capabilities::Registry` (#880): a closed list, each read
   returning cards or a stated failure.
+
+## Amendment, 2026-10-22 — the assistant may read the owner's holdings, by switch
+
+**Context.** §5 kept version one off the owner's positions and said lifting that "needs its own
+amendment, with a data review". Version one shipped (#872, #880, #884, #890) and the owner's
+verdict after using it is that a glossary and the market are not what he asks daily. He asks
+*"¿cómo va lo mío?"*, *"¿qué vence esta semana?"*, *"¿cuánto llevo en NVDA en pesos?"*:
+
+> *"quiero que sea mi experto de lo que tengo, me interesa y me ayude a contestar preguntas
+> rápidas"*
+
+**Decision.** §5 is lifted under four conditions.
+
+1. **A switch, off by default.** Ajustes · Asistente gains *Puede leer tus posiciones*. It is
+   shown with the host the positions would be sent to. An instance whose owner never turns it
+   on behaves exactly as before. A self-hoster on an external provider does not send their
+   portfolio without deciding to.
+2. **Through Trading's read API, as plain data.** Assistant → Trading becomes a declared
+   customer/supplier pair, the way ADR-025 made Alerts → Trading one. The reads are
+   `Trading::Queries::*` returning hashes, never `Position` or `Portfolio` records. The
+   isolation check keeps holding: the assistant reads no foreign model.
+3. **The screen's own figures.** A holding's value, cost and gain are the ones `/portfolio`
+   shows, read from the same calculation. The assistant never recomputes them. MXN cost stays at
+   the rate of each trade (ADR-009). A second figure for the same holding would discredit
+   both.
+4. **Visible when used.** An answer that read the holdings says so under *Lo que leí*, like any
+   other read. The numbers gate applies unchanged.
+
+**Data review.** What leaves the instance when the switch is on, and only in a turn that reads
+holdings:
+- the symbols held;
+- their quantities, value, cost and gain;
+- the dates of what is maturing or reporting.
+
+It goes to the configured host. With a local host (SheLLM, Ollama) it stays on the owner's
+network. With a hosted API it reaches that vendor under that vendor's terms. The switch's line
+names the host so the owner knows which case applies. Nothing is persisted outside
+`assistant_messages`, which already holds the cards an answer read.
+
+**Alternatives.**
+- *Always on, no switch.* Rejected: it decides for every self-hoster what leaves their machine.
+- *Aggregates only* (totals, no symbols). Rejected: *"¿cuánto llevo en NVDA?"* is the question.
+
+**Consequences.**
+- §5 reads as amended here.
+- `CLAUDE.md`'s list of customer/supplier pairs gains Assistant → Trading.
+- The registry gains holdings capabilities. They return no data while the switch is off.
+- MCP (the plan's P2) stays after this, local only, against a registry that has stopped moving.
