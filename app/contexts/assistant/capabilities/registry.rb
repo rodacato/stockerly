@@ -23,6 +23,8 @@ module Assistant
         Result.failed(name, :error)
       end
 
+      def cards(steps) = steps.map { |name, input| call(name, **input) }.select(&:ok?).flat_map(&:cards)
+
       def brief(symbol)
         key = symbol.to_s.strip.upcase
         (@briefs ||= {}).fetch(key) { @briefs[key] = MarketData::Queries::AssetBrief.call(symbol: key) }

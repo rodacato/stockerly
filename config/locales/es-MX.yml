@@ -463,6 +463,7 @@ es-MX:
       con_la_frase: Abre con esta frase ya escrita
     questions:
       answer:
+        buscando: Buscando…
         descartada: La respuesta usaba una cifra que no está en estos datos, así que
           la descarté. Los datos de arriba sí son de Stockerly.
         escribiendo: Escribiendo…
@@ -2059,7 +2060,8 @@ es-MX:
         campos:
           api_key: API key
           base_url: Host
-          model: Modelo
+          model: Para redactar
+          planner_model: Para planear
         conexion: Conexión
         conexion_desc: A qué modelo le pregunta. Tu pregunta y los datos de mercado
           que consulta se envían a este host; tus posiciones no.
@@ -2076,6 +2078,7 @@ es-MX:
           unauthorized: El host rechazó la API key.
           unreachable: No se pudo llegar al host. Revisa la dirección.
         guardar: Guardar
+        modelos_hint: Un mismo modelo puede hacer las dos cosas.
         sin_conexion: Sin conexión
         titulo: Asistente
         velita: Mostrar a Velita

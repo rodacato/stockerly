@@ -47,13 +47,14 @@ RSpec.describe "Velita's drawer", type: :system, js: true do
     click_button I18n.t("assistant.questions.new.sugerencias.activo.rsi", symbol: "NVDA")
 
     within("dialog.assistant-sheet") do
-      expect(page).to have_text("RSI (14) · NVDA")
+      expect(page).to have_text(I18n.t("assistant.questions.answer.buscando"))
       expect(page).to have_no_css("#assistant_suggestions")
     end
 
     perform_enqueued_jobs
 
     within("dialog.assistant-sheet") do
+      expect(page).to have_text("RSI (14) · NVDA")
       expect(page).to have_text("El RSI de NVDA está en 72.4 [2].")
       expect(page).to have_text(I18n.t("assistant.questions.answer.no_es_recomendacion"))
     end

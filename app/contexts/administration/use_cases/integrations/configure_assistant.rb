@@ -19,12 +19,19 @@ module Administration
           end
 
           row.provider_type = Queries::AssistantConnection::PROVIDER_TYPE
-          row.settings = row.settings.to_h.merge("base_url" => attrs[:base_url].chomp("/"), "model" => attrs[:model])
+          row.settings = settings_for(row, attrs)
           row.api_key_encrypted = attrs[:api_key] if attrs[:api_key].present?
           row.connection_status = :disconnected if row.changed?
           return Failure([ :validation, row.errors.to_hash ]) unless row.save
 
           Success(row.id)
+        end
+
+        # No planner model means the composing model plans too.
+        def settings_for(row, attrs)
+          settings = row.settings.to_h.merge("base_url" => attrs[:base_url].chomp("/"), "model" => attrs[:model])
+          planner = attrs[:planner_model].to_s.squish
+          planner.empty? ? settings.except("planner_model") : settings.merge("planner_model" => planner)
         end
 
         # A saved key belongs to the host it was typed for: sending it to a new

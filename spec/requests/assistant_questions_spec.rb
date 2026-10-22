@@ -27,7 +27,7 @@ RSpec.describe "Assistant questions", type: :request do
     expect(response.body).to include(I18n.t("assistant.questions.new.sobre", symbol: "NVDA"))
   end
 
-  it "shows the cards at once and leaves the prose to the job" do
+  it "shows the question at once and leaves choosing the cards and the prose to the job" do
     connect
 
     expect do
@@ -35,8 +35,9 @@ RSpec.describe "Assistant questions", type: :request do
                                      as: :turbo_stream
     end.to have_enqueued_job(AssistantComposeJob)
 
-    expect(response.body).to include("RSI (14)")
-    expect(response.body).to include(I18n.t("assistant.questions.answer.escribiendo"))
+    expect(response.body).to include("¿Qué significa el RSI?")
+    expect(response.body).to include(I18n.t("assistant.questions.answer.buscando"))
+    expect(AssistantMessage.last.cards).to eq([])
     expect(AssistantConversation.find_by(token: "abc").messages.count).to eq(1)
   end
 

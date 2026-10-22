@@ -65,10 +65,18 @@
       </label>
 
       <label class="flex flex-col gap-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t(".campos.planner_model") %></span>
+        <%= f.text_field :planner_model, value: @connection&.dig(:planner_model) || defaults::DEFAULT_MODEL,
+                         class: field_classes(:md, "w-full font-mono") %>
+      </label>
+
+      <label class="flex flex-col gap-1.5">
         <span class="text-xs font-semibold uppercase tracking-wide text-fg-subtle"><%= t(".campos.model") %></span>
         <%= f.text_field :model, value: @connection&.dig(:model) || defaults::DEFAULT_MODEL, required: true,
                          class: field_classes(:md, "w-full font-mono") %>
       </label>
+
+      <p class="text-sm text-fg-subtle"><%= t(".modelos_hint") %></p>
 
       <div class="flex flex-wrap gap-3">
         <%= f.button t(".verificar"), formaction: verify_settings_assistant_path,

@@ -13,7 +13,7 @@ module Assistant
 
       def self.call(question:, symbol: nil)
         registry = Capabilities::Registry.new
-        run = ->(steps) { steps.map { |name, input| registry.call(name, **input) }.select(&:ok?).flat_map(&:cards) }
+        run = registry.method(:cards)
 
         entries = Glossary.matching(question)
         cards = run.call(entries.map { |entry| [ "glossary.define", { term: entry.key } ] })

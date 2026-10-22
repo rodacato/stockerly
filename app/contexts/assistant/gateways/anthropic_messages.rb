@@ -34,6 +34,24 @@ module Assistant
         raise Error, redact(e.message)
       end
 
+      # One non-streamed request; the planner's reply is text, so any Messages host can plan.
+      def complete(system:, messages:, max_tokens: 400)
+        response = plan_connection.post("/v1/messages") do |req|
+          req.headers.update(headers)
+          req.body = JSON.generate(model: @model, max_tokens:, system:, messages:)
+        end
+        raise Error, redact(provider_message(response)) if response.status >= 400
+
+        content = JSON.parse(response.body.to_s)["content"]
+        raise Error, "malformed response" unless content.is_a?(Array)
+
+        content.filter_map { |block| block["text"] if block.is_a?(Hash) && block["type"] == "text" }.join
+      rescue JSON::ParserError
+        raise Error, "malformed response"
+      rescue Faraday::Error => e
+        raise Error, redact(e.message)
+      end
+
       def verify
         response = verify_connection.post("/v1/messages") do |req|
           req.headers.update(headers)
@@ -88,6 +106,13 @@ module Assistant
         @connection ||= Faraday.new(url: @base_url) do |f|
           f.options.timeout = @timeout
           f.options.open_timeout = 10
+        end
+      end
+
+      def plan_connection
+        Faraday.new(url: @base_url) do |f|
+          f.options.timeout = 15
+          f.options.open_timeout = 5
         end
       end
 

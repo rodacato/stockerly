@@ -1,6 +1,5 @@
-# Writes the prose over the cards a question already has, streaming it into
-# the page, and keeps it only if every figure in it came from those cards
-# (ADR-031 §2: discarded, not repaired).
+# Chooses the cards a question reads, shows them, then streams prose over them
+# and keeps it only if every figure in it came from those cards (ADR-031 §2).
 class AssistantComposeJob < ApplicationJob
   queue_as :default
 
@@ -14,8 +13,9 @@ class AssistantComposeJob < ApplicationJob
     connection = Administration::Queries::AssistantConnection.call
     return message.update!(status: :failed, failure_tag: "not_connected").then { broadcast(message) } unless connection
 
-    cards = message.cards.map { |card| Assistant::Domain::Card.from_h(card) }
-    message.update!(status: :streaming)
+    cards = message.cards.map { |card| Assistant::Domain::Card.from_h(card) }.presence || choose_cards(message, connection)
+    message.update!(cards: cards.map(&:to_h), status: :streaming)
+    broadcast_cards(message)
     answer = stream(message, connection, cards)
     finish(message, answer, cards)
   rescue Assistant::Gateways::AnthropicMessages::Error
@@ -24,6 +24,24 @@ class AssistantComposeJob < ApplicationJob
   end
 
   private
+
+  # The planner picks from the registry; when it fails, picks nothing, or what
+  # it picked holds no data, the deterministic selector answers instead.
+  def choose_cards(message, connection)
+    symbol = message.conversation.symbol
+    planned = Assistant::Capabilities::Registry.new.cards(plan(message, connection, symbol))
+    planned.presence || Assistant::Domain::ContextSelector.call(question: message.question, symbol: symbol)
+  end
+
+  def plan(message, connection, symbol)
+    gateway = Assistant::Gateways::AnthropicMessages.new(base_url: connection[:base_url], api_key: connection[:api_key].to_s,
+                                                         model: connection[:planner_model] || connection[:model])
+    reply = gateway.complete(system: Assistant::Domain::Planner.system(symbol), messages: [ { role: "user", content: message.question } ])
+    Assistant::Domain::Planner.steps(reply)
+  rescue Assistant::Gateways::AnthropicMessages::Error => e
+    Rails.logger.info("[assistant] planner failed, using the selector: #{e.message}")
+    []
+  end
 
   def stream(message, connection, cards)
     gateway = Assistant::Gateways::AnthropicMessages.new(base_url: connection[:base_url], api_key: connection[:api_key].to_s,
@@ -62,6 +80,11 @@ class AssistantComposeJob < ApplicationJob
       message.update!(status: :discarded, answer: nil, failure_tag: "invented_figures")
     end
     broadcast(message)
+  end
+
+  def broadcast_cards(message)
+    Turbo::StreamsChannel.broadcast_replace_to("assistant", message.conversation.token, target: "assistant_message_#{message.id}",
+                                                                     partial: "assistant/questions/message", locals: { message: message })
   end
 
   def broadcast(message)
