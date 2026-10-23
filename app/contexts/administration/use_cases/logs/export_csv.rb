@@ -15,12 +15,7 @@ module Administration
         private
 
         def fetch_logs(params)
-          scope = SystemLog.recent
-          scope = scope.where(severity: params[:severity]) if params[:severity].present?
-          scope = scope.by_module(params[:module_name])
-          scope = scope.where("task_name ILIKE ?", "%#{params[:search]}%") if params[:search].present?
-
-          Success(scope)
+          Success(ListLogs.filtered(params))
         end
 
         def generate(logs)

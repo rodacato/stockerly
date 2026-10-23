@@ -26,6 +26,22 @@ RSpec.describe Administration::UseCases::Logs::ExportCsv do
       expect(csv).to include("Timeout")
     end
 
+    # F4.3: the file holds the rows the screen shows, filters and all.
+    it "exports what the list shows: its range, and a search over the error too" do
+      create(:system_log, task_name: "Old Sync", created_at: 10.days.ago)
+
+      csv = described_class.call(admin: admin, params: { range: "24h", search: "timeout" }).value!
+
+      expect(csv).to include("FX Rate Refresh")
+      expect(csv).not_to include("Old Sync", "Price Sync: AAPL")
+    end
+
+    it "matches a percent sign literally" do
+      csv = described_class.call(admin: admin, params: { search: "%" }).value!
+
+      expect(csv).not_to include("Price Sync: AAPL")
+    end
+
     it "applies filter params" do
       result = described_class.call(admin: admin, params: { severity: "error" })
       csv = result.value!

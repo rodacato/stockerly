@@ -9,14 +9,11 @@ module Administration
         DEFAULT_RANGE = "24h".freeze
         CREATED_AT_SINCE = "created_at >= ?".freeze
 
-        def call(params: {}, request: nil)
-          scope = SystemLog.recent
-          scope = scope.where(severity: params[:severity]) if params[:severity].present?
-          scope = scope.by_module(params[:module_name])
-          scope = apply_search(scope, params[:search])
-          scope = apply_range(scope, params[:range].presence || DEFAULT_RANGE)
+        # The rows the screen shows, unpaginated: what the CSV export writes.
+        def self.filtered(params) = new.filtered(params)
 
-          pagy, logs = pagy(:offset, scope,
+        def call(params: {}, request: nil)
+          pagy, logs = pagy(:offset, filtered(params),
             limit: 50,
             page: [ params[:page].to_i, 1 ].max,
             request: request || { base_url: "", path: "", params: {}, cookie: nil }
@@ -25,6 +22,14 @@ module Administration
           # No unfiltered SystemLog.count: the header chip it fed is gone, and
           # the footer reports the filtered total pagy already carries.
           { pagy: pagy, logs: logs }
+        end
+
+        def filtered(params)
+          scope = SystemLog.recent
+          scope = scope.where(severity: params[:severity]) if params[:severity].present?
+          scope = scope.by_module(params[:module_name])
+          scope = apply_search(scope, params[:search])
+          apply_range(scope, params[:range].presence || DEFAULT_RANGE)
         end
 
         private
