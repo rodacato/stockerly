@@ -138,6 +138,36 @@ RSpec.describe Position, type: :model do
       expect(position.avg_cost.to_f).to be_within(0.01).of(133.33)
     end
 
+    # F2.1: a sale takes shares out at the cost they carry; the next buy
+    # averages against what is left, not against every buy ever made.
+    it "keeps a running average across a partial sale" do
+      portfolio = create(:portfolio)
+      asset = create(:asset)
+      position = create(:position, portfolio: portfolio, asset: asset, avg_cost: 1.0, shares: 10)
+      [ [ :buy, 10, 10.0, 3 ], [ :sell, 5, 12.0, 2 ], [ :buy, 5, 20.0, 1 ] ].each do |side, shares, price, days|
+        create(:trade, portfolio: portfolio, asset: asset, position: position, side: side, shares: shares,
+                       price_per_share: price, total_amount: shares * price, executed_at: days.days.ago)
+      end
+
+      position.recalculate_avg_cost!
+
+      expect(position.avg_cost.to_f).to be_within(0.01).of(15.0)
+    end
+
+    it "starts over after the position was sold out" do
+      portfolio = create(:portfolio)
+      asset = create(:asset)
+      position = create(:position, portfolio: portfolio, asset: asset, avg_cost: 1.0, shares: 4)
+      [ [ :buy, 10, 10.0, 3 ], [ :sell, 10, 12.0, 2 ], [ :buy, 4, 30.0, 1 ] ].each do |side, shares, price, days|
+        create(:trade, portfolio: portfolio, asset: asset, position: position, side: side, shares: shares,
+                       price_per_share: price, total_amount: shares * price, executed_at: days.days.ago)
+      end
+
+      position.recalculate_avg_cost!
+
+      expect(position.avg_cost.to_f).to be_within(0.01).of(30.0)
+    end
+
     it "does nothing when no buy trades exist" do
       position = create(:position, avg_cost: 100.0)
       position.recalculate_avg_cost!
