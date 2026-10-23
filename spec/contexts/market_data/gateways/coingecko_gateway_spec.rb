@@ -78,6 +78,18 @@ RSpec.describe MarketData::Gateways::CoingeckoGateway do
       end
     end
 
+    # F3.5: a known coin answered without a price has no price, not a price of 0.
+    context "when a known coin comes back without a price" do
+      before do
+        stub_request(:get, %r{api\.coingecko\.com/api/v3/simple/price})
+          .to_return(status: 200, body: { "bitcoin" => {} }.to_json, headers: { "Content-Type" => "application/json" })
+      end
+
+      it "leaves it out rather than pricing it at zero" do
+        expect(gateway.fetch_bulk_prices(%w[BTC]).value!).to be_empty
+      end
+    end
+
     context "when no symbols are recognized" do
       it "returns Success with empty array" do
         result = gateway.fetch_bulk_prices(%w[FAKE1 FAKE2])
