@@ -249,8 +249,8 @@ exports, so re-shoot these when those change.
 
 | File | Artboard |
 |---|---|
-| `usage-apagado.png` | `[Uso] / Uso / Apagado` — the switch off: only the day opens count |
-| `usage-con-datos.png` | `[Uso] / Uso / Con datos` — funnels, capture time, the events table as a peek, day opens |
+| `usage-apagado.png` | `[Uso] / Uso / Apagado` — the switch off: nothing measured reads as off, only the day opens count |
+| `usage-con-datos.png` | `[Uso] / Uso / Con datos` — funnels led by this week, capture time, events newest first, day opens |
 
 ## Brand (`brand.pen`)
 
