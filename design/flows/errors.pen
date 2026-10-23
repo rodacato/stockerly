@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "PURPOSE\nThe instance's own error tracker (ADR-020): an unhandled exception in a request or a job, kept in this database and read here, with no external service. Split out of Ajustes on 2026-10-23 so its screens can be designed on their own.\n\nENTRY POINTS\nAjustes hub → Errores (the row exists only while developer_mode is on, ADR-020 §4). Estado y mantenimiento holds the switch and the Errores (24 h) count. Back from the list returns to Estado y mantenimiento; back from a detail returns to the list.\n\nSCREENS (LEFT → RIGHT)\nLista · Detalle.\n\nBUSINESS RULES\n• Capture is always on; developer_mode gates only this surface (ADR-020 §4).\n• One row per fingerprint (exception class + first application line), with its count and first and last seen (§2).\n• Request parameters pass through filter_parameters; nothing is stored raw (§6). A backtrace is never shown outside this admin session (§5).\n• Rows are kept 30 days, then purged (§7). Deleting one removes it from the list.\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — admin.errors.*.\n\nSTATES NOT DRAWN\n• Empty: \"Tu instancia no ha registrado ningún error.\"\n• Filtered with no result: \"Nada con esos filtros.\" with Limpiar filtros.\n• Past one page: the pager under the count.\n• developer_mode off: back to Estado with \"Activa el modo desarrollador en Ajustes para ver esta sección.\"\n• Any screen on desktop: the same column inside the SidebarNav shell.\n\nOPEN FINDINGS\nNone.\n\nHISTORY\n→ Log · Errores",
+          "content": "PURPOSE\nThe instance's own error tracker (ADR-020): an unhandled exception in a request or a job, kept in this database and read here, with no external service. Split out of Ajustes on 2026-10-23 so its screens can be designed on their own.\n\nENTRY POINTS\nAjustes hub → Errores (the row exists only while developer_mode is on, ADR-020 §4). Estado y mantenimiento holds the switch and the Errores (24 h) count. Back from the list returns to Estado y mantenimiento; back from a detail returns to the list.\n\nSCREENS (LEFT → RIGHT)\nLista · Detalle.\n\nBUSINESS RULES\n• Capture is always on; developer_mode gates only this surface (ADR-020 §4).\n• One row per fingerprint (exception class + first application line), with its count and first and last seen (§2).\n• Request parameters pass through filter_parameters; nothing is stored raw (§6). A backtrace is never shown outside this admin session (§5).\n• Rows are kept 30 days, then purged (§7). Deleting one removes it from the list.\n• Each occurrence overwrites the message, origin, reference, trace and parameters, so once an error repeats the detail says they are the latest occurrence's. The 500 page shows no reference (ADR-020, Consequences); the reference is searchable.\n• The list reads a relative age; the detail keeps the absolute stamps. Origin chips are neutral: the chip's text names the origin. Search covers class, message, path, job class and reference.\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — admin.errors.*.\n\nSTATES NOT DRAWN\n• Empty: \"Tu instancia no ha registrado ningún error.\"\n• Filtered with no result: \"Ningún error coincide con «…».\" for a search, \"Nada con esos filtros.\" for an origin alone, with Limpiar filtros.\n• An error with no application line: no line box and no Traza section.\n• Past one page: \"Mostrando n de m errores\" and the pager; on one page neither is drawn.\n• developer_mode off: back to Estado with \"Activa el modo desarrollador en Ajustes para ver esta sección.\"\n• Any screen on desktop: the same column inside the SidebarNav shell.\n\nOPEN FINDINGS\nNone.\n\nHISTORY\n→ Log · Errores",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -644,7 +644,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-23 — Split out of flows/settings.pen (kit and artboards carried as they were) so errors and usage are designed as flows of their own.",
+          "content": "2026-10-23 — Mirrored to code at fa525618 (#904): no dot, neutral origin chips, relative age, no footer on one page; the detail redrawn as a request error (the job one showed params jobs never record), with the latest-occurrence note, Veces, a wrapping trace and a full-width delete.\n2026-10-23 — Split out of flows/settings.pen (kit and artboards carried as they were) so errors and usage are designed as flows of their own.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -746,7 +746,7 @@
                   "id": "oWL1f",
                   "name": "ph",
                   "fill": "$fg-subtle",
-                  "content": "Buscar por clase, mensaje, ruta o referencia…",
+                  "content": "Buscar por clase, mensaje, ruta, trabajo o referencia…",
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
                   "fontWeight": "normal"
@@ -898,27 +898,6 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "GAEJK",
-                      "name": "DotWrap",
-                      "padding": [
-                        6,
-                        0,
-                        0,
-                        0
-                      ],
-                      "children": [
-                        {
-                          "type": "ellipse",
-                          "id": "z1Aj2",
-                          "name": "Dot",
-                          "fill": "$negative",
-                          "width": 8,
-                          "height": 8
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
                       "id": "dPJ5b",
                       "name": "Col",
                       "width": "fill_container",
@@ -972,7 +951,7 @@
                                   "type": "frame",
                                   "id": "U6g1C3",
                                   "name": "Origin",
-                                  "fill": "$primary-muted",
+                                  "fill": "$bg-muted",
                                   "cornerRadius": 4,
                                   "padding": [
                                     2,
@@ -983,7 +962,7 @@
                                       "type": "text",
                                       "id": "bLltA",
                                       "name": "t",
-                                      "fill": "$primary-fg",
+                                      "fill": "$fg-subtle",
                                       "content": "GET /market/SATS",
                                       "fontFamily": "$font-mono",
                                       "fontSize": 12,
@@ -1021,8 +1000,8 @@
                               "id": "S6Tyh",
                               "name": "At",
                               "fill": "$fg-subtle",
-                              "content": "16 SEP 2026 · 09:14:02",
-                              "fontFamily": "$font-mono",
+                              "content": "hace 2 h",
+                              "fontFamily": "$font-sans",
                               "fontSize": 12,
                               "fontWeight": "normal"
                             }
@@ -1054,27 +1033,6 @@
                   "gap": "$space-3",
                   "padding": 16,
                   "children": [
-                    {
-                      "type": "frame",
-                      "id": "iLHCA",
-                      "name": "DotWrap",
-                      "padding": [
-                        6,
-                        0,
-                        0,
-                        0
-                      ],
-                      "children": [
-                        {
-                          "type": "ellipse",
-                          "id": "KjxNf",
-                          "name": "Dot",
-                          "fill": "$negative",
-                          "width": 8,
-                          "height": 8
-                        }
-                      ]
-                    },
                     {
                       "type": "frame",
                       "id": "HgTN8",
@@ -1130,7 +1088,7 @@
                                   "type": "frame",
                                   "id": "zuwR5",
                                   "name": "Origin",
-                                  "fill": "$warning-bg",
+                                  "fill": "$bg-muted",
                                   "cornerRadius": 4,
                                   "padding": [
                                     2,
@@ -1141,7 +1099,7 @@
                                       "type": "text",
                                       "id": "r5fAt",
                                       "name": "t",
-                                      "fill": "$warning-fg",
+                                      "fill": "$fg-subtle",
                                       "content": "SyncFundamentalJob",
                                       "fontFamily": "$font-mono",
                                       "fontSize": 12,
@@ -1179,8 +1137,8 @@
                               "id": "Ug6gT",
                               "name": "At",
                               "fill": "$fg-subtle",
-                              "content": "16 SEP 2026 · 06:12:41",
-                              "fontFamily": "$font-mono",
+                              "content": "hace 5 h",
+                              "fontFamily": "$font-sans",
                               "fontSize": 12,
                               "fontWeight": "normal"
                             }
@@ -1212,27 +1170,6 @@
                   "gap": "$space-3",
                   "padding": 16,
                   "children": [
-                    {
-                      "type": "frame",
-                      "id": "rJRUd",
-                      "name": "DotWrap",
-                      "padding": [
-                        6,
-                        0,
-                        0,
-                        0
-                      ],
-                      "children": [
-                        {
-                          "type": "ellipse",
-                          "id": "RYWvU",
-                          "name": "Dot",
-                          "fill": "$negative",
-                          "width": 8,
-                          "height": 8
-                        }
-                      ]
-                    },
                     {
                       "type": "frame",
                       "id": "bIQ4T",
@@ -1288,7 +1225,7 @@
                                   "type": "frame",
                                   "id": "ebnjn",
                                   "name": "Origin",
-                                  "fill": "$warning-bg",
+                                  "fill": "$bg-muted",
                                   "cornerRadius": 4,
                                   "padding": [
                                     2,
@@ -1299,7 +1236,7 @@
                                       "type": "text",
                                       "id": "x74wzP",
                                       "name": "t",
-                                      "fill": "$warning-fg",
+                                      "fill": "$fg-subtle",
                                       "content": "FxRateResolver",
                                       "fontFamily": "$font-mono",
                                       "fontSize": 12,
@@ -1314,8 +1251,8 @@
                               "id": "MqjbD",
                               "name": "At",
                               "fill": "$fg-subtle",
-                              "content": "15 SEP 2026 · 18:30:07",
-                              "fontFamily": "$font-mono",
+                              "content": "ayer",
+                              "fontFamily": "$font-sans",
                               "fontSize": 12,
                               "fontWeight": "normal"
                             }
@@ -1336,16 +1273,6 @@
                   ]
                 }
               ]
-            },
-            {
-              "type": "text",
-              "id": "TlksX",
-              "name": "Conteo",
-              "fill": "$fg-subtle",
-              "content": "Mostrando 3 de 47 errores",
-              "fontFamily": "$font-mono",
-              "fontSize": 12,
-              "fontWeight": "normal"
             }
           ]
         },
@@ -1443,7 +1370,7 @@
                   "fill": "$fg-default",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Faraday::TimeoutError",
+                  "content": "ActiveRecord::RecordNotFound",
                   "lineHeight": 1.35,
                   "fontFamily": "$font-mono",
                   "fontSize": 18,
@@ -1456,7 +1383,7 @@
                   "fill": "$fg-subtle",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "execution expired",
+                  "content": "Couldn't find Asset with symbol=SATS",
                   "lineHeight": 1.4,
                   "fontFamily": "$font-sans",
                   "fontSize": 14,
@@ -1481,7 +1408,7 @@
                       "fill": "$fg-default",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "app/contexts/market_data/gateways/performs_requests.rb:41:in 'get_json'",
+                      "content": "app/controllers/market_controller.rb:18:in 'show'",
                       "fontFamily": "$font-mono",
                       "fontSize": 12,
                       "fontWeight": "normal"
@@ -1507,6 +1434,19 @@
                   "fontFamily": "$font-display",
                   "fontSize": 18,
                   "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "LdQMm",
+                  "name": "Última vez",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "El mensaje, el origen, la referencia, la traza y los parámetros son de la última vez que ocurrió.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -1551,7 +1491,7 @@
                           "id": "l35kq7",
                           "name": "v",
                           "fill": "$fg-default",
-                          "content": "SyncFundamentalJob",
+                          "content": "GET /market/SATS",
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -1561,7 +1501,7 @@
                     {
                       "type": "frame",
                       "id": "p19ZrD",
-                      "name": "Ocurrencias",
+                      "name": "Veces",
                       "width": "fill_container",
                       "gap": "$space-3",
                       "padding": [
@@ -1576,7 +1516,7 @@
                           "id": "YCNOg",
                           "name": "k",
                           "fill": "$fg-subtle",
-                          "content": "Ocurrencias",
+                          "content": "Veces",
                           "fontFamily": "$font-sans",
                           "fontSize": 16,
                           "fontWeight": "normal"
@@ -1586,7 +1526,7 @@
                           "id": "x7ZuO",
                           "name": "v",
                           "fill": "$fg-default",
-                          "content": "12",
+                          "content": "4",
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -1621,7 +1561,7 @@
                           "id": "gjIOQ",
                           "name": "v",
                           "fill": "$fg-default",
-                          "content": "28 AGO 2026 · 06:12:41",
+                          "content": "14 SEP 2026 · 21:40:11",
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -1656,7 +1596,7 @@
                           "id": "ZtRT3",
                           "name": "v",
                           "fill": "$fg-default",
-                          "content": "16 SEP 2026 · 06:12:41",
+                          "content": "16 SEP 2026 · 09:14:02",
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -1674,7 +1614,6 @@
                         0
                       ],
                       "justifyContent": "space_between",
-                      "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
@@ -1691,7 +1630,10 @@
                           "id": "ekx6J",
                           "name": "v",
                           "fill": "$fg-default",
-                          "content": "—",
+                          "textGrowth": "fixed-width",
+                          "width": 190,
+                          "content": "5b2e9c1a-7f4d-4e1b-9a3c-0d8f6e21b7a4",
+                          "textAlign": "right",
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -1740,7 +1682,9 @@
                       "id": "hdzey",
                       "name": "l",
                       "fill": "$fg-default",
-                      "content": "app/contexts/market_data/gateways/performs_requests.rb:41:in 'get_json'",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "app/contexts/market_data/use_cases/find_asset.rb:9:in 'call'",
                       "lineHeight": 1.5,
                       "fontFamily": "$font-mono",
                       "fontSize": 12,
@@ -1751,18 +1695,9 @@
                       "id": "X7pJa",
                       "name": "l",
                       "fill": "$fg-default",
-                      "content": "app/contexts/market_data/gateways/finnhub_gateway.rb:22:in 'fetch'",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-mono",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "D5cOJ",
-                      "name": "l",
-                      "fill": "$fg-default",
-                      "content": "app/jobs/sync_fundamental_job.rb:14:in 'perform'",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "app/controllers/market_controller.rb:18:in 'show'",
                       "lineHeight": 1.5,
                       "fontFamily": "$font-mono",
                       "fontSize": 12,
@@ -1809,7 +1744,7 @@
                       "id": "YvOjX",
                       "name": "l",
                       "fill": "$fg-default",
-                      "content": "{\n  \"symbol\": \"NVDA\",\n  \"apikey\": \"[FILTERED]\"\n}",
+                      "content": "{\n  \"symbol\": \"SATS\"\n}",
                       "lineHeight": 1.5,
                       "fontFamily": "$font-mono",
                       "fontSize": 12,
@@ -1836,6 +1771,7 @@
               "type": "frame",
               "id": "mwonb",
               "name": "Borrar",
+              "width": "fill_container",
               "fill": "$bg-surface",
               "cornerRadius": "$radius-sm",
               "stroke": "$negative",
