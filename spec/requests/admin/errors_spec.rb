@@ -97,6 +97,18 @@ RSpec.describe "Admin errors", type: :request do
       expect(response.body).not_to include("Unwanted")
     end
 
+    # F4.2: a hand-edited page is the first page, not a 500.
+    it "reads a page that is not a page number as the first one" do
+      create(:error_event, exception_class: "Listed")
+
+      %w[abc 0 -1].each do |page|
+        get admin_errors_path(page: page)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Listed")
+      end
+    end
+
     it "names the search that matched nothing" do
       get admin_errors_path(search: "nada-de-esto")
 

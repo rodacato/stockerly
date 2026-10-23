@@ -10,7 +10,7 @@ module Administration
 
           pagy, errors = pagy(:offset, scope,
             limit: 50,
-            page: params[:page] || 1,
+            page: [ params[:page].to_i, 1 ].max,
             request: request || { base_url: "", path: "", params: {}, cookie: nil }
           )
 
