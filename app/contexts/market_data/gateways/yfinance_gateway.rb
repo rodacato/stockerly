@@ -97,8 +97,9 @@ module MarketData
         end
       end
 
-      # Yahoo reports a split as a single ratio, so a 4:1 arrives as 4.0 and a
-      # 1-for-20 reverse split as 0.05.
+      # Yahoo reports a split as a single ratio, so a 4:1 arrives as 4.0, a
+      # 1-for-20 reverse split as 0.05 and a 3-for-2 as 1.5; the fraction is
+      # recovered within the four decimals Yahoo rounds to.
       # Returns Success([{ date:, numerator:, denominator: }, ...])
       def fetch_splits(symbol)
         run("splits", symbol).fmap do |entries|
@@ -106,8 +107,8 @@ module MarketData
             ratio = entry["ratio"].to_d
             next if ratio.zero?
 
-            numerator, denominator = ratio >= 1 ? [ ratio.round, 1 ] : [ 1, (1 / ratio).round ]
-            { date: Date.parse(entry["date"]), numerator: numerator, denominator: denominator }
+            fraction = ratio.to_r.rationalize(Rational(1, 1000))
+            { date: Date.parse(entry["date"]), numerator: fraction.numerator, denominator: fraction.denominator }
           end
         end
       end
