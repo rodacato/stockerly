@@ -1,6 +1,13 @@
 module Admin
   module UsageHelper
-    # Counts in the single digits: a decimal would be false precision.
-    def whole_percent(part, whole) = "#{number_with_precision(part * 100.0 / whole, precision: 0)}%"
+    MIN_OFFERS = 5
+
+    # Below a handful of offers a percentage is false precision, and an action
+    # can land the week after its offer, so taken may exceed offered.
+    def funnel_percent(taken, offered)
+      return if offered < MIN_OFFERS || taken > offered
+
+      "#{number_with_precision(taken * 100.0 / offered, precision: 0)}%"
+    end
   end
 end

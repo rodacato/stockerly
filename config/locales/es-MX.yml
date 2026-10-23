@@ -161,12 +161,6 @@ es-MX:
         encolada: "%{task}: encolada."
       show:
         activado: activado
-        aperturas: Aperturas del panorama
-        aperturas_ayuda: Veces que se abrió /dashboard cada día, los últimos 14 días.
-        ayudas_abiertas:
-          one: 1 ? abierto en los últimos 7 días
-          other: "%{count} ? abiertos en los últimos 7 días"
-          zero: Ningún ? abierto en los últimos 7 días
         banner_activo: Quien no haya iniciado sesión ve la página de mantenimiento.
           Tu sesión sigue viva.
         cache: Caché
@@ -178,11 +172,6 @@ es-MX:
         desarrollador: Modo desarrollador
         desarrollador_desc: Muestra la sección de errores con la traza completa de
           cada fallo. No cambia lo que se registra.
-        descubrir: Descubrir
-        descubrir_semanas:
-          one: abierto 1 de las últimas %{window} semanas
-          other: abierto %{count} de las últimas %{window} semanas
-          zero: sin abrir en %{window} semanas
         diagnostico: Diagnóstico
         entorno: Entorno
         entradas: "%{count} entradas"
@@ -233,23 +222,31 @@ es-MX:
         captura_valores:
           one: Un movimiento en 30 días, en %{p50} s.
           other: Mediana %{p50} s · máximo %{max} s · %{count} movimientos en 30 días
+        de: "%{taken} de %{offered}"
         descripcion: Lo que la app usa para saber si una función sirve. Se guarda
           %{days} días y nunca sale de esta instancia.
         descubrir:
-          one: Descubrir se vio 1 de las últimas 8 semanas.
-          other: Descubrir se vio %{count} de las últimas 8 semanas.
-          zero: Descubrir no se vio en las últimas 8 semanas.
+          one: Descubrir se vio 1 de las últimas %{window} semanas.
+          other: Descubrir se vio %{count} de las últimas %{window} semanas.
+          zero: Descubrir no se vio en las últimas %{window} semanas.
         embudos: Sugerencias que se toman
-        en_8_semanas: "%{taken} de %{offered} en 8 semanas · %{percent}"
-        esta: Esta
-        esta_semana: "· %{taken} de %{offered} esta semana"
+        en_semanas:
+          one: "%{taken} de %{offered} en la semana medida"
+          other: "%{taken} de %{offered} en %{count} semanas medidas"
+        encendido: Encendido desde el %{fecha}. Las semanas antes de eso no se midieron.
+        esta: Esta sem.
+        esta_semana: esta semana
         esta_semana_nada: No se ofreció esta semana.
+        esta_semana_sin_oferta:
+          one: 1 tomada esta semana, de una oferta anterior.
+          other: "%{count} tomadas esta semana, de ofertas anteriores."
         evento: Evento
         eventos: Eventos por semana
         funnel:
           assistant_suggestion: Sugerencias de Velita → pregunta
           help_to_question: Ayuda «?» → pregunta a Velita
           rule_suggestion: Sugerencia de regla → regla creada
+        panorama_por_dia: Panorama, por día
         pantallas:
           admin_usage: Uso
           alerts: Reglas
@@ -266,8 +263,8 @@ es-MX:
           trade_created: "¿Cuánto tardas en registrar un movimiento?"
           velita_colour_changed: "¿Cambias el color de Velita?"
         sin_datos: Todavía no hay datos.
-        sin_medir: Apagado, no se mide.
         titulo: Uso
+        total: Total
   alerts:
     condiciones:
       bmv_holiday:
@@ -2312,6 +2309,7 @@ es-MX:
       urgente: Avisos urgentes por correo
       urgente_desc: Un correo aparte al disparar una regla.
       uso: Uso
+      uso_apagado: Apagado
       uso_desc: Qué se usa, qué sugerencias se toman y cuánto tarda registrar
       zona_horaria: Zona horaria
       zona_horaria_valor: América/Ciudad de México · CDMX

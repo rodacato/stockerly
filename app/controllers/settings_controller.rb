@@ -7,6 +7,7 @@ class SettingsController < AuthenticatedController
     @preferences = current_user.alert_preference
     @integrations_count = Integration.where.not(provider_type: Administration::Queries::AssistantConnection::PROVIDER_TYPE).count
     @developer_mode = SiteConfig.developer_mode?
+    @usage_tracking = Usage.enabled?
     @trading_counts = trading_counts
   end
 

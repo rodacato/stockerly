@@ -6,6 +6,10 @@ module Usage
 
   def self.enabled? = SiteConfig.enabled?(SWITCH)
 
+  # When the switch last moved: the edge between weeks that were measured and
+  # weeks that read zero only because nothing was recording.
+  def self.switched_at = SiteConfig.where(key: SWITCH).pick(:updated_at)
+
   def self.record(name, screen: nil, **properties)
     return unless enabled?
 

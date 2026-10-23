@@ -16,24 +16,8 @@
           [ t(".entorno"),   @diagnostics[:environment] ],
           [ t(".trabajos"),  @diagnostics[:solid_queue], (:warning unless @diagnostics[:queue_attended]) ],
           [ t(".cache"),     @diagnostics[:cache_entries] ? t(".entradas", count: number_with_delimiter(@diagnostics[:cache_entries])) : "—" ],
-          [ t(".errores"),   @diagnostics[:errors_last_24h], (:warning if @diagnostics[:errors_last_24h].positive?) ],
-          [ t(".descubrir"), t(".descubrir_semanas", count: @diagnostics[:discover_weeks],
-                                window: @diagnostics[:discover_window]) ]
+          [ t(".errores"),   @diagnostics[:errors_last_24h], (:warning if @diagnostics[:errors_last_24h].positive?) ]
         ] %>
-  </section>
-
-  <section class="flex flex-col gap-3">
-    <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".aperturas") %></h2>
-    <p class="text-sm text-fg-subtle"><%= t(".aperturas_ayuda") %></p>
-    <p class="font-mono text-sm text-fg-default"><%= t(".ayudas_abiertas", count: @diagnostics[:help_opens_7d]) %></p>
-    <div class="<%= card_classes("grid grid-cols-7 gap-px p-3") %>">
-      <% @diagnostics[:opens_per_day].each do |day, opens| %>
-        <div class="flex flex-col items-center gap-1 py-1">
-          <span class="font-mono text-sm <%= opens.zero? ? "text-fg-subtle" : "font-semibold text-fg-default" %>"><%= opens %></span>
-          <span class="text-xs text-fg-subtle"><%= l(day, format: "%-d/%m") %></span>
-        </div>
-      <% end %>
-    </div>
   </section>
 
   <section class="flex flex-col gap-3">

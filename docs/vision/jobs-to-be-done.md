@@ -281,7 +281,7 @@ in context (`design/flows/assistant.pen`, D166). Off by default; the instance wo
 **Triggers:** none. It is invoked, never pushed (ADR-031).
 
 **Usage metric:** Adrian asks ≥1 question per week through the assistant. Supporting signal: the
-`help:*` opens already counted in `/admin/settings`. If after 90 days the questions still go to an
+`help:*` opens already counted in `/admin/usage`. If after 90 days the questions still go to an
 outside AI first, the assistant is retired with its provider settings — the deletion clause #7
 carries, for the same reason.
 

@@ -44,36 +44,10 @@ RSpec.describe "Admin pages", type: :request do
       login_as(admin)
     end
 
-    # D31 gave the screen a kill criterion with a date; without the number on
-    # Estado it can only be read from a console, which is where criteria go to
-    # be forgotten.
-    it "shows how many of the last weeks Descubrir was opened in" do
-      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
-      MarketData::Discover::VisitLog.record
-
+    it "leaves the day counters to Uso (ADR-032 §7)" do
       get admin_settings_path
 
-      expect(response.body).to include("Descubrir")
-      expect(response.body).to include("abierto 1 de las últimas 8 semanas")
-    end
-
-    it "shows the cockpit opens of the last 14 days" do
-      3.times { AppOpen.record(path: "/dashboard") }
-
-      get admin_settings_path
-
-      expect(response.body).to include("Aperturas del panorama")
-      expect(response.body).to include("Ningún ? abierto en los últimos 7 días")
-      expect(response.body).to include(">3<")
-      expect(response.body.scan(%r{\d{1,2}/\d{2}</span>}).size).to eq(14)
-    end
-
-    it "says so plainly when Descubrir has not been opened at all" do
-      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
-
-      get admin_settings_path
-
-      expect(response.body).to include("sin abrir en 8 semanas")
+      expect(response.body).not_to include("Aperturas", "semanas")
     end
 
     it "offers every registered source as a manual trigger on Estado" do
