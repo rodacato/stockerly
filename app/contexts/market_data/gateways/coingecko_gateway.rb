@@ -122,7 +122,7 @@ module MarketData
       results = symbols.filter_map do |symbol|
         coin_id = SYMBOL_TO_ID[symbol.upcase]
         data = body[coin_id]
-        next unless data
+        next unless data&.dig(QUOTE_CURRENCY)
 
         {
           symbol: symbol.upcase,
