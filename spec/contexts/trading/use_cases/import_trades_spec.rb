@@ -101,10 +101,24 @@ RSpec.describe Trading::UseCases::ImportTrades do
     end
 
     it "refuses a sell that exceeds the shares on hand" do
-      expect {
-        described_class.call(user: user, rows: [ row(side: "sell", net_amount: nil) ], dry_run: false)
-      }.to raise_error(ActiveRecord::RecordInvalid)
+      result = described_class.call(user: user, rows: [ row(side: "sell", net_amount: nil) ], dry_run: false)
+
+      expect(result.failure).to eq([ :oversold, [ "VT" ] ])
       expect(Trade.count).to eq(0)
+    end
+
+    # F2.7: the preview promises what the confirm will do, so it refuses too.
+    it "refuses the oversell in the preview, before anything is confirmed" do
+      rows = [ row(shares: "5", net_amount: nil), row(side: "sell", shares: "8", net_amount: nil, external_id: "order-2") ]
+
+      expect(described_class.call(user: user, rows: rows, dry_run: true).failure).to eq([ :oversold, [ "VT" ] ])
+    end
+
+    # F2.8: what was invested is what the buys cost; a sale is not money put in.
+    it "counts only the buys as invested" do
+      rows = [ row(shares: "1", price_per_share: "100", net_amount: nil), row(side: "sell", shares: "1", price_per_share: "120", net_amount: nil, external_id: "order-2") ]
+
+      expect(described_class.call(user: user, rows: rows, dry_run: true).value![:invested]).to eq(100)
     end
   end
 

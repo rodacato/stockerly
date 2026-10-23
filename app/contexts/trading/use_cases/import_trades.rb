@@ -27,6 +27,7 @@ module Trading
         rates  = yield resolve_fx_rates(parsed)
 
         fresh, skipped = partition_already_imported(portfolio, parsed)
+        yield refuse_oversold(portfolio, fresh, assets)
         report = build_report(fresh, skipped, dry_run, rates, user.preferred_currency).merge(dropped: dropped || {})
         return Success(report) if dry_run
 
@@ -146,6 +147,17 @@ module Trading
         parsed.partition { |row| row[:external_id].blank? || taken.exclude?(row[:external_id]) }
       end
 
+      # The preview promises what the confirm will do, so a symbol whose sells
+      # outrun what is held plus what the file buys is refused here, not at commit.
+      def refuse_oversold(portfolio, rows, assets)
+        oversold = rows.group_by { |row| row[:asset_symbol].upcase }.filter_map do |symbol, asset_rows|
+          held = portfolio.positions.find_by(asset: assets.fetch(symbol), status: :open)&.shares || 0
+          delta = asset_rows.sum { |row| row[:side] == "buy" ? row[:shares] : -row[:shares] }
+          symbol if (held + delta).negative?
+        end
+        oversold.any? ? Failure([ :oversold, oversold.sort ]) : Success()
+      end
+
       # A batch whose every row was already imported is the normal outcome of
       # confirming twice, not an error — there is simply nothing to open a
       # transaction for.
@@ -252,10 +264,10 @@ module Trading
         }
       end
 
-      # Each row at the rate of its own execution date, which resolve_fx_rates
+      # Each buy at the rate of its own execution date, which resolve_fx_rates
       # has already proven exists — a batch missing any of them never gets here.
       def invested_in(rows, rates, target)
-        rows.sum do |row|
+        rows.select { |row| row[:side] == "buy" }.sum do |row|
           currency = currency_of(row)
           date = executed_on(row)
 
