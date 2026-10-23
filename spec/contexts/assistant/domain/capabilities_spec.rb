@@ -65,6 +65,11 @@ RSpec.describe Assistant::Capabilities::Registry do
     expect(MarketData::Queries::AssetBrief).to have_received(:call).once
   end
   describe "market context" do
+    include ActiveSupport::Testing::TimeHelpers
+
+    # The factory dates a reading an hour back, which is yesterday in the first hour of a day.
+    around { |example| travel_to(Time.zone.local(2026, 10, 22, 12)) { example.run } }
+
     it "reads the indices and a fresh crypto sentiment, each card with its date" do
       create(:market_index, symbol: "IPC", name: "IPC Mexico", value: 54_000, change_percent: 0.6, is_open: false)
       create(:fear_greed_reading, :extreme_fear)
