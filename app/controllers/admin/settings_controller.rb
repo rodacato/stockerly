@@ -74,14 +74,7 @@ module Admin
         solid_queue: solid_queue_summary,
         queue_attended: HealthMetrics.queue_attended?,
         cache_entries: HealthMetrics.cache_entries,
-        errors_last_24h: ErrorEvent.since(24.hours.ago).sum(:occurrences),
-        # D31 gave Descubrir a kill criterion with a date. Reading it needs the
-        # number on screen, not in a console.
-        discover_weeks: MarketData::Discover::VisitLog.weeks_seen,
-        discover_window: MarketData::Discover::VisitLog.window,
-        discover_last_seen: MarketData::Discover::VisitLog.last_seen,
-        opens_per_day: AppOpen.per_day(path: "/dashboard"),
-        help_opens_7d: AppOpen.total(prefix: "help:")
+        errors_last_24h: ErrorEvent.since(24.hours.ago).sum(:occurrences)
       }
     end
 

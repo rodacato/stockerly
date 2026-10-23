@@ -7,6 +7,11 @@ RSpec.describe Usage::Queries::Report do
 
   def event(name, at:, **properties) = UsageEvent.create!(name: name, occurred_at: at, properties: properties.stringify_keys)
 
+  def switch(on, at:)
+    SiteConfig.set(Usage::SWITCH, on)
+    SiteConfig.find_by!(key: Usage::SWITCH).update_column(:updated_at, at)
+  end
+
   around { |example| travel_to(now) { example.run } }
 
   it "counts each catalogued event per week, newest first, zero where nothing happened" do
@@ -38,7 +43,23 @@ RSpec.describe Usage::Queries::Report do
     expect(described_class.call(now: now)[:capture]).to eq(count: 5, p50: 30, max: 100)
   end
 
-  it "says the switch is off" do
-    expect(described_class.call(now: now)[:enabled]).to be(false)
+  it "says the switch is off, and that nothing was measured" do
+    report = described_class.call(now: now)
+
+    expect(report[:enabled]).to be(false)
+    expect(report[:measured]).to all(be(false))
+  end
+
+  it "measures the weeks from the one the switch was turned on in" do
+    switch(true, at: now - 2.weeks)
+
+    expect(described_class.call(now: now)[:measured]).to eq([ true, true, true, false, false, false, false, false ])
+  end
+
+  it "keeps the weeks before the switch went off as measured, once something was recorded" do
+    event("news.opened", at: now - 2.weeks)
+    switch(false, at: now - 1.week)
+
+    expect(described_class.call(now: now)[:measured].first(3)).to eq([ false, true, true ])
   end
 end
