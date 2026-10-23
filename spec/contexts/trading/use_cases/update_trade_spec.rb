@@ -149,4 +149,23 @@ RSpec.describe Trading::UseCases::UpdateTrade do
       expect(position.reload.shares).to eq(2.0)
     end
   end
+
+  # F2.5: the edit row always posts the date; an emptied field means unchanged.
+  it "keeps the date when the field comes back blank" do
+    original = trade.executed_at
+
+    described_class.call(user: user, params: { trade_id: trade.id, executed_at: "" })
+
+    expect(trade.reload.executed_at).to be_within(1.second).of(original)
+  end
+
+  # F2.6: an emptied fee is no fee, not a NULL the column refuses.
+  it "reads a blank fee as zero" do
+    trade.update!(fee: 5)
+
+    result = described_class.call(user: user, params: { trade_id: trade.id, fee: "" })
+
+    expect(result).to be_success
+    expect(trade.reload.fee).to eq(0)
+  end
 end

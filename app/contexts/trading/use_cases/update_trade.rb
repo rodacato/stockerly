@@ -5,6 +5,7 @@ module Trading
 
       def call(user:, params:)
         attrs = yield validate(Trading::Contracts::UpdateTradeContract, params)
+        attrs = blanks_as_unchanged(attrs)
 
         trade = Trade.find(attrs[:trade_id])
         portfolio = user.portfolio
@@ -44,6 +45,14 @@ module Trading
         committed
       end
 
+      # The edit row posts every field; an emptied date means unchanged and an
+      # emptied fee means no fee, never a NULL the column refuses.
+      def blanks_as_unchanged(attrs)
+        attrs = attrs.except(:executed_at) if attrs[:executed_at].blank?
+        attrs = attrs.merge(fee: 0) if attrs.key?(:fee) && attrs[:fee].nil?
+        attrs
+      end
+
       def too_old?(trade)
         trade.executed_at < MAX_EDIT_AGE_DAYS.days.ago
       end
@@ -69,8 +78,6 @@ module Trading
       end
 
       def parse_executed_at(value)
-        return Time.current if value.blank?
-
         Time.zone.parse(value)
       rescue ArgumentError
         Time.current
