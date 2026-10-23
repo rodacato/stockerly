@@ -18,7 +18,7 @@ module MarketData
       end
 
       def self.reported(asset)
-        event = EarningsEvent.where(asset: asset, report_date: ...Date.current).reported.order(report_date: :desc).first
+        event = EarningsEvent.where(asset: asset, report_date: ..Date.current).reported.order(report_date: :desc).first
         event && { report_date: event.report_date, actual_eps: event.actual_eps, estimated_eps: event.estimated_eps }.freeze
       end
       private_class_method :upcoming, :reported

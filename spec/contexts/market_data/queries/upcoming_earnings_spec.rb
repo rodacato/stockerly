@@ -37,6 +37,21 @@ RSpec.describe MarketData::Queries::UpcomingEarnings do
       expect(described_class.next_for(asset: asset)).to eq(current)
     end
 
+    # F3.3: a quarter that reported is not the next one's superseded estimate.
+    it "names the next quarter even when the last one was touched more recently" do
+      upcoming = event(on: 85.days.from_now.to_date, touched: 5.days.ago)
+      event(on: 1.day.ago.to_date, touched: 1.day.ago).update_columns(actual_eps: 1.2)
+
+      expect(described_class.next_for(asset: asset)).to eq(upcoming)
+    end
+
+    # F3.4: a quarter reported today is the last one, not the next.
+    it "has no next date for a report that already came out today" do
+      create(:earnings_event, asset: asset, report_date: Date.current, actual_eps: 1.2)
+
+      expect(described_class.next_for(asset: asset)).to be_nil
+    end
+
     it "has no next date when there is none" do
       expect(described_class.next_for(asset: asset)).to be_nil
     end
