@@ -17,19 +17,19 @@
         <% end %>
       </ul>
 
-      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p class="font-mono text-xs text-fg-subtle">
-          <%= t(".mostrando", shown: @error_events.length, total: number_with_delimiter(@pagy.count)) %>
-        </p>
-        <% if @pagy.pages > 1 %>
+      <% if @pagy.pages > 1 %>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p class="font-mono text-xs text-fg-subtle">
+            <%= t(".mostrando", shown: @error_events.length, count: @pagy.count, total: number_with_delimiter(@pagy.count)) %>
+          </p>
           <div class="text-sm"><%== @pagy.series_nav %></div>
-        <% end %>
-      </div>
+        </div>
+      <% end %>
     </div>
   <% else %>
     <% filtered = admin_errors_any_filter_active? %>
     <%= render "components/empty_state", icon: "bug_report",
-               title: filtered ? t(".sin_coincidencias") : t(".vacio"),
+               title: filtered ? admin_errors_no_match : t(".vacio"),
                cta_text: (t(".limpiar") if filtered),
                cta_path: (admin_errors_path if filtered) %>
   <% end %>

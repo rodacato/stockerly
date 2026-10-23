@@ -26,7 +26,7 @@ module Administration
 
           like = "%#{ActiveRecord::Base.sanitize_sql_like(query)}%"
           scope.where(
-            "exception_class ILIKE :q OR message ILIKE :q OR request_path ILIKE :q OR reference ILIKE :q",
+            "exception_class ILIKE :q OR message ILIKE :q OR request_path ILIKE :q OR job_class ILIKE :q OR reference ILIKE :q",
             q: like
           )
         end

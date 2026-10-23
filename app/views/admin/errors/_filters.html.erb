@@ -16,7 +16,7 @@
 
     <% if admin_errors_any_filter_active? %>
       <%= link_to t("admin.errors.index.limpiar"), admin_errors_path,
-            class: "ml-auto text-sm font-medium text-fg-subtle transition-colors hover:text-fg-default" %>
+            class: "ml-auto inline-flex min-h-11 items-center px-2 text-sm font-medium text-fg-subtle transition-colors hover:text-fg-default" %>
     <% end %>
   </div>
 <% end %>
