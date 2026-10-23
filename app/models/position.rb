@@ -1,4 +1,8 @@
 class Position < ApplicationRecord
+  # A split rewrites each leg at the column's scale, so a sold-out position can
+  # sum to a few units of the last digit; that is zero, not an oversell.
+  SHARE_RESIDUE = BigDecimal("1e-9")
+
   belongs_to :portfolio
   belongs_to :asset
   has_many   :trades, dependent: :destroy
@@ -51,7 +55,8 @@ class Position < ApplicationRecord
   end
 
   def shares_from_trades
-    trades.kept.buys.sum(:shares) - trades.kept.sells.sum(:shares)
+    remaining = trades.kept.buys.sum(:shares) - trades.kept.sells.sum(:shares)
+    remaining.abs < SHARE_RESIDUE ? 0.to_d : remaining
   end
 
   # After a trade is added, edited or discarded the position is re-derived from

@@ -185,4 +185,22 @@ RSpec.describe Trading::Domain::SplitAdjuster do
       expect(position.reload.shares).to eq(400)
     end
   end
+
+  # F2.10: a 1-for-3 reverse split rounds each leg to the column's scale, so a
+  # position sold out reads a residue below zero; it is closed, not refused.
+  describe "a reverse split over a position that was sold out" do
+    let!(:position) { position_for(shares: 0, avg_cost: 10.0, status: :closed) }
+
+    before do
+      buy(position, shares: 1, price: 3.0, on: 3.months.ago)
+      buy(position, shares: 1, price: 4.0, on: 2.months.ago)
+      create(:trade, portfolio: portfolio, asset: asset, position: position, side: :sell, shares: 2,
+                     price_per_share: 5.0, executed_at: 1.month.ago)
+    end
+
+    it "applies, and leaves the position at zero" do
+      expect { adjuster(ratio_from: 3, ratio_to: 1).adjust! }.to change(SplitAdjustment, :count).by(1)
+      expect(position.reload.shares).to eq(0)
+    end
+  end
 end
