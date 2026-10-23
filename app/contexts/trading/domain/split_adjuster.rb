@@ -8,7 +8,7 @@ module Trading
         @ex_date = ex_date.to_date
         @ratio_from = ratio_from
         @ratio_to = ratio_to
-        @ratio = ratio_to.to_f / ratio_from
+        @ratio = ratio_to.to_d / ratio_from
       end
 
       # The adjustment is recorded first: its unique index is what makes a
