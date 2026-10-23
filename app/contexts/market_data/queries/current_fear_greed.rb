@@ -12,7 +12,7 @@ module MarketData
       def self.call
         {
           crypto: FearGreedReading.latest_crypto,
-          crypto_history: FearGreedReading.crypto.recent.reorder(fetched_at: :asc).pluck(:fetched_at, :value)
+          crypto_history: FearGreedReading.crypto.recent.pluck(:fetched_at, :value).reverse
         }
       end
     end
