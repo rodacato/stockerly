@@ -35,7 +35,7 @@ module Trading
           update_trade(trade, attrs)
           if position_affecting_change?(attrs)
             position = trade.position
-            raise ActiveRecord::Rollback if position&.shares_from_trades&.negative?
+            raise ActiveRecord::Rollback if position&.oversold?
 
             position&.resync_from_trades!
           end

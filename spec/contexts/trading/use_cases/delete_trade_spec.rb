@@ -115,5 +115,14 @@ RSpec.describe Trading::UseCases::DeleteTrade do
       expect(trade.reload).not_to be_discarded
       expect(position.reload.shares).to eq(2.0)
     end
+
+    it "is refused even when a buy after the sale would cover the total" do
+      create(:trade, portfolio: portfolio, asset: asset, position: position, side: :buy, shares: 10.0,
+                     price_per_share: 170.0, total_amount: 1700.0, executed_at: 3.days.ago)
+      position.resync_from_trades!
+
+      expect(described_class.call(user: user, trade_id: trade.id).failure.first).to eq(:leaves_negative)
+      expect(trade.reload).not_to be_discarded
+    end
   end
 end

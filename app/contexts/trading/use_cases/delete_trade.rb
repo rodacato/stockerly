@@ -32,7 +32,7 @@ module Trading
         committed = Trade.transaction do
           trade.discard!
           position = trade.position
-          raise ActiveRecord::Rollback if position&.shares_from_trades&.negative?
+          raise ActiveRecord::Rollback if position&.oversold?
 
           position&.resync_from_trades!
           true

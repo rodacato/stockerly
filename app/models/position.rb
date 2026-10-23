@@ -59,6 +59,22 @@ class Position < ApplicationRecord
     remaining.abs < SHARE_RESIDUE ? 0.to_d : remaining
   end
 
+  # Walked in trade order: a positive net total can still hide a sale nothing
+  # covered. Pending [executed_at, side, shares] legs go after saved ones.
+  def oversold?(pending = [])
+    saved = trades.kept.map { |t| [ t.executed_at, t.id.to_i, t.side.to_s, t.shares.to_d ] }
+    self.class.oversold?(saved + pending.map { |at, side, shares| [ at, Float::INFINITY, side, shares ] },
+                         opening: saved.empty? ? shares.to_d : 0.to_d)
+  end
+
+  def self.oversold?(legs, opening: 0.to_d)
+    held = opening
+    legs.each_with_index.sort_by { |(at, seq), index| [ at, seq, index ] }.any? do |(_, _, side, shares), _|
+      held += side.to_s == "buy" ? shares.to_d : -shares.to_d
+      held < -SHARE_RESIDUE
+    end
+  end
+
   # After a trade is added, edited or discarded the position is re-derived from
   # its trades rather than adjusted in place, so the two agree by construction.
   def resync_from_trades!
