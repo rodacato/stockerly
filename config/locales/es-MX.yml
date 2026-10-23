@@ -2515,6 +2515,8 @@ es-MX:
       tc_faltante: No hay tipo de cambio de %{currency} para esa fecha, así que el
         costo promedio no se puede calcular.
       titulos_insuficientes: No tienes suficientes títulos para esa venta.
+      venta_depende: Una venta posterior usa esos títulos. Corrige o elimina esa venta
+        primero.
       ya_eliminado: Ese movimiento ya estaba eliminado.
     flash:
       actualizado: Movimiento actualizado.

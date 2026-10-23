@@ -13,8 +13,7 @@ module Trading
         return Failure([ :already_discarded, "Trade already deleted" ]) if trade.discarded?
         return Failure([ :too_old, "Cannot delete trades older than #{MAX_DELETE_AGE_DAYS} days" ]) if too_old?(trade)
 
-        trade.discard!
-        trade.position&.resync_from_trades!
+        return Failure([ :leaves_negative, "A later sale needs these shares" ]) unless discard_and_resync(trade)
 
         publish(Events::TradeDeleted.new(
           trade_id: trade.id,
@@ -26,6 +25,21 @@ module Trading
       end
 
       private
+
+      # A later sale may need the shares this buy brought in; the delete is
+      # undone whole rather than leaving a discarded trade and a stale position.
+      def discard_and_resync(trade)
+        committed = Trade.transaction do
+          trade.discard!
+          position = trade.position
+          raise ActiveRecord::Rollback if position&.shares_from_trades&.negative?
+
+          position&.resync_from_trades!
+          true
+        end
+        trade.reload unless committed
+        committed
+      end
 
       def too_old?(trade)
         trade.executed_at < MAX_DELETE_AGE_DAYS.days.ago

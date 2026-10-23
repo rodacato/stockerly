@@ -1,7 +1,7 @@
 class TradesController < AuthenticatedController
   # ADR-011: the use case names the refusal and the copy is the controller's.
   # Only the age limit reads differently per verb, so each verb has its own.
-  TRADE_ALERTS = { already_discarded: "ya_eliminado", unauthorized: "no_autorizado" }.freeze
+  TRADE_ALERTS = { already_discarded: "ya_eliminado", unauthorized: "no_autorizado", leaves_negative: "venta_depende" }.freeze
 
   FLASH_PARTIAL = "shared/flash_message"
 
