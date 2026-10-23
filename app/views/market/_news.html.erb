@@ -22,6 +22,7 @@
         <li class="px-5 py-3.5">
           <% if article.url.present? %>
             <%= link_to article.url, target: "_blank", rel: "noopener noreferrer",
+                        data: { controller: "usage", action: "click->usage#record", usage_url_value: usage_events_path("news.opened", screen: "activo") },
                         class: "text-sm font-medium text-fg-default leading-snug hover:text-primary-fg" do %>
               <%= article.title %>
             <% end %>

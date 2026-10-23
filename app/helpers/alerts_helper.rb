@@ -208,6 +208,7 @@ module AlertsHelper
     new_alert_path(asset_symbol: suggestion.asset_symbol,
                    condition: suggestion.condition,
                    threshold_value: suggestion.threshold_value,
-                   window_days: suggestion.window_days)
+                   window_days: suggestion.window_days,
+                   via: "rule_suggestion")
   end
 end

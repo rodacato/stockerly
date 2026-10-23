@@ -67,7 +67,7 @@ RSpec.describe "Velita", type: :request do
       get dashboard_path
 
       expect(response.body).to include(I18n.t("assistant.launcher.con_la_frase"))
-      expect(response.body).to include(CGI.escapeHTML(assistant_path(from: "panorama", q: I18n.t("dashboard.ayuda.veredicto.titulo"))))
+      expect(response.body).to include(CGI.escapeHTML(assistant_path(from: "panorama", q: I18n.t("dashboard.ayuda.veredicto.titulo"), via: "help", figure: "veredicto")))
     end
   end
 

@@ -132,8 +132,8 @@ module DashboardHelper
     when :allocation then portfolio_path
     when :contribution then new_trade_path
     when :macro then discover_path
-    when :earnings then item.assets.one? ? market_asset_path(item.asset.symbol) : assets_path
-    else market_asset_path(item.asset.symbol)
+    when :earnings then item.assets.one? ? market_asset_path(item.asset.symbol, from: "hoy") : assets_path
+    else market_asset_path(item.asset.symbol, from: "hoy")
     end
   end
 

@@ -64,6 +64,7 @@ Rails.application.routes.draw do
 
   get "dashboard",           to: "dashboard#show"
   post "help-opens/:figure", to: "help_opens#create", as: :help_opens
+  post "usage-events/:name", to: "usage_events#create", as: :usage_events, constraints: { name: /[a-z_.]+/ }
   resource :plan, only: [ :show, :update ], path: "settings/plan"
   # D31's disposability contract: zero tables, zero rows. Deleting Descubrir is
   # this line, one nav entry, one controller, one view folder and two YAMLs.
@@ -170,6 +171,8 @@ Rails.application.routes.draw do
     # ADR-020: the instance's own error tracker, gated by the developer_mode
     # switch rather than by a separate zone.
     resources :errors, only: [ :index, :show, :destroy ]
+    # ADR-032: the usage record, opt-in; its day counters are always on.
+    resource :usage, only: :show, controller: "usage"
     resource :settings, only: [ :show, :update ]
     # `refresh_fx_rates` used to be its own route; :fx_rates is a registered
     # source whose job_class is RefreshFxRatesJob, so the two collapse into one.

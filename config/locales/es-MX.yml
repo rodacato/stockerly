@@ -212,10 +212,49 @@ es-MX:
           other: "%{count} workers"
           zero: Sin worker
         ultima_sync: 'Última: %{cuando}'
+        uso: Registro de uso
+        uso_desc: Guarda qué sugerencias tomas y qué abres, sin datos personales,
+          para saber si una función se usa. Apagado no se registra nada.
         version: Versión
       trigger_data_source:
         desconocida: Fuente de datos desconocida.
         encolada: Sincronización de %{source} encolada.
+    usage:
+      show:
+        ajustes: Ajustes de la instancia
+        apagado_html: El registro de uso está apagado; solo cuentan las aperturas
+          por día. Se enciende en %{ajustes}.
+        aperturas: Aperturas por día
+        aperturas_desc: Siempre activas. Cuentan cuántas veces se abrió cada pantalla,
+          nada más.
+        ayudas: Ayudas «?» de Hoy
+        captura: Tiempo para registrar un movimiento
+        captura_valores:
+          one: Mediana %{p50} s · 95 %% en %{p95} s · 1 movimiento en 30 días
+          other: Mediana %{p50} s · 95 %% en %{p95} s · %{count} movimientos en 30
+            días
+        descripcion: Lo que la app usa para saber si una función sirve. Se guarda
+          %{days} días y nunca sale de esta instancia.
+        descubrir: Descubrir
+        embudos: Sugerencias que se toman
+        en_14_dias:
+          one: 1 en 14 días
+          other: "%{count} en 14 días"
+        en_7_dias:
+          one: 1 en 7 días
+          other: "%{count} en 7 días"
+        evento: Evento
+        eventos: Eventos por semana
+        funnel:
+          assistant_suggestion: Sugerencias de Velita → pregunta
+          help_to_question: Ayuda «?» → pregunta a Velita
+          rule_suggestion: Sugerencia de regla → regla creada
+        semanas:
+          one: 1 de las últimas 8 semanas
+          other: "%{count} de las últimas 8 semanas"
+        sin_datos: Todavía no hay datos.
+        titulo: Uso
+        tomadas: "%{taken} de %{offered} en 8 semanas (%{percent})"
   alerts:
     condiciones:
       bmv_holiday:
@@ -2259,6 +2298,8 @@ es-MX:
       unica_cuenta: única cuenta
       urgente: Avisos urgentes por correo
       urgente_desc: Un correo aparte al disparar una regla.
+      uso: Uso
+      uso_desc: Qué se usa, qué sugerencias se toman y cuánto tarda registrar
       zona_horaria: Zona horaria
       zona_horaria_valor: América/Ciudad de México · CDMX
   setup:

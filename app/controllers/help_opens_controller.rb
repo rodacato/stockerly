@@ -4,7 +4,7 @@ class HelpOpensController < AuthenticatedController
   def create
     return head :unprocessable_content unless FIGURES.include?(params[:figure])
 
-    AppOpen.record(path: "help:#{params[:figure]}")
+    Usage.opened("help:#{params[:figure]}")
     head :no_content
   end
 end

@@ -19,6 +19,7 @@
 
         <%# The chips write here; the direction control rewrites it for a price
             cross, which is how one chip covers two enum values. %>
+        <%= hidden_field_tag :via, @via if @via %>
         <%= f.hidden_field :condition, value: @rule.condition,
               data: { alert_form_target: "conditionInput" } %>
 

@@ -12,7 +12,7 @@
 <% rsi = observation.indicator_snapshot["rsi"] %>
 <% stale = context != :senales && observation.observed_at.to_date < Date.current %>
 <div class="relative" data-controller="metric-tooltip">
-  <%= link_to market_asset_path(asset.symbol),
+  <%= link_to market_asset_path(asset.symbol, from: context == :senales ? "senales" : "hoy"),
               class: "flex items-start gap-3 rounded-2xl border border-border-default bg-bg-surface py-3.5 pl-4 transition-colors hover:border-border-strong #{action ? 'pr-14' : 'pr-4'}" do %>
     <%= icon_svg((signal&.move == :up ? "north_east" : "south_east"),
                  class: "mt-0.5 shrink-0 text-lg #{action == :sell ? 'text-warning-fg' : 'text-positive-fg'}",

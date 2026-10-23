@@ -93,7 +93,7 @@ module VelitaHelper
   end
 
   # Asked from a ? popover: the drawer opens with the term already written.
-  def velita_question_path(term)
-    assistant_path(from: velita_screen, q: term)
+  def velita_question_path(term, figure: nil)
+    assistant_path(from: velita_screen, q: term, via: "help", figure: figure)
   end
 end

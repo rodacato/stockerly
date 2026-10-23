@@ -20,10 +20,10 @@ RSpec.describe "Searching from the top bar", type: :system, js: true do
 
     find("input[name=q]").fill_in(with: "alab")
 
-    expect(page).to have_link(href: "/market/ALAB")
-    click_link href: "/market/ALAB"
+    expect(page).to have_link(href: "/market/ALAB?from=search")
+    click_link href: "/market/ALAB?from=search"
 
-    expect(page).to have_current_path("/market/ALAB")
+    expect(page).to have_current_path("/market/ALAB?from=search")
   end
 
   it "opens the results under the desktop bar's field" do
@@ -32,8 +32,8 @@ RSpec.describe "Searching from the top bar", type: :system, js: true do
 
     within("header", text: "Panorama") { find("input[name=q]").fill_in(with: "alab") }
 
-    within("#search_dropdown") { click_link href: "/market/ALAB" }
-    expect(page).to have_current_path("/market/ALAB")
+    within("#search_dropdown") { click_link href: "/market/ALAB?from=search" }
+    expect(page).to have_current_path("/market/ALAB?from=search")
   end
 
   # Escape closes the dropdown, and the next search still has somewhere to land.
@@ -43,12 +43,12 @@ RSpec.describe "Searching from the top bar", type: :system, js: true do
     field = within("header", text: "Panorama") { find("input[name=q]") }
 
     field.fill_in(with: "alab")
-    expect(page).to have_css("#search_dropdown a[href='/market/ALAB']")
+    expect(page).to have_css("#search_dropdown a[href='/market/ALAB?from=search']")
 
     field.send_keys(:escape)
-    expect(page).to have_no_css("#search_dropdown a[href='/market/ALAB']")
+    expect(page).to have_no_css("#search_dropdown a[href='/market/ALAB?from=search']")
 
     field.fill_in(with: "astera")
-    expect(page).to have_css("#search_dropdown a[href='/market/ALAB']")
+    expect(page).to have_css("#search_dropdown a[href='/market/ALAB?from=search']")
   end
 end

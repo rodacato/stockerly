@@ -28,6 +28,6 @@ class DashboardController < AuthenticatedController
     return unless response.successful? && request.format.html?
     return if turbo_frame_request? || request.headers["X-Sec-Purpose"] == "prefetch"
 
-    AppOpen.record(path: request.path)
+    Usage.opened(request.path)
   end
 end

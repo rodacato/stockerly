@@ -22,7 +22,7 @@ module Checks
     TITLE = "ADR-002: Trading and MarketData read each other through the read API"
 
     OWNERS = {
-      "administration" => %w[AppOpen ErrorEvent Integration SiteConfig SiteConfigChange],
+      "administration" => %w[ErrorEvent Integration SiteConfig SiteConfigChange],
       "alerts"         => %w[AlertEvent AlertPreference AlertRule],
       "assistant"      => %w[AssistantConversation AssistantMessage],
       "identity"       => %w[OtpRecoveryCode],
@@ -32,6 +32,7 @@ module Checks
         NewsArticle StockSplit TechnicalObservation TechnicalReading TrendScore
       ],
       "notifications"  => %w[Notification PushSubscription],
+      "usage"          => %w[AppOpen UsageEvent],
       "trading"        => %w[
         DividendPayment Plan Portfolio PortfolioSnapshot Position SplitAdjustment Trade
         WatchlistItem

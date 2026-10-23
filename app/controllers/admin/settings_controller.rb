@@ -1,6 +1,6 @@
 module Admin
   class SettingsController < BaseController
-    TOGGLE_KEYS = %w[maintenance_mode auto_sync_enabled email_notifications_enabled developer_mode].freeze
+    TOGGLE_KEYS = %w[maintenance_mode auto_sync_enabled email_notifications_enabled developer_mode usage_tracking].freeze
 
     rate_limit to: 5, within: 1.minute, only: %i[trigger_data_source run_maintenance]
 
@@ -11,6 +11,7 @@ module Admin
       @auto_sync_enabled           = enabled?(configs["auto_sync_enabled"])
       @email_notifications_enabled = enabled?(configs["email_notifications_enabled"])
       @developer_mode              = enabled?(configs["developer_mode"])
+      @usage_tracking              = enabled?(configs["usage_tracking"])
 
       @recent_changes = SiteConfigChange.recent.includes(:admin).limit(8)
       @diagnostics    = build_diagnostics

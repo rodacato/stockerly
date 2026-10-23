@@ -4,6 +4,7 @@ class MarketController < AuthenticatedController
 
     case result
     in Dry::Monads::Success(data)
+      Usage.record("asset.opened", screen: "activo", from: params[:from].presence || "direct") unless params[:range]
       @asset = data[:asset]
       @presenter = data[:presenter]
       @has_fundamentals = data[:has_fundamentals]

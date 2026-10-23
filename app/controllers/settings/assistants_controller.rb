@@ -42,7 +42,8 @@ module Settings
     end
 
     def appearance
-      Administration::UseCases::Integrations::PaintVelita.call(colour: params[:velita_colour].to_s)
+      colour = params[:velita_colour].to_s
+      Usage.record("velita.colour_changed", screen: "ajustes", colour: colour) if Administration::UseCases::Integrations::PaintVelita.call(colour: colour)
       redirect_to settings_assistant_path
     rescue ActiveRecord::RecordNotFound
       head :not_found

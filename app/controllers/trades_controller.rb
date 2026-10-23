@@ -32,6 +32,7 @@ class TradesController < AuthenticatedController
 
     case result
     in Dry::Monads::Success(trade)
+      record_capture
       # Two destinations (D11's "Guardar y registrar otro"). Saving alone
       # targets _top, so the response navigates and the sheet goes with it;
       # saving-and-another stays in the frame and comes back empty, because
@@ -110,6 +111,13 @@ class TradesController < AuthenticatedController
   end
 
   private
+
+  # JTBD #5: seconds from opening the sheet to saving it. Past an hour it was
+  # left open, not slow, so it says nothing about capture.
+  def record_capture
+    seconds = Time.current.to_i - params[:opened_at].to_i
+    Usage.record("trade.created", screen: "movimiento", seconds: seconds) if params[:opened_at].present? && seconds.between?(1, 3600)
+  end
 
   def update_alert(tag)
     return t("trades.errores.muy_antiguo_editar", dias: Trading::UseCases::UpdateTrade::MAX_EDIT_AGE_DAYS) if tag == :too_old

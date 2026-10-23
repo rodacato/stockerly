@@ -17,11 +17,15 @@ module Assistant
       connection = Administration::Queries::AssistantConnection.call
       @connected = connection&.dig(:status) == :connected
       @reads_holdings = @connected && connection[:read_holdings]
+      @suggestions = helpers.assistant_suggestions(from: @from, symbol: @symbol, seen: @seen)
+      @via = params[:via] == "help" ? "help" : "typed"
+      record_opening
     end
 
     def create
       case Assistant::UseCases::AskQuestion.call(**question_params)
       in Dry::Monads::Success(message)
+        Usage.record("question.sent", screen: question_params[:screen], via: params[:via])
         render turbo_stream: [
           turbo_stream.remove("assistant_suggestions"),
           turbo_stream.append("assistant_messages", partial: "assistant/questions/message", locals: { message: message }),
@@ -35,6 +39,14 @@ module Assistant
     end
 
     private
+
+    # ADR-032: what the drawer offered when it opened (D166), and whether a ? brought it.
+    def record_opening
+      return unless @connected
+
+      Usage.record("help.ask_velita", screen: @from, figure: params[:figure]) if @via == "help"
+      Usage.record("assistant.suggestion_shown", screen: @from) if @suggestions.any? && @question.blank? && @conversation.nil?
+    end
 
     def question_params
       @question_params ||= params.expect(question: [ :question, :token, :symbol, :screen ]).to_h.symbolize_keys
