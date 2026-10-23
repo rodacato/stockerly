@@ -2,6 +2,8 @@ module Trading
   module UseCases
     class UpdateTrade < ApplicationUseCase
       MAX_EDIT_AGE_DAYS = 30
+      # fx_rate_at_execution is stored at this scale; a capture is compared at it.
+      FX_RATE_SCALE = 8
 
       def call(user:, params:)
         attrs = yield validate(Trading::Contracts::UpdateTradeContract, params)
@@ -81,7 +83,7 @@ module Trading
       def recaptured_rate(trade, executed_at)
         captured = ->(at) { Trading::Domain::ExecutionRate.capture(currency: trade.currency, at_date: at.to_date) }
         stored = trade.fx_rate_at_execution
-        return stored unless stored.nil? || stored == captured.call(trade.executed_at)
+        return stored unless stored.nil? || stored == captured.call(trade.executed_at)&.round(FX_RATE_SCALE)
 
         captured.call(executed_at)
       end

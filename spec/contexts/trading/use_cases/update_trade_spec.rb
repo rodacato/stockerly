@@ -209,5 +209,16 @@ RSpec.describe Trading::UseCases::UpdateTrade do
 
       expect(usd_trade.reload.fx_rate_at_execution).to eq(18.5)
     end
+
+    it "takes the new day's rate when the day's was derived from the inverse pair" do
+      FxRateHistory.delete_all
+      FxRateHistory.record(base: "MXN", quote: "USD", date: old_day, rate: 0.06, source: "test")
+      FxRateHistory.record(base: "MXN", quote: "USD", date: new_day, rate: 0.05, source: "test")
+      usd_trade.update!(fx_rate_at_execution: Trading::Domain::ExecutionRate.capture(currency: "USD", at_date: old_day))
+
+      described_class.call(user: user, params: { trade_id: usd_trade.id, executed_at: new_day.iso8601 })
+
+      expect(usd_trade.reload.fx_rate_at_execution).to eq(20)
+    end
   end
 end
