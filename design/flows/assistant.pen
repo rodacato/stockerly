@@ -3224,7 +3224,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Cuerpo sólido, ojos píldora. Se mueve solo cuando el pipeline trabaja, y nunca reacciona a una ganancia, una pérdida o la dirección del mercado (ADR-031 §7). En reposo queda quieta. P1 sale con la Vela índigo; formas y colores llegan después de la señal.",
+          "content": "Cuerpo sólido, ojos píldora. Se mueve solo cuando el pipeline trabaja, y nunca reacciona a una ganancia, una pérdida o la dirección del mercado (ADR-031 §7). En reposo queda quieta. Los colores salen con D173; las formas llegan después de la señal.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -4196,6 +4196,12 @@
                             "H4xtka": {
                               "x": 15.75,
                               "y": 18
+                            },
+                            "dfgta": {
+                              "fill": "$fg-default"
+                            },
+                            "e5xAQb": {
+                              "fill": "$fg-default"
                             }
                           }
                         }
@@ -4358,6 +4364,12 @@
                             "H4xtka": {
                               "x": 15.75,
                               "y": 18
+                            },
+                            "dfgta": {
+                              "fill": "$fg-default"
+                            },
+                            "e5xAQb": {
+                              "fill": "$fg-default"
                             }
                           }
                         }
@@ -4439,6 +4451,12 @@
                             "H4xtka": {
                               "x": 15.75,
                               "y": 18
+                            },
+                            "dfgta": {
+                              "fill": "$fg-default"
+                            },
+                            "e5xAQb": {
+                              "fill": "$fg-default"
                             }
                           }
                         }
@@ -4469,87 +4487,6 @@
                       "fontWeight": "normal"
                     }
                   ]
-                },
-                {
-                  "type": "frame",
-                  "id": "mHAzm",
-                  "name": "Gris",
-                  "width": 150,
-                  "layout": "vertical",
-                  "gap": "$space-2",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "Cq5wY",
-                      "name": "Tile",
-                      "width": 112,
-                      "height": 112,
-                      "fill": "$bg-canvas",
-                      "cornerRadius": "$radius-lg",
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "id": "z92yN8",
-                          "type": "ref",
-                          "ref": "ySrMk",
-                          "name": "Velita · Gris",
-                          "descendants": {
-                            "ExqoP": {
-                              "enabled": true
-                            },
-                            "K0Mew": {
-                              "fill": "$chart-neutral"
-                            },
-                            "A2Bn78": {
-                              "fill": "$chart-neutral"
-                            },
-                            "UaDAD": {
-                              "fill": "$chart-neutral"
-                            },
-                            "t0l9Y": {
-                              "enabled": false
-                            },
-                            "lP4gI": {
-                              "enabled": false
-                            },
-                            "H65z4O": {
-                              "enabled": false
-                            },
-                            "H4xtka": {
-                              "x": 15.75,
-                              "y": 18
-                            }
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "type": "text",
-                      "id": "zg2qG",
-                      "name": "l",
-                      "fill": "$fg-default",
-                      "content": "Gris",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 13,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "yYonj",
-                      "name": "s",
-                      "fill": "$fg-subtle",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "chart-neutral",
-                      "lineHeight": 1.4,
-                      "textAlign": "center",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
                 }
               ]
             }
@@ -4562,7 +4499,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Fuera: verde (chart-3), rosa (chart-5) y ámbar (chart-4). En Stockerly significan ganancia, pérdida y advertencia; una velita roja se leería como «vas perdiendo».",
+          "content": "Fuera: verde (chart-3), rosa (chart-5), ámbar (chart-4) y gris (chart-neutral). Los tres primeros significan ganancia, pérdida y advertencia; el gris es «Sin conexión». Cielo, Naranja y Cian llevan ojos oscuros: blancos no se leen sobre un cuerpo claro (D173).",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 12,
