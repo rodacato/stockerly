@@ -41,6 +41,13 @@ module Settings
       head :not_found
     end
 
+    def appearance
+      Administration::UseCases::Integrations::PaintVelita.call(colour: params[:velita_colour].to_s)
+      redirect_to settings_assistant_path
+    rescue ActiveRecord::RecordNotFound
+      head :not_found
+    end
+
     private
 
     def configure

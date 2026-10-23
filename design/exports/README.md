@@ -233,7 +233,7 @@ exports, so re-shoot these when those change.
 | `assistant-hoy-conversaciones-anteriores.png` | `[Asistente] / Hoy / Conversaciones anteriores` — the history, each thread by its first and last question (D172) |
 | `assistant-hoy-drawer-descartada.png` | `[Asistente] / Hoy / Drawer · Descartada` — an answer the numbers gate discarded, with «Preguntar de nuevo» |
 | `assistant-panorama-desktop-panel-abierto.png` | `[Asistente] / Panorama · Desktop / Panel abierto` — the non-modal side panel |
-| `assistant-velita-formas-estados-colores.png` | `[Asistente] / Velita / Formas, estados y colores` — the character sheet (D167) |
+| `assistant-velita-formas-estados-colores.png` | `[Asistente] / Velita / Formas, estados y colores` — the character sheet (D167; colours per D173) |
 | `assistant-ajustes-conectada.png` | `[Asistente] / Ajustes · Asistente / Conectada` |
 | `assistant-ajustes-sin-configurar.png` | `[Asistente] / Ajustes · Asistente / Sin configurar` — off until a connection answers |
 | `assistant-ajustes-error-de-conexion.png` | `[Asistente] / Ajustes · Asistente / Error de conexión` |

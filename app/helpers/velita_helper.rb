@@ -4,8 +4,41 @@ module VelitaHelper
   def velita_visible?
     return @velita_visible if defined?(@velita_visible)
 
-    connection = Administration::Queries::AssistantConnection.call
+    connection = velita_connection
     @velita_visible = connection.present? && connection[:status] == :connected && connection[:show_velita]
+  end
+
+  def velita_connection
+    return @velita_connection if defined?(@velita_connection)
+
+    @velita_connection = Administration::Queries::AssistantConnection.call
+  end
+
+  # D173: a light body takes dark eyes, or the expression does not read on it.
+  DARK_EYES = "fill-fg-default dark:fill-fg-inverse".freeze
+  VELITA_PAINT = {
+    "indigo" => [ "text-chart-1", "fill-fg-inverse" ],
+    "cielo" => [ "text-chart-2", DARK_EYES ],
+    "violeta" => [ "text-chart-6", "fill-fg-inverse" ],
+    "naranja" => [ "text-chart-7", DARK_EYES ],
+    "cian" => [ "text-chart-8", DARK_EYES ]
+  }.freeze
+
+  # Without a connection she is "Sin conexión", whatever colour was picked.
+  def velita_paint(state, colour = nil)
+    return [ "text-fg-subtle", "fill-fg-inverse" ] if state == :offline
+
+    VELITA_PAINT.fetch(colour || velita_connection&.dig(:velita_colour), VELITA_PAINT["indigo"])
+  end
+
+  # The figure beside an answer says what the pipeline is doing (ADR-031 §7).
+  def velita_state(message)
+    if message.pending? then :searching
+    elsif message.streaming? then message.answer.present? ? :speaking : :citing
+    elsif message.discarded? then :no_data
+    elsif message.failed? then :offline
+    else :idle
+    end
   end
 
   # A page that answers its own question gets its own key; the rest go by their tab.

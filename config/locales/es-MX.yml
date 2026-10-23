@@ -2121,12 +2121,19 @@ es-MX:
       titulo: Nombre y correo
     assistants:
       show:
+        apariencia: Apariencia
         api_key_placeholder: Pega tu API key
         campos:
           api_key: API key
           base_url: Host
           model: Para redactar
           planner_model: Para planear
+        colores:
+          cian: Cian
+          cielo: Cielo
+          indigo: Índigo
+          naranja: Naranja
+          violeta: Violeta
         conexion: Conexión
         conexion_con_posiciones: A qué modelo le pregunta. Tu pregunta, los datos
           de mercado que consulta y, cuando la pregunta las necesita, tus posiciones

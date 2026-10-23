@@ -1,7 +1,7 @@
 <%# The drawer's head (D11): who answers, from where, and the way to her other conversations. On its own page the header bar carries the title. Locals: title, subtitle, history (bool), context (from, symbol). %>
 <div class="flex items-center gap-3">
   <% if turbo_frame_request? %>
-    <%= render "assistant/velita", classes: "size-12 shrink-0 text-primary" %>
+    <%= render "assistant/velita", classes: "size-12 shrink-0" %>
   <% end %>
   <div class="min-w-0 flex-1">
     <% if turbo_frame_request? %>

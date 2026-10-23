@@ -36,7 +36,7 @@ RSpec.describe "Assistant questions", type: :request do
     end.to have_enqueued_job(AssistantComposeJob)
 
     expect(response.body).to include("¿Qué significa el RSI?")
-    expect(response.body).to include(I18n.t("assistant.questions.answer.buscando"))
+    expect(response.body).to include(I18n.t("assistant.questions.answer.buscando"), "velita-searching")
     expect(AssistantMessage.last.cards).to eq([])
     expect(AssistantConversation.find_by(token: "abc").messages.count).to eq(1)
   end

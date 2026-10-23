@@ -13,7 +13,7 @@
            data-toggle-url-value="<%= velita_settings_assistant_path %>"
            data-toggle-field-value="show_velita"
            data-toggle-reload-value="true">
-    <%= render "assistant/velita", classes: "size-12 shrink-0 #{connected ? "text-primary" : "text-fg-subtle"}" %>
+    <%= render "assistant/velita", classes: "size-12 shrink-0", state: connected ? :idle : :offline %>
     <div class="min-w-0 flex-1">
       <p class="font-semibold text-fg-default"><%= t(".velita") %></p>
       <p class="text-sm text-fg-subtle"><%= connected ? t(".velita_desc") : t(".velita_sin_conexion") %></p>
@@ -47,6 +47,23 @@
       <span data-toggle-target="knob" class="pointer-events-none absolute left-0 inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform <%= sharing ? "translate-x-5" : "translate-x-0" %>"></span>
     </button>
   </section>
+
+  <% if @connection %>
+    <section class="<%= card_classes("flex flex-col gap-3 p-5") %>" aria-labelledby="velita-apariencia">
+      <p id="velita-apariencia" class="font-semibold text-fg-default"><%= t(".apariencia") %></p>
+      <div class="flex flex-wrap gap-3">
+        <% defaults::VELITA_COLOURS.each do |colour| %>
+          <% picked = @connection[:velita_colour] == colour %>
+          <%= button_to appearance_settings_assistant_path, method: :patch, params: { velita_colour: colour },
+                        aria: { pressed: picked, label: t(".colores.#{colour}") },
+                        class: "flex flex-col items-center gap-1 rounded-xl border-2 p-2 transition-colors #{picked ? "border-primary" : "border-transparent hover:border-border-default"}" do %>
+            <%= render "assistant/velita", classes: "size-10", colour: colour %>
+            <span class="text-xs text-fg-subtle"><%= t(".colores.#{colour}") %></span>
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
 
   <section class="flex flex-col gap-2">
     <h2 class="font-display text-xl font-bold tracking-tight text-fg-default"><%= t(".conexion") %></h2>

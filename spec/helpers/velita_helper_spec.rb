@@ -61,4 +61,27 @@ RSpec.describe VelitaHelper, type: :helper do
       expect(helper.assistant_asked_at(Time.zone.local(2026, 10, 20, 9, 5))).to eq("20 oct · 09:05")
     end
   end
+
+  # ADR-031 §7, D173: the figure beside an answer says what the pipeline is doing, nothing else.
+  describe "Velita's state and colour" do
+    def message(**attributes) = AssistantMessage.new(question: "¿Qué es el RSI?", **attributes)
+
+    it "follows the message through the pipeline" do
+      expect(helper.velita_state(message(status: :pending))).to eq(:searching)
+      expect(helper.velita_state(message(status: :streaming))).to eq(:citing)
+      expect(helper.velita_state(message(status: :streaming, answer: "Mide"))).to eq(:speaking)
+      expect(helper.velita_state(message(status: :answered, answer: "Mide"))).to eq(:idle)
+      expect(helper.velita_state(message(status: :discarded))).to eq(:no_data)
+      expect(helper.velita_state(message(status: :failed))).to eq(:offline)
+    end
+
+    it "is grey when she cannot answer, whatever colour was picked" do
+      expect(helper.velita_paint(:offline, "naranja")).to eq([ "text-fg-subtle", "fill-fg-inverse" ])
+    end
+
+    it "gives a light body dark eyes, in both themes" do
+      expect(helper.velita_paint(:idle, "cielo").last).to eq("fill-fg-default dark:fill-fg-inverse")
+      expect(helper.velita_paint(:idle, "indigo").last).to eq("fill-fg-inverse")
+    end
+  end
 end
