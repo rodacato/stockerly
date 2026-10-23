@@ -132,4 +132,21 @@ RSpec.describe Trading::UseCases::UpdateTrade do
       expect(position.reload.shares).to eq(12.0)
     end
   end
+
+  # F2.3: editing a buy below what was later sold is refused whole.
+  describe "an edit that would sell more than was bought" do
+    before do
+      create(:trade, portfolio: portfolio, asset: asset, position: position, side: :sell, shares: 8.0,
+                     price_per_share: 160.0, total_amount: 1280.0, executed_at: 4.days.ago)
+      position.resync_from_trades!
+    end
+
+    it "is refused, and leaves the trade and the position as they were" do
+      result = described_class.call(user: user, params: { trade_id: trade.id, shares: 5.0 })
+
+      expect(result.failure.first).to eq(:leaves_negative)
+      expect(trade.reload.shares).to eq(10.0)
+      expect(position.reload.shares).to eq(2.0)
+    end
+  end
 end

@@ -13,8 +13,7 @@ module Trading
         return Failure([ :too_old, "Cannot edit trades older than #{MAX_EDIT_AGE_DAYS} days" ]) if too_old?(trade)
 
         previous_values = extract_previous(trade, attrs)
-        update_trade(trade, attrs)
-        trade.position&.resync_from_trades! if position_affecting_change?(attrs)
+        return Failure([ :leaves_negative, "A later sale needs these shares" ]) unless update_and_resync(trade, attrs)
 
         publish(Events::TradeUpdated.new(
           trade_id: trade.id,
@@ -27,6 +26,23 @@ module Trading
       end
 
       private
+
+      # Same rule as DeleteTrade: an edit that would leave a later sale without
+      # its shares is undone whole.
+      def update_and_resync(trade, attrs)
+        committed = Trade.transaction do
+          update_trade(trade, attrs)
+          if position_affecting_change?(attrs)
+            position = trade.position
+            raise ActiveRecord::Rollback if position&.shares_from_trades&.negative?
+
+            position&.resync_from_trades!
+          end
+          true
+        end
+        trade.reload unless committed
+        committed
+      end
 
       def too_old?(trade)
         trade.executed_at < MAX_EDIT_AGE_DAYS.days.ago

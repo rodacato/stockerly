@@ -98,4 +98,22 @@ RSpec.describe Trading::UseCases::DeleteTrade do
       expect(result.failure).to eq([ :not_found, "Trade not found" ])
     end
   end
+
+  # F2.2: the sale after it needs these shares, so the delete is refused whole.
+  describe "a buy a later sale depends on" do
+    let!(:sale) do
+      create(:trade, portfolio: portfolio, asset: asset, position: position, side: :sell, shares: 8.0,
+                     price_per_share: 160.0, total_amount: 1280.0, executed_at: 4.days.ago)
+    end
+
+    it "is refused, and leaves the trade and the position as they were" do
+      position.resync_from_trades!
+
+      result = described_class.call(user: user, trade_id: trade.id)
+
+      expect(result.failure.first).to eq(:leaves_negative)
+      expect(trade.reload).not_to be_discarded
+      expect(position.reload.shares).to eq(2.0)
+    end
+  end
 end
