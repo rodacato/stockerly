@@ -30,6 +30,13 @@ RSpec.describe MarketData::Queries::UpcomingEarnings do
       expect(described_class.within(days: 7)).to be_empty
     end
 
+    it "lets the report that came out retire the estimate it replaced" do
+      event(on: 4.days.from_now.to_date, touched: 30.days.ago)
+      event(on: 1.day.ago.to_date, touched: 1.day.ago).update_columns(actual_eps: 1.2)
+
+      expect(described_class.within(days: 7)).to be_empty
+    end
+
     it "names one next date per asset, however far off" do
       event(on: 10.days.from_now.to_date, touched: 30.days.ago)
       current = event(on: 40.days.from_now.to_date, touched: 1.day.ago)
