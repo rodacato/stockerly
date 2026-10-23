@@ -13,6 +13,13 @@ RSpec.describe Administration::UseCases::Logs::ListLogs do
       expect(data[:pagy]).to be_a(Pagy)
     end
 
+    # F4.2: a hand-edited page is the first page, not a Pagy error.
+    it "reads a page that is not a page number as the first one" do
+      create(:system_log)
+
+      expect(described_class.call(params: { page: "abc" })[:pagy].page).to eq(1)
+    end
+
     it "filters by severity" do
       result = described_class.call(params: { severity: "error" })
       data = result
