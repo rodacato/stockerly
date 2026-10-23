@@ -2460,6 +2460,11 @@ es-MX:
           other: 'Me faltan los tipos de cambio de %{count} fechas:'
         not_found: No encontré tu cartera.
         otro_archivo: Elegir otro archivo
+        oversold:
+          one: Vendes más títulos de los que tienes en 1 símbolo. Revisa sus ventas
+            o importa primero sus compras.
+          other: Vendes más títulos de los que tienes en %{count} símbolos. Revisa
+            sus ventas o importa primero sus compras.
         parcial:
           one: Importar solo 1 movimiento
           other: Importar solo los %{count} movimientos que sí puedo
