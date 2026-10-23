@@ -218,6 +218,21 @@ dialog.assistant-sheet::backdrop {
   }
 }
 
+/* D173: Velita's eyes scan while the plan and its reads run; still, she
+   holds the same glance. Every other state is a pose, not a motion. */
+.velita-searching .velita-eyes { transform: translate(1.5px, -1.5px); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .velita-searching .velita-eyes {
+    animation: velita-scan 1.2s cubic-bezier(0.77, 0, 0.175, 1) infinite alternate;
+  }
+}
+
+@keyframes velita-scan {
+  from { transform: translate(1.5px, -1.5px); }
+  to   { transform: translate(-1.5px, -1.5px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {

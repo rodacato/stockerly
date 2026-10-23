@@ -1,6 +1,6 @@
 <%# Replaced by AssistantComposeJob as the prose streams in. Locals: message. %>
 <div id="assistant_answer_<%= message.id %>" aria-live="polite" class="flex items-start gap-3">
-  <%= render "assistant/velita", classes: "size-10 shrink-0 #{message.failed? ? "text-fg-subtle" : "text-primary"}" %>
+  <%= render "assistant/velita", classes: "size-10 shrink-0", state: velita_state(message) %>
   <div class="flex min-w-0 flex-1 flex-col gap-1.5 pt-1.5">
     <% if message.answered? || (message.streaming? && message.answer.present?) %>
       <p class="text-[15px] leading-relaxed text-fg-default"><%= assistant_answer_with_citations(message) %></p>

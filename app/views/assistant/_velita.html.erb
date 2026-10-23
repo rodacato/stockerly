@@ -1,10 +1,26 @@
-<%# Locals: classes (size and colour; the body takes currentColor). Geometry is
-    the Vela of design/flows/assistant.pen, component Velita (D167). Static:
-    she moves only while work runs, and that motion is not built yet (D166). %>
-<svg viewBox="0 0 48 48" aria-hidden="true" class="<%= local_assigns.fetch(:classes, "size-12 text-primary") %>">
+<%# Locals: classes (size), state (D173: idle, searching, citing, speaking,
+    no_data, offline), colour. Geometry and poses are the Vela of
+    design/flows/assistant.pen, component Velita. Only searching moves (D166). %>
+<% state = local_assigns.fetch(:state, :idle) %>
+<% body, eyes = velita_paint(state, local_assigns[:colour]) %>
+<svg viewBox="0 0 48 48" aria-hidden="true" class="velita-<%= state.to_s.dasherize %> <%= body %> <%= local_assigns.fetch(:classes, "size-12") %>">
   <rect x="12" y="13.5" width="24" height="22.5" rx="8.25" fill="currentColor"/>
   <rect x="21.75" y="8.25" width="4.5" height="6.75" rx="2.25" fill="currentColor"/>
   <rect x="21.75" y="34.5" width="4.5" height="6" rx="2.25" fill="currentColor"/>
-  <rect x="17.625" y="19.875" width="3.75" height="6.75" rx="1.875" class="fill-fg-inverse"/>
-  <rect x="26.625" y="19.875" width="3.75" height="6.75" rx="1.875" class="fill-fg-inverse"/>
+  <g class="velita-eyes <%= eyes %>" transform="<%= "translate(0 -2.25)" if state == :citing %>">
+    <% case state %>
+    <% when :offline %>
+      <rect x="17.625" y="22.5" width="4.5" height="1.5" rx="0.75"/>
+      <rect x="26.625" y="22.5" width="4.5" height="1.5" rx="0.75"/>
+    <% when :no_data %>
+      <rect x="17.625" y="19.875" width="3.75" height="6.75" rx="1.875" transform="rotate(14 19.5 23.25)"/>
+      <rect x="26.625" y="19.875" width="3.75" height="6.75" rx="1.875" transform="rotate(-14 28.5 23.25)"/>
+    <% else %>
+      <rect x="17.625" y="19.875" width="3.75" height="6.75" rx="1.875"/>
+      <rect x="26.625" y="19.875" width="3.75" height="6.75" rx="1.875"/>
+    <% end %>
+  </g>
+  <% if state == :speaking %>
+    <ellipse cx="24" cy="31.3125" rx="2.25" ry="1.3125" class="<%= eyes %>"/>
+  <% end %>
 </svg>

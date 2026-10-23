@@ -107,6 +107,44 @@ RSpec.describe "Velita", type: :request do
     end
   end
 
+  # D173: five colours that carry no verdict.
+  describe "her colour" do
+    it "starts índigo, and the one picked is pressed" do
+      connect
+      get settings_assistant_path
+
+      expect(response.body).to include(%(aria-pressed="true" aria-label="#{I18n.t("settings.assistants.show.colores.indigo")}"))
+      expect(response.body).to include(%(aria-pressed="false" aria-label="#{I18n.t("settings.assistants.show.colores.cielo")}"))
+    end
+
+    it "paints her everywhere she appears" do
+      connect
+
+      patch appearance_settings_assistant_path, params: { velita_colour: "cielo" }
+      expect(response).to redirect_to(settings_assistant_path)
+      get dashboard_path
+
+      expect(response.body).to include("text-chart-2")
+      expect(response.body).not_to include("text-chart-1")
+    end
+
+    it "refuses a colour outside the five" do
+      connect
+
+      patch appearance_settings_assistant_path, params: { velita_colour: "verde" }
+
+      expect(Integration.find_by(provider_name: "Asistente").setting("velita_colour")).to be_nil
+    end
+
+    it "has no appearance to change before a connection is configured" do
+      get settings_assistant_path
+      expect(response.body).not_to include(I18n.t("settings.assistants.show.apariencia"))
+
+      patch appearance_settings_assistant_path, params: { velita_colour: "cielo" }
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   # ADR-031's 2026-10-22 amendment.
   describe "the holdings switch" do
     it "starts off, naming the host the holdings would go to" do
