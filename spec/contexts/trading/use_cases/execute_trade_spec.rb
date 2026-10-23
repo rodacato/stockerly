@@ -331,6 +331,17 @@ RSpec.describe Trading::UseCases::ExecuteTrade do
       expect { described_class.call(user: user, params: mixed_params) }.not_to change(Position, :count)
     end
 
+    # F2.9: paying in pesos needs no peso rate, but stating the cost in the
+    # asset's dollars does; without it the trade was saved and the handler raised.
+    it "is refused when the asset's own currency has no rate, writing nothing" do
+      peso_paid = { asset_symbol: "AAPL", side: "buy", shares: 1.0, price_per_share: 3_000.0,
+                    currency: "MXN", executed_at: "2026-03-10" }
+
+      result = nil
+      expect { result = described_class.call(user: user, params: peso_paid) }.not_to change(Trade, :count)
+      expect(result.failure).to eq([ :missing_fx_rate, "USD" ])
+    end
+
     it "is accepted once the rate exists" do
       FxRateHistory.record(base: "USD", quote: "MXN", date: Date.new(2026, 3, 10), rate: 19.0, source: "test")
 
