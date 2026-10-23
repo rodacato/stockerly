@@ -114,6 +114,13 @@ RSpec.describe Trading::UseCases::ImportTrades do
       expect(described_class.call(user: user, rows: rows, dry_run: true).failure).to eq([ :oversold, [ "VT" ] ])
     end
 
+    it "refuses a sale dated before the buy that would cover it" do
+      rows = [ row(side: "sell", shares: "5", net_amount: nil),
+               row(shares: "10", net_amount: nil, external_id: "order-2", executed_at: "2025-12-09T10:00:00-05:00") ]
+
+      expect(described_class.call(user: user, rows: rows, dry_run: true).failure).to eq([ :oversold, [ "VT" ] ])
+    end
+
     # F2.8: what was invested is what the buys cost; a sale is not money put in.
     it "counts only the buys as invested" do
       rows = [ row(shares: "1", price_per_share: "100", net_amount: nil), row(side: "sell", shares: "1", price_per_share: "120", net_amount: nil, external_id: "order-2") ]

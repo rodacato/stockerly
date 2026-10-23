@@ -148,6 +148,17 @@ RSpec.describe Trading::UseCases::UpdateTrade do
       expect(trade.reload.shares).to eq(10.0)
       expect(position.reload.shares).to eq(2.0)
     end
+
+    it "is refused when the buy moves after the sale it paid for" do
+      create(:trade, portfolio: portfolio, asset: asset, position: position, side: :buy, shares: 10.0,
+                     price_per_share: 170.0, total_amount: 1700.0, executed_at: 3.days.ago)
+      position.resync_from_trades!
+
+      result = described_class.call(user: user, params: { trade_id: trade.id, executed_at: 2.days.ago.iso8601 })
+
+      expect(result.failure.first).to eq(:leaves_negative)
+      expect(trade.reload.executed_at).to be < 4.days.ago
+    end
   end
 
   # F2.5: the edit row always posts the date; an emptied field means unchanged.

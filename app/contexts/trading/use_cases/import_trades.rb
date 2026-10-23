@@ -147,13 +147,13 @@ module Trading
         parsed.partition { |row| row[:external_id].blank? || taken.exclude?(row[:external_id]) }
       end
 
-      # The preview promises what the confirm will do, so a symbol whose sells
-      # outrun what is held plus what the file buys is refused here, not at commit.
+      # The preview promises what the confirm will do, so a sale that nothing
+      # held or bought before it covers is refused here, not at commit.
       def refuse_oversold(portfolio, rows, assets)
         oversold = rows.group_by { |row| row[:asset_symbol].upcase }.filter_map do |symbol, asset_rows|
-          held = portfolio.positions.find_by(asset: assets.fetch(symbol), status: :open)&.shares || 0
-          delta = asset_rows.sum { |row| row[:side] == "buy" ? row[:shares] : -row[:shares] }
-          symbol if (held + delta).negative?
+          position = portfolio.positions.find_by(asset: assets.fetch(symbol), status: :open)
+          legs = asset_rows.map { |row| [ Time.zone.parse(row[:executed_at]), row[:side], row[:shares] ] }
+          symbol if position ? position.oversold?(legs) : Position.oversold?(legs.map { |at, *rest| [ at, 0, *rest ] })
         end
         oversold.any? ? Failure([ :oversold, oversold.sort ]) : Success()
       end
