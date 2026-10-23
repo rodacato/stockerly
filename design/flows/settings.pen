@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "PURPOSE\nOne Ajustes for a single-user instance (D5): the person who owns the account also owns the box, so /profile and the /admin zone are one hub with sections — cuenta, apariencia y región, tu plan, avisos, tu instancia, tus datos, ayuda.\n\nENTRY POINTS\nThe fifth BottomNav tab (/settings). Its rows open /settings/account, /settings/password, /settings/plan, TOTP enrolment (auth.pen), /admin/integrations, /admin/logs, /admin/settings, Mission Control at /admin/jobs (a new tab), /admin/errors (only with developer_mode, ADR-020) and the importer (assets.pen). Ajustes hub → Ayuda: the Ayuda section's one NavRow, above Cerrar sesión, opens /help. Errores' back arrow returns to Estado y mantenimiento, where its switch lives. En mantenimiento is what a visitor who is not signed in gets from any page while maintenance_mode is on.\n\nSCREENS (LEFT → RIGHT, BY BAND)\nCuenta: Hub (default · avisos bloqueados · dos pasos activa) · Nombre y correo · Contraseña · Tu plan (vacío · default · error).\nIntegraciones: lista · Administrar (one source opened) · Estados (the five states) · Vacío.\nOperación: Registros · Registros · Detalle · Registros · Filtrado sin resultados · Estado y mantenimiento · Estado · Mantenimiento activo · En mantenimiento · Errores · Errores · Detalle.\nAyuda: /help as a hub child — HeaderBar back to Ajustes titled Ayuda y soporte, one subtitle, then the /welcome body without its CTA; its three doors are plain links. No BottomNav tab is lit: the help controller belongs to no tab.\nNo desktop artboards: every screen here is one column (max-w-3xl, or max-w-xl for the three forms — nombre y correo, contraseña, tu plan) inside the shell (D4).\n\nBUSINESS RULES\n• The theme applies on select and the currency PATCHes on select; nothing waits for a Guardar (D58).\n• Avisos: the bell cannot be turned off (D16); the two phone switches (Resumen de Hoy en el teléfono, Avisos en el teléfono) render only where VAPID keys exist.\n• Seguridad is a row until TOTP is enrolled; once it is, a card with the codes left and Generar códigos nuevos.\n• Tu plan: nothing is prefilled; the three shares must sum to 100 before saving; the contribution is MXN. Written here only, Hoy reads it (D156).\n• Integraciones lists every registered source, the ones not connected first. Each card says its role, its own quota in its own unit, and whose problem a non-working source is: sin API key (your instance), sin cuota (your quota), bloqueada (the provider), verificando (a key saved and still being checked; it needs a worker). Near the limit qualifies the figure ('· cerca del límite'), it is not a state. One API key per source (ADR-015).\n• Deleting a source removes it from the list; it comes back only with bin/rails stockerly:sync.\n• Estado: each switch is its own PATCH and every flip is kept in SiteConfigChange. Maintenance shows the 503 page to anyone not signed in; the owner keeps working, and login stays reachable.\n• Tus datos: Borrar movimientos keeps the account; Borrar cuenta returns the instance to the setup wizard.\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — settings.*, plans.*, admin.integrations.*, admin.logs.*, admin.settings.*, admin.errors.*, mantenimiento.*. Provider descriptions and what a missing key costs: MarketData::Domain::ProviderDirectory. Manual sync names: data_sources.* (DataSourceRegistry reads them from the locale). Log messages: whatever each job wrote to SystemLog.\n\nSTATES NOT DRAWN\n• Hub · Dos pasos activa with no codes left: the subline becomes a warning box, \"Activa · ya no te queda ningún código de recuperación\".\n• Hub without developer_mode: no Errores row. Without VAPID keys: neither phone switch.\n• Avisos en el teléfono, the other two lines under the switch in warning-fg (Avisos bloqueados draws the denied one; the switch stays off and simply does not respond): \"En iPhone hay que agregar Stockerly a la pantalla de inicio antes de activarlos.\" / \"Este navegador no admite avisos push.\"\n• Tu plan after saving: the flash \"Plan guardado.\"\n• Registros empty with no filter: \"Tu instancia no ha registrado nada todavía.\" Errores empty: \"Tu instancia no ha registrado ningún error.\", or \"Nada con esos filtros.\" with Limpiar filtros.\n• Registros and Errores past one page: the pager under the count.\n• Estado with no worker: Trabajos reads \"Sin worker · …\" in the warning tone; Errores (24 h) above 0 takes the same tone.\n• Estado with no recorded change: \"Todavía no hay cambios registrados.\"\n• /admin/errors with developer_mode off: back to Estado with \"Activa el modo desarrollador en Ajustes para ver esta sección.\"\n• Tus datos with nothing to delete: Borrar movimientos disabled.\n• Any screen on desktop: the same column inside the SidebarNav shell.\n\nOPEN FINDINGS\nNone.\n\nHISTORY\n→ Log · Ajustes",
+          "content": "PURPOSE\nOne Ajustes for a single-user instance (D5): the person who owns the account also owns the box, so /profile and the /admin zone are one hub with sections — cuenta, apariencia y región, tu plan, avisos, tu instancia, tus datos, ayuda.\n\nENTRY POINTS\nThe fifth BottomNav tab (/settings). Its rows open /settings/account, /settings/password, /settings/plan, TOTP enrolment (auth.pen), /admin/integrations, /admin/logs, /admin/settings, Mission Control at /admin/jobs (a new tab), /admin/usage (usage.pen, ADR-032), /admin/errors (errors.pen; only with developer_mode, ADR-020) and the importer (assets.pen). Ajustes hub → Ayuda: the Ayuda section's one NavRow, above Cerrar sesión, opens /help. Errores and Uso are their own flows; both switches live on Estado y mantenimiento. En mantenimiento is what a visitor who is not signed in gets from any page while maintenance_mode is on.\n\nSCREENS (LEFT → RIGHT, BY BAND)\nCuenta: Hub (default · avisos bloqueados · dos pasos activa) · Nombre y correo · Contraseña · Tu plan (vacío · default · error).\nIntegraciones: lista · Administrar (one source opened) · Estados (the five states) · Vacío.\nOperación: Registros · Registros · Detalle · Registros · Filtrado sin resultados · Estado y mantenimiento · Estado · Mantenimiento activo · En mantenimiento.\nAyuda: /help as a hub child — HeaderBar back to Ajustes titled Ayuda y soporte, one subtitle, then the /welcome body without its CTA; its three doors are plain links. No BottomNav tab is lit: the help controller belongs to no tab.\nNo desktop artboards: every screen here is one column (max-w-3xl, or max-w-xl for the three forms — nombre y correo, contraseña, tu plan) inside the shell (D4).\n\nBUSINESS RULES\n• The theme applies on select and the currency PATCHes on select; nothing waits for a Guardar (D58).\n• Avisos: the bell cannot be turned off (D16); the two phone switches (Resumen de Hoy en el teléfono, Avisos en el teléfono) render only where VAPID keys exist.\n• Seguridad is a row until TOTP is enrolled; once it is, a card with the codes left and Generar códigos nuevos.\n• Tu plan: nothing is prefilled; the three shares must sum to 100 before saving; the contribution is MXN. Written here only, Hoy reads it (D156).\n• Integraciones lists every registered source, the ones not connected first. Each card says its role, its own quota in its own unit, and whose problem a non-working source is: sin API key (your instance), sin cuota (your quota), bloqueada (the provider), verificando (a key saved and still being checked; it needs a worker). Near the limit qualifies the figure ('· cerca del límite'), it is not a state. One API key per source (ADR-015).\n• Deleting a source removes it from the list; it comes back only with bin/rails stockerly:sync.\n• Estado: Registro de uso (usage_tracking) is off by default and gates the event rows only (ADR-032 §1). Each switch is its own PATCH and every flip is kept in SiteConfigChange. Maintenance shows the 503 page to anyone not signed in; the owner keeps working, and login stays reachable.\n• Tus datos: Borrar movimientos keeps the account; Borrar cuenta returns the instance to the setup wizard.\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — settings.*, plans.*, admin.integrations.*, admin.logs.*, admin.settings.*, mantenimiento.*. Provider descriptions and what a missing key costs: MarketData::Domain::ProviderDirectory. Manual sync names: data_sources.* (DataSourceRegistry reads them from the locale). Log messages: whatever each job wrote to SystemLog.\n\nSTATES NOT DRAWN\n• Hub · Dos pasos activa with no codes left: the subline becomes a warning box, \"Activa · ya no te queda ningún código de recuperación\".\n• Hub without developer_mode: no Errores row. Without VAPID keys: neither phone switch.\n• Avisos en el teléfono, the other two lines under the switch in warning-fg (Avisos bloqueados draws the denied one; the switch stays off and simply does not respond): \"En iPhone hay que agregar Stockerly a la pantalla de inicio antes de activarlos.\" / \"Este navegador no admite avisos push.\"\n• Tu plan after saving: the flash \"Plan guardado.\"\n• Registros empty with no filter: \"Tu instancia no ha registrado nada todavía.\"\n• Registros past one page: the pager under the count.\n• Estado with no worker: Trabajos reads \"Sin worker · …\" in the warning tone; Errores (24 h) above 0 takes the same tone.\n• Estado with no recorded change: \"Todavía no hay cambios registrados.\"\n• Tus datos with nothing to delete: Borrar movimientos disabled.\n• Any screen on desktop: the same column inside the SidebarNav shell.\n\nOPEN FINDINGS\nNone.\n\nHISTORY\n→ Log · Ajustes",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -1360,6 +1360,27 @@
                     },
                     "f0LmK": {
                       "icon": "external-link"
+                    }
+                  }
+                },
+                {
+                  "id": "L0t10",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Uso",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "chart-column"
+                    },
+                    "GueOK": {
+                      "content": "Uso"
+                    },
+                    "uH4YA": {
+                      "content": "Qué se usa, qué sugerencias se toman y cuánto tarda registrar"
+                    },
+                    "AgU5u": {
+                      "content": ""
                     }
                   }
                 },
@@ -4618,6 +4639,81 @@
                           ]
                         }
                       ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "tJYFt",
+                      "name": "Div",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$border-default"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ZOpXU",
+                      "name": "Registro de uso",
+                      "width": "fill_container",
+                      "gap": "$space-4",
+                      "padding": [
+                        16,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "TBIzY",
+                          "name": "TC",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "jMhP9",
+                              "name": "l",
+                              "fill": "$fg-default",
+                              "content": "Registro de uso",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 16,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "HA4bj",
+                              "name": "d",
+                              "fill": "$fg-subtle",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Guarda qué sugerencias tomas y qué abres, sin datos personales, para saber si una función se usa. Apagado no se registra nada.",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "m6YkV",
+                          "name": "Toggle",
+                          "width": 44,
+                          "height": 24,
+                          "fill": "$bg-muted",
+                          "cornerRadius": 99,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "x6cIYj",
+                              "x": 2,
+                              "y": 2,
+                              "name": "k",
+                              "fill": "$bg-surface",
+                              "width": 20,
+                              "height": 20
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 }
@@ -6057,7 +6153,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-21 — Mirrored to code at a2f8dd9a (PR #858): Hub (default · dos pasos activa) gains the Ayuda section above Cerrar sesión; Ayuda redrawn as a hub child with HeaderBar and the new subtitle; D161's open finding closed; Cuenta band grew, lower bands shifted down 127.\n2026-10-21 — Drew the screens that ship without an artboard: Hub · Avisos bloqueados (push permission denied) in Cuenta, and a new Ayuda band with /help as shipped (D161, superseding D92).\n2026-10-21 — Mirrored to code at 809ea789: Tu plan mirrored as built (D156) and its hub row moved after Apariencia, Resumen de Hoy switch, current-password field, API KEY label, Aperturas and last-sync lines on Estado, trace and log-module fixes, kit 1.3.0 TopBar search; drew Dos pasos activa, Verificando, Integraciones vacío, Registros filtrado and Mantenimiento activo; re-laid as bands Cuenta, Integraciones, Operación.\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the TopBar at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots\n2026-10-14 · En mantenimiento draws the shared wordmark at h-8 in place of the disc and typed name, as layouts/maintenance renders it\n2026-09-17 · D123: Alpha Vantage and FMP retired — their cards and manual-sync rows removed, source counts 10 → 8, the ProviderCard maintainer notice deleted; Estados draws sin cuota on ExchangeRate\n2026-09-16 · re-vendored to kit 1.0.0; BottomNav and SidebarNav masters had Ajustes lit, every screen now lights its own tab\n2026-09-16 · mirrored to the code (D78): hub sizes and copy, the phone switch, Integraciones rebuilt on a ProviderCard that carries state, quota bar, reason and the maintainer notice, Registros and Estado rebuilt, Errores rows and detail, En mantenimiento in its own chrome\n2026-09-16 · Integraciones · Administrar and Registros · Detalle drawn; the Hub, Integraciones and Estado desktops retired (D4) with the SidebarNav and TopBarDesktop they used\n2026-09-16 · code: the maintenance page lost its English navbar and footer; Estado stopped promising a banner and names each switch in its audit trail; the importer row describes Stockerly's own format; the empty Integraciones stopped sending an owner into the wizard; Registros keeps the task on its own line\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections — its reasoning lives in D5, D16, D58, D78, D90, ADR-015, ADR-020 and git history\n2026-09-05 · En mantenimiento drawn — this flow owns the switch, and nothing drew what the switch causes\n2026-09-05 · that screen was the app's only English one, and the last to call its owner an administrator; fixed in code the same day\n2026-09-05 · A2 · Errores and Errores · Detalle drawn — the last undrawn surface in this flow\n2026-09-05 · D90 · Nombre y correo and Contraseña drawn — /profile retired, AJU-1 closed\n2026-09-05 · the desktop band reflowed: growing Hub · Desktop to 1235 had left it overlapping Integraciones · Desktop by 255px\n2026-09-05 · D78 · Tus datos draws the two real doors; the mailto and its 'pendiente' note are gone\n2026-09-05 · D78 · Zona horaria added to Apariencia y región; Errores row added to Tu instancia (ADR-020, conditional)\n2026-09-05 · D58 · the brief's open Guardar-vs-auto-save question closed — it shipped and the brief had not caught up\n2026-09-05 · Hub grows 1684 → 2140 to hold the two doors without clipping the BottomNav\n2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
+          "content": "2026-10-23 — Errores and Errores · Detalle moved to their own flow, errors.pen; Uso drawn in usage.pen (ADR-032). Hub gains the Uso row above Errores; Estado gains the Registro de uso switch, drawn off.\n2026-10-21 — Mirrored to code at a2f8dd9a (PR #858): Hub (default · dos pasos activa) gains the Ayuda section above Cerrar sesión; Ayuda redrawn as a hub child with HeaderBar and the new subtitle; D161's open finding closed; Cuenta band grew, lower bands shifted down 127.\n2026-10-21 — Drew the screens that ship without an artboard: Hub · Avisos bloqueados (push permission denied) in Cuenta, and a new Ayuda band with /help as shipped (D161, superseding D92).\n2026-10-21 — Mirrored to code at 809ea789: Tu plan mirrored as built (D156) and its hub row moved after Apariencia, Resumen de Hoy switch, current-password field, API KEY label, Aperturas and last-sync lines on Estado, trace and log-module fixes, kit 1.3.0 TopBar search; drew Dos pasos activa, Verificando, Integraciones vacío, Registros filtrado and Mantenimiento activo; re-laid as bands Cuenta, Integraciones, Operación.\n2026-10-14 · kit 1.2.0 · Soft Candle wordmark in the TopBar at h-7; fg-subtle light #5E6E84; primary buttons on $primary-fg; BottomNav five equal slots\n2026-10-14 · En mantenimiento draws the shared wordmark at h-8 in place of the disc and typed name, as layouts/maintenance renders it\n2026-09-17 · D123: Alpha Vantage and FMP retired — their cards and manual-sync rows removed, source counts 10 → 8, the ProviderCard maintainer notice deleted; Estados draws sin cuota on ExchangeRate\n2026-09-16 · re-vendored to kit 1.0.0; BottomNav and SidebarNav masters had Ajustes lit, every screen now lights its own tab\n2026-09-16 · mirrored to the code (D78): hub sizes and copy, the phone switch, Integraciones rebuilt on a ProviderCard that carries state, quota bar, reason and the maintainer notice, Registros and Estado rebuilt, Errores rows and detail, En mantenimiento in its own chrome\n2026-09-16 · Integraciones · Administrar and Registros · Detalle drawn; the Hub, Integraciones and Estado desktops retired (D4) with the SidebarNav and TopBarDesktop they used\n2026-09-16 · code: the maintenance page lost its English navbar and footer; Estado stopped promising a banner and names each switch in its audit trail; the importer row describes Stockerly's own format; the empty Integraciones stopped sending an owner into the wizard; Registros keeps the task on its own line\n2026-09-16 · canvas on the grid; the brief rewritten into its fixed sections — its reasoning lives in D5, D16, D58, D78, D90, ADR-015, ADR-020 and git history\n2026-09-05 · En mantenimiento drawn — this flow owns the switch, and nothing drew what the switch causes\n2026-09-05 · that screen was the app's only English one, and the last to call its owner an administrator; fixed in code the same day\n2026-09-05 · A2 · Errores and Errores · Detalle drawn — the last undrawn surface in this flow\n2026-09-05 · D90 · Nombre y correo and Contraseña drawn — /profile retired, AJU-1 closed\n2026-09-05 · the desktop band reflowed: growing Hub · Desktop to 1235 had left it overlapping Integraciones · Desktop by 255px\n2026-09-05 · D78 · Tus datos draws the two real doors; the mailto and its 'pendiente' note are gone\n2026-09-05 · D78 · Zona horaria added to Apariencia y región; Errores row added to Tu instancia (ADR-020, conditional)\n2026-09-05 · D58 · the brief's open Guardar-vs-auto-save question closed — it shipped and the brief had not caught up\n2026-09-05 · Hub grows 1684 → 2140 to hold the two doors without clipping the BottomNav\n2026-08-29 · Tus datos gains an Importar movimientos NavRow — the section named how data leaves and never how it enters\n2026-08-29 · Yahoo's card on all three Integraciones artboards: it serves ticker search now, and its ceiling went 5 → 30 per minute · ADR-017 amendment\n2026-08-29 · this frame created; the brief still carries 7 dated lines from before it existed, not migrated yet\n2026-08-27 · kit 0.9.0 · HeaderBar promoted from four hand-built copies; BottomNav double active state fixed; Trabajos badge dropped; D52's Seguridad row added",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -6620,1251 +6716,6 @@
         },
         {
           "id": "O6SYrQ",
-          "type": "ref",
-          "ref": "PzVx9",
-          "name": "BottomNav",
-          "width": "fill_container",
-          "descendants": {
-            "bhDTq": {
-              "fill": "$fg-subtle"
-            },
-            "JaKDl": {
-              "fill": "$fg-subtle",
-              "fontWeight": "normal"
-            },
-            "Q5Zrt": {
-              "fill": "$primary"
-            },
-            "NXLgt": {
-              "fill": "$primary",
-              "fontWeight": "600"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "gZIaa",
-      "x": 3540,
-      "y": 5494,
-      "name": "[Ajustes] / Errores / Default",
-      "clip": true,
-      "width": 390,
-      "height": 853,
-      "fill": "$bg-canvas",
-      "layout": "vertical",
-      "children": [
-        {
-          "id": "Av4pj",
-          "type": "ref",
-          "ref": "B3jgA",
-          "name": "Header",
-          "width": "fill_container",
-          "descendants": {
-            "rBnzV": {
-              "content": "Errores"
-            },
-            "bcqqH": {
-              "width": 44,
-              "padding": 0,
-              "enabled": false
-            },
-            "MEluP": {
-              "icon": "download",
-              "width": 20,
-              "height": 20,
-              "enabled": false
-            },
-            "L00Xqd": {
-              "enabled": false
-            }
-          }
-        },
-        {
-          "type": "frame",
-          "id": "uIYBw",
-          "name": "Content",
-          "width": "fill_container",
-          "layout": "vertical",
-          "gap": "$space-5",
-          "padding": [
-            24,
-            16
-          ],
-          "children": [
-            {
-              "type": "text",
-              "id": "FxFOz",
-              "name": "Intro",
-              "fill": "$fg-subtle",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Fallos que tu instancia registró sola en los últimos 30 días, agrupados por error.",
-              "lineHeight": 1.5,
-              "fontFamily": "$font-sans",
-              "fontSize": 16,
-              "fontWeight": "normal"
-            },
-            {
-              "type": "frame",
-              "id": "CTcA9",
-              "name": "Buscar",
-              "width": "fill_container",
-              "fill": "$bg-surface",
-              "cornerRadius": "$radius-lg",
-              "stroke": "$border-default",
-              "strokeWidth": 1,
-              "gap": "$space-2",
-              "padding": [
-                12,
-                16
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "m8uZh",
-                  "name": "i",
-                  "width": 18,
-                  "height": 18,
-                  "icon": "search",
-                  "library": "lucide",
-                  "fill": "$fg-subtle"
-                },
-                {
-                  "type": "text",
-                  "id": "oWL1f",
-                  "name": "ph",
-                  "fill": "$fg-subtle",
-                  "content": "Buscar por clase, mensaje, ruta o referencia…",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "Xytzg",
-              "name": "Filtros",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": "$space-2",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "F2E8ba",
-                  "name": "Row",
-                  "gap": "$space-2",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "oaL7H",
-                      "name": "Todos",
-                      "fill": "$primary-muted",
-                      "cornerRadius": 99,
-                      "stroke": "$primary",
-                      "strokeWidth": 1,
-                      "padding": [
-                        8,
-                        16
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "z8oJt",
-                          "name": "t",
-                          "fill": "$primary-fg",
-                          "content": "Todos",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "YUkhI",
-                      "name": "Peticiones",
-                      "cornerRadius": 99,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        8,
-                        16
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "b0f7Fo",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "Peticiones",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "OZjOT",
-                      "name": "Trabajos",
-                      "cornerRadius": 99,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        8,
-                        16
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "fuTSd",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "Trabajos",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "v5W23",
-                  "name": "Row",
-                  "gap": "$space-2",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "gr38a",
-                      "name": "Otros",
-                      "cornerRadius": 99,
-                      "stroke": "$border-default",
-                      "strokeWidth": 1,
-                      "padding": [
-                        8,
-                        16
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "x8tr8r",
-                          "name": "t",
-                          "fill": "$fg-default",
-                          "content": "Otros",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "B0ddu",
-              "name": "Rows",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": "$space-3",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "pd2uj",
-                  "name": "ActiveRecord::RecordNotFound",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-lg",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "gap": "$space-3",
-                  "padding": 16,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "GAEJK",
-                      "name": "DotWrap",
-                      "padding": [
-                        6,
-                        0,
-                        0,
-                        0
-                      ],
-                      "children": [
-                        {
-                          "type": "ellipse",
-                          "id": "z1Aj2",
-                          "name": "Dot",
-                          "fill": "$negative",
-                          "width": 8,
-                          "height": 8
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "dPJ5b",
-                      "name": "Col",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "PUy4x",
-                          "name": "Class",
-                          "fill": "$fg-default",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "ActiveRecord::RecordNotFound",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 16,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "FqdRr",
-                          "name": "Msg",
-                          "fill": "$fg-subtle",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "Couldn't find Asset with symbol=SATS",
-                          "lineHeight": 1.4,
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "kpAZ8",
-                          "name": "Meta",
-                          "layout": "vertical",
-                          "gap": "$space-2",
-                          "padding": [
-                            8,
-                            0,
-                            0,
-                            0
-                          ],
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "KJFhp",
-                              "name": "Chips",
-                              "gap": "$space-2",
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "U6g1C3",
-                                  "name": "Origin",
-                                  "fill": "$primary-muted",
-                                  "cornerRadius": 4,
-                                  "padding": [
-                                    2,
-                                    8
-                                  ],
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "bLltA",
-                                      "name": "t",
-                                      "fill": "$primary-fg",
-                                      "content": "GET /market/SATS",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 12,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "TqWMm",
-                                  "name": "Times",
-                                  "fill": "$bg-muted",
-                                  "cornerRadius": 4,
-                                  "padding": [
-                                    2,
-                                    8
-                                  ],
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "iaiBG",
-                                      "name": "t",
-                                      "fill": "$fg-subtle",
-                                      "content": "4 veces",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 12,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "S6Tyh",
-                              "name": "At",
-                              "fill": "$fg-subtle",
-                              "content": "16 SEP 2026 · 09:14:02",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "icon",
-                      "id": "rlkyP",
-                      "name": "Chev",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "chevron-right",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "vngab",
-                  "name": "Faraday::TimeoutError",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-lg",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "gap": "$space-3",
-                  "padding": 16,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "iLHCA",
-                      "name": "DotWrap",
-                      "padding": [
-                        6,
-                        0,
-                        0,
-                        0
-                      ],
-                      "children": [
-                        {
-                          "type": "ellipse",
-                          "id": "KjxNf",
-                          "name": "Dot",
-                          "fill": "$negative",
-                          "width": 8,
-                          "height": 8
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "HgTN8",
-                      "name": "Col",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "zReh2",
-                          "name": "Class",
-                          "fill": "$fg-default",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "Faraday::TimeoutError",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 16,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "ewtWJ",
-                          "name": "Msg",
-                          "fill": "$fg-subtle",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "execution expired",
-                          "lineHeight": 1.4,
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "HXdoC",
-                          "name": "Meta",
-                          "layout": "vertical",
-                          "gap": "$space-2",
-                          "padding": [
-                            8,
-                            0,
-                            0,
-                            0
-                          ],
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "CLnis",
-                              "name": "Chips",
-                              "gap": "$space-2",
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "zuwR5",
-                                  "name": "Origin",
-                                  "fill": "$warning-bg",
-                                  "cornerRadius": 4,
-                                  "padding": [
-                                    2,
-                                    8
-                                  ],
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "r5fAt",
-                                      "name": "t",
-                                      "fill": "$warning-fg",
-                                      "content": "SyncFundamentalJob",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 12,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "ti0cW",
-                                  "name": "Times",
-                                  "fill": "$bg-muted",
-                                  "cornerRadius": 4,
-                                  "padding": [
-                                    2,
-                                    8
-                                  ],
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "RoARD",
-                                      "name": "t",
-                                      "fill": "$fg-subtle",
-                                      "content": "12 veces",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 12,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "Ug6gT",
-                              "name": "At",
-                              "fill": "$fg-subtle",
-                              "content": "16 SEP 2026 · 06:12:41",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "icon",
-                      "id": "V8I9OR",
-                      "name": "Chev",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "chevron-right",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "aZLTf",
-                  "name": "NoMethodError",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-lg",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "gap": "$space-3",
-                  "padding": 16,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "rJRUd",
-                      "name": "DotWrap",
-                      "padding": [
-                        6,
-                        0,
-                        0,
-                        0
-                      ],
-                      "children": [
-                        {
-                          "type": "ellipse",
-                          "id": "RYWvU",
-                          "name": "Dot",
-                          "fill": "$negative",
-                          "width": 8,
-                          "height": 8
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "bIQ4T",
-                      "name": "Col",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "i06p8K",
-                          "name": "Class",
-                          "fill": "$fg-default",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "NoMethodError",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 16,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "rHIcm",
-                          "name": "Msg",
-                          "fill": "$fg-subtle",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "undefined method 'rate' for nil",
-                          "lineHeight": 1.4,
-                          "fontFamily": "$font-sans",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "T0a7r",
-                          "name": "Meta",
-                          "layout": "vertical",
-                          "gap": "$space-2",
-                          "padding": [
-                            8,
-                            0,
-                            0,
-                            0
-                          ],
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "kK2Lm",
-                              "name": "Chips",
-                              "gap": "$space-2",
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "ebnjn",
-                                  "name": "Origin",
-                                  "fill": "$warning-bg",
-                                  "cornerRadius": 4,
-                                  "padding": [
-                                    2,
-                                    8
-                                  ],
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "x74wzP",
-                                      "name": "t",
-                                      "fill": "$warning-fg",
-                                      "content": "FxRateResolver",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 12,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "MqjbD",
-                              "name": "At",
-                              "fill": "$fg-subtle",
-                              "content": "15 SEP 2026 · 18:30:07",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "icon",
-                      "id": "YO3yT",
-                      "name": "Chev",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "chevron-right",
-                      "library": "lucide",
-                      "fill": "$fg-subtle"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "text",
-              "id": "TlksX",
-              "name": "Conteo",
-              "fill": "$fg-subtle",
-              "content": "Mostrando 3 de 47 errores",
-              "fontFamily": "$font-mono",
-              "fontSize": 12,
-              "fontWeight": "normal"
-            }
-          ]
-        },
-        {
-          "id": "ZmjUl",
-          "type": "ref",
-          "ref": "PzVx9",
-          "name": "BottomNav",
-          "width": "fill_container",
-          "descendants": {
-            "bhDTq": {
-              "fill": "$fg-subtle"
-            },
-            "JaKDl": {
-              "fill": "$fg-subtle",
-              "fontWeight": "normal"
-            },
-            "Q5Zrt": {
-              "fill": "$primary"
-            },
-            "NXLgt": {
-              "fill": "$primary",
-              "fontWeight": "600"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "YV9je",
-      "x": 4050,
-      "y": 5494,
-      "name": "[Ajustes] / Errores · Detalle / Default",
-      "clip": true,
-      "width": 390,
-      "height": 1029,
-      "fill": "$bg-canvas",
-      "layout": "vertical",
-      "children": [
-        {
-          "id": "E908t",
-          "type": "ref",
-          "ref": "B3jgA",
-          "name": "Header",
-          "width": "fill_container",
-          "descendants": {
-            "rBnzV": {
-              "content": "Detalle del error"
-            },
-            "bcqqH": {
-              "width": 44,
-              "padding": 0,
-              "enabled": false
-            },
-            "MEluP": {
-              "icon": "delete",
-              "width": 20,
-              "height": 20
-            },
-            "L00Xqd": {
-              "enabled": false
-            }
-          }
-        },
-        {
-          "type": "frame",
-          "id": "ZjwpR",
-          "name": "Content",
-          "width": "fill_container",
-          "layout": "vertical",
-          "gap": "$space-5",
-          "padding": [
-            24,
-            16
-          ],
-          "children": [
-            {
-              "type": "frame",
-              "id": "ofyN6",
-              "name": "Identidad",
-              "width": "fill_container",
-              "fill": "$bg-surface",
-              "cornerRadius": "$radius-lg",
-              "stroke": "$border-default",
-              "strokeWidth": 1,
-              "layout": "vertical",
-              "gap": "$space-2",
-              "padding": 16,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "zHcHI",
-                  "name": "class",
-                  "fill": "$fg-default",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Faraday::TimeoutError",
-                  "lineHeight": 1.35,
-                  "fontFamily": "$font-mono",
-                  "fontSize": 18,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "text",
-                  "id": "E4ZIt",
-                  "name": "msg",
-                  "fill": "$fg-subtle",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "execution expired",
-                  "lineHeight": 1.4,
-                  "fontFamily": "$font-sans",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "kqUCI",
-                  "name": "AppLine",
-                  "width": "fill_container",
-                  "fill": "$bg-muted",
-                  "cornerRadius": "$radius-sm",
-                  "padding": [
-                    8,
-                    12
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "s0LRox",
-                      "name": "t",
-                      "fill": "$fg-default",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "app/contexts/market_data/gateways/performs_requests.rb:41:in 'get_json'",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "FPQrg",
-              "name": "Contexto",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": "$space-3",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "c0hJ4",
-                  "name": "T",
-                  "fill": "$fg-default",
-                  "content": "Contexto",
-                  "fontFamily": "$font-display",
-                  "fontSize": 18,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "frame",
-                  "id": "I0WM6g",
-                  "name": "dl",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-lg",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "layout": "vertical",
-                  "padding": [
-                    0,
-                    16
-                  ],
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "RmHE1",
-                      "name": "Origen",
-                      "width": "fill_container",
-                      "gap": "$space-3",
-                      "padding": [
-                        12,
-                        0
-                      ],
-                      "justifyContent": "space_between",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "HQZEE",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "Origen",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 16,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "l35kq7",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "SyncFundamentalJob",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "p19ZrD",
-                      "name": "Ocurrencias",
-                      "width": "fill_container",
-                      "gap": "$space-3",
-                      "padding": [
-                        12,
-                        0
-                      ],
-                      "justifyContent": "space_between",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "YCNOg",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "Ocurrencias",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 16,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "x7ZuO",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "12",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "p5xfaJ",
-                      "name": "Primera vez",
-                      "width": "fill_container",
-                      "gap": "$space-3",
-                      "padding": [
-                        12,
-                        0
-                      ],
-                      "justifyContent": "space_between",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "ipwWl",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "Primera vez",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 16,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "gjIOQ",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "28 AGO 2026 · 06:12:41",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "r8ZuZ",
-                      "name": "Última vez",
-                      "width": "fill_container",
-                      "gap": "$space-3",
-                      "padding": [
-                        12,
-                        0
-                      ],
-                      "justifyContent": "space_between",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "SPnAK",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "Última vez",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 16,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "ZtRT3",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "16 SEP 2026 · 06:12:41",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "RvGI8",
-                      "name": "Referencia",
-                      "width": "fill_container",
-                      "gap": "$space-3",
-                      "padding": [
-                        12,
-                        0
-                      ],
-                      "justifyContent": "space_between",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "zrnA0",
-                          "name": "k",
-                          "fill": "$fg-subtle",
-                          "content": "Referencia",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 16,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "ekx6J",
-                          "name": "v",
-                          "fill": "$fg-default",
-                          "content": "—",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "y7WXs",
-              "name": "Traza",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": "$space-3",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "S6pO4K",
-                  "name": "T",
-                  "fill": "$fg-default",
-                  "content": "Traza",
-                  "fontFamily": "$font-display",
-                  "fontSize": 18,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "frame",
-                  "id": "qCoYb",
-                  "name": "code",
-                  "clip": true,
-                  "width": "fill_container",
-                  "fill": "$bg-muted",
-                  "cornerRadius": "$radius-md",
-                  "layout": "vertical",
-                  "gap": 2,
-                  "padding": [
-                    8,
-                    12
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "hdzey",
-                      "name": "l",
-                      "fill": "$fg-default",
-                      "content": "app/contexts/market_data/gateways/performs_requests.rb:41:in 'get_json'",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-mono",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "X7pJa",
-                      "name": "l",
-                      "fill": "$fg-default",
-                      "content": "app/contexts/market_data/gateways/finnhub_gateway.rb:22:in 'fetch'",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-mono",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "D5cOJ",
-                      "name": "l",
-                      "fill": "$fg-default",
-                      "content": "app/jobs/sync_fundamental_job.rb:14:in 'perform'",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-mono",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "Cu1PA",
-              "name": "Parámetros",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": "$space-3",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "MCrZI",
-                  "name": "T",
-                  "fill": "$fg-default",
-                  "content": "Parámetros",
-                  "fontFamily": "$font-display",
-                  "fontSize": 18,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "frame",
-                  "id": "j8Bao",
-                  "name": "code",
-                  "width": "fill_container",
-                  "fill": "$bg-muted",
-                  "cornerRadius": "$radius-md",
-                  "layout": "vertical",
-                  "gap": 2,
-                  "padding": [
-                    8,
-                    12
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "YvOjX",
-                      "name": "l",
-                      "fill": "$fg-default",
-                      "content": "{\n  \"symbol\": \"NVDA\",\n  \"apikey\": \"[FILTERED]\"\n}",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-mono",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "xtFK8",
-                  "name": "nota",
-                  "fill": "$fg-subtle",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Las contraseñas, tokens y correos se guardan como [FILTERED].",
-                  "lineHeight": 1.4,
-                  "fontFamily": "$font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "mwonb",
-              "name": "Borrar",
-              "fill": "$bg-surface",
-              "cornerRadius": "$radius-sm",
-              "stroke": "$negative",
-              "strokeWidth": 1,
-              "gap": 6,
-              "padding": [
-                8,
-                12
-              ],
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "cVhCj",
-                  "name": "i",
-                  "width": 16,
-                  "height": 16,
-                  "icon": "trash-2",
-                  "library": "lucide",
-                  "fill": "$negative"
-                },
-                {
-                  "type": "text",
-                  "id": "gCcZG",
-                  "name": "t",
-                  "fill": "$negative",
-                  "content": "Borrar del registro",
-                  "fontFamily": "$font-sans",
-                  "fontSize": 14,
-                  "fontWeight": "600"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "k4V95",
           "type": "ref",
           "ref": "PzVx9",
           "name": "BottomNav",
@@ -12492,6 +11343,27 @@
                   }
                 },
                 {
+                  "id": "eAJ1V",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Uso",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "chart-column"
+                    },
+                    "GueOK": {
+                      "content": "Uso"
+                    },
+                    "uH4YA": {
+                      "content": "Qué se usa, qué sugerencias se toman y cuánto tarda registrar"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
+                },
+                {
                   "id": "t2kxb",
                   "type": "ref",
                   "ref": "bZ59N",
@@ -14184,6 +13056,81 @@
                             {
                               "type": "ellipse",
                               "id": "ORYGy",
+                              "x": 2,
+                              "y": 2,
+                              "name": "k",
+                              "fill": "$bg-surface",
+                              "width": 20,
+                              "height": 20
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "w0PvYz",
+                      "name": "Div",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$border-default"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "P1qLrD",
+                      "name": "Registro de uso",
+                      "width": "fill_container",
+                      "gap": "$space-4",
+                      "padding": [
+                        16,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ZwTJl",
+                          "name": "TC",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "xRT5J",
+                              "name": "l",
+                              "fill": "$fg-default",
+                              "content": "Registro de uso",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 16,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "bKy46",
+                              "name": "d",
+                              "fill": "$fg-subtle",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Guarda qué sugerencias tomas y qué abres, sin datos personales, para saber si una función se usa. Apagado no se registra nada.",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "r4Goz",
+                          "name": "Toggle",
+                          "width": 44,
+                          "height": 24,
+                          "fill": "$bg-muted",
+                          "cornerRadius": 99,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "VNEq5",
                               "x": 2,
                               "y": 2,
                               "name": "k",
@@ -16142,6 +15089,27 @@
                   }
                 },
                 {
+                  "id": "kLnZl",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Uso",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "chart-column"
+                    },
+                    "GueOK": {
+                      "content": "Uso"
+                    },
+                    "uH4YA": {
+                      "content": "Qué se usa, qué sugerencias se toman y cuánto tarda registrar"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
+                },
+                {
                   "id": "a4mOQ",
                   "type": "ref",
                   "ref": "bZ59N",
@@ -17524,6 +16492,27 @@
                   }
                 },
                 {
+                  "id": "v5Ubn",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Uso",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "chart-column"
+                    },
+                    "GueOK": {
+                      "content": "Uso"
+                    },
+                    "uH4YA": {
+                      "content": "Qué se usa, qué sugerencias se toman y cuánto tarda registrar"
+                    },
+                    "AgU5u": {
+                      "content": ""
+                    }
+                  }
+                },
+                {
                   "id": "r83yVy",
                   "type": "ref",
                   "ref": "bZ59N",
@@ -18704,6 +17693,27 @@
                     },
                     "f0LmK": {
                       "icon": "external-link"
+                    }
+                  }
+                },
+                {
+                  "id": "oywae",
+                  "type": "ref",
+                  "ref": "bZ59N",
+                  "name": "Uso",
+                  "width": "fill_container",
+                  "descendants": {
+                    "sfEQs": {
+                      "icon": "chart-column"
+                    },
+                    "GueOK": {
+                      "content": "Uso"
+                    },
+                    "uH4YA": {
+                      "content": "Qué se usa, qué sugerencias se toman y cuánto tarda registrar"
+                    },
+                    "AgU5u": {
+                      "content": ""
                     }
                   }
                 },
