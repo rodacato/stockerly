@@ -49,6 +49,13 @@ RSpec.describe Assistant::Domain::Planner do
     expect(step.last[:term].length).to eq(described_class::MAX_INPUT)
   end
 
+  # F1: a null input is an absent one, so the read takes its default.
+  it "drops an input the model sent as null or empty" do
+    reply = '[{"read":"fx.rate","date":null},{"read":"asset.fundamentals","symbol":"nvda","only":null}]'
+
+    expect(described_class.steps(reply)).to eq([ [ "fx.rate", {} ], [ "asset.fundamentals", { symbol: "NVDA" } ] ])
+  end
+
   it "plans at most six reads, and no read twice" do
     reads = Array.new(10) { |index| { read: "asset.quote", symbol: "S#{index}" } }
 

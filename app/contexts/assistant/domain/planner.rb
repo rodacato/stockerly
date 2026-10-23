@@ -54,11 +54,12 @@ module Assistant
         []
       end
 
+      # A null or empty input is an absent one, so the read takes its default.
       def self.input(capability, read)
         read.slice(*(capability.required + capability.optional).map(&:to_s)).to_h do |key, value|
           value = key == "only" ? Array(value).map { |item| item.to_s.first(40) }.first(10) : value.to_s.strip.first(MAX_INPUT)
           [ key.to_sym, key == "symbol" ? value.upcase : value ]
-        end
+        end.compact_blank
       end
 
       private_class_method :parse, :input
