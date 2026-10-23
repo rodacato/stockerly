@@ -249,8 +249,8 @@ exports, so re-shoot these when those change.
 
 | File | Artboard |
 |---|---|
-| `usage-apagado.png` | `[Uso] / Uso / Apagado` — the switch off: nothing measured reads as off, only the day opens count |
-| `usage-con-datos.png` | `[Uso] / Uso / Con datos` — funnels led by this week, capture time, events newest first, day opens |
+| `usage-apagado.png` | `[Uso] / Uso / Apagado` — never turned on: the notice once, dashes in the table, the day counters (D174) |
+| `usage-con-datos.png` | `[Uso] / Uso / Con datos` — "Encendido desde", funnels led by this week's counts, capture, events with a Total column, day counters |
 
 ## Brand (`brand.pen`)
 
