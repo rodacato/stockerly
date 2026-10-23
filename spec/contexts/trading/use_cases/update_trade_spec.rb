@@ -168,4 +168,35 @@ RSpec.describe Trading::UseCases::UpdateTrade do
     expect(result).to be_success
     expect(trade.reload.fee).to eq(0)
   end
+
+  # F2.4: the rate belongs to the day; moving the trade moves its rate, unless
+  # the one stored was typed by hand.
+  describe "moving a trade to another day" do
+    let(:old_day) { 10.days.ago.to_date }
+    let(:new_day) { 3.days.ago.to_date }
+    let!(:mxn_asset) { create(:asset, :mexican, :stock, symbol: "WALMEX.MX") }
+    let!(:usd_trade) do
+      create(:trade, portfolio: portfolio, asset: mxn_asset, side: :buy, shares: 1.0, price_per_share: 4.0,
+                     total_amount: 4.0, currency: "USD", fx_rate_at_execution: 17, executed_at: old_day.to_time)
+    end
+
+    before do
+      FxRateHistory.record(base: "USD", quote: "MXN", date: old_day, rate: 17, source: "test")
+      FxRateHistory.record(base: "USD", quote: "MXN", date: new_day, rate: 20, source: "test")
+    end
+
+    it "takes the new day's rate" do
+      described_class.call(user: user, params: { trade_id: usd_trade.id, executed_at: new_day.iso8601 })
+
+      expect(usd_trade.reload.fx_rate_at_execution).to eq(20)
+    end
+
+    it "keeps a rate that was typed by hand" do
+      usd_trade.update!(fx_rate_at_execution: 18.5)
+
+      described_class.call(user: user, params: { trade_id: usd_trade.id, executed_at: new_day.iso8601 })
+
+      expect(usd_trade.reload.fx_rate_at_execution).to eq(18.5)
+    end
+  end
 end
