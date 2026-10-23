@@ -34,7 +34,7 @@ class Position < ApplicationRecord
   def avg_cost_in(target_currency)
     return avg_cost.to_d if target_currency == asset&.currency
 
-    weighted_avg_cost(trades.select { |t| t.side == "buy" && t.discarded_at.nil? }, target_currency)
+    running_avg_cost(trades.select { |t| t.discarded_at.nil? }, target_currency)
   end
 
   def cost_basis_in(target_currency)
@@ -44,7 +44,7 @@ class Position < ApplicationRecord
   # A trade may be paid in a currency other than its asset's (the SIC settles
   # a US-listed asset in pesos), so buys are stated in the asset's unit first.
   def recalculate_avg_cost!
-    cost = weighted_avg_cost(trades.kept.where(side: :buy).to_a, asset.currency)
+    cost = running_avg_cost(trades.kept.to_a, asset.currency)
     return if cost.zero?
 
     update!(avg_cost: cost)
@@ -69,11 +69,21 @@ class Position < ApplicationRecord
 
   private
 
-  def weighted_avg_cost(buys, target_currency)
-    total_shares = buys.sum(&:shares)
-    return 0.to_d if total_shares.zero?
-
-    total = buys.sum { |t| t.shares * t.price_per_share * Trading::Domain::ExecutionRate.multiplier(trade: t, target: target_currency) }
-    (total / total_shares).to_d
+  # A sale takes shares out at the average they carry and leaves it as it is;
+  # a buy averages against what is still held. Sold out, the next buy starts over.
+  def running_avg_cost(kept_trades, target_currency)
+    held = 0.to_d
+    cost = 0.to_d
+    kept_trades.sort_by { |t| [ t.executed_at, t.id.to_i ] }.each do |trade|
+      shares = trade.shares.to_d
+      if trade.side.to_s == "buy"
+        price = trade.price_per_share.to_d * Trading::Domain::ExecutionRate.multiplier(trade: trade, target: target_currency)
+        cost = ((held * cost) + (shares * price)) / (held + shares)
+        held += shares
+      else
+        held = [ held - shares, 0 ].max
+      end
+    end
+    cost
   end
 end
