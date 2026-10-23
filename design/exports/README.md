@@ -114,8 +114,6 @@ not by reading the tables.
 | `ajustes-registros-filtrado.png` | `[Ajustes] / Registros / Filtrado sin resultados` — a filter that matches nothing |
 | `ajustes-estado.png` | `[Ajustes] / Estado y mantenimiento / Default` |
 | `ajustes-estado-mantenimiento-activo.png` | `[Ajustes] / Estado y mantenimiento / Mantenimiento activo` — the switch on, with its warning box |
-| `ajustes-errores.png` | `[Ajustes] / Errores / Default` — only with developer_mode (ADR-020) |
-| `ajustes-errores-detalle.png` | `[Ajustes] / Errores · Detalle / Default` |
 | `ajustes-en-mantenimiento.png` | `[Ajustes] / En mantenimiento / Default` — the 503 page a visitor gets while maintenance_mode is on |
 | `ajustes-ayuda.png` | `[Ajustes] / Ayuda / Default` — /help as shipped (D161); nothing in the app links to it |
 
@@ -239,6 +237,20 @@ exports, so re-shoot these when those change.
 | `assistant-ajustes-error-de-conexion.png` | `[Asistente] / Ajustes · Asistente / Error de conexión` |
 | `assistant-hoy-ayuda-preguntale.png` | `[Asistente] / Hoy / Ayuda con Pregúntale` — the ? popover's way into the drawer |
 | `assistant-detalle-drawer-con-simbolo.png` | `[Asistente] / Detalle NVDA / Drawer con el símbolo` |
+
+**Errores (`flows/errors.pen`).** Split from Ajustes on 2026-10-23; only reachable with developer_mode (ADR-020).
+
+| File | Artboard |
+|---|---|
+| `errors-lista.png` | `[Errores] / Lista / Default` |
+| `errors-detalle.png` | `[Errores] / Detalle / Default` — one error opened: trace and occurrences |
+
+**Uso (`flows/usage.pen`).** The opt-in usage record (ADR-032).
+
+| File | Artboard |
+|---|---|
+| `usage-apagado.png` | `[Uso] / Uso / Apagado` — the switch off: only the day opens count |
+| `usage-con-datos.png` | `[Uso] / Uso / Con datos` — funnels, capture time, the events table as a peek, day opens |
 
 ## Brand (`brand.pen`)
 
