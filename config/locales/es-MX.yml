@@ -213,8 +213,9 @@ es-MX:
           zero: Sin worker
         ultima_sync: 'Última: %{cuando}'
         uso: Registro de uso
-        uso_desc: Guarda qué sugerencias tomas y qué abres, sin datos personales,
-          para saber si una función se usa. Apagado no se registra nada.
+        uso_desc: Guarda qué sugerencias tomas y cuánto tardas en registrar, sin datos
+          personales, para saber si una función se usa. Las aperturas por día se cuentan
+          siempre.
         version: Versión
       trigger_data_source:
         desconocida: Fuente de datos desconocida.
@@ -224,37 +225,49 @@ es-MX:
         ajustes: Ajustes de la instancia
         apagado_html: El registro de uso está apagado; solo cuentan las aperturas
           por día. Se enciende en %{ajustes}.
-        aperturas: Aperturas por día
-        aperturas_desc: Siempre activas. Cuentan cuántas veces se abrió cada pantalla,
-          nada más.
+        aperturas: Aperturas
+        aperturas_desc: Siempre activas. Cuántas veces se abrió cada pantalla en los
+          últimos %{days} días, nada más.
         ayudas: Ayudas «?» de Hoy
         captura: Tiempo para registrar un movimiento
         captura_valores:
-          one: Mediana %{p50} s · 95 %% en %{p95} s · 1 movimiento en 30 días
-          other: Mediana %{p50} s · 95 %% en %{p95} s · %{count} movimientos en 30
-            días
+          one: Un movimiento en 30 días, en %{p50} s.
+          other: Mediana %{p50} s · máximo %{max} s · %{count} movimientos en 30 días
         descripcion: Lo que la app usa para saber si una función sirve. Se guarda
           %{days} días y nunca sale de esta instancia.
-        descubrir: Descubrir
+        descubrir:
+          one: Descubrir se vio 1 de las últimas 8 semanas.
+          other: Descubrir se vio %{count} de las últimas 8 semanas.
+          zero: Descubrir no se vio en las últimas 8 semanas.
         embudos: Sugerencias que se toman
-        en_14_dias:
-          one: 1 en 14 días
-          other: "%{count} en 14 días"
-        en_7_dias:
-          one: 1 en 7 días
-          other: "%{count} en 7 días"
+        en_8_semanas: "%{taken} de %{offered} en 8 semanas · %{percent}"
+        esta: Esta
+        esta_semana: "· %{taken} de %{offered} esta semana"
+        esta_semana_nada: No se ofreció esta semana.
         evento: Evento
         eventos: Eventos por semana
         funnel:
           assistant_suggestion: Sugerencias de Velita → pregunta
           help_to_question: Ayuda «?» → pregunta a Velita
           rule_suggestion: Sugerencia de regla → regla creada
-        semanas:
-          one: 1 de las últimas 8 semanas
-          other: "%{count} de las últimas 8 semanas"
+        pantallas:
+          admin_usage: Uso
+          alerts: Reglas
+          dashboard: Panorama
+          signals: Señales
+        preguntas:
+          asset_opened: "¿Desde dónde llegas a un activo?"
+          assistant_suggestion_shown: "¿Abres a Velita con sugerencias a la vista?"
+          help_ask_velita: "¿Las ayudas «?» llevan a preguntarle a Velita?"
+          news_opened: "¿Abres las noticias?"
+          question_sent: "¿Le preguntas a Velita, y desde dónde?"
+          rule_created: "¿Creas reglas, y cuántas vienen de una sugerencia?"
+          rule_suggestion_shown: "¿Cuántas veces se sugiere una regla?"
+          trade_created: "¿Cuánto tardas en registrar un movimiento?"
+          velita_colour_changed: "¿Cambias el color de Velita?"
         sin_datos: Todavía no hay datos.
+        sin_medir: Apagado, no se mide.
         titulo: Uso
-        tomadas: "%{taken} de %{offered} en 8 semanas (%{percent})"
   alerts:
     condiciones:
       bmv_holiday:

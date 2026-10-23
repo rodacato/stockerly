@@ -18,16 +18,23 @@
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".embudos") %></h2>
     <% report[:funnels].each do |entry| %>
+      <% _week, offered_now, taken_now = entry[:rows].first %>
       <% offered = entry[:rows].sum { |row| row[1] } %>
       <% taken = entry[:rows].sum { |row| row[2] } %>
       <div class="<%= card_classes("flex flex-col gap-1 p-4") %>">
         <p class="font-semibold text-fg-default"><%= t(".funnel.#{entry[:funnel].key}") %></p>
         <% if offered.zero? %>
-          <p class="text-sm text-fg-subtle"><%= t(".sin_datos") %></p>
+          <p class="text-sm text-fg-subtle"><%= report[:enabled] ? t(".sin_datos") : t(".sin_medir") %></p>
         <% else %>
-          <p class="font-mono text-sm tabular-nums text-fg-default">
-            <%= t(".tomadas", taken: taken, offered: offered, percent: unsigned_percent(taken * 100.0 / offered)) %>
+          <p class="text-sm text-fg-default">
+            <% if offered_now.zero? %>
+              <%= t(".esta_semana_nada") %>
+            <% else %>
+              <span class="font-display text-2xl font-bold tabular-nums"><%= whole_percent(taken_now, offered_now) %></span>
+              <%= t(".esta_semana", taken: taken_now, offered: offered_now) %>
+            <% end %>
           </p>
+          <p class="text-sm tabular-nums text-fg-subtle"><%= t(".en_8_semanas", taken: taken, offered: offered, percent: whole_percent(taken, offered)) %></p>
         <% end %>
       </div>
     <% end %>
@@ -38,10 +45,10 @@
     <div class="<%= card_classes("p-4") %>">
       <% capture = report[:capture] %>
       <% if capture[:count].zero? %>
-        <p class="text-sm text-fg-subtle"><%= t(".sin_datos") %></p>
+        <p class="text-sm text-fg-subtle"><%= report[:enabled] ? t(".sin_datos") : t(".sin_medir") %></p>
       <% else %>
-        <p class="font-mono text-sm tabular-nums text-fg-default">
-          <%= t(".captura_valores", p50: capture[:p50], p95: capture[:p95], count: capture[:count]) %>
+        <p class="text-sm tabular-nums text-fg-default">
+          <%= t(".captura_valores", p50: capture[:p50], max: capture[:max], count: capture[:count]) %>
         </p>
       <% end %>
     </div>
@@ -55,19 +62,20 @@
           <tr class="text-left text-xs uppercase tracking-wide text-fg-subtle">
             <th scope="col" class="px-4 py-2 font-semibold"><%= t(".evento") %></th>
             <% weeks.each do |week| %>
-              <th scope="col" class="px-2 py-2 text-right font-mono font-normal"><%= l(week, format: "%-d %b") %></th>
+              <th scope="col" class="px-2 py-2 text-right font-mono font-normal"><%= week == weeks.first ? t(".esta") : l(week, format: "%-d %b") %></th>
             <% end %>
           </tr>
         </thead>
         <tbody>
           <% report[:events].each do |event, counts| %>
+            <% unmeasured = !report[:enabled] && counts.sum.zero? %>
             <tr class="border-t border-border-default">
               <th scope="row" class="px-4 py-2 text-left font-normal">
                 <span class="block font-mono text-fg-default"><%= event.name %></span>
-                <span class="block text-xs text-fg-subtle"><%= event.answers %></span>
+                <span class="block text-xs text-fg-subtle"><%= t(".preguntas.#{event.name.tr(".", "_")}") %></span>
               </th>
               <% counts.each do |count| %>
-                <td class="px-2 py-2 text-right font-mono tabular-nums <%= count.zero? ? "text-fg-subtle" : "text-fg-default" %>"><%= count %></td>
+                <td class="px-2 py-2 text-right font-mono tabular-nums <%= count.zero? ? "text-fg-subtle" : "text-fg-default" %>"><%= unmeasured ? "—" : count %></td>
               <% end %>
             </tr>
           <% end %>
@@ -78,22 +86,20 @@
 
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".aperturas") %></h2>
-    <p class="text-sm text-fg-subtle"><%= t(".aperturas_desc") %></p>
+    <p class="text-sm text-fg-subtle"><%= t(".aperturas_desc", days: report[:open_days]) %></p>
     <div class="<%= card_classes("flex flex-col divide-y divide-border-default") %>">
-      <% report[:opens].each do |path, days| %>
+      <% report[:opens].each do |path, count| %>
         <div class="flex items-center justify-between gap-4 px-4 py-3">
-          <span class="font-mono text-sm text-fg-default"><%= path %></span>
-          <span class="font-mono text-sm tabular-nums text-fg-subtle"><%= t(".en_14_dias", count: days.sum(&:last)) %></span>
+          <span class="text-sm text-fg-default"><%= t(".pantallas.#{path.delete_prefix("/").tr("/", "_")}") %></span>
+          <span class="font-mono text-sm tabular-nums text-fg-subtle"><%= count %></span>
         </div>
       <% end %>
       <div class="flex items-center justify-between gap-4 px-4 py-3">
-        <span class="font-mono text-sm text-fg-default"><%= t(".ayudas") %></span>
-        <span class="font-mono text-sm tabular-nums text-fg-subtle"><%= t(".en_7_dias", count: report[:help_opens]) %></span>
-      </div>
-      <div class="flex items-center justify-between gap-4 px-4 py-3">
-        <span class="font-mono text-sm text-fg-default"><%= t(".descubrir") %></span>
-        <span class="font-mono text-sm tabular-nums text-fg-subtle"><%= t(".semanas", count: report[:discover_weeks]) %></span>
+        <span class="text-sm text-fg-default"><%= t(".ayudas") %></span>
+        <span class="font-mono text-sm tabular-nums text-fg-subtle"><%= report[:help_opens] %></span>
       </div>
     </div>
   </section>
+
+  <p class="text-sm text-fg-subtle"><%= t(".descubrir", count: report[:discover_weeks]) %></p>
 </div>
