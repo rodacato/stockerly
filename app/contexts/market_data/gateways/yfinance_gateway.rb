@@ -19,6 +19,7 @@ module MarketData
       # actual EPS -- without pouring six years of history into the table.
       HISTORY_WINDOW_DAYS = 180
       PERIODS = { 7 => "5d", 30 => "1mo", 90 => "3mo", 365 => "1y", 730 => "2y" }.freeze
+      SPLIT_TOLERANCE = Rational(1, 1000)
       # Yahoo's own tickers on the left, the symbols MarketIndex stores on the right.
       INDEX_SYMBOL_MAP = {
         "^GSPC" => "SPX",
@@ -99,7 +100,8 @@ module MarketData
 
       # Yahoo reports a split as a single ratio, so a 4:1 arrives as 4.0, a
       # 1-for-20 reverse split as 0.05 and a 3-for-2 as 1.5; the fraction is
-      # recovered within the four decimals Yahoo rounds to.
+      # recovered to the third decimal. A reverse split is recovered through its
+      # reciprocal, so a 1-for-100 is not swallowed by the tolerance.
       # Returns Success([{ date:, numerator:, denominator: }, ...])
       def fetch_splits(symbol)
         run("splits", symbol).fmap do |entries|
@@ -107,7 +109,7 @@ module MarketData
             ratio = entry["ratio"].to_d
             next if ratio.zero?
 
-            fraction = ratio.to_r.rationalize(Rational(1, 1000))
+            fraction = ratio >= 1 ? ratio.to_r.rationalize(SPLIT_TOLERANCE) : 1 / (1 / ratio.to_r).rationalize(SPLIT_TOLERANCE)
             { date: Date.parse(entry["date"]), numerator: fraction.numerator, denominator: fraction.denominator }
           end
         end
