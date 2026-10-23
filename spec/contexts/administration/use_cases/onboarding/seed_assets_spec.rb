@@ -19,6 +19,14 @@ RSpec.describe Administration::UseCases::Onboarding::SeedAssets do
       expect(asset.sector).to eq("Technology")
     end
 
+    it "keeps the catalogue's currency and logo, so a Mexican asset is not born in USD" do
+      described_class.call(symbols: %w[IVVPESO.MX CETES_28D AAPL])
+
+      expect(Asset.where(symbol: %w[IVVPESO.MX CETES_28D AAPL]).pluck(:symbol, :currency).to_h)
+        .to eq("IVVPESO.MX" => "MXN", "CETES_28D" => "MXN", "AAPL" => "USD")
+      expect(Asset.find_by(symbol: "AAPL").logo_url).to be_present
+    end
+
     it "skips symbols not in catalog" do
       expect(described_class.call(symbols: %w[AAPL UNKNOWN_XYZ])[:created]).to eq(1)
       expect(Asset.count).to eq(1)
