@@ -43,6 +43,17 @@ RSpec.describe AssistantComposeJob do
     expect(message.cards).not_to be_empty
   end
 
+  # F2: a stream with no prose is a reply that never came, not an answer.
+  it "records an empty reply as the provider failing, so it can be asked again" do
+    stream("  ")
+
+    described_class.perform_now(message.id)
+
+    expect(message.reload).to be_failed
+    expect(message.failure_tag).to eq("empty_answer")
+    expect(message.answer).to be_nil
+  end
+
   it "records a provider failure without an answer" do
     stub_request(:post, url).to_return(status: 401, body: { type: "error", error: { message: "invalid x-api-key" } }.to_json)
 
@@ -88,8 +99,10 @@ RSpec.describe AssistantComposeJob do
     before do
       create(:technical_reading, asset: asset, readings: { "close" => 110.0, "rsi" => 72.4 })
       create(:asset_fundamental, asset: asset)
+      prose = { type: "content_block_delta", index: 0, delta: { type: "text_delta", text: "Va bien." } }.to_json
       stub_request(:post, url).with(body: hash_including("stream" => true))
-                              .to_return(status: 200, headers: { "Content-Type" => "text/event-stream" }, body: "")
+                              .to_return(status: 200, headers: { "Content-Type" => "text/event-stream" },
+                                         body: "event: content_block_delta\ndata: #{prose}\n\n")
     end
 
     def planner_answers(*reads, status: 200)

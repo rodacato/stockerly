@@ -83,7 +83,11 @@ class AssistantComposeJob < ApplicationJob
     @held ? nil : settled
   end
 
+  # A stream that carried no prose is a reply that never came: it fails, and
+  # the retry is offered, rather than an empty answer kept as one.
   def finish(message, answer, cards)
+    return message.update!(status: :failed, answer: nil, failure_tag: "empty_answer").then { broadcast(message) } if answer.blank?
+
     gate = Assistant::Domain::NumbersGate.call(answer: answer, context: Assistant::Domain::Prompt.context_text(cards))
     if gate.ok?
       message.update!(status: :answered, answer: answer)
