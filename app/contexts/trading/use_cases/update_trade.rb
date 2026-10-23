@@ -68,13 +68,26 @@ module Trading
 
       def update_trade(trade, attrs)
         updatable = attrs.slice(:shares, :price_per_share, :fee)
-        updatable[:executed_at] = parse_executed_at(attrs[:executed_at]) if attrs.key?(:executed_at)
+        if attrs.key?(:executed_at)
+          updatable[:executed_at] = parse_executed_at(attrs[:executed_at])
+          updatable[:fx_rate_at_execution] = recaptured_rate(trade, updatable[:executed_at])
+        end
         updatable[:total_amount] = (updatable[:shares] || trade.shares) * (updatable[:price_per_share] || trade.price_per_share)
         trade.update!(updatable)
       end
 
+      # The rate belongs to the day the trade executed. One that differs from
+      # what the old day would have captured was typed by hand, and stays.
+      def recaptured_rate(trade, executed_at)
+        captured = ->(at) { Trading::Domain::ExecutionRate.capture(currency: trade.currency, at_date: at.to_date) }
+        stored = trade.fx_rate_at_execution
+        return stored unless stored.nil? || stored == captured.call(trade.executed_at)
+
+        captured.call(executed_at)
+      end
+
       def position_affecting_change?(attrs)
-        attrs.key?(:shares) || attrs.key?(:price_per_share)
+        attrs.key?(:shares) || attrs.key?(:price_per_share) || attrs.key?(:executed_at)
       end
 
       def parse_executed_at(value)
