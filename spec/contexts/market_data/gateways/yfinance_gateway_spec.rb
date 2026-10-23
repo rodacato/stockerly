@@ -349,6 +349,15 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
         .to eq([ { date: Date.new(2021, 3, 1), numerator: 1, denominator: 20 } ])
     end
 
+    # F3.2: a 3-for-2 is 1.5 and a 2-for-3 is 0.6667, neither a whole number.
+    it "keeps a fractional ratio as the fraction it is" do
+      stub_bridge([ { "date" => "2021-03-01", "ratio" => 1.5 }, { "date" => "2021-04-01", "ratio" => 1.25 },
+                    { "date" => "2021-05-01", "ratio" => 0.6667 } ])
+
+      expect(gateway.fetch_splits("XYZ").value!.map { |split| split.values_at(:numerator, :denominator) })
+        .to eq([ [ 3, 2 ], [ 5, 4 ], [ 2, 3 ] ])
+    end
+
     it "drops a zero ratio rather than dividing by it" do
       stub_bridge([ { "date" => "2021-03-01", "ratio" => 0 } ])
 
