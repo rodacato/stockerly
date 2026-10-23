@@ -8,13 +8,16 @@
   <section class="<%= card_classes("flex flex-col gap-2 p-4") %>">
     <p class="font-mono text-lg font-semibold text-fg-default"><%= @error_event.exception_class %></p>
     <p class="whitespace-pre-wrap break-words text-sm text-fg-subtle"><%= @error_event.message %></p>
-    <% if @error_event.app_line.present? %>
+    <% if @error_event.app_line.present? && @error_event.app_line != Administration::Domain::ErrorFingerprint::UNKNOWN_LINE %>
       <p class="overflow-x-auto rounded-lg bg-bg-muted px-3 py-2 font-mono text-xs text-fg-default"><%= @error_event.app_line %></p>
     <% end %>
   </section>
 
   <section class="flex flex-col gap-3">
     <h2 class="font-display text-lg font-bold text-fg-default"><%= t(".contexto") %></h2>
+    <% if @error_event.occurrences > 1 %>
+      <p class="text-sm text-fg-subtle"><%= t(".de_la_ultima_vez") %></p>
+    <% end %>
     <%= render "components/definition_list", rows: [
           [ t(".origen"),     admin_error_origin(@error_event) ],
           [ t(".veces"),      @error_event.occurrences ],
@@ -24,12 +27,14 @@
         ] %>
   </section>
 
-  <section class="flex flex-col gap-3">
-    <h2 class="font-display text-lg font-bold text-fg-default"><%= t(".traza") %></h2>
-    <div class="overflow-hidden rounded-xl bg-bg-muted">
-      <pre class="overflow-x-auto px-3 py-2 font-mono text-xs text-fg-default"><%= @error_event.backtrace.join("\n") %></pre>
-    </div>
-  </section>
+  <% if @error_event.backtrace.present? %>
+    <section class="flex flex-col gap-3">
+      <h2 class="font-display text-lg font-bold text-fg-default"><%= t(".traza") %></h2>
+      <div class="overflow-hidden rounded-xl bg-bg-muted">
+        <pre class="whitespace-pre-wrap break-all px-3 py-2 font-mono text-xs text-fg-default"><%= @error_event.backtrace.join("\n") %></pre>
+      </div>
+    </section>
+  <% end %>
 
   <% if @error_event.request_params.present? %>
     <section class="flex flex-col gap-3">
@@ -42,9 +47,8 @@
   <% end %>
 
   <%= button_to admin_error_path(@error_event), method: :delete,
-        form_class: "self-start",
         data: { turbo_confirm: t(".confirmar_borrado") },
-        class: button_classes(:danger, :sm, "inline-flex items-center gap-1.5") do %>
+        class: button_classes(:danger, :md, "inline-flex w-full items-center justify-center gap-1.5") do %>
     <%= icon_svg "delete", class: "text-base", "aria-hidden": "true" %>
     <%= t(".borrar") %>
   <% end %>

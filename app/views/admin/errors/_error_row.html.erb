@@ -4,15 +4,13 @@
     lives on the detail screen. Locals: event %>
 <li class="<%= card_classes %>">
   <%= link_to admin_error_path(event), class: "flex items-start gap-3 p-4" do %>
-    <span class="mt-1.5 size-2 shrink-0 rounded-full bg-negative" aria-hidden="true"></span>
-
     <div class="min-w-0 flex-1">
       <p class="break-all font-mono font-semibold text-fg-default"><%= event.exception_class %></p>
 
       <p class="mt-0.5 line-clamp-2 text-sm text-fg-subtle"><%= event.message %></p>
 
       <div class="mt-2 flex flex-wrap items-center gap-2">
-        <span class="rounded px-2 py-0.5 font-mono text-xs <%= admin_error_source_classes(event.source) %>">
+        <span class="rounded bg-bg-muted px-2 py-0.5 font-mono text-xs text-fg-subtle">
           <%= admin_error_origin(event) %>
         </span>
         <% if event.occurrences > 1 %>
@@ -20,7 +18,7 @@
             <%= t("admin.errors.index.veces", count: event.occurrences) %>
           </span>
         <% end %>
-        <span class="font-mono text-xs text-fg-subtle"><%= absolute_stamp(event.last_seen_at, seconds: true) %></span>
+        <span class="text-xs text-fg-subtle"><%= relative_age(event.last_seen_at) %></span>
       </div>
     </div>
 

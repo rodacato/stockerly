@@ -87,6 +87,30 @@ RSpec.describe "Admin errors", type: :request do
       expect(response.body).not_to include("Unwanted")
     end
 
+    it "searches by the job class its origin chip shows" do
+      create(:error_event, :job, exception_class: "Wanted", job_class: "SyncFundamentalJob")
+      create(:error_event, exception_class: "Unwanted")
+
+      get admin_errors_path(search: "SyncFundamental")
+
+      expect(response.body).to include("Wanted")
+      expect(response.body).not_to include("Unwanted")
+    end
+
+    it "names the search that matched nothing" do
+      get admin_errors_path(search: "nada-de-esto")
+
+      expect(response.body).to include(ERB::Util.h(I18n.t("admin.errors.index.sin_coincidencias_busqueda", search: "nada-de-esto")))
+    end
+
+    it "says nothing about the page while every error fits on it" do
+      create(:error_event)
+
+      get admin_errors_path
+
+      expect(response.body).not_to include("Mostrando")
+    end
+
     it "says the list is empty rather than rendering nothing" do
       get admin_errors_path
 
@@ -106,6 +130,25 @@ RSpec.describe "Admin errors", type: :request do
       get admin_error_path(event)
 
       expect(response.body).to include("app/models/thing.rb:12")
+    end
+
+    it "says the request it shows is the latest one, once the error repeated" do
+      once = create(:error_event, occurrences: 1)
+      again = create(:error_event, occurrences: 4)
+
+      get admin_error_path(once)
+      expect(response.body).not_to include(I18n.t("admin.errors.show.de_la_ultima_vez"))
+
+      get admin_error_path(again)
+      expect(response.body).to include(I18n.t("admin.errors.show.de_la_ultima_vez"))
+    end
+
+    it "draws no line and no trace for an error raised outside the app's code" do
+      event = create(:error_event, app_line: Administration::Domain::ErrorFingerprint::UNKNOWN_LINE, backtrace: [])
+
+      get admin_error_path(event)
+
+      expect(response.body).not_to include(">unknown<", I18n.t("admin.errors.show.traza"))
     end
 
     it "sends the owner back to the list when the row is gone" do

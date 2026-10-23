@@ -16,12 +16,10 @@ module Admin
       "—"
     end
 
-    def admin_error_source_classes(source)
-      case source.to_s
-      when "request" then "bg-primary-muted text-primary-fg"
-      when "job"     then "bg-warning-bg text-warning-fg"
-      else                "bg-bg-muted text-fg-subtle"
-      end
+    def admin_errors_no_match
+      return t("admin.errors.index.sin_coincidencias") if params[:search].blank?
+
+      t("admin.errors.index.sin_coincidencias_busqueda", search: params[:search])
     end
 
     def admin_errors_any_filter_active?

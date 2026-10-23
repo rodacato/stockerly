@@ -25,17 +25,20 @@ es-MX:
       destroy:
         eliminado: Error borrado del registro.
       index:
-        buscar: Buscar por clase, mensaje, ruta o referencia…
+        buscar: Buscar por clase, mensaje, ruta, trabajo o referencia…
         descripcion: Fallos que tu instancia registró sola en los últimos %{days}
           días, agrupados por error.
         limpiar: Limpiar filtros
-        mostrando: Mostrando %{shown} de %{total} errores
+        mostrando:
+          one: Mostrando %{shown} de 1 error
+          other: Mostrando %{shown} de %{total} errores
         origen: Origen
         origenes:
           job: Trabajos
           other: Otros
           request: Peticiones
         sin_coincidencias: Nada con esos filtros.
+        sin_coincidencias_busqueda: Ningún error coincide con «%{search}».
         titulo: Errores
         todos: Todos
         vacio: Tu instancia no ha registrado ningún error.
@@ -46,6 +49,8 @@ es-MX:
         borrar: Borrar del registro
         confirmar_borrado: "¿Borrar este error del registro?"
         contexto: Contexto
+        de_la_ultima_vez: El mensaje, el origen, la referencia, la traza y los parámetros
+          son de la última vez que ocurrió.
         no_encontrado: Ese error ya no está en el registro.
         origen: Origen
         parametros: Parámetros
@@ -55,7 +60,7 @@ es-MX:
         titulo: Detalle del error
         traza: Traza
         ultima: Última vez
-        veces: Ocurrencias
+        veces: Veces
     integrations:
       flash:
         actualizada: Integración actualizada.
