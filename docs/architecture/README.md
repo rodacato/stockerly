@@ -152,6 +152,7 @@ to read as though it was always right — a reversal is recorded as a dated amen
 | [028](./adr/0028-icons-ship-with-the-html.md) | Icons ship with the HTML | Accepted 2026-09-19 · amended 2026-09-22 |
 | [029](./adr/0029-evolve-in-place-rather-than-rewrite.md) | Evolve in place rather than rewrite | Accepted 2026-05-14 (recorded 2026-09-23) |
 | [031](./adr/0031-the-assistant-is-an-invoked-surface.md) | The assistant is an invoked surface, grounded in what it retrieved | Accepted 2026-10-21 · scopes 014 · 030 is held for the outlook readings |
+| [032](./adr/0032-an-opt-in-usage-record-that-answers-the-issues.md) | An opt-in usage record, kept to the questions the issues ask | Accepted 2026-10-23 |
 
 The numbers 0003–0005 are burned (see below).
 
