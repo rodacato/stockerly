@@ -28,7 +28,7 @@
 <% value_slot = radar ? { text: format_currency_mx(asset.current_price, currency: asset.currency), color: "text-fg-default" } : { text: value_text, color: "text-fg-default" } %>
 <% move_slot = maturity_days ? { text: t("comun.vencimiento", count: maturity_days), color: "text-warning-fg" } : day_change_slot(change) %>
 <% primary, secondary = context == :radar ? [ move_slot, value_slot.merge(color: "text-fg-subtle") ] : [ value_slot, move_slot ] %>
-<%= link_to market_asset_path(asset.symbol),
+<%= link_to market_asset_path(asset.symbol, from: local_assigns[:context] == :radar ? "radar" : "activos"),
             class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
   <div class="min-w-0 flex-1 break-words">
     <p class="font-mono text-sm font-bold text-fg-default"><%= asset_label(asset) %></p>

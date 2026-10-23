@@ -46,7 +46,8 @@
       <% [ [ "auto_sync_enabled", t(".sync"), t(".sync_desc"), @auto_sync_enabled ],
            [ "email_notifications_enabled", t(".correo"), t(".correo_desc"), @email_notifications_enabled ],
            [ "maintenance_mode", t(".mantenimiento"), t(".mantenimiento_desc"), @maintenance_mode ],
-           [ "developer_mode", t(".desarrollador"), t(".desarrollador_desc"), @developer_mode ] ].each do |key, label, description, on| %>
+           [ "developer_mode", t(".desarrollador"), t(".desarrollador_desc"), @developer_mode ],
+           [ "usage_tracking", t(".uso"), t(".uso_desc"), @usage_tracking ] ].each do |key, label, description, on| %>
         <div class="flex items-center gap-4 py-4">
           <div class="min-w-0 flex-1">
             <p class="font-semibold text-fg-default"><%= label %></p>

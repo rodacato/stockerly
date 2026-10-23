@@ -8,6 +8,7 @@
   <%= f.hidden_field :token, value: token %>
   <%= f.hidden_field :symbol, value: symbol %>
   <%= f.hidden_field :screen, value: screen %>
+  <%= hidden_field_tag :via, local_assigns.fetch(:via, "typed") %>
   <%= f.text_field :question, value: local_assigns[:value], required: true, maxlength: AssistantMessage::MAX_QUESTION,
                    autocomplete: "off", autofocus: local_assigns.fetch(:autofocus, true),
                    placeholder: asked ? t("assistant.questions.form.otra") : (symbol.present? ? t("assistant.questions.form.sobre", symbol: symbol) : t("assistant.questions.form.pregunta")),

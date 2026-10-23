@@ -10,6 +10,7 @@ class AlertsController < AuthenticatedController
     @counts          = data[:counts]
     @filter          = data[:filter]
     @suggestions     = data[:suggestions]
+    record_visit
   end
 
   # D14: the rule form is a route rendered into a frame and presented as a
@@ -22,6 +23,7 @@ class AlertsController < AuthenticatedController
                           asset_symbol: params[:asset_symbol].presence&.upcase,
                           threshold_value: params[:threshold_value].presence,
                           window_days: params[:window_days].presence)
+    @via = "rule_suggestion" if params[:via] == "rule_suggestion"
   end
 
   def edit
@@ -34,6 +36,7 @@ class AlertsController < AuthenticatedController
 
     case result
     in Dry::Monads::Success(rule)
+      Usage.record("rule.created", screen: "reglas", via: params[:via] == "rule_suggestion" ? "rule_suggestion" : "direct")
       respond_to do |format|
         format.turbo_stream { render turbo_stream: turbo_stream.prepend("alert_rules", partial: ALERT_RULE_PARTIAL, locals: { rule: rule }) }
         format.html { redirect_to alerts_path, notice: t("alerts.flash.creada") }
@@ -80,6 +83,14 @@ class AlertsController < AuthenticatedController
   end
 
   private
+
+  # ADR-032: the empty state is the only place a suggestion is shown.
+  def record_visit
+    Usage.opened("/alerts")
+    return unless @rules.empty?
+
+    @suggestions.each { |suggestion| Usage.record("rule_suggestion.shown", screen: "reglas", condition: suggestion.condition) }
+  end
 
   # The sheet submits inside its frame, where a redirect to the list swaps in
   # the list's empty frame and drops the alert; a stream keeps the form filled.

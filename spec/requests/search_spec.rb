@@ -20,7 +20,7 @@ RSpec.describe "Search", type: :request do
 
       get search_path, params: { q: "alab" }
 
-      expect(response.body).to include("En tu catálogo", "Astera Labs, Inc.", %(href="#{market_asset_path("ALAB")}"))
+      expect(response.body).to include("En tu catálogo", "Astera Labs, Inc.", %(href="#{market_asset_path("ALAB", from: "search")}"))
       expect(PythonRunner).not_to have_received(:call).with("yahoo.py", "search", anything)
     end
 

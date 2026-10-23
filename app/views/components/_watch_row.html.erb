@@ -12,7 +12,7 @@
 <% price_slot = { text: format_currency_mx(asset.current_price, currency: asset.currency), color: "text-fg-default" } %>
 <% move_slot = day_change_slot(change) %>
 <% primary, secondary = context == :radar ? [ move_slot, price_slot.merge(color: "text-fg-subtle") ] : [ price_slot, move_slot ] %>
-<%= link_to market_asset_path(asset.symbol),
+<%= link_to market_asset_path(asset.symbol, from: context == :radar ? "radar" : "activos"),
             class: "flex items-center gap-4 rounded-2xl border border-border-default bg-bg-surface px-4 py-3.5 transition-colors hover:border-border-strong" do %>
   <div class="min-w-0 flex-1 break-words">
     <p class="font-mono text-sm font-bold text-fg-default"><%= asset_label(asset) %></p>

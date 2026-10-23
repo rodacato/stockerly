@@ -174,3 +174,8 @@ production:
   purge_error_events:
     command: "ErrorEvent.purge_stale!"
     schedule: at 4am every day
+
+  # ADR-032: the usage record keeps 90 days.
+  purge_usage_events:
+    command: "UsageEvent.purge_stale!"
+    schedule: at 4:15am every day

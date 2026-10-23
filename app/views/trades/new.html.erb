@@ -15,6 +15,7 @@
        data-trade-sheet-fixed-income-symbols-value="<%= @fixed_income_symbols.to_json %>">
 
     <%= form_with url: trades_path, scope: :trade, class: "flex min-h-0 flex-col" do |f| %>
+      <%= hidden_field_tag :opened_at, Time.current.to_i %>
       <div class="flex flex-col gap-4 overflow-y-auto px-1 pb-4">
         <h2 class="font-display text-2xl font-bold text-fg-default"><%= t("trades.new.titulo") %></h2>
 

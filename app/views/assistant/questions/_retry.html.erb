@@ -5,6 +5,7 @@
   <%= f.hidden_field :symbol, value: conversation.symbol %>
   <%= f.hidden_field :screen, value: conversation.screen %>
   <%= f.hidden_field :question, value: message.question %>
+  <%= hidden_field_tag :via, "retry" %>
   <%= f.button t("assistant.questions.retry.preguntar_de_nuevo"), type: "submit",
                class: "cursor-pointer self-start rounded-full bg-primary-muted px-3 py-1.5 text-xs font-semibold text-primary-fg transition-colors hover:bg-primary hover:text-fg-inverse" %>
 <% end %>

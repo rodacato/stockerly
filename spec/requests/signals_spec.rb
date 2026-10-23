@@ -37,7 +37,7 @@ RSpec.describe "Cockpit › Señales", type: :request do
         create(:position, portfolio: portfolio, asset: asset, shares: 1, avg_cost: 1, status: :open)
         observation(asset, days_ago: 0, type: type)
         get "/signals"
-        Capybara.string(response.body).find("a[href='/market/#{symbol}']")
+        Capybara.string(response.body).find("a[href='/market/#{symbol}?from=senales']")
       end
 
       it "draws a fall under a moving average downward, as trend-following" do

@@ -293,7 +293,7 @@ RSpec.describe "Descubrir", type: :request do
         cache_waves(wave_for("NVDA"))
 
         get discover_path
-        expect(Capybara.string(response.body)).to have_link(href: market_asset_path("NVDA"))
+        expect(Capybara.string(response.body)).to have_link(href: market_asset_path("NVDA", from: "discover"))
 
         get market_asset_path("NVDA")
         expect(response).to have_http_status(:ok)
@@ -305,7 +305,7 @@ RSpec.describe "Descubrir", type: :request do
         cache_waves(wave)
 
         get discover_path
-        expect(Capybara.string(response.body)).to have_link(href: market_asset_path("SMH"))
+        expect(Capybara.string(response.body)).to have_link(href: market_asset_path("SMH", from: "discover"))
 
         get market_asset_path("URA")
         expect(response).to have_http_status(:not_found)
@@ -318,7 +318,7 @@ RSpec.describe "Descubrir", type: :request do
         get discover_path
         details = Capybara.string(response.body).find("details")
 
-        expect(details).to have_link(href: market_asset_path("EWW"), visible: :all)
+        expect(details).to have_link(href: market_asset_path("EWW", from: "discover"), visible: :all)
       end
 
       it "links nothing when there are no waves" do

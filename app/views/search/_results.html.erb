@@ -9,7 +9,7 @@
             <% asset = result[:asset] %>
             <% move = day_change_slot(result[:change]) %>
             <li>
-              <%= link_to market_asset_path(asset.symbol), class: "flex items-center gap-3 px-4 py-3 transition-colors hover:bg-bg-muted" do %>
+              <%= link_to market_asset_path(asset.symbol, from: "search"), class: "flex items-center gap-3 px-4 py-3 transition-colors hover:bg-bg-muted" do %>
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center gap-2">
                     <span class="font-mono text-sm font-bold text-fg-default"><%= asset_label(asset) %></span>

@@ -6,7 +6,7 @@
 <% subtitle = if @symbol then t(".sobre", symbol: @symbol, posiciones: holdings)
               elsif @from then t(".desde", pantalla: assistant_screen_label(@from), posiciones: holdings)
               else "#{holdings.upcase_first}." end %>
-<% suggestions = assistant_suggestions(from: @from, symbol: @symbol, seen: @seen) %>
+<% suggestions = @suggestions %>
 
 <%# The same route is a page on its own and the drawer's content (D11): Turbo
     takes this frame out of the response when Velita opened it. %>
@@ -30,6 +30,7 @@
                 <%= f.hidden_field :symbol, value: @symbol %>
                 <%= f.hidden_field :screen, value: @from %>
                 <%= f.hidden_field :question, value: suggestion %>
+                <%= hidden_field_tag :via, "suggestion" %>
                 <%= f.button suggestion, type: "submit",
                              class: "cursor-pointer rounded-full bg-primary-muted px-4 py-2 text-left text-sm font-semibold text-primary-fg transition-colors hover:bg-primary hover:text-fg-inverse" %>
               <% end %>
@@ -40,7 +41,7 @@
         <div id="assistant_messages" class="peer flex flex-col gap-6"><%= render partial: "assistant/questions/message", collection: messages, as: :message %></div>
         <p class="hidden text-xs text-fg-subtle peer-has-[article]:block"><%= t(".no_es_recomendacion") %></p>
       </div>
-      <%= render "assistant/questions/form", token: @token, symbol: @symbol, screen: @from, asked: messages.present?, value: @question.presence,
+      <%= render "assistant/questions/form", token: @token, symbol: @symbol, screen: @from, asked: messages.present?, value: @question.presence, via: @via,
                  autofocus: !turbo_frame_request? || @question.present? %>
     <% else %>
       <%= render "components/empty_state", size: :inline, icon: "psychology",

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -575,6 +575,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_120000) do
     t.index ["asset_id", "calculated_at"], name: "index_trend_scores_on_asset_id_and_calculated_at"
     t.index ["asset_id"], name: "index_trend_scores_on_asset_id"
     t.index ["score"], name: "index_trend_scores_on_score"
+  end
+
+  create_table "usage_events", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "screen"
+    t.jsonb "properties", default: {}, null: false
+    t.datetime "occurred_at", null: false
+    t.index ["name", "occurred_at"], name: "index_usage_events_on_name_and_occurred_at"
+    t.index ["occurred_at"], name: "index_usage_events_on_occurred_at"
   end
 
   create_table "users", force: :cascade do |t|

@@ -27,7 +27,7 @@
     <% end %>
   </div>
   <% if velita_visible? %>
-    <%= link_to velita_question_path(title),
+    <%= link_to velita_question_path(title, figure: figure),
                 data: { turbo_frame: "assistant_sheet", turbo_action: "advance" },
                 class: "flex items-center gap-3 bg-primary-muted px-4 py-3 transition-colors hover:bg-primary-muted/70" do %>
       <%= render "assistant/velita", classes: "size-9 shrink-0" %>
