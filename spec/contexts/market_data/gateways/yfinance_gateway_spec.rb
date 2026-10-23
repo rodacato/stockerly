@@ -358,6 +358,14 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
         .to eq([ [ 3, 2 ], [ 5, 4 ], [ 2, 3 ] ])
     end
 
+    it "keeps a deep reverse split exact" do
+      stub_bridge([ { "date" => "2021-03-01", "ratio" => 0.01 }, { "date" => "2021-04-01", "ratio" => 0.025 },
+                    { "date" => "2021-05-01", "ratio" => 0.00666667 } ])
+
+      expect(gateway.fetch_splits("XYZ").value!.map { |split| split.values_at(:numerator, :denominator) })
+        .to eq([ [ 1, 100 ], [ 1, 40 ], [ 1, 150 ] ])
+    end
+
     it "drops a zero ratio rather than dividing by it" do
       stub_bridge([ { "date" => "2021-03-01", "ratio" => 0 } ])
 
