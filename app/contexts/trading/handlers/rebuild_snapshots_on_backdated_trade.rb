@@ -17,10 +17,18 @@ module Trading
         trade = Trade.find_by(id: trade_id)
         return if trade.nil?
 
-        executed_on = trade.executed_at.to_date
-        return if executed_on >= Date.current
+        from = [ trade.executed_at.to_date, previous_date(event) ].compact.min
+        return if from >= Date.current
 
-        Trading::UseCases::RebuildSnapshots.call(portfolio: trade.portfolio, from: executed_on)
+        Trading::UseCases::RebuildSnapshots.call(portfolio: trade.portfolio, from: from)
+      end
+
+      # An edit that moved the trade later leaves it counted on the days it
+      # left, so the rebuild starts at whichever date came first.
+      def self.previous_date(event)
+        changes = event.is_a?(Hash) ? event[:changes] : (event.changes if event.respond_to?(:changes))
+        value = changes&.with_indifferent_access&.dig(:executed_at)
+        value && Time.zone.parse(value.to_s)&.to_date
       end
     end
   end

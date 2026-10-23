@@ -62,4 +62,19 @@ RSpec.describe Trading::Handlers::RebuildSnapshotsOnBackdatedTrade do
 
     expect(portfolio.snapshots.find_by(date: 4.days.ago.to_date).total_value).to eq(1_000)
   end
+
+  # F2.12: a trade moved later stops counting on the days in between, so the
+  # rebuild starts at the earlier of the two dates.
+  it "rebuilds from the old date when an edit moved the trade later" do
+    [ 6, 3 ].each { |back| create(:asset_price_history, asset: asset, date: back.days.ago.to_date, close: 10) }
+    trade = trade_on(6.days.ago)
+    described_class.call(event_for(trade))
+    expect(portfolio.snapshots.find_by(date: 6.days.ago.to_date).total_value).to eq(1_000)
+
+    previous = trade.executed_at.iso8601
+    trade.update!(executed_at: 3.days.ago)
+    described_class.call({ trade_id: trade.id, changes: { "executed_at" => previous } })
+
+    expect(portfolio.snapshots.find_by(date: 6.days.ago.to_date).total_value).to eq(0)
+  end
 end
