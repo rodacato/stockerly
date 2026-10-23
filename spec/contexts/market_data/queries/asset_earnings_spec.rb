@@ -20,6 +20,16 @@ RSpec.describe MarketData::Queries::AssetEarnings do
     expect(described_class.call(symbol: "NVDA")).to eq(symbol: "NVDA", next: nil, last: nil)
   end
 
+  # F3.4: reported after today's close, it is the last quarter, not the next.
+  it "reads a quarter reported today as the last one" do
+    create(:earnings_event, asset: asset, report_date: Date.current, actual_eps: 1.2, estimated_eps: 1.0)
+
+    result = described_class.call(symbol: "NVDA")
+
+    expect(result[:next]).to be_nil
+    expect(result[:last][:report_date]).to eq(Date.current)
+  end
+
   it "knows nothing of an unknown symbol" do
     expect(described_class.call(symbol: "NOPE")).to be_nil
   end
