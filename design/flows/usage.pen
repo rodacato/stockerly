@@ -31,7 +31,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "PURPOSE\nThe instance's usage record (ADR-032): the events the issues' usage metrics need, and the funnels from a call to action to the action it led to, read on one screen. Kept so a feature is kept, changed or deleted on what was done, not on what is remembered.\n\nENTRY POINTS\nAjustes hub → Uso (always listed: the day counters count even with the switch off). The switch, Registro de uso, lives in Estado y mantenimiento with the other instance switches. Back returns to Ajustes.\n\nSCREENS (LEFT → RIGHT)\nUso · Apagado (the switch off: the notice, funnels and capture reading \"Apagado, no se mide.\", dashes in the table, the day counters) · Uso · Con datos.\n\nBUSINESS RULES\n• The switch gates event capture, not only this screen; it is off by default (ADR-032 §1). The day counters (Aperturas) are always on and count nothing but opens.\n• Only catalogued events are recorded, each naming the question it answers (§2). No IP, user agent, session or free text (§3).\n• A funnel sets the offers of a week against the actions that came from them in that week (§4, §6). Each card leads with this week, then the 8-week total; percentages are whole, the counts are too small for a decimal.\n• Weeks read newest first, the current one headed Esta, so on a phone the cut-off columns are the oldest. An event never measured with the switch off reads — , never 0.\n• Rows are kept 90 days. Opening this screen is counted: unread for 30 days with the switch on, the record is deleted (§9).\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — admin.usage.show.*, admin.settings.show.uso*, settings.show.uso*. Event names: Usage::Domain::Catalogue; the question under each, admin.usage.show.preguntas.\n\nSTATES NOT DRAWN\n• Switch on and nothing recorded yet: the Con datos layout with every funnel and the capture reading \"Todavía no hay datos.\", and zeros in the table.\n• A funnel offered nothing this week: \"No se ofreció esta semana.\" in place of the percentage.\n• Any screen on desktop: the same column inside the SidebarNav shell.\n\nOPEN FINDINGS\nNone.\n\nHISTORY\n→ Log · Uso",
+          "content": "PURPOSE\nThe instance's usage record (ADR-032): the events the issues' usage metrics need, and the funnels from a call to action to the action it led to, read on one screen. Kept so a feature is kept, changed or deleted on what was done, not on what is remembered.\n\nENTRY POINTS\nAjustes hub → Uso (always listed: the day counters count even with the switch off). The switch, Registro de uso, lives in Estado y mantenimiento with the other instance switches. Back returns to Ajustes.\n\nSCREENS (LEFT → RIGHT)\nUso · Apagado (never turned on: the notice once, no funnels or capture, dashes in the table, the day counters) · Uso · Con datos.\n\nBUSINESS RULES\n• The switch gates event capture, not only this screen; it is off by default (ADR-032 §1). The day counters (Aperturas: per screen over 14 days, Panorama per day, the ? helps, Descubrir's weeks for D31) are always on, count nothing but opens, and live only here (D174).\n• Only catalogued events are recorded, each naming the question it answers (§2). No IP, user agent, session or free text (§3).\n• A funnel sets the offers of a week against the actions that came from them in that week (§4, §6). Each card leads with this week's counts, then the measured weeks' total; a percentage only past five offers, and never when an action outran its offers. An action whose offer was the week before reads as \"tomada esta semana, de una oferta anterior\".\n• Weeks read newest first, the current one headed Esta, so on a phone the cut-off columns are the oldest. A week counts as measured if the switch was on for any of it, known from the switch's last flip; an unmeasured week reads —, never 0, and the Total column sums the measured ones. With the switch on, \"Encendido desde …\" says where measuring starts.\n• Rows are kept 90 days. Opening this screen is counted: unread for 30 days with the switch on, the record is deleted (§9).\n\nCOPY SOURCE\nconfig/locales/es-MX.yml — admin.usage.show.*, admin.settings.show.uso*, settings.show.uso*. Event names: Usage::Domain::Catalogue; the question under each, admin.usage.show.preguntas.\n\nSTATES NOT DRAWN\n• Switch on and nothing recorded yet: the Con datos layout with every funnel and the capture reading \"Todavía no hay datos.\", and zeros in the table.\n• A funnel offered nothing this week: \"No se ofreció esta semana.\"\n• Switched off after recording: funnels and capture stay, weeks after the flip read —.\n• Ajustes hub: the Uso row carries an \"Apagado\" badge while the switch is off.\n• Any screen on desktop: the same column inside the SidebarNav shell.\n\nOPEN FINDINGS\nNone.\n\nHISTORY\n→ Log · Uso",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -644,7 +644,7 @@
           "fill": "$fg-subtle",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "2026-10-23 — Mirrored to code at d168527d after ui-review: weeks newest first, funnels lead with this week, whole percentages, es-MX questions in place of internal ids, Apagado reads \"no se mide\" and dashes, Aperturas by screen name over one 14-day window, Descubrir as a closing line. The open finding on the hidden current week is closed.\n2026-10-23 — Created from flows/settings.pen's kit for the usage record (ADR-032, #901): Uso drawn as shipped, Apagado and Con datos. Sample figures in Con datos are illustrative.",
+          "content": "2026-10-23 — Mirrored to code at fe094843 after a second ui-review and D174: measured weeks and \"Encendido desde\", a Total column, \"Esta sem.\", funnels led by counts, Apagado without funnels or capture, and the day counters moved here from Estado (Panorama per day, Descubrir).\n2026-10-23 — Mirrored to code at d168527d after ui-review: weeks newest first, funnels lead with this week, whole percentages, es-MX questions in place of internal ids, Apagado reads \"no se mide\" and dashes, Aperturas by screen name over one 14-day window, Descubrir as a closing line. The open finding on the hidden current week is closed.\n2026-10-23 — Created from flows/settings.pen's kit for the usage record (ADR-032, #901): Uso drawn as shipped, Apagado and Con datos. Sample figures in Con datos are illustrative.",
           "lineHeight": 1.5,
           "fontFamily": "$font-sans",
           "fontSize": 13,
@@ -739,183 +739,6 @@
             },
             {
               "type": "frame",
-              "id": "Bmlks",
-              "name": "Embudos",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": "$space-3",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "L5Ntk",
-                  "name": "H",
-                  "fill": "$fg-default",
-                  "content": "Sugerencias que se toman",
-                  "lineHeight": 1.2,
-                  "fontFamily": "$font-display",
-                  "fontSize": 18,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "frame",
-                  "id": "qAuLQ",
-                  "name": "Sugerencia de regla → regla creada",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-card",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "layout": "vertical",
-                  "gap": "$space-1",
-                  "padding": 16,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "rRH4g",
-                      "name": "Nombre",
-                      "fill": "$fg-default",
-                      "content": "Sugerencia de regla → regla creada",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "OrqaZ",
-                      "name": "Sin datos",
-                      "fill": "$fg-subtle",
-                      "content": "Apagado, no se mide.",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "PCjUV",
-                  "name": "Sugerencias de Velita → pregunta",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-card",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "layout": "vertical",
-                  "gap": "$space-1",
-                  "padding": 16,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "JTn0S",
-                      "name": "Nombre",
-                      "fill": "$fg-default",
-                      "content": "Sugerencias de Velita → pregunta",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "PwNkJ",
-                      "name": "Sin datos",
-                      "fill": "$fg-subtle",
-                      "content": "Apagado, no se mide.",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "PfnxB",
-                  "name": "Ayuda «?» → pregunta a Velita",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-card",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "layout": "vertical",
-                  "gap": "$space-1",
-                  "padding": 16,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "TuHTQ",
-                      "name": "Nombre",
-                      "fill": "$fg-default",
-                      "content": "Ayuda «?» → pregunta a Velita",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "KJHdL",
-                      "name": "Sin datos",
-                      "fill": "$fg-subtle",
-                      "content": "Apagado, no se mide.",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "NVNIJ",
-              "name": "Captura",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": "$space-3",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "MScgL",
-                  "name": "H",
-                  "fill": "$fg-default",
-                  "content": "Tiempo para registrar un movimiento",
-                  "lineHeight": 1.2,
-                  "fontFamily": "$font-display",
-                  "fontSize": 18,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "frame",
-                  "id": "IhxOt",
-                  "name": "Valores",
-                  "width": "fill_container",
-                  "fill": "$bg-surface",
-                  "cornerRadius": "$radius-card",
-                  "stroke": "$border-default",
-                  "strokeWidth": 1,
-                  "padding": 16,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "GDH61",
-                      "name": "Sin datos",
-                      "fill": "$fg-subtle",
-                      "content": "Apagado, no se mide.",
-                      "lineHeight": 1.5,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
               "id": "tmq0Q",
               "name": "Eventos",
               "width": "fill_container",
@@ -949,7 +772,7 @@
                       "type": "frame",
                       "id": "PJZKT",
                       "name": "Encabezado",
-                      "width": 600,
+                      "width": 668,
                       "gap": 4,
                       "padding": [
                         8,
@@ -971,16 +794,30 @@
                         },
                         {
                           "type": "text",
+                          "id": "WinMe",
+                          "name": "Total",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "TOTAL",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "HcsBI",
                           "name": "Semana",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
-                          "content": "Esta",
+                          "width": 64,
+                          "content": "ESTA SEM.",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -990,11 +827,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "12 oct",
+                          "content": "12 OCT",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -1004,11 +841,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "5 oct",
+                          "content": "5 OCT",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -1018,11 +855,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "28 sep",
+                          "content": "28 SEP",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -1032,11 +869,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "21 sep",
+                          "content": "21 SEP",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -1046,11 +883,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "14 sep",
+                          "content": "14 SEP",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -1060,11 +897,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "7 sep",
+                          "content": "7 SEP",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -1074,11 +911,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "31 ago",
+                          "content": "31 AGO",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         }
                       ]
@@ -1087,7 +924,7 @@
                       "type": "frame",
                       "id": "xpAEt",
                       "name": "rule_suggestion.shown",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -1133,11 +970,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "BPjLk",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "—",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "CzsCn",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "—",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -1249,7 +1100,7 @@
                       "type": "frame",
                       "id": "uS74q",
                       "name": "rule.created",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -1295,11 +1146,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "p8WFrO",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "—",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "H80ux",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "—",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -1411,7 +1276,7 @@
                       "type": "frame",
                       "id": "o1rYIz",
                       "name": "assistant.suggestion_shown",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -1457,11 +1322,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "KFi6n",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "—",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "hLomZ",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "—",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -1573,7 +1452,7 @@
                       "type": "frame",
                       "id": "X88nA2",
                       "name": "question.sent",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -1619,11 +1498,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "K8Jyk",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "—",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "EdH5p",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "—",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -1735,7 +1628,7 @@
                       "type": "frame",
                       "id": "tEJpk",
                       "name": "help.ask_velita",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -1781,11 +1674,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "k7cgOc",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "—",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "l1cC1r",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "—",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -1897,7 +1804,7 @@
                       "type": "frame",
                       "id": "BRwtE",
                       "name": "asset.opened",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -1943,11 +1850,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "d7Xax",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "—",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "WDse3",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "—",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -2059,7 +1980,7 @@
                       "type": "frame",
                       "id": "CpamZ",
                       "name": "news.opened",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -2105,11 +2026,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "baR0l",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "—",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "tKzp8",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "—",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -2221,7 +2156,7 @@
                       "type": "frame",
                       "id": "K0r8nR",
                       "name": "trade.created",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -2267,11 +2202,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "Z6OEP",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "—",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "VXSGC",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "—",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -2383,7 +2332,7 @@
                       "type": "frame",
                       "id": "uN874",
                       "name": "velita.colour_changed",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -2429,11 +2378,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "SxSWa",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "—",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "xjzCy",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "—",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -2785,6 +2748,540 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "type": "text",
+                  "id": "Z5PnE",
+                  "name": "Panorama, por día",
+                  "fill": "$fg-subtle",
+                  "content": "Panorama, por día",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "Jk6G4",
+                  "name": "Por día",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-card",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 1,
+                  "padding": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "tlqG1",
+                      "name": "Semana 1",
+                      "width": "fill_container",
+                      "gap": 1,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Z8HRf",
+                          "name": "9/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "UJVy8",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "2",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Rv7X3",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "9/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "YNGYu",
+                          "name": "10/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "k29izS",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "3",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "VNzL9",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "10/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "V9leiE",
+                          "name": "11/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ek8bt",
+                              "name": "Aperturas",
+                              "fill": "$fg-subtle",
+                              "content": "0",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "E1Irzv",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "11/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "RoZlC",
+                          "name": "12/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "JCCoV",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "4",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "p8Hi3",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "12/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "g4MiS",
+                          "name": "13/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "nL7jb",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "3",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "gaxy6",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "13/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "KyeOg",
+                          "name": "14/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "cQdmM",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "2",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "YgB0o",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "14/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "eJ6J6",
+                          "name": "15/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "esHZS",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "1",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "zC6GG",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "15/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "iLjq7",
+                      "name": "Semana 2",
+                      "width": "fill_container",
+                      "gap": 1,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "OtUMR",
+                          "name": "16/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "tXmH2",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "5",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "E2kiOX",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "16/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "A4Jt9y",
+                          "name": "17/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wcKKw",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "3",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "ewfq0",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "17/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "u6IZ5f",
+                          "name": "18/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "gqQ47",
+                              "name": "Aperturas",
+                              "fill": "$fg-subtle",
+                              "content": "0",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "J2K1cu",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "18/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "TCays",
+                          "name": "19/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "FE9Ys",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "4",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "kjXIj",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "19/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "I0MfPk",
+                          "name": "20/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "m104Va",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "3",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "OToye",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "20/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "jFy66",
+                          "name": "21/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Yj4EP",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "4",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Sxnsu",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "21/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "hTb4I",
+                          "name": "22/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "UKOPK",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "4",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "S4Atp4",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "22/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
@@ -2871,17 +3368,40 @@
           ],
           "children": [
             {
-              "type": "text",
-              "id": "PtCUT",
+              "type": "frame",
+              "id": "r56Jz",
               "name": "Intro",
-              "fill": "$fg-subtle",
-              "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Lo que la app usa para saber si una función sirve. Se guarda 90 días y nunca sale de esta instancia.",
-              "lineHeight": 1.5,
-              "fontFamily": "$font-sans",
-              "fontSize": 16,
-              "fontWeight": "normal"
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "PtCUT",
+                  "name": "Intro",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Lo que la app usa para saber si una función sirve. Se guarda 90 días y nunca sale de esta instancia.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "gpnGK",
+                  "name": "Encendido",
+                  "fill": "$fg-subtle",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Encendido desde el 2 sep. Las semanas antes de eso no se midieron.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
             },
             {
               "type": "frame",
@@ -2939,7 +3459,7 @@
                           "id": "K028T",
                           "name": "Porcentaje",
                           "fill": "$fg-default",
-                          "content": "50%",
+                          "content": "1 de 2",
                           "fontFamily": "$font-display",
                           "fontSize": 24,
                           "fontWeight": "700"
@@ -2949,7 +3469,7 @@
                           "id": "L27NS",
                           "name": "Semana",
                           "fill": "$fg-default",
-                          "content": "· 1 de 2 esta semana",
+                          "content": "esta semana",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -2961,7 +3481,7 @@
                       "id": "pDy5z",
                       "name": "8 semanas",
                       "fill": "$fg-subtle",
-                      "content": "2 de 9 en 8 semanas · 22%",
+                      "content": "2 de 9 en 8 semanas medidas · 22%",
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
@@ -3005,7 +3525,7 @@
                           "id": "DMuNu",
                           "name": "Porcentaje",
                           "fill": "$fg-default",
-                          "content": "100%",
+                          "content": "1 de 1",
                           "fontFamily": "$font-display",
                           "fontSize": 24,
                           "fontWeight": "700"
@@ -3015,7 +3535,7 @@
                           "id": "mvXRM",
                           "name": "Semana",
                           "fill": "$fg-default",
-                          "content": "· 1 de 1 esta semana",
+                          "content": "esta semana",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -3027,7 +3547,7 @@
                       "id": "l3kzC",
                       "name": "8 semanas",
                       "fill": "$fg-subtle",
-                      "content": "5 de 11 en 8 semanas · 45%",
+                      "content": "5 de 11 en 8 semanas medidas · 45%",
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
@@ -3071,7 +3591,7 @@
                           "id": "DGE1e",
                           "name": "Porcentaje",
                           "fill": "$fg-default",
-                          "content": "100%",
+                          "content": "1 de 1",
                           "fontFamily": "$font-display",
                           "fontSize": 24,
                           "fontWeight": "700"
@@ -3081,7 +3601,7 @@
                           "id": "hwkXW",
                           "name": "Semana",
                           "fill": "$fg-default",
-                          "content": "· 1 de 1 esta semana",
+                          "content": "esta semana",
                           "fontFamily": "$font-sans",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -3093,7 +3613,7 @@
                       "id": "RaxlF",
                       "name": "8 semanas",
                       "fill": "$fg-subtle",
-                      "content": "3 de 4 en 8 semanas · 75%",
+                      "content": "3 de 4 en 8 semanas medidas",
                       "fontFamily": "$font-sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
@@ -3184,7 +3704,7 @@
                       "type": "frame",
                       "id": "KQHLd",
                       "name": "Encabezado",
-                      "width": 600,
+                      "width": 668,
                       "gap": 4,
                       "padding": [
                         8,
@@ -3206,16 +3726,30 @@
                         },
                         {
                           "type": "text",
+                          "id": "uNyY5",
+                          "name": "Total",
+                          "fill": "$fg-subtle",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "TOTAL",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "u0Ll3n",
                           "name": "Semana",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
-                          "content": "Esta",
+                          "width": 64,
+                          "content": "ESTA SEM.",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -3225,11 +3759,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "12 oct",
+                          "content": "12 OCT",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -3239,11 +3773,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "5 oct",
+                          "content": "5 OCT",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -3253,11 +3787,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "28 sep",
+                          "content": "28 SEP",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -3267,11 +3801,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "21 sep",
+                          "content": "21 SEP",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -3281,11 +3815,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "14 sep",
+                          "content": "14 SEP",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -3295,11 +3829,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "7 sep",
+                          "content": "7 SEP",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
@@ -3309,11 +3843,11 @@
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
                           "width": 44,
-                          "content": "31 ago",
+                          "content": "31 AGO",
                           "lineHeight": 1.5,
                           "textAlign": "right",
                           "fontFamily": "$font-mono",
-                          "fontSize": 9,
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         }
                       ]
@@ -3322,7 +3856,7 @@
                       "type": "frame",
                       "id": "N8R5d2",
                       "name": "rule_suggestion.shown",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -3368,11 +3902,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "NF0BX",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "9",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "CkXhj",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "2",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -3484,7 +4032,7 @@
                       "type": "frame",
                       "id": "LZL1B",
                       "name": "rule.created",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -3530,11 +4078,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "w7ufL",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "2",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "c3bfwz",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "1",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -3646,7 +4208,7 @@
                       "type": "frame",
                       "id": "C6j7Tp",
                       "name": "assistant.suggestion_shown",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -3692,11 +4254,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "fbkcd",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "11",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "ujZrE",
                           "name": "Conteo",
                           "fill": "$fg-default",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "1",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -3808,7 +4384,7 @@
                       "type": "frame",
                       "id": "ibZgg",
                       "name": "question.sent",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -3854,11 +4430,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "EUmgE",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "24",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "MlRrw",
                           "name": "Conteo",
                           "fill": "$fg-default",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "4",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -3970,7 +4560,7 @@
                       "type": "frame",
                       "id": "IRNK0",
                       "name": "help.ask_velita",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -4016,11 +4606,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "AL9qf",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "4",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "EUwDM",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "1",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -4132,7 +4736,7 @@
                       "type": "frame",
                       "id": "SEDKh",
                       "name": "asset.opened",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -4178,11 +4782,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "ltbTi",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "48",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "W8rbV",
                           "name": "Conteo",
                           "fill": "$fg-default",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "9",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -4294,7 +4912,7 @@
                       "type": "frame",
                       "id": "p2heXl",
                       "name": "news.opened",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -4340,11 +4958,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "qaJv3",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "2",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "yA2xM",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "0",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -4456,7 +5088,7 @@
                       "type": "frame",
                       "id": "h39Sw",
                       "name": "trade.created",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -4502,11 +5134,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "wfuRt",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "6",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "cAXYC",
                           "name": "Conteo",
                           "fill": "$fg-default",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "0",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -4618,7 +5264,7 @@
                       "type": "frame",
                       "id": "Cg9VU",
                       "name": "velita.colour_changed",
-                      "width": 600,
+                      "width": 668,
                       "stroke": "$border-default",
                       "strokeWidth": {
                         "top": 1
@@ -4664,11 +5310,25 @@
                         },
                         {
                           "type": "text",
+                          "id": "l5bE1",
+                          "name": "Total",
+                          "fill": "$fg-default",
+                          "textGrowth": "fixed-width",
+                          "width": 44,
+                          "content": "1",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
                           "id": "R9aN9a",
                           "name": "Conteo",
                           "fill": "$fg-subtle",
                           "textGrowth": "fixed-width",
-                          "width": 44,
+                          "width": 64,
                           "content": "0",
                           "lineHeight": 1.5,
                           "textAlign": "right",
@@ -5016,6 +5676,540 @@
                           "fontFamily": "$font-mono",
                           "fontSize": 14,
                           "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "V7vzke",
+                  "name": "Panorama, por día",
+                  "fill": "$fg-subtle",
+                  "content": "Panorama, por día",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "EEDxt",
+                  "name": "Por día",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-card",
+                  "stroke": "$border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 1,
+                  "padding": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "JqjoY",
+                      "name": "Semana 1",
+                      "width": "fill_container",
+                      "gap": 1,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "pExBW",
+                          "name": "9/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "QL14a",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "2",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "ClOuF",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "9/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "k0rIb8",
+                          "name": "10/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "c7PkYs",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "3",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "pO0Tm",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "10/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "b3Q11",
+                          "name": "11/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "zT7bD",
+                              "name": "Aperturas",
+                              "fill": "$fg-subtle",
+                              "content": "0",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "SU8XL",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "11/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "VPFY5",
+                          "name": "12/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "T65xF",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "4",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "XY7l5",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "12/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "FcFwD",
+                          "name": "13/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "h0BRz",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "3",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "U0Eh2",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "13/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "z0awy",
+                          "name": "14/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ZOcCx",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "2",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "MSoPN",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "14/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wTCqq",
+                          "name": "15/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "y8XmF",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "1",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "ZSruI",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "15/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Y4cQZC",
+                      "name": "Semana 2",
+                      "width": "fill_container",
+                      "gap": 1,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "W2PpK",
+                          "name": "16/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "IYBKD",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "5",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "JPwBg",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "16/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "yGm6V",
+                          "name": "17/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "JZwsb",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "3",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "JNV2u",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "17/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "O8mPE",
+                          "name": "18/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "NXv96",
+                              "name": "Aperturas",
+                              "fill": "$fg-subtle",
+                              "content": "0",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "b5yDgE",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "18/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "YuJ0Z",
+                          "name": "19/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "aRUQ7",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "4",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "fma1e",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "19/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "jTyML",
+                          "name": "20/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Ehi4s",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "3",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "mmiWH",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "20/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "oLBe5",
+                          "name": "21/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "hxnYg",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "4",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Pr9mf",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "21/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Q87uJl",
+                          "name": "22/10",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": [
+                            4,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "iOUEv",
+                              "name": "Aperturas",
+                              "fill": "$fg-default",
+                              "content": "4",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "f2BjUS",
+                              "name": "Día",
+                              "fill": "$fg-subtle",
+                              "content": "22/10",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
                         }
                       ]
                     }
