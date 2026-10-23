@@ -243,7 +243,7 @@ exports, so re-shoot these when those change.
 | File | Artboard |
 |---|---|
 | `errors-lista.png` | `[Errores] / Lista / Default` |
-| `errors-detalle.png` | `[Errores] / Detalle / Default` — one error opened: trace and occurrences |
+| `errors-detalle.png` | `[Errores] / Detalle / Default` — a request error opened: the latest-occurrence note, trace and parameters |
 
 **Uso (`flows/usage.pen`).** The opt-in usage record (ADR-032).
 
