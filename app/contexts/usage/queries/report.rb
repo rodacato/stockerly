@@ -1,23 +1,25 @@
 module Usage
   module Queries
     # What the usage screen reads: each catalogued event and funnel per week,
-    # how long a trade takes to capture, and the always-on day counters.
+    # newest first, how long a trade takes to capture, and the always-on day
+    # counters.
     class Report
       WEEKS = 8
       CAPTURE_DAYS = 30
       OPEN_PATHS = %w[/dashboard /alerts /signals /admin/usage].freeze
+      OPEN_DAYS = 14
 
       def self.call(now: Time.current) = new(now).to_h
 
       def initialize(now)
         @now = now
-        @weeks = (0...WEEKS).map { |back| (now - back.weeks).to_date.beginning_of_week }.reverse
+        @weeks = (0...WEEKS).map { |back| (now - back.weeks).to_date.beginning_of_week }
       end
 
       def to_h
-        { enabled: Usage.enabled?, weeks: @weeks, events: events, funnels: funnels, capture: capture,
-          opens: OPEN_PATHS.index_with { |path| AppOpen.per_day(path: path, today: @now.to_date) },
-          help_opens: AppOpen.total(prefix: "help:", today: @now.to_date),
+        { enabled: Usage.enabled?, weeks: @weeks, open_days: OPEN_DAYS, events: events, funnels: funnels, capture: capture,
+          opens: OPEN_PATHS.index_with { |path| AppOpen.per_day(path: path, days: OPEN_DAYS, today: @now.to_date).sum(&:last) },
+          help_opens: AppOpen.total(prefix: "help:", days: OPEN_DAYS, today: @now.to_date),
           discover_weeks: MarketData::Discover::VisitLog.weeks_seen(now: @now) }
       end
 
@@ -39,13 +41,13 @@ module Usage
       # Seconds from opening the trade sheet to saving it, over the last month.
       def capture
         scope = UsageEvent.where(name: "trade.created", occurred_at: (@now - CAPTURE_DAYS.days)..@now).where("properties ? 'seconds'")
-        p50, p95 = scope.pick(Arel.sql("percentile_cont(0.5) WITHIN GROUP (ORDER BY (properties->>'seconds')::int)"),
-                              Arel.sql("percentile_cont(0.95) WITHIN GROUP (ORDER BY (properties->>'seconds')::int)"))
-        { count: scope.count, p50: p50&.round, p95: p95&.round }
+        p50, max = scope.pick(Arel.sql("percentile_cont(0.5) WITHIN GROUP (ORDER BY (properties->>'seconds')::int)"),
+                              Arel.sql("max((properties->>'seconds')::int)"))
+        { count: scope.count, p50: p50&.round, max: max }
       end
 
       def weekly(scope)
-        scope.where(occurred_at: @weeks.first.beginning_of_day..@now)
+        scope.where(occurred_at: @weeks.last.beginning_of_day..@now)
              .group(Arel.sql("date_trunc('week', occurred_at)::date"))
       end
 

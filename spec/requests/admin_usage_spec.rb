@@ -12,13 +12,31 @@ RSpec.describe "Admin · Uso", type: :request do
     get admin_usage_path
 
     expect(response.body).to include(I18n.t("admin.usage.show.ajustes"))
-    expect(response.body).to include("/dashboard", I18n.t("admin.usage.show.en_14_dias", count: 1))
+    expect(response.body).to include(I18n.t("admin.usage.show.pantallas.dashboard"))
   end
 
-  it "says a funnel and the capture time have no data rather than showing zero" do
+  it "says an unmeasured event is not measured, rather than drawing a zero" do
+    get admin_usage_path
+
+    expect(response.body.scan(I18n.t("admin.usage.show.sin_medir")).size).to eq(4)
+    expect(response.body).not_to include(I18n.t("admin.usage.show.sin_datos"))
+    expect(response.body).not_to match(%r{tabular-nums[^"]*">0</td>})
+  end
+
+  it "says there is nothing yet once the switch is on" do
+    SiteConfig.set(Usage::SWITCH, true)
+
     get admin_usage_path
 
     expect(response.body.scan(I18n.t("admin.usage.show.sin_datos")).size).to eq(4)
+  end
+
+  it "asks each catalogued event's question in the owner's words" do
+    get admin_usage_path
+
+    Usage::Domain::Catalogue::EVENTS.each_key do |name|
+      expect(response.body).to include(ERB::Util.h(I18n.t("admin.usage.show.preguntas.#{name.tr(".", "_")}", raise: true)))
+    end
   end
 
   it "shows a funnel's offers against the actions they led to" do
@@ -28,7 +46,7 @@ RSpec.describe "Admin · Uso", type: :request do
 
     get admin_usage_path
 
-    expect(response.body).to include(I18n.t("admin.usage.show.tomadas", taken: 1, offered: 2, percent: "50.0%"))
+    expect(response.body).to include("50%", I18n.t("admin.usage.show.esta_semana", taken: 1, offered: 2))
   end
 
   it "counts its own opening, which is what decides whether it is kept" do
