@@ -16,6 +16,10 @@ module Administration
               a.sector = entry[:sector]
               a.country = entry[:country]
               a.data_source = entry[:data_source]
+              a.currency = entry[:currency] if entry[:currency]
+              a.logo_url = Administration::Domain::AssetCatalog.logo_url_for(
+                symbol: entry[:symbol], asset_type: entry[:asset_type], country: entry[:country]
+              )
               a.sync_status = :active
             end
             created += 1
