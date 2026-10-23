@@ -4,6 +4,12 @@ require "rails_helper"
 # view renders what it is handed. This pins that — a fetch reintroduced into a
 # partial shows up here as a higher count.
 RSpec.describe "Market Asset Detail — query budget", type: :request do
+  include ActiveSupport::Testing::TimeHelpers
+
+  # Pinned inside US market hours, the worst case: the open session reads the
+  # holiday calendar, so an unpinned run measured one query less at night.
+  around { |example| travel_to(Time.utc(2026, 10, 21, 15)) { example.run } }
+
   let!(:user) { create(:user, email: "budget@example.com", password: "password123") }
   let!(:asset) { create(:asset, symbol: "AAPL", name: "Apple Inc.", current_price: 150.0) }
 
@@ -30,11 +36,12 @@ RSpec.describe "Market Asset Detail — query budget", type: :request do
   # Measured at 21 on the commit that moved the assembly, and 21 on the commit
   # before it — this refactor was meant to change where the work happens, not
   # how much of it there is. The margin absorbs an added column, not an added
-  # fetch.
+  # fetch. 26 since ADR-032: recording asset.opened reads the usage switch, the
+  # one boolean per declared point the ADR accepts.
   it "loads the detail within its query budget" do
     queries = count_queries { get market_asset_path(asset.symbol) }
 
     expect(response).to have_http_status(:ok)
-    expect(queries).to be <= 25
+    expect(queries).to be <= 26
   end
 end
