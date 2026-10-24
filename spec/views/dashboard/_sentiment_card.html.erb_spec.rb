@@ -32,6 +32,28 @@ RSpec.describe "dashboard/_sentiment_card" do
     expect(rendered).not_to include("rounded-full bg-positive")
   end
 
+  # D175: colour by the classification, never by a band the dot could miss.
+  it "colours the reading by its label, fear on the left and greed on the right" do
+    render_card(key: :crypto, value: 20, label_key: :extreme_fear)
+
+    expect(rendered).to include("size-2 shrink-0 rounded-full bg-sentiment-1")
+    expect(rendered).to include("from-sentiment-1 via-sentiment-3 to-sentiment-5")
+  end
+
+  it "runs the volatility scale from calm to high, so calm reads at the green end" do
+    render_card(key: :volatility, value: 12, label_key: :calm)
+
+    expect(rendered).to include("rounded-full bg-sentiment-5")
+    expect(rendered).to include("from-sentiment-5 via-sentiment-3 to-sentiment-1")
+  end
+
+  it "leaves a classification it does not know uncoloured" do
+    render_card(key: :watchlist, value: 50, label_key: :sideways)
+
+    expect(rendered).to include("rounded-full bg-fg-subtle")
+    expect(rendered).not_to match(/rounded-full bg-sentiment-\d/)
+  end
+
   it "keeps an extreme reading on the track" do
     render_card(key: :crypto, value: 100)
 

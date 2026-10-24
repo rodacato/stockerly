@@ -20,6 +20,29 @@ module DashboardHelper
     t("comun.clasificacion.#{key}", default: key.to_s.humanize)
   end
 
+  # D175: a reading's zone on the sentiment-1…5 scale, from its classification
+  # so the colour can never disagree with the label beside it.
+  SENTIMENT_ZONES = {
+    "extreme_fear" => 1, "very_bearish" => 1, "high" => 1,
+    "fear" => 2, "bearish" => 2, "elevated" => 2,
+    "neutral" => 3,
+    "greed" => 4, "bullish" => 4, "normal" => 4,
+    "extreme_greed" => 5, "very_bullish" => 5, "calm" => 5
+  }.freeze
+  SENTIMENT_SWATCHES = %w[bg-sentiment-1 bg-sentiment-2 bg-sentiment-3 bg-sentiment-4 bg-sentiment-5].freeze
+  SENTIMENT_RAILS = {
+    rising: "bg-linear-to-r from-sentiment-1 via-sentiment-3 to-sentiment-5",
+    falling: "bg-linear-to-r from-sentiment-5 via-sentiment-3 to-sentiment-1"
+  }.freeze
+
+  def sentiment_swatch(key)
+    zone = SENTIMENT_ZONES[key.to_s]
+    zone ? SENTIMENT_SWATCHES[zone - 1] : "bg-fg-subtle"
+  end
+
+  # Volatility runs calm-to-high left to right, the reverse of fear-to-greed.
+  def sentiment_rail(card_key) = SENTIMENT_RAILS[card_key == :volatility ? :falling : :rising]
+
   # Percentage points, which is not a percentage: the difference between two
   # returns is stated in points so it is never read as a return of its own.
   def signed_points(points)
