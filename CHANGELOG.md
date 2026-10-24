@@ -17,6 +17,17 @@ section is empty or holds only that prose.
 
 ## [0.4.0] - 2026-10-24
 
+### Upgrade notes
+
+- **Ruby 4.0.9.** The image moves from 4.0.6, whose bundled `resolv` 0.7.0 is affected by
+  CVE-2026-80212 and CVE-2026-80213; 4.0.9 ships 0.7.2. The deploy rebuilds the image, so there is
+  nothing to do beyond deploying, but this is the reason not to skip the release.
+- **Five migrations, all additive** (new tables for app opens, plans, assistant conversations and
+  usage events; a column on alert preferences). They run on deploy and rewrite no existing data.
+- **Nothing new to configure.** The morning push uses the VAPID keys web push already read; without
+  them it stays off. Velita stays off until an Anthropic key is connected in *Ajustes · Asistente*,
+  and usage recording stays off until its switch is turned on.
+
 ### Added
 
 - **dashboard:** colour each sentiment reading by its zone (D175)
