@@ -38,8 +38,8 @@ gem "pagy", "~> 43.7"
 gem "faraday", "~> 2.14"
 gem "faraday-retry"
 
-# Structured JSON logging for production [https://github.com/roidrage/lograge]
-gem "lograge"
+# Structured JSON logging for production [https://github.com/reidmorrison/rails_semantic_logger]
+gem "rails_semantic_logger"
 
 
 # Prometheus metrics for an external self-hosted scraper [https://github.com/yabeda-rb/yabeda]
