@@ -44,4 +44,32 @@ RSpec.describe "Prometheus metrics endpoint", type: :request do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  describe "http_request_duration_seconds" do
+    def scraped
+      get "/metrics", headers: auth_header
+      response.body
+    end
+
+    it "labels a request by its route pattern, not its path" do
+      create(:user)
+
+      get "/reset-password/not-a-real-token"
+
+      expect(scraped).to include('http_request_duration_seconds_count{method="GET",route="/reset-password/:token",')
+      expect(response.body).not_to include("not-a-real-token")
+    end
+
+    it "labels a path no route matches as unmatched" do
+      get "/no-such-page"
+
+      expect(scraped).to include('http_request_duration_seconds_count{method="GET",route="unmatched",status_code="404"}')
+    end
+
+    it "does not measure the scrape itself" do
+      scraped
+
+      expect(scraped).not_to include('route="unmatched",status_code="200"')
+    end
+  end
 end

@@ -46,7 +46,20 @@ Yabeda.configure do
   end
 end
 
+# Outside any group so the name carries no prefix: the same metric, labels and
+# buckets as the Node apps' prom-client default, for one shared dashboard.
+Yabeda.configure do
+  histogram :http_request_duration,
+            unit: :seconds,
+            tags: %i[method route status_code],
+            buckets: [ 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10 ],
+            comment: "HTTP request duration in seconds, by method, route pattern and status code"
+end
+
 # Not Zeitwerk-managed (lib/middleware is ignored in autoload_lib) so it can be
 # referenced safely here at boot, before the autoloaders are fully wired.
 require Rails.root.join("lib/middleware/metrics_endpoint")
+require Rails.root.join("lib/middleware/http_request_duration")
 Rails.application.config.middleware.use MetricsEndpoint
+# After MetricsEndpoint so scrapes are not measured.
+Rails.application.config.middleware.use HttpRequestDuration
