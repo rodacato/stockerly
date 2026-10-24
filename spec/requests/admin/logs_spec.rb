@@ -78,4 +78,21 @@ RSpec.describe "Admin logs error details", type: :request do
       expect(response.body).to include('data-controller="reveal"')
     end
   end
+
+  describe "GET /admin/logs/export_csv" do
+    # The link carries the list's filters; a param the controller drops would
+    # export every row while the screen shows a few.
+    it "downloads the rows the filtered list shows" do
+      create(:system_log, :error, task_name: "FX Rate Refresh", error_message: "Timeout")
+      create(:system_log, task_name: "Price Sync: AAPL")
+      create(:system_log, :error, task_name: "Old Sync", error_message: "Timeout", created_at: 10.days.ago)
+
+      get export_csv_admin_logs_path(range: "24h", search: "timeout")
+
+      expect(response.media_type).to eq("text/csv")
+      expect(response.headers["Content-Disposition"]).to include("attachment", "system_logs_#{Date.current}.csv")
+      expect(response.body).to include("FX Rate Refresh")
+      expect(response.body).not_to include("Price Sync: AAPL", "Old Sync")
+    end
+  end
 end

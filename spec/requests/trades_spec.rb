@@ -67,6 +67,18 @@ RSpec.describe "Trades", type: :request do
       expect(flash[:alert]).to eq(I18n.t("dry_validation.errors.greater_than_zero"))
     end
 
+    # Paying in pesos for a dollar asset needs that day's rate to state the
+    # cost; without it nothing is saved and the reader is told why.
+    it "refuses a trade whose exchange rate is unknown, saving nothing" do
+      expect {
+        post trades_path, params: { trade: { asset_symbol: "AAPL", side: "buy", shares: "1", price_per_share: "3000",
+                                             currency: "MXN", executed_at: "2026-03-10" } }
+      }.not_to change(Trade, :count)
+
+      expect(response).to redirect_to(assets_path)
+      expect(flash[:alert]).to eq(I18n.t("trades.errores.tc_faltante", currency: "USD"))
+    end
+
     context "with turbo_stream format" do
       # Success redirects now: the sheet's Guardar targets _top so the page
       # navigates and the dialog closes with it. The stream it used to render
@@ -140,6 +152,14 @@ RSpec.describe "Trades", type: :request do
 
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
       expect(response.body).to include("Movimiento actualizado.")
+    end
+
+    it "refuses an edit the contract rejects, leaving the trade as it was" do
+      patch trade_path(trade), params: { trade: { shares: "0" } }
+
+      expect(response).to redirect_to(positions_path)
+      expect(flash[:alert]).to eq(I18n.t("dry_validation.errors.greater_than_zero"))
+      expect(trade.reload.shares).to eq(10.0)
     end
 
     it "rejects update on old trade" do
