@@ -15,6 +15,189 @@ section is empty or holds only that prose.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-24
+
+### Added
+
+- **dashboard:** colour each sentiment reading by its zone (D175)
+- **usage:** record the events the issues' metrics need, behind a switch
+- **assistant:** give Velita her states, a search glance and five colours
+- **assistant:** know the screen it was asked on, and read Señales
+- **assistant:** explain concepts from knowledge, cite only the data
+- **assistant:** read the owner's holdings when the switch is on
+- **assistant:** ask again after a lost answer, and say once it is not advice
+- **assistant:** read the drawer as a conversation
+- **assistant:** read the market around a question
+- **assistant:** let a planner choose what a question reads
+- **assistant:** read through a registry of capabilities
+- **market-data:** read fundamentals and observations as plain data
+- **assistant:** open the drawer from Velita
+- **assistant:** answer one question at /assistant
+- **market-data:** read one asset as plain data for the assistant
+- **settings:** connect the assistant in Ajustes · Asistente
+- **assistant:** verify a connection with one Messages request
+- **assistant:** carry the numbers gate and the Messages adapter from the probe
+- **market:** explain each line of the financial statements
+- **market:** explain each indicator on its Señales row
+- **alerts:** show how far the price is from a rule's threshold
+- **assets:** give the empty Holdings card a soft brand wash
+- **settings:** put the account card on the brand surface
+- **dashboard:** put Hoy's verdict on the brand surface
+- **admin:** add the maintenance section to Estado y mantenimiento
+- **admin:** run idempotent maintenance tasks as jobs
+- **dashboard:** read an earnings season as one Hoy row per day
+- **notifications:** push the morning summary of Hoy to the phone
+- **market:** open the asset detail on what is the owner's
+- **dashboard:** list the headlines published about what is tracked
+- **dashboard:** add a US market volatility card from the VIX
+- **dashboard:** put a central-bank decision on Hoy when it is near
+- **trading:** read the allocation by sector as well as by type
+- **trading:** compare the return with the IPC over the same dates
+- **trading:** show how much of the patrimonio rides on the dollar
+- **trading:** say on Hoy whether the owner is on their plan
+- **dashboard:** explain every figure on Hoy with an inline ?
+- **dashboard:** open the Panorama on a daily Hoy view
+- **admin:** count daily opens of the cockpit
+- **site:** restore the marketing landing in ES and EN on Soft Candle [#821]
+- **design:** add the Soft Candle sheet and archive the disc [#821]
+- **design:** mirror Soft Candle and verified figures in the flows [#821]
+- **design:** finish kit 1.2.0 with the primary button [#821]
+- **design:** bump the kit to 1.2.0 for Soft Candle [#821]
+- **brand:** apply Soft Candle and clarify portfolio figures [#821]
+
+### Fixed
+
+- **dashboard:** show signals before the sentiment cards on a phone
+- **assistant:** render the answer's Markdown instead of showing it
+- **deps:** bump Ruby to 4.0.9
+- **deps:** bump crass to 1.0.8 for GHSA-pq4g-8rxf-4g29
+- **trading:** recapture a rate derived from the inverse pair
+- **trading:** refuse an oversell at any point, not only in total
+- **market-data:** keep a deep reverse split exact
+- **admin:** export the log rows the list shows
+- **admin:** read a page that is not a page number as the first one
+- **assistant:** fail a reply that streamed no prose, so it can be retried
+- **assistant:** read a null planner input as absent
+- **market-data:** leave out a CoinGecko coin that came back unpriced
+- **market-data:** read the next quarter by date, past the one reported
+- **market-data:** keep a fractional split ratio from Yahoo
+- **market-data:** read the newest Fear & Greed readings, oldest first
+- **import:** refuse an oversell in the preview, and count only buys
+- **trading:** read a split's rounding residue as zero shares
+- **trading:** rebuild snapshots from a moved trade's earlier date
+- **trading:** move a trade's rate with its date, unless typed by hand
+- **trading:** read a blank date or fee in the edit row as unchanged
+- **trading:** refuse a delete or edit a later sale depends on
+- **trading:** refuse a trade whose asset currency has no rate yet
+- **trading:** keep a running average cost across partial sales
+- **onboarding:** seed an asset with the catalogue's currency and logo
+- **errors:** say the detail is the latest occurrence, and read on a phone
+- **usage:** read zero only where it was measured, counters on Uso
+- **usage:** tell the truth about the switch, and lead with this week
+- **search:** order catalogue results by their numbers, so CETES run 28 to 364
+- **ui:** name CETES by their term instead of their symbol
+- **assistant:** keep the IPC in the market card through its proxy
+- **assistant:** find the planner's array without a backtracking regex
+- **assistant:** suggest only what Hoy shows and keep Velita clear
+- **assistant:** gate prose while it streams and harden the stream
+- **assistant:** keep the API key with the host it was typed for
+- **market:** show the share count as a count, not money
+- **dashboard:** keep the VS CETES help button off its value
+- **i18n:** pluralize the notices and job logs composed in Ruby
+- **nav:** keep the Ajustes tab lit on Tu plan and Ayuda
+- **identity:** link /help from the Ajustes hub
+- **errors:** draw the candle mark and pass AA on error pages
+- **ui:** show a refused save's toast above the open sheet
+- **alerts:** group the thousands of a suggestion's holding
+- **alerts:** state suggestion thresholds as inclusive, like >=
+- **jobs:** stop asking for what an ETF or a CETE does not have
+- **notifications:** keep each push on the phone and the badge intact
+- **trading:** name a stock's sector from the overview, and an ETF as an ETF
+- **market:** call a quote stale after 30 minutes, not 15
+- **market:** read one earnings date per asset, the one the provider touched last
+- **market:** open the detail of a symbol that carries a dot
+- **dashboard:** let held assets decide Hoy's verdict, not a stale watch
+- **site:** correct claims the code contradicts or does not back [#821]
+- **design:** draw AssetRow as the single horizontal row the code renders [#821]
+- **brand:** sanitize inline logo geometry [#821]
+- **dashboard:** show a held and watched asset once in the radar
+- **dashboard:** quote the unit price on every radar row
+- **auth:** make auth inputs fill the card
+
+### Changed
+
+- delete eleven methods nothing calls
+- **shared:** convert each PriceAnchor input once
+- **shared:** move PriceAnchor to the shared domain
+- **market:** delete the unlinked earnings-history tab
+- **trading:** extract watchlist proximity and the CETES comparison
+
+### Documentation
+
+- **design:** mirror the errors fixes into its flow
+- **design:** record D174 and mirror the measured weeks
+- **design:** mirror the usage fixes into its flow
+- **design:** split Errores and Uso into their own flows
+- **adr:** record an opt-in usage record kept to the issues' metrics
+- **design:** amend Velita's colours to D173 in her flow
+- **adr:** let the assistant explain concepts, figures still gated
+- **adr:** let the assistant read holdings behind a switch (ADR-031)
+- **design:** mirror the assistant's conversation in its flow (D171, D172)
+- **design:** record the conversation turn and its history (D171, D172)
+- **design:** record the planner field and the searching state (D170)
+- **design:** record what Velita ships in phase 1 (D169)
+- **design:** record what Ajustes · Asistente ships first (D168)
+- **vision:** add JTBD #8 — understand a term or a figure in place
+- **adr:** accept ADR-031 and scope ADR-014 to what the app says alone
+- **adr:** propose ADR-031, the assistant as an invoked surface
+- **design:** list the newly drawn screens in the flow table
+- **design:** list each flow's screens by band and record two Pencil traps
+- **design:** draw how Hoy reads a plan and propose D157
+- **design:** draw Tu plan in Ajustes and record D156
+- **design:** move the brand panels to brand.pen, empty the playground
+- **design:** draw Hoy in the cockpit flow and record D155
+- **design:** move the Hoy view into the cockpit flow
+- **design:** bring brand.pen and the playground to the Soft Candle logo
+- **design:** draft the Hoy view in the playground
+- **vision:** update the audience to the real moment of use
+- **site:** state the scope in the hero and fix three claims [#821]
+- **design:** re-export the canvases and update the index [#821]
+
+### Maintenance
+
+- **deps:** bump curl_cffi to 0.16.3
+- **deps:** update every gem the constraints allow
+- **deps:** bump zizmorcore/zizmor-action to 0.7.1
+- **checks:** add assistant-isolation (ADR-031 §4)
+- **brand:** keep brand sources in design/brand, build the kit on demand
+- **deps:** bump pagy from 43.6.3 to 43.7.0
+- **deps-dev:** bump simplecov from 1.3.0 to 1.3.2
+- **deps:** bump rails_icons from 1.9.0 to 1.10.0
+- **deps:** bump ghcr.io/devcontainers/features/node
+- **deps:** bump thruster from 0.1.26 to 0.1.27
+- **deps:** bump pg from 1.6.3 to 1.7.0
+- **deps:** bump pagy from 43.6.2 to 43.6.3
+- **deps:** bump lograge from 0.15.0 to 0.15.1
+- **deps:** bump solid_cable from 4.0.2 to 4.1.0
+- **deps:** bump sonarsource/sonarqube-scan-action from 8.2.2 to 8.3.0
+- **deps:** bump rails from 8.1.3.1 to 8.1.4
+
+### Testing
+
+- cover the log export and two trade refusals
+- insert price histories in bulk in the two slowest specs
+- **market-data:** a report retires the estimate it replaced
+- **market:** pin the query budget's clock, and count the usage read
+- **assistant:** pin the clock for the market-context reads
+- **market:** wait for the chart before reading its series
+
+### CI
+
+- add a 7-day cooldown to Dependabot updates
+- lint workflows with actionlint and zizmor
+- pin actions to SHAs and tighten workflow defaults
+- name workflows by Category · Name and rename their files
+
 ## [0.3.0] - 2026-10-02
 
 ### Upgrade notes
@@ -593,7 +776,8 @@ and ~94% test coverage.
 - Pre-commit hooks for secret leak prevention
 - ~2080 RSpec specs with ~94% line coverage (branch coverage enabled)
 
-[Unreleased]: https://github.com/rodacato/stockerly/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/rodacato/stockerly/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/rodacato/stockerly/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/rodacato/stockerly/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/rodacato/stockerly/compare/v0.1.0-rc1...v0.2.0
 [0.1.0-rc1]: https://github.com/rodacato/stockerly/compare/v0.1.0-alpha...v0.1.0-rc1
