@@ -1,6 +1,7 @@
-<%# Panorama (slice 3) — the daily cockpit. Mobile order: patrimonio, sentiment,
-    signals, radar. Desktop reorders into three columns at native width, so
-    the DOM stays in reading order and CSS does the rearranging. %>
+<%# Panorama (slice 3) — the daily cockpit. Mobile order: Hoy, signals, radar,
+    sentiment, so what may need a look comes before the market's mood. Desktop
+    reorders into three columns, so the DOM stays in reading order and CSS does
+    the rearranging. %>
 <% content_for :page_title, t(".titulo") %>
 <% content_for :page_subtitle, "#{l(Date.current, format: "%a · %d %b %Y").upcase} · CDMX" %>
 
@@ -9,20 +10,6 @@
     <%= render "dashboard/hoy", today: @today, summary: @summary, vs_cetes: @vs_cetes, plan_status: @plan_status, stale_watched: @stale_watched, currency: @currency,
                fx_unavailable: @fx_unavailable, prices_unavailable: @prices_unavailable %>
   </div>
-
-  <%# Sentiment carousel — a horizontal snap strip on a phone, a column on a
-      desktop. No dots: they would need JS to follow the scroll, and a static
-      row of dots that never moves is worse than the peeking next card. %>
-  <% if @sentiment_cards.any? %>
-    <section class="lg:order-4 lg:col-span-4">
-      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".carrusel") %></h2>
-      <div class="-mx-4 mt-3 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0">
-        <% @sentiment_cards.each do |card| %>
-          <%= render "dashboard/sentiment_card", card: card %>
-        <% end %>
-      </div>
-    </section>
-  <% end %>
 
   <section class="lg:order-3 lg:col-span-4">
     <%# The artboard's "Ver más" now has somewhere to go: /signals lifts the
@@ -85,6 +72,20 @@
       </div>
     <% end %>
   </section>
+
+  <%# Sentiment carousel — a horizontal snap strip on a phone, a column on a
+      desktop. No dots: they would need JS to follow the scroll, and a static
+      row of dots that never moves is worse than the peeking next card. %>
+  <% if @sentiment_cards.any? %>
+    <section class="lg:order-4 lg:col-span-4">
+      <h2 class="font-display text-lg font-bold tracking-tight text-fg-default"><%= t(".carrusel") %></h2>
+      <div class="-mx-4 mt-3 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0">
+        <% @sentiment_cards.each do |card| %>
+          <%= render "dashboard/sentiment_card", card: card %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
 
   <%# Quoted material, attributed and never re-toned by us (ADR-0001 governs our
       copy, not a third party's). Absent when nothing was published for what is tracked. %>
