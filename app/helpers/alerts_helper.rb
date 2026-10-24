@@ -119,10 +119,6 @@ module AlertsHelper
     end
   end
 
-  def alert_condition_options
-    CONDITION_FAMILIES.values.flatten.map { |condition| [ condition, condition_label(condition) ] }
-  end
-
   # "espera 60 min entre avisos" — the artboard surfaces the cooldown the
   # model has carried since it was created and no screen ever showed.
   def alert_cooldown_label(rule)

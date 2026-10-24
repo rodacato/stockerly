@@ -1,16 +1,5 @@
 module Admin
   module IntegrationsHelper
-    PROVIDER_WEBSITES = {
-      "Finnhub"        => "finnhub.io",
-      "CoinGecko"      => "coingecko.com",
-      "Yahoo Finance"  => "finance.yahoo.com",
-      "Alternative.me" => "alternative.me",
-      "ExchangeRate"   => "exchangerate-api.com",
-      "Banxico"        => "banxico.org.mx",
-      "Alpaca"         => "alpaca.markets",
-      "DataBursatil"   => "databursatil.com"
-    }.freeze
-
     # Alpaca is the only provider whose credential is two values. The gateway
     # splits the stored key on the colon, so the field has to ask for both.
     PROVIDER_KEY_FORMATS = {
@@ -37,10 +26,6 @@ module Admin
       return "—" if capabilities.empty?
 
       capabilities.map { |c| CAPABILITY_LABELS[c] || c.to_s.upcase }.join(" · ")
-    end
-
-    def integration_website(integration)
-      PROVIDER_WEBSITES[integration.provider_name]
     end
 
     def integration_key_placeholder(integration)

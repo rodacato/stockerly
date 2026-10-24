@@ -6,10 +6,6 @@ module DashboardHelper
 
   # ADR-013: the verb exists only as a lookup over a persisted observation.
   # No row, no chip — this returns nil and the caller renders nothing.
-  def observation_action(observation)
-    MarketData::Domain::ObservationAction.for(observation.observation_type)
-  end
-
   def observation_reading(observation)
     MarketData::Domain::ObservationAction.reading(observation.observation_type)
   end

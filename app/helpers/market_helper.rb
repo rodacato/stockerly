@@ -7,12 +7,6 @@ module MarketHelper
       .first&.integration_name
   end
 
-  # Native-currency price prefix used on the asset detail header and price
-  # chart. Per ADR / S09 convention: "MXN 48.50" / "USD 612.85".
-  def asset_currency_price(asset, precision: 2)
-    format_currency_mx(asset.current_price, currency: asset.currency, precision: precision)
-  end
-
   # The price in the reader's own currency, which is the whole MXN-first point:
   # a USD quote means little until you see what it is in pesos. Nil when the
   # asset already quotes in it, or when no rate is stored — an approximation
@@ -82,10 +76,6 @@ module MarketHelper
   # One series for the chart controller, from the closes we already sync.
   # Replaces the TradingView widget, which shipped the symbol being viewed to
   # a third party on every page load (D2).
-  def price_series_json(histories)
-    price_series(histories).to_json
-  end
-
   def price_series(histories)
     [ { data: histories.map { |row| { time: row.date.to_s, value: row.close.to_f } },
         token: "--color-chart-1", width: 2 } ]
@@ -357,24 +347,5 @@ module MarketHelper
     return "Banxico" if asset.asset_type_fixed_income?
 
     asset.data_source.presence || "sin registrar"
-  end
-
-  # Returns the visible tab list for an asset, in es-MX. Adaptive per #93:
-  # crypto/ETF/fixed_income trim away tabs they cannot populate, equity
-  # may still drop tabs when underlying data is missing.
-  def asset_detail_tabs(asset, has_fundamentals:, has_dividends:, has_statements:)
-    return [] if asset.asset_type_fixed_income?
-
-    tabs = [ { key: :resumen, label: "Resumen" } ]
-
-    if asset.asset_type_crypto?
-      tabs << { key: :mercado, label: "Mercado" } if has_fundamentals
-      return tabs
-    end
-
-    tabs << { key: :valoracion, label: "Valoración" } if has_fundamentals
-    tabs << { key: :dividendos, label: "Dividendos" } if has_dividends
-    tabs << { key: :estados,    label: "Estados financieros" } if has_statements
-    tabs
   end
 end
