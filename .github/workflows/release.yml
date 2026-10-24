@@ -38,7 +38,7 @@ jobs:
 
       # script/release_changelog.rb is stdlib only, so there is nothing to bundle.
       - name: Set up Ruby
-        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1.329.0
+        uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
 
       - name: Bump the version and generate the changelog entry
         id: bump
@@ -117,7 +117,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1.329.0
+        uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
 
       - name: Decide whether this version is already released
         id: check
