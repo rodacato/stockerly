@@ -12,7 +12,7 @@ one the app starts and uses only the keyless sources (see "Optional configuratio
 ## Prerequisites
 
 - **Docker** (for the Dev Container path), or
-- **Ruby 4.0.6** + **PostgreSQL 16** (for the bare-metal path)
+- **Ruby 4.0.9** + **PostgreSQL 16** (for the bare-metal path)
 - **Python 3** with the packages in `lib/python/requirements.txt` (`pip install -r`, ideally in a venv, then point `PYTHON_BIN` at its interpreter). Yahoo Finance, the only fundamentals source, runs through it. Only the production Docker image installs it for you; the Dev Container does not
 
 Node.js is **not** required — JS ships via import maps and CSS via the `tailwindcss-rails`
@@ -38,7 +38,7 @@ what it does not is in [.devcontainer/README.md](.devcontainer/README.md).
 
 ## Path 2 — Bare metal
 
-Requires Ruby 4.0.6 and a PostgreSQL 16 reachable on `localhost` with a `postgres` role.
+Requires Ruby 4.0.9 and a PostgreSQL 16 reachable on `localhost` with a `postgres` role.
 
 ```bash
 git clone https://github.com/rodacato/stockerly.git

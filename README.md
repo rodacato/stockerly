@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/rodacato/stockerly/actions/workflows/ci.yml/badge.svg)](https://github.com/rodacato/stockerly/actions/workflows/ci.yml)
 
-[![Ruby](https://img.shields.io/badge/Ruby-4.0.6-CC342D?logo=ruby&logoColor=white)](https://www.ruby-lang.org/)
+[![Ruby](https://img.shields.io/badge/Ruby-4.0.9-CC342D?logo=ruby&logoColor=white)](https://www.ruby-lang.org/)
 [![Rails](https://img.shields.io/badge/Rails-8.1-D30001?logo=rubyonrails&logoColor=white)](https://rubyonrails.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
@@ -79,7 +79,7 @@ for the full architecture reference.
 
 | Layer | Technology |
 |-------|-----------|
-| Backend | Ruby 4.0.6, Rails 8.1 |
+| Backend | Ruby 4.0.9, Rails 8.1 |
 | Database | PostgreSQL 16 (multi-database: primary + Solid Cache + Solid Queue + Solid Cable) |
 | Frontend | Hotwire (Turbo + Stimulus), Tailwind CSS 4 |
 | Background Jobs | Solid Queue |
@@ -92,7 +92,7 @@ for the full architecture reference.
 ## Getting Started
 
 The fastest path is the Dev Container (`Reopen in Container` → `bin/dev`). On bare metal
-(Ruby 4.0.6 + PostgreSQL 16), `bin/setup` does the whole thing — gems, databases, server —
+(Ruby 4.0.9 + PostgreSQL 16), `bin/setup` does the whole thing — gems, databases, server —
 and seeds demo data when it creates the database. Then open **`http://localhost:4100`**. The
 seeded demo login is `demo@stockerly.com` / `password123` (a regular user, not an admin). An
 instance with **no** users opens the Setup Wizard instead, which creates the single account;

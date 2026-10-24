@@ -69,7 +69,7 @@ es:
           La instalas en la pantalla de inicio y te llegan notificaciones push cuando se dispara
           una regla. Sin red muestra una página para reintentar: las cifras del portafolio nunca se
           guardan en caché, así que leerlas requiere conexión.
-    stack: [Ruby 4.0.6, Rails 8.1, PostgreSQL 16, Hotwire, Tailwind CSS 4, Solid Queue, Kamal 2, sin Node.js]
+    stack: [Ruby 4.0.9, Rails 8.1, PostgreSQL 16, Hotwire, Tailwind CSS 4, Solid Queue, Kamal 2, sin Node.js]
   screens:
     h2: Cómo se ven las pantallas
     sub: Dibujadas en el design system del proyecto, que espeja el código que shippea.
@@ -118,7 +118,7 @@ es:
           corre solo; luego <code>bin/dev</code>.
       - h: Bare metal
         p: >-
-          Ruby 4.0.6 y un PostgreSQL 16 en <code>localhost</code>. Node.js no hace falta — el
+          Ruby 4.0.9 y un PostgreSQL 16 en <code>localhost</code>. Node.js no hace falta — el
           JavaScript viaja por import maps y el CSS por el compilador standalone de Tailwind.
     cmd_label: Los dos caminos acaban aquí
     cmd_tag: puerto 4100
@@ -266,7 +266,7 @@ en:
           Install it to the home screen and get push notifications when a rule fires. Offline it
           shows a retry page: portfolio figures are never cached, so reading them needs a
           connection.
-    stack: [Ruby 4.0.6, Rails 8.1, PostgreSQL 16, Hotwire, Tailwind CSS 4, Solid Queue, Kamal 2, no Node.js]
+    stack: [Ruby 4.0.9, Rails 8.1, PostgreSQL 16, Hotwire, Tailwind CSS 4, Solid Queue, Kamal 2, no Node.js]
   screens:
     h2: What the screens look like
     sub: Drawn in the project's own design system, which mirrors the shipped code.
@@ -314,7 +314,7 @@ en:
           runs itself; then <code>bin/dev</code>.
       - h: Bare metal
         p: >-
-          Ruby 4.0.6 and a PostgreSQL 16 on <code>localhost</code>. Node.js is not required —
+          Ruby 4.0.9 and a PostgreSQL 16 on <code>localhost</code>. Node.js is not required —
           JavaScript ships through import maps and CSS through the Tailwind standalone compiler.
     cmd_label: Both paths end here
     cmd_tag: port 4100
