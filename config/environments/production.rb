@@ -36,29 +36,20 @@ Rails.application.configure do
     redirect: { exclude: ->(request) { request.path == "/up" } }
   }
 
-  # Log to STDOUT with the current request id as a default log tag.
-  config.log_tags = [ :request_id ]
-  config.logger   = ActiveSupport::TaggedLogging.logger(STDOUT)
+  # One JSON line per log event on STDOUT — web and job processes alike — with the request id as a named field.
+  config.log_tags = { request_id: :request_id }
+  config.rails_semantic_logger.appenders { |appenders| appenders.add(io: $stdout, formatter: :json) }
+  config.semantic_logger.application = "stockerly"
 
   # Change to "debug" to log everything (including potentially personally-identifiable information!).
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
 
-  # Prevent health checks from clogging up the logs.
+  # Prevent health checks and metric scrapes from clogging up the logs.
   config.silence_healthcheck_path = "/up"
+  config.middleware.insert_before Rails::Rack::Logger, Rails::Rack::SilenceRequest, path: "/metrics"
 
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
-
-  # Structured JSON logging via Lograge — one line per request.
-  config.lograge.enabled = true
-  config.lograge.formatter = Lograge::Formatters::Json.new
-  config.lograge.custom_options = lambda do |event|
-    {
-      request_id: event.payload[:request_id],
-      user_id: event.payload[:user_id],
-      ip: event.payload[:ip]
-    }.compact
-  end
 
   # Replace the default in-process memory cache store with a durable alternative.
   config.cache_store = :solid_cache_store
