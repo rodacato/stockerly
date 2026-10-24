@@ -5,8 +5,8 @@ RSpec.describe Trading::Domain::PositionReturns do
   let(:portfolio) { create(:portfolio, user: user) }
   let(:asset) { create(:asset, symbol: "NVDA", currency: "USD") }
 
-  def close(date, price)
-    create(:asset_price_history, asset: asset, date: date, close: price, open: price, high: price, low: price)
+  def closes(prices_by_date)
+    insert_price_history(asset, prices_by_date.map { |date, price| { date: date, close: price, open: price, high: price, low: price } })
   end
 
   def buy(shares, price, on:)
@@ -21,7 +21,7 @@ RSpec.describe Trading::Domain::PositionReturns do
   describe "a position held through the whole window" do
     before do
       buy(10, 100, on: 400.days.ago)
-      400.downto(0) { |d| close(d.days.ago.to_date, 100 + ((400 - d) * 0.1)) }
+      closes(400.downto(0).to_h { |d| [ d.days.ago.to_date, 100 + ((400 - d) * 0.1) ] })
     end
 
     it "reports what the window made in money" do
@@ -44,7 +44,7 @@ RSpec.describe Trading::Domain::PositionReturns do
   describe "a window that opens before the position did" do
     before do
       buy(10, 100, on: 3.days.ago)
-      10.downto(0) { |d| close(d.days.ago.to_date, 100 + d) }
+      closes(10.downto(0).to_h { |d| [ d.days.ago.to_date, 100 + d ] })
     end
 
     it "is absent rather than zero — not owning it is not the same as not moving" do
@@ -56,7 +56,7 @@ RSpec.describe Trading::Domain::PositionReturns do
   describe "money added inside the window" do
     before do
       buy(10, 100, on: 60.days.ago)
-      60.downto(0) { |d| close(d.days.ago.to_date, 100) }
+      closes(60.downto(0).to_h { |d| [ d.days.ago.to_date, 100 ] })
       buy(10, 100, on: 5.days.ago)
     end
 
@@ -72,7 +72,7 @@ RSpec.describe Trading::Domain::PositionReturns do
   describe "a sale inside the window" do
     before do
       buy(20, 100, on: 60.days.ago)
-      60.downto(0) { |d| close(d.days.ago.to_date, 100) }
+      closes(60.downto(0).to_h { |d| [ d.days.ago.to_date, 100 ] })
       create(:trade, portfolio: portfolio, asset: asset, side: :sell,
                      shares: 10, price_per_share: 100, executed_at: 5.days.ago)
     end
@@ -93,8 +93,7 @@ RSpec.describe Trading::Domain::PositionReturns do
   describe "history that ends yesterday" do
     before do
       buy(10, 100, on: 60.days.ago)
-      close(1.week.ago.to_date, 100)
-      close(Date.yesterday, 110)
+      closes(1.week.ago.to_date => 100, Date.yesterday => 110)
     end
 
     it "states the last close date and omits a one-day window with no later close" do
