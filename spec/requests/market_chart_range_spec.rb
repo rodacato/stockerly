@@ -10,10 +10,9 @@ RSpec.describe "Market chart range", type: :request do
   before do
     login_as(user)
     # Two years of closes, so every range has something different to show.
-    730.downto(0) do |d|
-      create(:asset_price_history, asset: asset, date: d.days.ago.to_date,
-                                   open: 100, high: 110, low: 90, close: 100 + (d % 7), volume: 1_500_000)
-    end
+    insert_price_history(asset, 730.downto(0).map do |d|
+      { date: d.days.ago.to_date, open: 100, high: 110, low: 90, close: 100 + (d % 7), volume: 1_500_000 }
+    end)
   end
 
   # The price series only. Counting `time` keys across the attribute used to do
