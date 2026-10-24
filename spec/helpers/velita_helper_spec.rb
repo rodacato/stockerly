@@ -43,7 +43,7 @@ RSpec.describe VelitaHelper, type: :helper do
     end
 
     it "links a citation to its card and leaves one with no card as text" do
-      html = Nokogiri::HTML.fragment(helper.assistant_answer_with_citations(message))
+      html = Nokogiri::HTML.fragment(helper.assistant_answer_html(message))
 
       expect(html.css("a").map { |link| [ link.text, link["href"], link["aria-label"] ] })
         .to eq([ [ "[1]", "#assistant_card_7_1", "Fuente 1: Contexto de mercado" ] ])
@@ -51,7 +51,37 @@ RSpec.describe VelitaHelper, type: :helper do
     end
 
     it "escapes the prose around the links" do
-      expect(helper.assistant_answer_with_citations(message)).to include("&lt;b&gt;0.6&lt;/b&gt;")
+      expect(helper.assistant_answer_html(message)).to include("&lt;b&gt;0.6&lt;/b&gt;")
+    end
+  end
+
+  describe "an answer's Markdown" do
+    def render(answer)
+      Nokogiri::HTML.fragment(helper.assistant_answer_html(
+        AssistantMessage.new(id: 7, answer: answer, cards: [ { "kind" => "market", "title" => "Contexto" } ])
+      ))
+    end
+
+    it "renders paragraphs, a list and bold instead of showing the syntax" do
+      html = render("## Resumen\n\n**NVDA** sube [1].\nTus posiciones:\n- AAPL\n- **VOO** [1]\n\nNada más.")
+
+      expect(html.css("p").map(&:text)).to eq([ "Resumen", "NVDA sube [1].Tus posiciones:", "Nada más." ])
+      expect(html.css("p br").size).to eq(1)
+      expect(html.css("li").map(&:text)).to eq([ "AAPL", "VOO [1]" ])
+      expect(html.css("strong").map(&:text)).to eq(%w[NVDA VOO])
+      expect(html.css("li a").map(&:text)).to eq([ "[1]" ])
+      expect(html.text).not_to include("**", "##", "- ")
+    end
+
+    it "leaves a bold still being streamed as text until it closes" do
+      expect(render("Sube **NVD").text).to eq("Sube **NVD")
+    end
+
+    it "keeps markup inside the Markdown escaped" do
+      html = render("**<script>x</script>**")
+
+      expect(html.css("script")).to be_empty
+      expect(html.css("strong").text).to eq("<script>x</script>")
     end
   end
 

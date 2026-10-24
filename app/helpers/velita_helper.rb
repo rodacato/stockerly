@@ -77,19 +77,35 @@ module VelitaHelper
     time.to_date == Date.current ? l(time, format: "%H:%M") : l(time, format: "%-d %b · %H:%M")
   end
 
-  # The prose with each [n] turned into a link to the card it cites; a number
-  # with no card stays plain text.
-  def assistant_answer_with_citations(message)
-    cards = message.cards.size
-    parts = message.answer.to_s.split(/(\[\d+\])/).map do |part|
+  ANSWER_LIST_ITEM = /\A\s*(?:[-*•]|\d+[.)])\s+/
+  ANSWER_INLINE = /(\*\*[^*\n]+\*\*|\[\d+\])/
+
+  # Models write Markdown whatever the prompt says: render paragraphs, lists and bold, drop the rest.
+  def assistant_answer_html(message)
+    blocks = message.answer.to_s.lines.map(&:strip)
+                    .chunk { |line| line.empty? ? :_separator : line.match?(ANSWER_LIST_ITEM) }
+    safe_join(blocks.map do |listed, lines|
+      if listed
+        tag.ul(safe_join(lines.map { |line| tag.li(assistant_inline(line.sub(ANSWER_LIST_ITEM, ""), message)) }),
+               class: "flex list-disc flex-col gap-1 pl-5")
+      else
+        tag.p(safe_join(lines.map { |line| assistant_inline(line.sub(/\A#+\s*/, ""), message) }, tag.br))
+      end
+    end)
+  end
+
+  # Each [n] links to the card it cites; a number with no card stays plain text.
+  def assistant_inline(text, message)
+    safe_join(text.split(ANSWER_INLINE).map do |part|
+      next tag.strong(assistant_inline(part[2...-2], message), class: "font-semibold") if part.start_with?("**")
+
       number = part[/\A\[(\d+)\]\z/, 1]&.to_i
-      next part unless number&.between?(1, cards)
+      next part unless number&.between?(1, message.cards.size)
 
       link_to(part, "#assistant_card_#{message.id}_#{number}",
               data: { action: "assistant-sources#reveal" }, class: "font-mono text-sm text-primary-fg hover:underline",
               aria: { label: t("assistant.cita", number: number, title: message.cards[number - 1]["title"]) })
-    end
-    safe_join(parts)
+    end)
   end
 
   # Asked from a ? popover: the drawer opens with the term already written.
