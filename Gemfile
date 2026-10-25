@@ -46,6 +46,8 @@ gem "rails_semantic_logger"
 gem "yabeda-rails"
 gem "yabeda-prometheus"
 gem "yabeda-puma-plugin"
+# Restores CGI.parse (gone in Ruby 4) for prometheus-client 4; drop once yabeda-prometheus allows prometheus-client >= 5.
+gem "cgi"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
