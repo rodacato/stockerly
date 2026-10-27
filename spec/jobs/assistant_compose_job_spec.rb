@@ -107,6 +107,17 @@ RSpec.describe AssistantComposeJob do
     expect(message.reload).to be_failed
   end
 
+  it "keeps an answer already saved when only its final broadcast fails" do
+    stream("El RSI de NVDA está en 72.4 [1].")
+    allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to).and_call_original
+    allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
+      .with(anything, anything, hash_including(partial: "assistant/questions/answer", locals: hash_including(message: having_attributes(status: "answered"))))
+      .and_raise("cable down")
+
+    expect { described_class.perform_now(message.id) }.to raise_error("cable down")
+    expect(message.reload).to be_answered
+  end
+
   it "treats a malformed stream as the provider failing, not a stuck answer" do
     stub_request(:post, url).to_return(status: 200, body: "event: content_block_delta\ndata: {not json\n\n")
 

@@ -21,7 +21,7 @@ class AssistantComposeJob < ApplicationJob
   rescue Assistant::Gateways::AnthropicMessages::Error
     fail!(message, "provider_error")
   rescue StandardError
-    fail!(message, "internal_error") if message
+    fail!(message, "internal_error") if message&.pending? || message&.streaming?
     raise
   end
 
