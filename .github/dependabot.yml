@@ -10,6 +10,16 @@ updates:
   commit-message:
     prefix: chore
     include: scope
+- package-ecosystem: pip
+  directory: "/lib/python"
+  schedule:
+    interval: weekly
+  cooldown:
+    default-days: 7
+  open-pull-requests-limit: 10
+  commit-message:
+    prefix: chore
+    include: scope
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
