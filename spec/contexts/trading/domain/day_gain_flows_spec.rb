@@ -56,6 +56,25 @@ RSpec.describe Trading::Domain::PortfolioSummary, "#day_gain with external flows
     expect(day_gain.absolute).to eq(0)
   end
 
+  it "still subtracts a purchase dated today that a later rebuild of yesterday left out" do
+    held = mxn_asset(symbol: "HELD", current_price: 10)
+    create(:position, portfolio: portfolio, asset: held, shares: 500, avg_cost: 10, status: :open)
+    create(:trade, portfolio: portfolio, asset: held, side: :buy, shares: 500, price_per_share: 10,
+                   currency: "MXN", executed_at: 5.days.ago).update_column(:created_at, 5.days.ago)
+    bought = mxn_asset(symbol: "NEW", current_price: 10)
+    [ held, bought ].each do |asset|
+      (4.days.ago.to_date..Date.current).each { |date| create(:asset_price_history, asset: asset, date: date, close: 10) }
+    end
+    portfolio.update!(inception_date: 10.days.ago.to_date)
+    snapshot_yesterday(5_000).update_columns(created_at: 2.hours.ago, updated_at: 2.hours.ago)
+
+    record_trade(symbol: "NEW", shares: 100, price: 10)
+    portfolio.trades.order(:id).last.update_column(:created_at, 1.minute.ago)
+    Trading::UseCases::RebuildSnapshots.call(portfolio: portfolio.reload, from: Date.yesterday)
+
+    expect(day_gain.absolute).to eq(0)
+  end
+
   it "does not report a purchase made today as today's gain either" do
     held = mxn_asset(symbol: "HELD", current_price: 10)
     create(:position, portfolio: portfolio, asset: held, shares: 500, avg_cost: 10, status: :open)

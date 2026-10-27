@@ -20,11 +20,10 @@ module Trading
         total_of(trades.where(executed_at: from.beginning_of_day..to.end_of_day))
       end
 
-      # Flows a snapshot last computed at `time` could not have seen. Keyed on when the trade was
-      # recorded, because that is what decides whether the snapshot includes
-      # it — the date typed on the form does not.
-      def since(time)
-        total_of(trades.where(created_at: time..))
+      # Flows a snapshot could not have seen: recorded after it was last
+      # computed, or dated after the day it values.
+      def missed_by(snapshot)
+        total_of(trades.where(created_at: snapshot.updated_at..).or(trades.where(executed_at: snapshot.date.tomorrow.beginning_of_day..)))
       end
 
       # Flows per day across a range, for a history that has been rebuilt to
