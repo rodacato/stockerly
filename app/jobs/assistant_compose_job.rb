@@ -19,11 +19,19 @@ class AssistantComposeJob < ApplicationJob
     answer = stream(message, connection, cards)
     finish(message, answer, cards)
   rescue Assistant::Gateways::AnthropicMessages::Error
-    message.update!(status: :failed, failure_tag: "provider_error")
-    broadcast(message)
+    fail!(message, "provider_error")
+  rescue StandardError
+    fail!(message, "internal_error") if message
+    raise
   end
 
   private
+
+  # A failed message offers the retry; one left streaming shows "escribiendo" forever.
+  def fail!(message, tag)
+    message.update!(status: :failed, answer: nil, failure_tag: tag)
+    broadcast(message)
+  end
 
   # The planner picks from the registry; when it fails, picks nothing, or what
   # it picked holds no data, the deterministic selector answers instead.
