@@ -12,13 +12,14 @@ module Alerts
       end
 
       def self.triggered?(rule, asset, new_price)
-        old_price = asset.current_price || 0
+        # A first price crosses nothing; the sync jobs report its absence as "0".
+        old_price = asset.current_price.to_d
 
         case rule.condition
         when "price_crosses_above"
-          old_price < rule.threshold_value && new_price >= rule.threshold_value
+          old_price.positive? && old_price < rule.threshold_value && new_price >= rule.threshold_value
         when "price_crosses_below"
-          old_price > rule.threshold_value && new_price <= rule.threshold_value
+          old_price.positive? && old_price > rule.threshold_value && new_price <= rule.threshold_value
         when "day_change_percent"
           change = day_change(asset, new_price)
           return false if change.nil?
