@@ -97,7 +97,7 @@ module Trading
       end
 
       def external_flows_since(snapshot)
-        ExternalFlows.new(portfolio, currency: currency).since(snapshot.updated_at)
+        ExternalFlows.new(portfolio, currency: currency).missed_by(snapshot)
       end
 
       # ADR-009: value the snapshot at ITS date, not today's. Revaluing

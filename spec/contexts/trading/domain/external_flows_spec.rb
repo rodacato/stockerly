@@ -56,19 +56,28 @@ RSpec.describe Trading::Domain::ExternalFlows do
     end
   end
 
-  describe "#since" do
-    it "counts trades recorded after the given moment, whatever date they carry" do
-      cutoff = Time.current
+  describe "#missed_by" do
+    def snapshot(computed_at) = PortfolioSnapshot.new(date: Date.yesterday, updated_at: computed_at)
+
+    it "counts trades recorded after the snapshot was computed, whatever date they carry" do
+      computed_at = Time.current
       trade(:buy, 100, on: 5.days.ago)
 
-      expect(flows.since(cutoff)).to eq(1_000)
+      expect(flows.missed_by(snapshot(computed_at))).to eq(1_000)
     end
 
     it "ignores a trade recorded before it" do
       old = trade(:buy, 100, on: 5.days.ago)
       old.update_column(:created_at, 3.days.ago)
 
-      expect(flows.since(Time.current)).to eq(0)
+      expect(flows.missed_by(snapshot(Time.current))).to eq(0)
+    end
+
+    it "counts a trade dated after the snapshot's day, even if recorded before it was computed" do
+      today = trade(:buy, 100, on: Time.current)
+      today.update_column(:created_at, 1.hour.ago)
+
+      expect(flows.missed_by(snapshot(Time.current))).to eq(1_000)
     end
   end
 end
