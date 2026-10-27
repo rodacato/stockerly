@@ -223,6 +223,16 @@ RSpec.describe AssistantComposeJob do
     end).to have_been_made
   end
 
+  it "does not repeat a failed question as an earlier one when it is retried" do
+    conversation.messages.create!(question: "¿Qué significa el RSI?", status: :failed, created_at: 2.minutes.ago)
+    stream("El RSI de NVDA está en 72.4 [1].")
+
+    described_class.perform_now(message.id)
+
+    expect(a_request(:post, url).with { |request| JSON.parse(request.body)["messages"] == [ { "role" => "user", "content" => "¿Qué significa el RSI?" } ] })
+      .to have_been_made.at_least_once
+  end
+
   it "asks the first question of a conversation as it was written" do
     stream("El RSI de NVDA está en 72.4 [1].")
 

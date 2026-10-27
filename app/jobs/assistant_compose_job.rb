@@ -58,7 +58,7 @@ class AssistantComposeJob < ApplicationJob
   # Earlier questions only, never their answers or cards: a follow-up resolves,
   # and the numbers gate still sees only this turn's reads (D172).
   def asked(message)
-    earlier = message.conversation.messages.where(created_at: ...message.created_at).last(Assistant::Domain::Prompt::EARLIER)
+    earlier = message.conversation.messages.answered.where(created_at: ...message.created_at).last(Assistant::Domain::Prompt::EARLIER)
     Assistant::Domain::Prompt.question(message.question, earlier: earlier.map(&:question))
   end
 
