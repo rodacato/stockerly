@@ -17,5 +17,13 @@ RSpec.describe Alerts::Handlers::EvaluateAlertsOnPriceUpdate do
 
       expect(use_case).to have_received(:call).with(asset_id: asset.id, new_price: "160.0", old_price: "150.0")
     end
+
+    # The sync jobs publish "0" for an asset that had no price before.
+    it "does not treat an asset's first price as a crossing" do
+      fresh = create(:asset, symbol: "NEW", current_price: nil)
+      create(:alert_rule, asset_symbol: "NEW", condition: :price_crosses_above, threshold_value: 100)
+
+      expect(described_class.call(asset_id: fresh.id, new_price: "150", old_price: "0")).to be_empty
+    end
   end
 end
