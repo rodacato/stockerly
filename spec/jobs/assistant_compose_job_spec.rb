@@ -75,6 +75,27 @@ RSpec.describe AssistantComposeJob do
     expect(message.reload).to be_discarded
   end
 
+  it "keeps none of the prose a provider failure cut off" do
+    error = %(event: error\ndata: #{ { type: "error", error: { message: "overloaded" } }.to_json }\n\n)
+    content = %(event: content_block_delta\ndata: #{ { type: "content_block_delta", index: 0, delta: { type: "text_delta", text: "El RSI es 72.4 [1] y luego " } }.to_json }\n\n)
+    stub_request(:post, url).to_return(status: 200, body: content + error)
+
+    described_class.perform_now(message.id)
+
+    expect(message.reload).to be_failed
+    expect(message.answer).to be_nil
+  end
+
+  it "fails the message, so it can be asked again, when anything else breaks mid-answer" do
+    stream("El RSI de NVDA está en 72.4 [1].")
+    allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to).and_call_original
+    allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
+      .with(anything, anything, hash_including(partial: "assistant/questions/message")).and_raise("render failed")
+
+    expect { described_class.perform_now(message.id) }.to raise_error("render failed")
+    expect(message.reload).to be_failed
+  end
+
   it "treats a malformed stream as the provider failing, not a stuck answer" do
     stub_request(:post, url).to_return(status: 200, body: "event: content_block_delta\ndata: {not json\n\n")
 
