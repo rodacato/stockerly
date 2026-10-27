@@ -20,7 +20,7 @@ module Trading
         total_of(trades.where(executed_at: from.beginning_of_day..to.end_of_day))
       end
 
-      # Flows a snapshot could not have seen. Keyed on when the trade was
+      # Flows a snapshot last computed at `time` could not have seen. Keyed on when the trade was
       # recorded, because that is what decides whether the snapshot includes
       # it — the date typed on the form does not.
       def since(time)

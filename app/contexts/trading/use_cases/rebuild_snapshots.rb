@@ -45,7 +45,7 @@ module Trading
           { portfolio_id: portfolio.id, date: date, currency: currency, total_value: market_value,
             created_at: now, updated_at: now }
         end
-        PortfolioSnapshot.upsert_all(rows, unique_by: %i[portfolio_id date], update_only: %i[currency total_value]) # rubocop:disable Rails/SkipsModelValidations -- rows are built from typed values above
+        PortfolioSnapshot.upsert_all(rows, unique_by: %i[portfolio_id date], update_only: %i[currency total_value updated_at], record_timestamps: false) # rubocop:disable Rails/SkipsModelValidations -- rows are built from typed values above
         rows.size
       end
     end
