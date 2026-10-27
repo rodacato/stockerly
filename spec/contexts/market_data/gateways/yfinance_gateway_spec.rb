@@ -329,7 +329,7 @@ RSpec.describe MarketData::Gateways::YfinanceGateway do
 
       expect(gateway.fetch_dividends("WALMEX.MX").value!)
         .to eq([ { ex_date: Date.new(2025, 12, 16), pay_date: nil,
-                   amount_per_share: BigDecimal("0.58"), currency: "MXN" } ])
+                   amount_per_share: BigDecimal("0.58"), currency: nil } ])
     end
   end
 

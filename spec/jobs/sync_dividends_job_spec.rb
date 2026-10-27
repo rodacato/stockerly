@@ -34,6 +34,29 @@ RSpec.describe SyncDividendsJob, type: :job do
     expect { described_class.perform_now }.not_to change(Dividend, :count)
   end
 
+  context "when Yahoo answers, which reports no currency" do
+    before do
+      allow(gateway).to receive(:fetch_dividends).and_return(Dry::Monads::Failure([ :unavailable, "down" ]))
+      allow(PythonRunner).to receive(:call)
+        .and_return(Dry::Monads::Success([ { "date" => "2026-03-15", "amount" => 0.25 } ]))
+    end
+
+    it "stores a US stock's dividend in dollars" do
+      described_class.perform_now
+
+      expect(asset.dividends.pluck(:currency)).to eq([ "USD" ])
+    end
+
+    it "stores a BMV stock's dividend in pesos" do
+      bmv = create(:asset, :stock, symbol: "WALMEX", currency: "MXN", country: "MX", exchange: "BMV")
+      create(:position, portfolio: portfolio, asset: bmv, status: :open)
+
+      described_class.perform_now
+
+      expect(bmv.dividends.pluck(:currency)).to eq([ "MXN" ])
+    end
+  end
+
   it "publishes DividendsSynced event" do
     dividend_data = [
       { ex_date: Date.new(2026, 4, 1), pay_date: nil,

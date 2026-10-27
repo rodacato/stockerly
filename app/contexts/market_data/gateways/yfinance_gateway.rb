@@ -89,11 +89,12 @@ module MarketData
 
       # Returns Success([{ ex_date:, pay_date:, amount_per_share:, currency: }, ...])
       # Shape matches AlpacaGateway#fetch_dividends, so the two are interchangeable.
-      def fetch_dividends(symbol, currency: "MXN")
+      # Yahoo reports no currency, so the caller falls back to the asset's.
+      def fetch_dividends(symbol)
         run("dividends", symbol).fmap do |entries|
           entries.map do |entry|
             { ex_date: Date.parse(entry["date"]), pay_date: nil,
-              amount_per_share: entry["amount"].to_d, currency: currency }
+              amount_per_share: entry["amount"].to_d, currency: nil }
           end
         end
       end
