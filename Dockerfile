@@ -33,7 +33,8 @@ ENV RAILS_ENV="production" \
 # way through, and it is Python. PythonRunner shells out to this interpreter.
 COPY lib/python/requirements.txt /tmp/python-requirements.txt
 RUN python3 -m venv --upgrade-deps /rails/.venv && \
-    /rails/.venv/bin/pip install --no-cache-dir -q -r /tmp/python-requirements.txt && \
+    /rails/.venv/bin/pip install --no-cache-dir -q --require-hashes --only-binary=:all: \
+      -r /tmp/python-requirements.txt && \
     rm /tmp/python-requirements.txt
 
 # Throw-away build stage to reduce size of final image
