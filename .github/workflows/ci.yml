@@ -136,7 +136,7 @@ jobs:
       - name: Resolve the Python requirements the way the image builds them
         run: |
           python -m venv --upgrade-deps /tmp/gate
-          /tmp/gate/bin/pip install --dry-run --only-binary=:all: -r lib/python/requirements.txt
+          /tmp/gate/bin/pip install --dry-run --require-hashes --only-binary=:all: -r lib/python/requirements.txt
 
   lint:
     runs-on: ubuntu-latest
