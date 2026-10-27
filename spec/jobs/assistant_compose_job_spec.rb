@@ -255,6 +255,16 @@ RSpec.describe AssistantComposeJob do
       .to have_been_made.at_least_once
   end
 
+  it "sends an earlier question that is still being answered" do
+    conversation.messages.create!(question: "¿Cómo va NVDA?", status: :streaming, created_at: 1.minute.ago)
+    stream("El RSI de NVDA está en 72.4 [1].")
+
+    described_class.perform_now(message.id)
+
+    expect(a_request(:post, url).with { |request| JSON.parse(request.body)["messages"].sole["content"].include?("- ¿Cómo va NVDA?") })
+      .to have_been_made.at_least_once
+  end
+
   it "asks the first question of a conversation as it was written" do
     stream("El RSI de NVDA está en 72.4 [1].")
 
