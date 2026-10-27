@@ -86,6 +86,17 @@ RSpec.describe AssistantComposeJob do
     expect(message.answer).to be_nil
   end
 
+  it "fails an answer the token limit cut off mid-sentence" do
+    content = %(event: content_block_delta\ndata: #{ { type: "content_block_delta", index: 0, delta: { type: "text_delta", text: "El RSI es 72.4 [1] y en zona de" } }.to_json }\n\n)
+    stop = %(event: message_delta\ndata: #{ { type: "message_delta", delta: { stop_reason: "max_tokens" } }.to_json }\n\n)
+    stub_request(:post, url).to_return(status: 200, body: content + stop)
+
+    described_class.perform_now(message.id)
+
+    expect(message.reload).to be_failed
+    expect(message.answer).to be_nil
+  end
+
   it "fails the message, so it can be asked again, when anything else breaks mid-answer" do
     stream("El RSI de NVDA está en 72.4 [1].")
     allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to).and_call_original

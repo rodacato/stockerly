@@ -97,6 +97,8 @@ module Assistant
         case event["type"]
         when "content_block_delta"
           yield event.dig("delta", "text") if event.dig("delta", "type") == "text_delta"
+        when "message_delta"
+          raise Error, "answer cut off at the token limit" if event.dig("delta", "stop_reason") == "max_tokens"
         when "error"
           raise Error, redact(event.dig("error", "message"))
         end
