@@ -83,6 +83,16 @@ RSpec.describe AssistantComposeJob do
     expect(message.reload).to be_failed
   end
 
+  it "does not ask a provider the owner disconnected after the question was queued" do
+    Integration.find_by(provider_type: "Assistant").update!(connection_status: :disconnected)
+    stream("hola")
+
+    described_class.perform_now(message.id)
+
+    expect(a_request(:post, url)).not_to have_been_made
+    expect(message.reload.failure_tag).to eq("not_connected")
+  end
+
   it "does nothing to a message already answered" do
     message.update!(status: :answered, answer: "ya")
 

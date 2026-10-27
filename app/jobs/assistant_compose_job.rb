@@ -11,7 +11,7 @@ class AssistantComposeJob < ApplicationJob
     return unless message&.pending?
 
     connection = Administration::Queries::AssistantConnection.call
-    return message.update!(status: :failed, failure_tag: "not_connected").then { broadcast(message) } unless connection
+    return message.update!(status: :failed, failure_tag: "not_connected").then { broadcast(message) } unless connection&.dig(:status) == :connected
 
     cards = message.cards.map { |card| Assistant::Domain::Card.from_h(card) }.presence || choose_cards(message, connection)
     message.update!(cards: cards.map(&:to_h), status: :streaming)
