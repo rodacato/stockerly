@@ -134,13 +134,18 @@ See [CLAUDE.md](CLAUDE.md) for the complete architecture reference.
 
 **GitHub is the system of record** ([ADR-022](docs/architecture/adr/0022-github-as-the-system-of-record.md)).
 No markdown file in this repo states what is open — the private `Stockerly` Project holds every
-outstanding item, and anything ready to build is promoted to a public Issue first.
+outstanding item, and planned work ready to build is promoted to a public Issue first — the draft
+is converted, not duplicated.
 [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md) is the operational manual and is
 required reading before opening an issue or a PR.
 
 A feature needs all four filters before it becomes an issue: a documented personal trigger, a
 JTBD, a usage metric, and a Definition of Done. Without them it stays a draft on the board. The
 issue templates in [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) enforce this.
+
+Maintenance found while working — a fix, chore, docs, CI, a dependency bump — skips the board and
+the issue and goes straight to a PR, whose body is the record. A change a user would notice is
+planned work, not maintenance, and gets a card.
 
 ## Making Changes
 
@@ -176,7 +181,8 @@ issue templates in [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) enforce 
 
 5. Open a Pull Request against `master`. **Its body must carry `Closes #N`** (or `Fixes #N` /
    `Resolves #N`) for every issue it resolves — that keyword is the only thing that closes an
-   issue on merge, and a missed one leaves the board lying about what is open.
+   issue on merge, and a missed one leaves the board lying about what is open. A maintenance PR
+   with no issue says instead what changed, why, and how it was verified.
 
 6. If the change is visual, say which artboard in [`design/exports/`](design/exports/) it
    implements, or re-export the artboard if the design moved. The design system in

@@ -83,8 +83,10 @@ boundary change.
 
 ## Discovery card — no feature without all 4
 
-Before building anything non-trivial, these must exist (capture as a GitHub
-Issue). No exceptions — this is the main anti-drift mechanism.
+Before building any planned work, these must exist (captured on the Issue the
+draft is converted to). No exceptions — this is the main anti-drift mechanism.
+Maintenance found while working (fix, chore, docs, ci, deps) goes straight to a
+PR whose body is the record; a user-visible change is planned work.
 
 1. **Documented personal trigger** — date + the specific situation Adrian hit
 2. **JTBD** — "When X, I want Y, so that Z"
@@ -142,7 +144,7 @@ protocol lives in [`docs/ops/github-workflow.md`](docs/ops/github-workflow.md).
 
 | Phrase (Spanish) | Behavior |
 |---|---|
-| "tengo una idea" | Don't build. Open a discovery card (GitHub Issue) with the 4 filters. If the trigger isn't documented, say so. |
+| "tengo una idea" | Don't build. Open a draft on the board; it is converted to an Issue once it states the 4 filters. If the trigger isn't documented, say so. |
 | "¿dónde estamos?" / "estado del proyecto" | Read the board's in-flight items + the open Issues + `docs/vision/`. Summarize: goal, done vs pending, what's next. |
 | "consulta a los expertos" / "que el panel evalúe" | Activate the relevant experts from `docs/vision/experts.md`; end with recommendation + risks + rollback. |
 
