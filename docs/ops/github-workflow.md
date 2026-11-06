@@ -26,6 +26,10 @@ resumes it needs a home decided on purpose.
 
 ## The loop
 
+Two lanes reach a PR. **Planned work** — a feature, an idea, debt someone decided to pay — runs the
+loop below. **Maintenance found while working** — a fix, chore, docs, CI, a dependency bump — may go
+straight to a PR with no draft and no issue (see [the maintenance lane](#the-maintenance-lane)).
+
 ```
 idea / finding
       │
@@ -38,7 +42,7 @@ idea / finding
    Issue  ◄──────────────────────────────
       │   promoted from the draft — board position and fields survive
       ▼
-  branch ──► PR "Closes #N" ──► Done
+  branch ──► PR "Closes #N" (+ the ADR, if a decision was made) ──► Done
 ```
 
 **Draft** — lives only in the Project. No number, no URL, invisible outside the board. Where an
@@ -46,11 +50,22 @@ idea goes the moment it exists, and where a finding goes when it is real but un-
 costs nothing and notifies nobody; the alternative is an idea that lives in a chat log.
 
 **Issue** — public and numbered. Promoted when it can state the four filters. **Without all four it
-stays a draft.** That gate predates this process and does not change.
+stays a draft.** That gate predates this process and does not change. Promotion **converts** the
+draft (*Convert to issue* on the card) — never a fresh issue beside it, which would leave the draft
+behind as a duplicate.
 
 **Done** — closed by a PR carrying `Closes #N`. Drafts have no number and cannot be closed that
-way, so anything heading for a PR is promoted first. This is the constraint that keeps drafts from
-quietly becoming a second board.
+way, so planned work heading for a PR is promoted first. This is the constraint that keeps drafts
+from quietly becoming a second board.
+
+### The maintenance lane
+
+A fix, chore, docs, CI or dependency change found while working needs no draft and no issue. **The
+PR body is the record:** what changed, why, and how it was verified. The four-filter gate is for
+planned work, not for a typo or a Dependabot bump.
+
+The lane has one boundary: **a maintenance PR that changes behaviour a user would notice was planned
+work**, and gets a card. A bug report someone filed is already an issue; its PR closes it as usual.
 
 ---
 
@@ -92,9 +107,10 @@ sprint practice — a label that duplicates a column is the duplication this pro
 ## How to open work
 
 **An idea, or a finding you have not investigated** → a draft on the board. Title, a body with
-whatever evidence you have, `Severidad` and `Flow`. That is the whole ritual.
+whatever evidence you have, `Severidad` and `Flow`. That is the whole ritual. **A security finding
+stays a draft and is never promoted** — the repo is public; see [`SECURITY.md`](../../SECURITY.md).
 
-**Feature / Refactor / Chore / Docs** → the *Feature* template, which enforces the four filters:
+**Planned Feature / Refactor / Chore / Docs** → convert the draft with the *Feature* template, which enforces the four filters:
 documented personal trigger (date + situation) · JTBD (*"When X, I want Y, so that Z"*, mapping to
 one of the seven canonical or justifying a new one) · usage metric · Definition of Done. Add type,
 context and priority labels.
@@ -106,17 +122,23 @@ data** — the repo is public; use synthetic examples.
 **the criterion that closes it**. A research issue that cannot say what would end it is a reading
 list, not work. Its output is a decision — an ADR, or a `Dn` in `design/DECISIONS.md` — or a
 promoted issue. List the experts to consult from [`docs/vision/experts.md`](../vision/experts.md).
+A write-up in `docs/research/` closes on its status line, which says where it went: the decision
+or ADR, `Shipped`, `Discarded`, or `Reference only`.
+
+**Maintenance found while working** → no issue; open the PR ([the maintenance lane](#the-maintenance-lane)).
 
 ---
 
 ## How to open a PR
 
-1. **`Closes #N` in the PR body**, first sentence. Only `close`/`fix`/`resolve` and their
-   conjugations work, only on merge to the default branch. Don't lose the line across a rebase.
+1. **`Closes #N` in the PR body**, first sentence, when the PR resolves an issue. Only
+   `close`/`fix`/`resolve` and their conjugations work, only on merge to the default branch. Don't
+   lose the line across a rebase. A maintenance PR with no issue says instead what changed, why,
+   and how it was verified.
 2. Fill [the template](../../.github/PULL_REQUEST_TEMPLATE.md): what it does (why before what),
-   the linked issue, and the checklist — tests, Rubocop, ADR-001 (no prescriptive language), no
-   fiscal additions, no co-author line, discovery card complete for a `feat`, an ADR for an
-   architectural refactor.
+   the linked issue or the maintenance record, and the checklist — tests, Rubocop, ADR-001 (no
+   prescriptive language), no fiscal additions, no co-author line, discovery card complete for a
+   `feat`, an ADR for an architectural refactor. An ADR born from the work lands in the same PR.
 3. Never push to `master` and never bypass branch protection. Branch with
    `git checkout -b <name> origin/master --no-track`.
 

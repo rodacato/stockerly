@@ -120,8 +120,11 @@ Subscriptions are wired in `config/initializers/event_subscriptions.rb`.
 ## Architecture decisions
 
 Decisions live in [`adr/`](./adr/) as ADRs (Architecture Decision Records). An ADR is never edited
-to read as though it was always right — a reversal is recorded as a dated amendment or a
-`Superseded by` header, because the reasoning is the part worth keeping.
+to read as though it was always right, because the reasoning is the part worth keeping. A
+refinement that leaves the decision standing is a dated amendment, noted on the status line. A new
+or reversed decision is a new ADR, and the old one's status says `Superseded by` — or `Superseded
+in part by` when only a clause falls, as with 002 and 025. An ADR born from the work lands in the
+PR that carries it.
 
 | ADR | Title | Status |
 |---|---|---|
