@@ -577,12 +577,12 @@ single-user asset tracker after the closed beta failed on UX grounds. See
 - remove dead helper methods + two orphan events
 - remove dead use cases, skeleton helper, and orphan partials
 - remove dead welcome mailer (caller deleted with registration)
-- untrack .mcp.json (kwik-e symlink, gitignore it)
+- untrack .mcp.json (local-only, gitignore it)
 - kick off 2.0 evolve — bitacora, todo, ignore redesign/
 - **deps:** bump crass to 1.0.7 (fixes ReDoS/DoS advisories)
 - **deps:** bump actions/cache from 5 to 6
 - **deps:** bump image_processing from 1.14.0 to 2.0.2 (#193)
-- **devcontainer:** wire kwik-e harness (personal-safe)
+- **devcontainer:** wire local agent tooling (personal-safe)
 - **ops:** consolidate hardcoded support email + document LFPDPPP routing check (#169) (#182)
 - close S11 — retro + qa + log final (#160)
 - **mailers:** bug-report mailer es-MX subject + logo regression spec (#149) (#159)
