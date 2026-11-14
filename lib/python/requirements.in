@@ -1,2 +1,2 @@
-yfinance==1.7.0
+yfinance==1.8.0
 curl_cffi==0.17.0
