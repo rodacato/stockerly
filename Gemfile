@@ -35,7 +35,7 @@ gem "dry-monads", "~> 1.11"
 gem "pagy", "~> 43.7"
 
 # HTTP client for external API gateways [https://github.com/lostisland/faraday]
-gem "faraday", "~> 2.14"
+gem "faraday", "~> 2.15"
 gem "faraday-retry"
 
 # Structured JSON logging for production [https://github.com/reidmorrison/rails_semantic_logger]
@@ -114,7 +114,7 @@ group :development do
   gem "rubycritic", require: false
 end
 
-gem "rotp", "~> 6.3"
+gem "rotp", "~> 6.4"
 gem "rqrcode", "~> 3.2"
 
 # VAPID signing and the payload encryption the Web Push protocol requires
