@@ -7,7 +7,7 @@ gem "propshaft"
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.7"
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 8.0", ">= 8.0.2"
+gem "puma", "~> 8.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
@@ -32,7 +32,7 @@ gem "dry-validation", "~> 1.10"
 gem "dry-monads", "~> 1.11"
 
 # Pagination [https://github.com/ddnexus/pagy]
-gem "pagy", "~> 43.7"
+gem "pagy", "~> 43.8"
 
 # HTTP client for external API gateways [https://github.com/lostisland/faraday]
 gem "faraday", "~> 2.15"
